@@ -12,13 +12,15 @@ workspace "DEngine"
 		"MultiProcessorCompile"
 	}
 
-	startproject "ModuleSystem"
+	startproject "Editor"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Vendor/GLFW/include"
 IncludeDir["GLAD"] = "Vendor/GLAD/include"
 IncludeDir["ImGui"] = "Vendor/ImGui"
+IncludeDir["GLM"] = "Vendor/GLM"
+IncludeDir["STB_IMAGE"] = "Vendor/stb_image"
 
 group "Dependecies"
 include "Vendor/GLFW"
@@ -44,7 +46,20 @@ project "Engine"
 
 	includedirs
 	{
-		"%{prj.name}/Source"
+		"%{prj.name}/Source",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}"
+	}
+
+	links
+	{
+		"opengl32.lib",
+		"imGui",
+		"GLFW",
+		"GLAD"
 	}
 
 	filter "configurations:Debug"
@@ -71,18 +86,23 @@ project "Editor"
 
 	includedirs
 	{
+		"Engine/Source",
 		"%{prj.name}/Source",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}"
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}"
+	}
+
+	defines
+	{
+		"STB_IMAGE_IMPLEMENTATION"
 	}
 
 	links
 	{
-		"opengl32.lib",
-		"imGui",
-		"GLFW",
-		"GLAD"
+		"Engine"
 	}
 
 	filter "configurations:Debug"

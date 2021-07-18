@@ -55,7 +55,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -67,12 +67,15 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -87,7 +90,51 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Core\Core.h" />
+    <ClInclude Include="Source\Core\Log.h" />
+    <ClInclude Include="Source\Core\Types.h" />
+    <ClInclude Include="Source\DEngine.h" />
+    <ClInclude Include="Source\Framework\Application.h" />
+    <ClInclude Include="Source\Framework\Engine.h" />
+    <ClInclude Include="Source\Framework\Tick.h" />
+    <ClInclude Include="Source\Rendering\Window.h" />
+    <ClInclude Include="Source\Utils\DataCache.h" />
+    <ClInclude Include="Source\Utils\FileDialog.h" />
+    <ClInclude Include="Source\Utils\ImageLoader.h" />
+    <ClInclude Include="Source\Utils\Paths.h" />
+    <ClInclude Include="Source\Utils\Rand.h" />
+    <ClInclude Include="Source\Utils\Task.h" />
+    <ClInclude Include="Source\Utils\Timer.h" />
+    <ClInclude Include="Source\Utils\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Core\Log.cpp" />
+    <ClCompile Include="Source\Framework\Application.cpp" />
+    <ClCompile Include="Source\Framework\Engine.cpp" />
+    <ClCompile Include="Source\Rendering\Window.cpp" />
+    <ClCompile Include="Source\Utils\FileDialog.cpp" />
+    <ClCompile Include="Source\Utils\ImageLoader.cpp" />
+    <ClCompile Include="Source\Utils\Paths.cpp" />
+    <ClCompile Include="Source\Utils\Rand.cpp" />
+    <ClCompile Include="Source\Utils\Task.cpp" />
+    <ClCompile Include="Source\Utils\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vendor\ImGui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Vendor\GLFW\GLFW.vcxproj">
+      <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Vendor\GLAD\GLAD.vcxproj">
+      <Project>{5D4A857C-4981-860D-F26D-6C10DE83020F}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
