@@ -99,8 +99,13 @@
     <ClInclude Include="Source\Core\Log.h" />
     <ClInclude Include="Source\Core\Types.h" />
     <ClInclude Include="Source\DEngine.h" />
+    <ClInclude Include="Source\Event\Callback.h" />
+    <ClInclude Include="Source\Event\Event.h" />
+    <ClInclude Include="Source\Event\EventDispacher.h" />
     <ClInclude Include="Source\Framework\Application.h" />
+    <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
+    <ClInclude Include="Source\Framework\ObjectBase.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Window.h" />
     <ClInclude Include="Source\Utils\DataCache.h" />
@@ -116,6 +121,7 @@
     <ClCompile Include="Source\Core\Log.cpp" />
     <ClCompile Include="Source\Framework\Application.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
+    <ClCompile Include="Source\Framework\ObjectBase.cpp" />
     <ClCompile Include="Source\Rendering\Window.cpp" />
     <ClCompile Include="Source\Utils\FileDialog.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />

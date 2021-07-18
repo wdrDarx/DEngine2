@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Framework/Tick.h"
 #include "Rendering/Window.h"
+#include "Framework/AppObject.h"
 
 enum class AppState
 {
@@ -49,6 +50,23 @@ public:
 		ASSERT(m_Window);
 		return m_Window;
 	}
+
+	//Creates an appobject with an assigned pointer to this app and a random id, then adds it to app object list here
+	template<class T, typename ... Args>
+	void CreateAppObject(Args&&... args)
+	{
+		bool valid = std::is_base_of<AppObject, T>::value;
+		ASSERT(valid);
+
+		T* ptr = new T(ObjectInitializer(ContructFlags::RANDOMID), ToRef<Application>(this), std::forward<Args>(args)...);
+		Ref<AppObject> obj = ToRef<AppObject>(dynamic_cast<AppObject*>(ptr));
+		m_AppObjects.push_back(obj);
+	}
+
+	const std::vector<Ref<AppObject>> GetAppObjects() const
+	{
+		return m_AppObjects;
+	}
 	
 protected:
 	void MakeWindow(const std::string& name, int width, int height, bool vsync);
@@ -57,5 +75,6 @@ protected:
 
 	AppState m_AppState;
 	Ref<Window> m_Window;
+	std::vector<Ref<AppObject>> m_AppObjects;
 };
 

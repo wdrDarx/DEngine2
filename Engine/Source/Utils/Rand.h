@@ -2,7 +2,7 @@
 #include <random>
 #include "Core/Core.h"
 
-class Rand
+class DENGINE_API Rand
 {
 public:
 	static void Init();

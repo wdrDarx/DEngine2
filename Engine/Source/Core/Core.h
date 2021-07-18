@@ -26,7 +26,7 @@ typedef unsigned char byte;
 #include <queue>
 
 
-#define ASSERT(x) if(!x) { std::abort(); };
+#define ASSERT(x) if(!(x)) { std::abort(); };
 #define BIT(x) 1 << x
 #define ENUM_BITWISE(enumClass) inline enumClass operator|(enumClass a, enumClass b) { return static_cast<AnimalFlags>(static_cast<int>(a) | static_cast<int>(b)); }
 
@@ -52,8 +52,8 @@ constexpr Ref<T> MakeRef(Args&& ... args)
 	return std::make_shared<T>(std::forward<Args>(args)...);
 }
 template<typename T>
-constexpr Ref<T> ToRef(T&& pointer)
+constexpr Ref<T> ToRef(T* pointer)
 {
-	return std::make_shared<T>(pointer);
+	return std::shared_ptr<T>(pointer);
 }
 

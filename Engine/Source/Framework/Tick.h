@@ -3,7 +3,7 @@
 
 namespace TickGroup
 {
-	enum TickGroup
+	enum DENGINE_API TickGroup
 	{
 		GAME = BIT(0),
 		EDITOR = BIT(1),

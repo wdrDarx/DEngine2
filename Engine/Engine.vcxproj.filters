@@ -4,6 +4,9 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Event">
+      <UniqueIdentifier>{E70B220D-5320-4ABE-1CA2-ED1D887546EF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Framework">
       <UniqueIdentifier>{1362EE31-7FCC-A2A8-C80A-544E34B480FD}</UniqueIdentifier>
     </Filter>
@@ -25,10 +28,22 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\DEngine.h" />
+    <ClInclude Include="Source\Event\Callback.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\Event.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\EventDispacher.h">
+      <Filter>Event</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Application.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Engine.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\ObjectBase.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Tick.h">
@@ -61,6 +76,7 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\AppObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Log.cpp">
@@ -70,6 +86,9 @@
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Engine.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\ObjectBase.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Window.cpp">

@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 
 
-struct Transform2D
+struct DENGINE_API Transform2D
 {
 	Transform2D(const vec2d& p, const float& r, const vec2d& s) :pos(p), rot(r), scale(s)
 	{
@@ -17,7 +17,7 @@ struct Transform2D
 class b2World;
 struct b2RayCastOutput;
 class Camera;
-class World
+class DENGINE_API World
 {
 public:
 

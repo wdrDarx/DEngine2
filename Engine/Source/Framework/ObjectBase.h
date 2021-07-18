@@ -2,20 +2,57 @@
 #include "Core/Core.h"
 #include "Framework/Tick.h"
 
-//unique ID
-struct UID
+namespace ContructFlags
 {
-	uint64 ID;
+	enum DENGINE_API ContructFlags
+	{
+		//assign a random ID on construct
+		RANDOMID = BIT(0),
+
+		//start invalid
+		INVALIDATE = BIT(1)
+	};
+}
+
+//unique ID (0 means invalid)
+struct DENGINE_API UID
+{
+	uint64 ID = 0;
+};
+
+//contains initializer values for an object
+struct DENGINE_API ObjectInitializer
+{
+	//TODO make name non-copy
+	std::string Name;
+	ContructFlags::ContructFlags Flags;
+
+	ObjectInitializer(const std::string& name, ContructFlags::ContructFlags flags) : Name(name), Flags(flags)
+	{
+
+	}
+
+	ObjectInitializer(ContructFlags::ContructFlags flags) : Flags(flags)
+	{
+
+	}
+
+	ObjectInitializer()
+	{
+
+	}
 };
 
 /* 
 	Simple class that has a property system, serialization interface,
 	a unique assignable id and an Event interface
 */
-class ObjectBase
+class DENGINE_API ObjectBase
 {
 public:
-	ObjectBase()
+	ObjectBase(const ObjectInitializer& initializer);
+
+	virtual void OnConstruct()
 	{
 
 	}
@@ -30,6 +67,16 @@ public:
 
 	}
 
+	bool IsValid() const
+	{
+		return m_IsValid;
+	}
+
+	void Invalidate()
+	{
+		m_IsValid = false;
+	}
+
 	const UID& GetID() const
 	{
 		return m_ID;
@@ -40,7 +87,24 @@ public:
 		m_ID = id;
 	}
 
+	const std::string& GetName() const
+	{
+		return m_Name;
+	}
+	
+	void SetName(const std::string& name)
+	{
+		m_Name = name;
+	}
 
 private:
-		UID m_ID;
+
+	//used for invalidating objects for events and such
+	bool m_IsValid;
+
+	//unique assignable ID
+	UID m_ID;
+
+	//name of the object (could be empty)
+	std::string m_Name;
 };
