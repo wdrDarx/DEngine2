@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "Event/EventDispatcher.h"
 
 class DENGINE_API Window
 {
@@ -23,7 +24,7 @@ public:
 	void SetCurrentContext()
 	{
 		glfwMakeContextCurrent(m_Window);
-		m_ContextBound = false;
+		m_ContextBound = true;
 	}
 
 	void ClearCurrentContext()
@@ -47,12 +48,25 @@ public:
 		return m_Height;
 	}
 
+	GLFWwindow* GetGlfwWindow() const
+	{
+		return m_Window;
+	}
+
+	EventDispatcher& GetEventDispatcher() 
+	{
+		return m_EventDispatcher;
+	}
+
 private:
 
+	//calls window events
+	EventDispatcher m_EventDispatcher;
+
 	GLFWwindow* m_Window;
-	int m_Width;
-	int m_Height;
-	bool m_Vsync;
-	bool m_ContextBound;
+	int m_Width = 0;
+	int m_Height = 0;
+	bool m_Vsync = false;
+	bool m_ContextBound = false;
 };
 

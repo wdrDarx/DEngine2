@@ -2,6 +2,10 @@
 #include "Core/Core.h"
 #include "Framework/Tick.h"
 
+
+//simple definitions given the name of the class and its super class
+#define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; using superclass::superclass;
+
 namespace ContructFlags
 {
 	enum DENGINE_API ContructFlags
@@ -45,12 +49,29 @@ struct DENGINE_API ObjectInitializer
 
 /* 
 	Simple class that has a property system, serialization interface,
-	a unique assignable id and an Event interface
+	a unique assignable id and an Event interface.
+
+	has an empty contrutor and an explicit initializer construtor
+	that needs to be called manually - Initialize(const ObjectInitializer& initializer)
+
+	also has a constructor that will call initializer - ObjectBase(const ObjectInitializer& initializer)
 */
 class DENGINE_API ObjectBase
 {
 public:
+
+	//empty constructor
+	ObjectBase()
+	{
+
+	}
+
+	//Calls initialize 
 	ObjectBase(const ObjectInitializer& initializer);
+
+
+	//basically the actual constructor
+	void Initialize(const ObjectInitializer& initializer);
 
 	virtual void OnConstruct()
 	{

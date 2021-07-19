@@ -24,6 +24,11 @@ typedef unsigned char byte;
 #include <memory>
 #include <cstdint>
 #include <queue>
+#include <windows.h>
+#include <filesystem>
+
+#undef min
+#undef max
 
 
 #define ASSERT(x) if(!(x)) { std::abort(); };

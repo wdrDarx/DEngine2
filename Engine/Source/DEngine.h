@@ -10,7 +10,8 @@
 //Events
 #include "Event/Callback.h"
 #include "Event/Event.h"
-#include "Event/EventDispacher.h"
+#include "Event/EventDispatcher.h"
+#include "Event/WindowEvent.h"
 
 //Framework
 #include "Framework/Tick.h"
@@ -18,6 +19,9 @@
 #include "Framework/Engine.h"
 #include "Framework/AppObject.h"
 #include "Framework/ObjectBase.h"
+#include "Framework/ModuleManager.h"
+#include "Framework/Registry.h"
+#include "Framework/Module.h"
 
 //Rendering 
 #include "Rendering/Window.h"

@@ -3,6 +3,11 @@
 
 ObjectBase::ObjectBase(const ObjectInitializer& initializer)
 {	
+	Initialize(initializer);
+}
+
+void ObjectBase::Initialize(const ObjectInitializer& initializer)
+{
 	//assign name (could be empty)
 	m_Name = initializer.Name;
 

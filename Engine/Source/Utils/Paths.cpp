@@ -19,6 +19,11 @@ std::string Paths::GetBaseDirectory()
 	return std::string(buffer).substr(0, pos);
 }
 
+std::string Paths::GetModulesDirectory()
+{
+	return GetBaseDirectory() + "\\Modules\\";
+}
+
 std::string Paths::GetContentDirectory()
 {
 	return GetBaseDirectory() + "\\Content\\";

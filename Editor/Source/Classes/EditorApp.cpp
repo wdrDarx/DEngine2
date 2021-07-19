@@ -3,33 +3,49 @@
 
 EditorApp::EditorApp() : Application()
 {
+	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
+
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
-	m_Callback.Assign([&](niggaEvent* event)
+	//close event for window
+	m_WindowEvent.Assign([&](WindowEvent* event)
 	{
-		LogWarning(event->message);
+		if (event->GetEventType() == WindowEventType::CLOSED)
+		{
+			m_ImGuiLayer.Shutdown();
+		}
 	});
 
-	m_Callback2.Assign([&](niggaEvent2* event)
-	{
-		LogWarning(event->message + " 2");
-	});
+	//bind the window event callback 
+	GetEventDispatcher().Bind(m_WindowEvent);
 
-	m_EventDispatcher.Bind(m_Callback);
-	m_EventDispatcher.Bind(m_Callback2);
-
-	m_EventDispatcher.Dispatch(niggaEvent("uhh yeah"));
-	m_EventDispatcher.Dispatch(niggaEvent2("yayay"));
-
-	CreateAppObject<AppObject>();
+	m_ImGuiLayer.Init(GetWindow());
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
 {
-	//LogWarning("FPS " + STRING((1.0 / tick.DeltaTime)));
-	GetWindow()->SetCurrentContext();
 	GetWindow()->StartFrame();
+	m_ImGuiLayer.Begin();
+
+	if(m_ImGuiLayer.IsValid())
+	{ 
+		ImGui::Begin("Registry");
+
+		for (auto& reg : GetRegistry().GetRegisteredKeys())
+		{	
+			if (ImGui::Button(reg.name.c_str()))
+			{
+				(GetRegistry().Make(reg))->Initialize(ObjectInitializer());
+			}
+		}
+
+		ImGui::End();
+
+		ImGui::Begin("Render Stats");
+		ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
+		ImGui::End();
+	}
 
 	glBegin(GL_TRIANGLES);
 	glColor3f(0.1, 0.2, 0.3);
@@ -38,5 +54,6 @@ void EditorApp::OnUpdate(const Tick& tick)
 	glVertex3f(0, 1, 0);
 	glEnd();
 
+	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
 }

@@ -3,12 +3,18 @@
 
 class Application;
 
-//An Object existant in the scope of an app with a reference to it
+/*An Object existant in the scope of an app with a reference to it
+* Must call Initialize(const ObjectInitializer& initializer) mannually after constructing
+* 
+* 
+*/
 class DENGINE_API AppObject : public ObjectBase
 {
 public:
+	OBJECT_CLASS_DEF(AppObject, ObjectBase)
+
 	//override constructor receiving a reference to the app
-	AppObject(const ObjectInitializer& initializer, Ref<Application> app) : ObjectBase(initializer), m_Application(app)
+	AppObject(Ref<Application> app) : ObjectBase(), m_Application(app)
 	{
 
 	}

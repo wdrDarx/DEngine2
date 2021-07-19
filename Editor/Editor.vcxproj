@@ -70,6 +70,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Debug-windows-x86_64\Editor\Modules (mkdir ..\bin\Debug-windows-x86_64\Editor\Modules)
+IF NOT EXIST ..\bin\Debug-windows-x86_64\Editor\Content (mkdir ..\bin\Debug-windows-x86_64\Editor\Content)
+IF NOT EXIST ..\bin\Debug-windows-x86_64\Editor\Engine (mkdir ..\bin\Debug-windows-x86_64\Editor\Engine)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -91,12 +96,23 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Release-windows-x86_64\Editor\Modules (mkdir ..\bin\Release-windows-x86_64\Editor\Modules)
+IF NOT EXIST ..\bin\Release-windows-x86_64\Editor\Content (mkdir ..\bin\Release-windows-x86_64\Editor\Content)
+IF NOT EXIST ..\bin\Release-windows-x86_64\Editor\Engine (mkdir ..\bin\Release-windows-x86_64\Editor\Engine)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Classes\EditorApp.h" />
+    <ClInclude Include="Source\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="Source\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\EditorApp.cpp" />
+    <ClCompile Include="Source\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="Source\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Source\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>
   <ItemGroup>

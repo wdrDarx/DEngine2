@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 
 
-class EventDispacher;
+class EventDispatcher;
 
 template<typename EventType>
 struct DENGINE_API Callback
@@ -17,9 +17,9 @@ public:
 	{
 		delete m_PlaceholderEvent;
 
-		if (m_EventDispacher)
+		if (m_EventDispatcher)
 		{
-			m_EventDispacher->Unbind<EventType>(*(this));
+			m_EventDispatcher->Unbind<EventType>(*(this));
 		}
 	}
 
@@ -38,7 +38,7 @@ public:
 	std::function<void(EventType* event)> m_OnTrigger;
 
 	//reference to auto unbind when destroyed 
-	EventDispacher* m_EventDispacher;
+	EventDispatcher* m_EventDispatcher;
 
 	//exists for dynamic cast checking 
 	EventType* m_PlaceholderEvent;

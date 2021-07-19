@@ -105,6 +105,13 @@ project "Editor"
 		"Engine"
 	}
 
+	postbuildcommands
+	{
+		"{MKDIR} %{cfg.buildtarget.relpath}/../Modules",
+		"{MKDIR} %{cfg.buildtarget.relpath}/../Content",
+		"{MKDIR} %{cfg.buildtarget.relpath}/../Engine"
+	}
+
 	filter "configurations:Debug"
       symbols "On"
 
@@ -132,19 +139,23 @@ project "CustomClasses"
 
 	postbuildcommands
 	{
-		("{COPY} %{cfg.buildtarget.relpath} ../../bin/" .. outputdir .. "/Engine")
+		("{COPY} %{cfg.buildtarget.relpath} ../../bin/" .. outputdir .. "/Editor/Modules")
 	}
 
 	includedirs
 	{
 		"Engine/Source",
 		"%{prj.name}/Source",
-		"../Engine/"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}"
 	}
 
 	links
 	{
-		"RegistryModule"
+		"Engine"
 	}
 
 	filter "configurations:Debug"

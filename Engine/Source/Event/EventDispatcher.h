@@ -7,7 +7,7 @@ template<typename T>
 struct Callback;
 
 
-class DENGINE_API EventDispacher
+class DENGINE_API EventDispatcher
 {
 public:
 	
@@ -42,7 +42,7 @@ public:
 	template<typename T>
 	void Bind(Callback<T>& callback)
 	{
-		callback.m_EventDispacher = this;
+		callback.m_EventDispatcher = this;
 		Callback<T>* ptr = static_cast<Callback<T>*>(&callback);
 		m_BoundCallbacks.push_back((Callback<Event>*)ptr);
 	}

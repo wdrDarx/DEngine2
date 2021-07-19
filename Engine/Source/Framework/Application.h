@@ -1,8 +1,18 @@
 #pragma once
 #include "Core/Core.h"
+
+//Framework
 #include "Framework/Tick.h"
-#include "Rendering/Window.h"
 #include "Framework/AppObject.h"
+#include "Framework/ModuleManager.h"
+#include "Framework/Registry.h"
+
+//Rendering
+#include "Rendering/Window.h"
+
+//events
+#include "Event/Callback.h"
+#include "Event/WindowEvent.h"
 
 enum class AppState
 {
@@ -20,10 +30,7 @@ class DENGINE_API Application
 public:
 	friend class Engine;
 
-	Application()
-	{
-
-	}
+	Application();
 
 	virtual void OnBeginPlay()
 	{
@@ -58,7 +65,11 @@ public:
 		bool valid = std::is_base_of<AppObject, T>::value;
 		ASSERT(valid);
 
-		T* ptr = new T(ObjectInitializer(ContructFlags::RANDOMID), ToRef<Application>(this), std::forward<Args>(args)...);
+		T* ptr = new T(ToRef<Application>(this), std::forward<Args>(args)...);
+
+		//Must call this
+		ptr->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
+
 		Ref<AppObject> obj = ToRef<AppObject>(dynamic_cast<AppObject*>(ptr));
 		m_AppObjects.push_back(obj);
 	}
@@ -67,14 +78,40 @@ public:
 	{
 		return m_AppObjects;
 	}
+
+	Registry& GetRegistry()
+	{
+		return m_Registry;
+	}
+
+	ModuleManager& GetModuleManager()
+	{
+		return m_ModuleManager;
+	}
+
+	EventDispatcher& GetEventDispatcher()
+	{
+		return m_EventDispatcher;
+	}
 	
 protected:
 	void MakeWindow(const std::string& name, int width, int height, bool vsync);
 	void CoreUpdate(float DeltaTime);
+	void RegisterBaseClasses();
 	void Shutdown();
 
 	AppState m_AppState;
 	Ref<Window> m_Window;
+	
+	//used to relay window events to this event dispatcher
+	Callback<WindowEvent> m_WindowEventCallback;
+
+	//for all app events (also relays window events)
+	EventDispatcher m_EventDispatcher;
+
 	std::vector<Ref<AppObject>> m_AppObjects;
+
+	Registry m_Registry;
+	ModuleManager m_ModuleManager;
 };
 

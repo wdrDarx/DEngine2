@@ -57,7 +57,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Engine\Source;..\..\CustomClasses\Source;..\..\..\Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Engine\Source;..\..\CustomClasses\Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -68,18 +68,17 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>RegistryModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Engine &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Engine &gt; nul)</Command>
+      <Command>IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Editor\Modules &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Editor\Modules &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Engine\Source;..\..\CustomClasses\Source;..\..\..\Engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Engine\Source;..\..\CustomClasses\Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -93,13 +92,26 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>RegistryModule.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Engine &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Engine &gt; nul)</Command>
+      <Command>IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Classes\CustomAppObject.h" />
+    <ClInclude Include="Source\CustomClasses.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Classes\CustomAppObject.cpp" />
+    <ClCompile Include="Source\CustomClasses.cpp" />
+    <ClCompile Include="Source\Source.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Engine.vcxproj">
+      <Project>{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
