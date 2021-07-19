@@ -2,5 +2,7 @@
 
 void CustomAppObject::OnConstruct()
 {
-	LogWarning("Custom object created");
+	LogTemp("Custom object created");
 }
+
+

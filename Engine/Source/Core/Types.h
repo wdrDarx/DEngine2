@@ -12,7 +12,7 @@ const float RadToDeg = 180.f / M_PI;
 
 typedef unsigned int uint;
 typedef uint64_t uint64;
-typedef unsigned char byte;
+typedef uint8_t byte;
 
 #ifdef USE_GLM_TYPES
 using color4 = glm::vec4;

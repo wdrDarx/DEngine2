@@ -11,6 +11,11 @@ void LogTemp(const std::string& message)
 	std::cout << "LOG : " << message << std::endl;
 }
 
+void LogError(const std::string& message)
+{
+	std::cout << "ERROR : " << message << std::endl;
+}
+
 std::string Log::string(const vec3d& in)
 {
 	return "X: " + std::to_string(in.x) + " Y: " + std::to_string(in.y) + " Z: " + std::to_string(in.z);

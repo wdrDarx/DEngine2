@@ -7,6 +7,7 @@
 
 void LogWarning(const std::string& message);
 void LogTemp(const std::string& message);
+void LogError(const std::string& message);
 
 class Log
 {

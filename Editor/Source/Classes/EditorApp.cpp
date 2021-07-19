@@ -42,6 +42,26 @@ void EditorApp::OnUpdate(const Tick& tick)
 
 		ImGui::End();
 
+		ImGui::Begin("Modules");
+
+		if (ImGui::Button("Reload All"))
+		{
+			GetModuleManager().UnloadAllModules();
+			GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
+		}
+
+		for (const auto& mod : GetModuleManager().GetLoadedModules())
+		{
+			ImGui::Text(mod->m_Name.c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("Unload"))
+			{
+				GetModuleManager().UnloadModule(mod->m_Name);
+			}
+		}
+
+		ImGui::End();
+
 		ImGui::Begin("Render Stats");
 		ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
 		ImGui::End();

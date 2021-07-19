@@ -22,9 +22,13 @@
 #include "Framework/ModuleManager.h"
 #include "Framework/Registry.h"
 #include "Framework/Module.h"
+#include "Framework/Property.h"
 
 //Rendering 
 #include "Rendering/Window.h"
+
+//Serialization
+#include "Serialization/Buffer.h"
 
 //Utils
 #include "Utils/DataCache.h"

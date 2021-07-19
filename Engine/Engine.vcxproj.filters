@@ -91,6 +91,8 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Property.h" />
+    <ClInclude Include="Source\Serialization\Buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Log.cpp">
@@ -129,5 +131,6 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\Property.cpp" />
   </ItemGroup>
 </Project>

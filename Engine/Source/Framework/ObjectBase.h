@@ -1,10 +1,34 @@
 #pragma once
 #include "Core/Core.h"
 #include "Framework/Tick.h"
+#include "Framework/Property.h"
+#include "Serialization/Buffer.h"
 
 
 //simple definitions given the name of the class and its super class
-#define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; using superclass::superclass;
+#define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; class() : superclass() {}; class(const ObjectInitializer& initializer) : superclass(initializer) {};
+
+//get static properties of a class by constructing an instance of it
+#define OBJECT_STATIC_PROPERTIES(ObjectClass) [&]() -> std::vector<Property> { ObjectClass obj; obj.DefineProperties(); return obj.GetProperties(); }();
+
+#define _PROP_MEMBER_NAME m_Properties
+
+//Simple prop additions macro
+#define PROPDEF_FLAGS(x, flags) int _flags = flags; \
+if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::BOOL,			 &x, sizeof(bool),  _flags)); } else \
+if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::INT,			 &x, sizeof(int),   _flags)); } else \
+if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::FLOAT,		 &x, sizeof(float), _flags)); } else \
+if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::STRING, &x, 256,           _flags)); } else \
+if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC2D,	     &x, sizeof(vec2d), _flags)); } else \
+if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC3D,		 &x, sizeof(vec3d), _flags)); } else \
+if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::DSTRUCT, &x, sizeof(x), _flags)); } 
+
+//TODO give all "DStructs" a function that returns their serializable size based on their properties
+
+#define PROPDEF(x, flags) PROPDEF_FLAGS(x, flags)
+
+#define OBJECT_PROPS_BEGIN() void DefineProperties() override { 
+#define OBJECT_PROPS_END() }
 
 namespace ContructFlags
 {
@@ -29,9 +53,9 @@ struct DENGINE_API ObjectInitializer
 {
 	//TODO make name non-copy
 	std::string Name;
-	ContructFlags::ContructFlags Flags;
+	int Flags;
 
-	ObjectInitializer(const std::string& name, ContructFlags::ContructFlags flags) : Name(name), Flags(flags)
+	ObjectInitializer(const std::string& name, int flags) : Name(name), Flags(flags)
 	{
 
 	}
@@ -56,10 +80,24 @@ struct DENGINE_API ObjectInitializer
 
 	also has a constructor that will call initializer - ObjectBase(const ObjectInitializer& initializer)
 */
-class DENGINE_API ObjectBase
+
+class _placeholder
+{
+protected:
+	virtual uint Serialize(Buffer& buffer)
+	{
+		return 0;
+	}
+
+	virtual uint Deserialize(const Buffer& buffer)
+	{
+		return 0;
+	}
+};
+class DENGINE_API ObjectBase : public _placeholder
 {
 public:
-
+	using Super = _placeholder;
 	//empty constructor
 	ObjectBase()
 	{
@@ -67,7 +105,10 @@ public:
 	}
 
 	//Calls initialize 
-	ObjectBase(const ObjectInitializer& initializer);
+	ObjectBase(const ObjectInitializer& initializer)
+	{
+		Initialize(initializer);
+	}
 
 
 	//basically the actual constructor
@@ -84,6 +125,12 @@ public:
 	}
 
 	virtual void OnUpdate(const Tick& tick)
+	{
+
+	}
+
+	//use to define props here with PROPDEF(x)
+	virtual void DefineProperties()
 	{
 
 	}
@@ -117,6 +164,44 @@ public:
 	{
 		m_Name = name;
 	}
+
+	const std::vector<Property>& GetProperties() const
+	{
+		return m_Properties;
+	}
+
+	//automatically serializes props, can be customized and overriden
+	virtual uint Serialize(Buffer& buffer);
+
+	//automatically Deserializes props, can be customized and overriden
+	virtual uint Deserialize(const Buffer& buffer);
+
+	//Saves all current properties as a buffer array outputed as a single buffer
+	Buffer GeneratePropBuffer() const;
+
+	//Loads all found props in a buffer 
+	void LoadPropsFromBuffer(const Buffer& buffer);
+
+	/*
+		View the default properties of an object class (FOR REFLECTION ONLY)
+		this creates an instance of the object without calling the OnConstruct() function
+ 	*/
+	template<class ObjectClass>
+	inline static const std::vector<Property>& GetStaticProperties()
+	{
+		bool valid = std::is_base_of<ObjectBase, ObjectClass>::value;
+		ASSERT(valid);
+
+		ObjectClass obj;
+	    obj.DefineProperties();
+
+		return obj.GetProperties();
+	}
+
+protected:
+
+	//array of properties (used for serialization and reflection)
+	std::vector<Property> m_Properties;
 
 private:
 

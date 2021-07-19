@@ -3,6 +3,7 @@
 #include "ObjectBase.h"
 
 #define REGISTER(RegistryRef, ObjectClass, RegistryType) RegistryRef.Register<ObjectClass>({RegistryType, #ObjectClass});
+#define UNREGISTER(RegistryRef, ObjectClass, RegistryType) RegistryRef.Unregister<ObjectClass>({RegistryType, #ObjectClass});
 
 enum class DENGINE_API RegistryType
 {
@@ -75,6 +76,23 @@ public:
 			//registered twice
 		}
 		subclassInstantiators.emplace(key, &createInstance<U>);
+	}
+
+	template<typename U>
+	void Unregister(const Key& key)
+	{
+		static_assert(std::is_base_of<T, U>::value, "Cant unregister this class");
+		auto it = subclassInstantiators.find(key);
+		if (it != subclassInstantiators.end())
+		{
+			subclassInstantiators.erase(it);
+		}
+		else
+		{
+			LogWarning("Class isnt registered");
+			//
+		}
+
 	}
 
 public:

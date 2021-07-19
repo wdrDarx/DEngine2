@@ -24,6 +24,11 @@ public:
 
 	void Update(float DeltaTime);
 
+	const std::vector<Module*>& GetLoadedModules() const
+	{
+		return m_LoadedModules;
+	}
+
 public:
 	std::vector<Module*> m_LoadedModules;
 
