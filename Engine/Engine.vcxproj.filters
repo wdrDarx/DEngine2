@@ -93,6 +93,7 @@
     </ClInclude>
     <ClInclude Include="Source\Framework\Property.h" />
     <ClInclude Include="Source\Serialization\Buffer.h" />
+    <ClInclude Include="Source\Event\ModuleEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Log.cpp">
@@ -132,5 +133,6 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Property.cpp" />
+    <ClCompile Include="Source\Framework\AppObject.cpp" />
   </ItemGroup>
 </Project>

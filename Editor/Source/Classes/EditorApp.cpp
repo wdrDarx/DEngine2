@@ -3,8 +3,6 @@
 
 EditorApp::EditorApp() : Application()
 {
-	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
-
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
@@ -17,8 +15,22 @@ EditorApp::EditorApp() : Application()
 		}
 	});
 
+	m_ModuleEvent.Assign([&](ModuleEvent* event)
+	{
+		if(event->GetEventType() == ModuleEventType::LOADED)
+			LogTemp("LOADED : " + event->m_ModuleName);
+
+		if (event->GetEventType() == ModuleEventType::UNLOADED)
+			LogTemp("UNLOADED : " + event->m_ModuleName);
+	});
+
 	//bind the window event callback 
 	GetEventDispatcher().Bind(m_WindowEvent);
+
+	//bind the module event callback
+	GetEventDispatcher().Bind(m_ModuleEvent);
+
+	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
 
 	m_ImGuiLayer.Init(GetWindow());
 }
@@ -30,14 +42,49 @@ void EditorApp::OnUpdate(const Tick& tick)
 
 	if(m_ImGuiLayer.IsValid())
 	{ 
+
+		ImGui::Begin("Application Objects");
+
+		for (auto& obj : GetAppObjects())
+		{
+			if (ImGui::Button(obj->GetClassType().Name.c_str()))
+			{
+				
+			}
+		}
+
+		ImGui::End();
+
 		ImGui::Begin("Registry");
 
-		for (auto& reg : GetRegistry().GetRegisteredKeys())
-		{	
-			if (ImGui::Button(reg.name.c_str()))
+		if (ImGui::TreeNode("Objects"))
+		{
+			for (auto& reg : GetRegistry().GetRegisteredKeys())
 			{
-				(GetRegistry().Make(reg))->Initialize(ObjectInitializer());
+				if (reg.type == RegistryType::OBJECT)
+				{
+					if (ImGui::Button(reg.name.c_str()))
+					{
+						(GetRegistry().Make(reg))->Initialize(ObjectInitializer());
+					}
+				}
 			}
+
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("App Objects"))
+		{
+			for (auto& reg : GetRegistry().GetRegisteredKeys())
+			{
+				if (reg.type == RegistryType::APPOBJECT)
+				{
+					if (ImGui::Button(reg.name.c_str()))
+					{
+						AddAppObject(Cast<AppObject>(GetRegistry().Make(reg)));
+					}
+				}
+			}
+			ImGui::TreePop();
 		}
 
 		ImGui::End();

@@ -2,6 +2,8 @@
 
 void CustomAppObject::OnConstruct()
 {
+	Super::OnConstruct();
+
 	LogTemp("Custom object created");
 }
 

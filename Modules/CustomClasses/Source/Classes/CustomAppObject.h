@@ -8,6 +8,7 @@ public:
 
 	OBJECT_PROPS_BEGIN()
 		PROPDEF(testProp, PropFlags::NoSerialize)
+		PROPDEF(testProp2, 0)
 	OBJECT_PROPS_END()
 	
 	
@@ -15,5 +16,6 @@ public:
 
 
 	float testProp = 12.f;
+	vec2d testProp2;
 };
 

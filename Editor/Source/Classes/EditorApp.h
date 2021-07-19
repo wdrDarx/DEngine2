@@ -11,6 +11,7 @@ public:
 
 
 	Callback<WindowEvent> m_WindowEvent;
+	Callback<ModuleEvent> m_ModuleEvent;
 	ImGuiLayer m_ImGuiLayer;
 };
 

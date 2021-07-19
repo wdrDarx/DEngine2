@@ -52,6 +52,7 @@ constexpr Scope<T> MakeScope(Args&& ... args)
 
 template<typename T>
 using Ref = std::shared_ptr<T>;
+
 template<typename T, typename ... Args>
 constexpr Ref<T> MakeRef(Args&& ... args)
 {
@@ -61,6 +62,21 @@ template<typename T>
 constexpr Ref<T> ToRef(T* pointer)
 {
 	return std::shared_ptr<T>(pointer);
+}
+
+// template<class T>
+// using Cast = dynamic_cast<T>;
+
+template<class T, class U>
+constexpr T* Cast(U* ptr)
+{
+	return dynamic_cast<T*>(ptr);
+}
+
+template<class T, class U>
+constexpr Ref<T> Cast(Ref<U> ptr)
+{
+	return std::dynamic_pointer_cast<T>(ptr);
 }
 
 //Mapping macros to a list

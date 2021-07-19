@@ -60,18 +60,51 @@ public:
 
 	//Creates an appobject with an assigned pointer to this app and a random id, then adds it to app object list here
 	template<class T, typename ... Args>
-	void CreateAppObject(Args&&... args)
+	Ref<AppObject> CreateAppObject(Args&&... args)
 	{
 		bool valid = std::is_base_of<AppObject, T>::value;
 		ASSERT(valid);
 
-		T* ptr = new T(ToRef<Application>(this), std::forward<Args>(args)...);
-
-		//Must call this
-		ptr->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
-
+		T* ptr = new T(this, std::forward<Args>(args)...);
+	
 		Ref<AppObject> obj = ToRef<AppObject>(dynamic_cast<AppObject*>(ptr));
 		m_AppObjects.push_back(obj);
+
+		//Must call this
+		obj->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
+		
+		return obj;
+	}
+
+	//removed object from appobject array
+	void DestroyAppObject(Ref<AppObject> obj)
+	{
+		m_AppObjects.erase(std::find(m_AppObjects.begin(), m_AppObjects.end(), obj));
+	}
+
+	void DestroyAppObject(AppObject* obj)
+	{
+		auto end = std::remove_if(m_AppObjects.begin(), m_AppObjects.end(), [&](Ref<AppObject> appobj)
+		{
+			return obj == appobj.get();
+		});
+
+		if (end != m_AppObjects.end())
+			m_AppObjects.erase(end);
+	}
+
+	//Will call initialize to an already existing object 
+	void AddAppObject(AppObject* obj)
+	{
+		ASSERT(obj);
+
+		//assign application and add to object array
+		obj->m_Application = (this);
+		Ref<AppObject> objref = ToRef<AppObject>(obj);
+		m_AppObjects.push_back(objref);
+
+		//Must call
+		obj->Initialize(ObjectInitializer(ContructFlags::RANDOMID));	
 	}
 
 	const std::vector<Ref<AppObject>> GetAppObjects() const

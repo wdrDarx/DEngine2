@@ -46,6 +46,9 @@ Buffer ObjectBase::GeneratePropBuffer() const
 	ArrayBuffer propBuffer;
 	for (const auto& prop : GetProperties())
 	{
+		if (prop.m_Flags & PropFlags::NoSerialize)
+			continue;
+
 		propBuffer.AddPiece(prop.MakeBuffer());
 	}
 
@@ -67,6 +70,10 @@ void ObjectBase::LoadPropsFromBuffer(const Buffer& buffer)
 		//Go through old props and update them if a new one overrides it
 		for (auto& oldProp : m_Properties)
 		{
+			//dont load if flagged not to serialize
+			if(oldProp.m_Flags & PropFlags::NoSerialize)
+				continue;
+
 			//If a new prop didnt exist before then ignore it and dont laod it
 			if (oldProp.m_name == NewProp.m_name && oldProp.m_Type == NewProp.m_Type)
 			{

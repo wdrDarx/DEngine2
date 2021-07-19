@@ -102,6 +102,7 @@
     <ClInclude Include="Source\Event\Callback.h" />
     <ClInclude Include="Source\Event\Event.h" />
     <ClInclude Include="Source\Event\EventDispatcher.h" />
+    <ClInclude Include="Source\Event\ModuleEvent.h" />
     <ClInclude Include="Source\Event\WindowEvent.h" />
     <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Application.h" />
@@ -126,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Core\Log.cpp" />
     <ClCompile Include="Source\Framework\Application.cpp" />
+    <ClCompile Include="Source\Framework\AppObject.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
     <ClCompile Include="Source\Framework\ModuleManager.cpp" />
     <ClCompile Include="Source\Framework\ObjectBase.cpp" />

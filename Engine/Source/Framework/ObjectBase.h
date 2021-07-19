@@ -6,7 +6,10 @@
 
 
 //simple definitions given the name of the class and its super class
-#define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; class() : superclass() {}; class(const ObjectInitializer& initializer) : superclass(initializer) {};
+#define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; \
+ClassType GetClassType() const override { return typeid(this); }; \
+using superclass::superclass; \
+class(const ObjectInitializer& initializer) : superclass(initializer) {};
 
 //get static properties of a class by constructing an instance of it
 #define OBJECT_STATIC_PROPERTIES(ObjectClass) [&]() -> std::vector<Property> { ObjectClass obj; obj.DefineProperties(); return obj.GetProperties(); }();
@@ -14,14 +17,15 @@
 #define _PROP_MEMBER_NAME m_Properties
 
 //Simple prop additions macro
-#define PROPDEF_FLAGS(x, flags) int _flags = flags; \
+#define PROPDEF_FLAGS(x, flags) { int _flags = flags; \
 if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::BOOL,			 &x, sizeof(bool),  _flags)); } else \
 if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::INT,			 &x, sizeof(int),   _flags)); } else \
 if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::FLOAT,		 &x, sizeof(float), _flags)); } else \
 if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::STRING, &x, 256,           _flags)); } else \
 if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC2D,	     &x, sizeof(vec2d), _flags)); } else \
 if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC3D,		 &x, sizeof(vec3d), _flags)); } else \
-if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::DSTRUCT, &x, sizeof(x), _flags)); } 
+if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::DSTRUCT, &x, sizeof(x), _flags)); } \
+}
 
 //TODO give all "DStructs" a function that returns their serializable size based on their properties
 
@@ -71,6 +75,24 @@ struct DENGINE_API ObjectInitializer
 	}
 };
 
+struct ClassType 
+{
+	std::type_index typeIndex;
+	std::string Name;
+
+	static std::string GetFriendlyTypeName(const std::type_index& index)
+	{
+		std::string base = index.name();
+
+		return base;
+	}
+
+	ClassType(const std::type_index& index) : typeIndex(index)
+	{
+		Name = GetFriendlyTypeName(index);
+	}
+};
+
 /* 
 	Simple class that has a property system, serialization interface,
 	a unique assignable id and an Event interface.
@@ -113,6 +135,13 @@ public:
 
 	//basically the actual constructor
 	void Initialize(const ObjectInitializer& initializer);
+
+
+	//this is manually overriden on all object classes with a macro
+	virtual ClassType GetClassType() const
+	{
+		return typeid(this);
+	}
 
 	virtual void OnConstruct()
 	{
@@ -198,6 +227,26 @@ public:
 		return obj.GetProperties();
 	}
 
+	void MarkDelete()
+	{
+		m_MarkDelete = true;
+	}
+
+	bool IsMarkedForDeletion() const
+	{
+		return m_MarkDelete;
+	}
+
+	const std::string& GetAssignedModuleName() const
+	{
+		return m_AssignedModuleName;
+	}
+
+	void SetAssignedModuleName(const std::string& name)
+	{
+		m_AssignedModuleName = name;
+	}
+
 protected:
 
 	//array of properties (used for serialization and reflection)
@@ -206,11 +255,17 @@ protected:
 private:
 
 	//used for invalidating objects for events and such
-	bool m_IsValid;
+	bool m_IsValid = true;
+
+	//flag used for deleting this object next tick or something
+	bool m_MarkDelete = false;
+
+	//optional name of associated module of this object (used mainly for auto deleting objects when a module gets unloaded)
+	std::string m_AssignedModuleName;
 
 	//unique assignable ID
 	UID m_ID;
 
 	//name of the object (could be empty)
-	std::string m_Name;
+	std::string m_Name = "";
 };

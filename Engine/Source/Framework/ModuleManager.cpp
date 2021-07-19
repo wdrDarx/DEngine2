@@ -1,5 +1,7 @@
 #include "ModuleManager.h"
 #include "Module.h"
+#include "Framework/Application.h"
+#include "Event/ModuleEvent.h"
 
 void ModuleManager::LoadModule(const std::string& FullPath)
 {
@@ -40,6 +42,7 @@ void ModuleManager::LoadModule(const std::string& FullPath)
 		m_LoadedModules.push_back(mod); //add to module array
 		mod->m_ModuleManager = this;
 		mod->m_App = m_App;
+		m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));
 		mod->OnLoad();
 	}
 	else //put on a waiting list
@@ -86,6 +89,7 @@ void ModuleManager::CheckPendingModules()
 			m_LoadedModules.push_back(mod);
 			mod->m_ModuleManager = this;
 			mod->m_App = m_App;
+			m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));
 			mod->OnLoad();
 
 			it = m_PendingLoad.begin();
@@ -117,7 +121,8 @@ void ModuleManager::UnloadModule(const std::string& ModuleName)
 	{
 		Module* mod = *it;
 		if (mod->m_Name == ModuleName)
-		{
+		{			
+			m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::UNLOADED, mod->m_Name));
 			mod->OnUnload();
 			delete mod;
 			m_LoadedModules.erase(it);
@@ -131,6 +136,7 @@ void ModuleManager::UnloadAllModules()
 	for (size_t i = 0; i < m_LoadedModules.size(); i++)
 	{
 		Module* mod = m_LoadedModules[i];
+		m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::UNLOADED, mod->m_Name));
 		mod->OnUnload();
 		delete mod;
 	}

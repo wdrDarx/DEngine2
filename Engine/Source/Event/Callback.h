@@ -13,7 +13,7 @@ public:
 		m_PlaceholderEvent = new EventType();
 	}
 	
-	virtual ~Callback()
+	~Callback()
 	{
 		delete m_PlaceholderEvent;
 
@@ -38,9 +38,9 @@ public:
 	std::function<void(EventType* event)> m_OnTrigger;
 
 	//reference to auto unbind when destroyed 
-	EventDispatcher* m_EventDispatcher;
+	EventDispatcher* m_EventDispatcher = nullptr;
 
 	//exists for dynamic cast checking 
-	EventType* m_PlaceholderEvent;
+	EventType* m_PlaceholderEvent = nullptr;
 };
 

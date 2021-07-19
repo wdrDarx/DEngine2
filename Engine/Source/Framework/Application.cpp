@@ -35,12 +35,36 @@ void Application::MakeWindow(const std::string& name, int width, int height, boo
 void Application::CoreUpdate(float DeltaTime)
 {
 	//NOTE: window start and end frame needs to be called manually because an app can have no window
-	OnUpdate(Tick(GetAppState() == AppState::EDITOR ? TickGroup::EDITOR : TickGroup::GAME, DeltaTime));
+	Tick tick(GetAppState() == AppState::EDITOR ? TickGroup::EDITOR : TickGroup::GAME, DeltaTime);
+
+	OnUpdate(tick);
+
+	for (uint i = 0; i < m_AppObjects.size(); i++)
+	{
+		auto obj = m_AppObjects[i];
+		/*delete the object if its marked for deletion
+		if((*it)->IsMarkedForDeletion())
+		{	
+			m_AppObjects.erase(it);
+
+			if(m_AppObjects.size() == 0)
+				break;
+			else
+				continue;
+		}
+		*/
+
+		//increment the itterator here 
+		if(obj)
+			obj->OnUpdate(tick);
+		//it++;
+	}
 }
 
 void Application::RegisterBaseClasses()
 {
-	REGISTER(GetRegistry(), AppObject, RegistryType::OBJECT);
+	REGISTER(GetRegistry(), ObjectBase, Engine, RegistryType::OBJECT);
+	REGISTER(GetRegistry(), AppObject, Engine, RegistryType::APPOBJECT);
 }
 
 void Application::Shutdown()

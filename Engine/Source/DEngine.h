@@ -12,6 +12,7 @@
 #include "Event/Event.h"
 #include "Event/EventDispatcher.h"
 #include "Event/WindowEvent.h"
+#include "Event/ModuleEvent.h"
 
 //Framework
 #include "Framework/Tick.h"

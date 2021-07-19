@@ -2,23 +2,25 @@
 #include "Core/Core.h"
 #include "ObjectBase.h"
 
-#define REGISTER(RegistryRef, ObjectClass, RegistryType) RegistryRef.Register<ObjectClass>({RegistryType, #ObjectClass});
-#define UNREGISTER(RegistryRef, ObjectClass, RegistryType) RegistryRef.Unregister<ObjectClass>({RegistryType, #ObjectClass});
+#define REGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Register<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
+#define UNREGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Unregister<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
 
 enum class DENGINE_API RegistryType
 {
 	OBJECT = 0,
-	COMPONENT = 1
+	APPOBJECT,
+	COMPONENT 
 };
 
 struct DENGINE_API RegisterKey
 {
 	RegistryType type;
 	std::string name;
+	std::string AssignedModuleName;
 
 	bool operator==(const RegisterKey& other) const
 	{
-		return (type == other.type && name == other.name);
+		return (type == other.type && name == other.name && AssignedModuleName == other.AssignedModuleName);
 	}
 };
 
@@ -34,7 +36,8 @@ namespace std
 			using std::string;
 
 			return ((hash<int>()((int)k.type)
-				^ (hash<string>()(k.name) << 1)) >> 1);				
+				^ (hash<string>()(k.name) << 1)) >> 1)			
+				^ (hash<string>()(k.AssignedModuleName) << 1);				
 		}
 	};
 
@@ -104,7 +107,11 @@ public:
 			return nullptr;
 		}
 		auto instantiator = it->second;
-		return instantiator(std::forward<ConstructionArgs>(args)...);
+		T* obj = instantiator(std::forward<ConstructionArgs>(args)...);
+
+		//set the assigned module name for the object
+		obj->SetAssignedModuleName(subclass_key.AssignedModuleName);
+		return obj;
 	}
 
 	bool canProduce(const Key& subclass_key) const
