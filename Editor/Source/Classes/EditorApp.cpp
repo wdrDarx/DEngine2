@@ -15,6 +15,7 @@ EditorApp::EditorApp() : Application()
 		}
 	});
 
+	//module events
 	m_ModuleEvent.Assign([&](ModuleEvent* event)
 	{
 		if(event->GetEventType() == ModuleEventType::LOADED)
@@ -24,25 +25,48 @@ EditorApp::EditorApp() : Application()
 			LogTemp("UNLOADED : " + event->m_ModuleName);
 	});
 
+	//Scene events
+	m_SceneEvent.Assign([&](SceneEvent* event)
+	{
+		//Auto unassign selected scene object in property window if that object was deleted
+		if (event->GetEventType() == SceneEventType::PRE_DELETE)
+		{
+			if (event->GetSceneObject() && m_PropertyWindow.m_SelectedSceneObject.get() == event->GetSceneObject())
+			{
+				m_PropertyWindow.m_SelectedSceneObject = nullptr;
+			}
+		}
+	});
+
 	//bind the window event callback 
 	GetEventDispatcher().Bind(m_WindowEvent);
 
 	//bind the module event callback
 	GetEventDispatcher().Bind(m_ModuleEvent);
 
+	//load all modules
 	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
 
+	//init imgui layer
 	m_ImGuiLayer.Init(GetWindow());
+
+	//Make the scene
+	m_EditorScene = CreateAppObject<Scene>();
+
+	//bind scene events
+	m_EditorScene->GetSceneEventDipatcher().Bind(m_SceneEvent);
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
 {
+	GetWindow()->SetCurrentContext();
 	GetWindow()->StartFrame();
 	m_ImGuiLayer.Begin();
 
+
 	if(m_ImGuiLayer.IsValid())
 	{ 
-
+		m_PropertyWindow.Render();
 		ImGui::Begin("Application Objects");
 
 		for (auto& obj : GetAppObjects())
@@ -50,6 +74,18 @@ void EditorApp::OnUpdate(const Tick& tick)
 			if (ImGui::Button(obj->GetClassType().Name.c_str()))
 			{
 				
+			}
+		}
+
+		ImGui::End();
+
+		ImGui::Begin("Scene Objects");
+
+		for (auto& obj : m_EditorScene->GetSceneObjects())
+		{
+			if (ImGui::Button((obj->GetClassType().Name + STRING(obj->GetID().ID)).c_str()))
+			{
+				m_PropertyWindow.m_SelectedSceneObject = obj;
 			}
 		}
 
@@ -86,6 +122,21 @@ void EditorApp::OnUpdate(const Tick& tick)
 			}
 			ImGui::TreePop();
 		}
+		if (ImGui::TreeNode("SceneObjects"))
+		{
+			for (auto& reg : GetRegistry().GetRegisteredKeys())
+			{
+				if (reg.type == RegistryType::SCENEOBJECT)
+				{
+					if (ImGui::Button(reg.name.c_str()))
+					{
+						m_EditorScene->AddSceneObject(Cast<SceneObject>(GetRegistry().Make(reg)));
+					}
+				}
+			}
+
+			ImGui::TreePop();
+		}
 
 		ImGui::End();
 
@@ -114,13 +165,15 @@ void EditorApp::OnUpdate(const Tick& tick)
 		ImGui::End();
 	}
 
+	
+
 	glBegin(GL_TRIANGLES);
 	glColor3f(0.1, 0.2, 0.3);
 	glVertex3f(0, 0, 0);
 	glVertex3f(1, 0, 0);
 	glVertex3f(0, 1, 0);
 	glEnd();
-
+	
 	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
 }

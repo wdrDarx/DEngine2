@@ -145,7 +145,7 @@ project "CustomClasses"
 	includedirs
 	{
 		"Engine/Source",
-		"%{prj.name}/Source",
+		"Modules/%{prj.name}/Source",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",

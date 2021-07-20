@@ -19,6 +19,9 @@ public:
 	void LoadAllModules(const std::string& FolderPath);
 	void CheckPendingModules();
 
+	void HotReloadModule(const std::string& ModuleName);
+	//void HotReloadAll();
+
 	void UnloadModule(const std::string& ModuleName);
 	void UnloadAllModules();
 

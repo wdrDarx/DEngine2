@@ -3,8 +3,15 @@
 
 void ObjectBase::Initialize(const ObjectInitializer& initializer)
 {
+	//assign the member initializer for later use
+	m_ObjectInitializer = initializer;
+
 	//assign name (could be empty)
 	m_Name = initializer.Name;
+
+	//override AssociatedModuleName 
+	if(!initializer.AssociatedModuleName.empty())
+		SetAssociatedModuleName(initializer.AssociatedModuleName);
 
 	//assign random ID
 	if (initializer.Flags & ContructFlags::RANDOMID)
@@ -86,3 +93,10 @@ void ObjectBase::LoadPropsFromBuffer(const Buffer& buffer)
 }
 
 
+ObjectInitializer ObjectInitializer::Module(ObjectBase* ExistantModuleObject)
+{
+	ASSERT(ExistantModuleObject);
+	ObjectInitializer init;
+	init.AssociatedModuleName = ExistantModuleObject->GetAssociatedModuleName();
+	return init;
+}

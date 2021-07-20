@@ -1,7 +1,9 @@
 #pragma once
 #include <random>
 #include "Core/Core.h"
-
+/*
+	static class that provides random value functions
+*/
 class DENGINE_API Rand
 {
 public:

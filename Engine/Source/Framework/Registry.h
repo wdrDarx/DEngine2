@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "ObjectBase.h"
+#include "Core/Allocator.h"
 
 #define REGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Register<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
 #define UNREGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Unregister<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
@@ -9,6 +10,7 @@ enum class DENGINE_API RegistryType
 {
 	OBJECT = 0,
 	APPOBJECT,
+	SCENEOBJECT,
 	COMPONENT 
 };
 
@@ -43,16 +45,24 @@ namespace std
 
 }
 
+class Application;
+
 template<typename Key, typename T, typename... ConstructionArgs>
 class DENGINE_API _RegistryBase
 {
 public:
 	using Instantiator = T* (*)(ConstructionArgs...);
+
 protected:
 	template<typename U>
 	static T* createInstance(ConstructionArgs... args)
 	{
-		return new U(std::forward<ConstructionArgs>(args)...);
+		//trying to allocate on the Engine module
+		Allocator alloc;
+		U* ptr = (U*)alloc.Allocate(sizeof(U));
+		std::allocator<U> stdalloc;
+		stdalloc.construct(ptr, std::forward<ConstructionArgs>(args)...);
+		return ptr;
 	}
 	using Instantiators = std::unordered_map<Key, Instantiator>;
 	Instantiators subclassInstantiators;
@@ -99,6 +109,7 @@ public:
 	}
 
 public:
+
 	T* Make(const Key& subclass_key, ConstructionArgs... args) const
 	{
 		auto it = subclassInstantiators.find(subclass_key);
@@ -110,7 +121,8 @@ public:
 		T* obj = instantiator(std::forward<ConstructionArgs>(args)...);
 
 		//set the assigned module name for the object
-		obj->SetAssignedModuleName(subclass_key.AssignedModuleName);
+		obj->SetAssociatedModuleName(subclass_key.AssignedModuleName);
+
 		return obj;
 	}
 
@@ -118,6 +130,8 @@ public:
 	{
 		return subclassInstantiators.find(subclass_key) != subclassInstantiators.end();
 	}
+
+	Ref<Application> m_App;
 };
 
 using Registry = _RegistryBase<RegisterKey, ObjectBase>;

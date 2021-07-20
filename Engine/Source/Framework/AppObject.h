@@ -2,6 +2,7 @@
 #include "ObjectBase.h"
 #include "Event/Callback.h"
 #include "Event/ModuleEvent.h"
+#include "Event/EventDispatcher.h"
 
 class Application;
 /*An Object existant in the scope of an app with a reference to it
@@ -24,7 +25,6 @@ public:
 
 	void OnUpdate(const Tick& tick) override;
 
-
 	void OnConstruct() override;
 
 	Application* GetApplication() const
@@ -34,6 +34,6 @@ public:
 	}
 
 private:
-	Application* m_Application;
+	Application* m_Application = nullptr;
 	Callback<ModuleEvent> m_ModuleCallback;
 };

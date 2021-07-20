@@ -3,6 +3,8 @@
 //Dependencies
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 //Core
 #include "Core/Core.h"
@@ -13,12 +15,16 @@
 #include "Event/EventDispatcher.h"
 #include "Event/WindowEvent.h"
 #include "Event/ModuleEvent.h"
+#include "Event/SceneEvent.h"
+#include "Event/EditorCallback.h"
 
 //Framework
 #include "Framework/Tick.h"
 #include "Framework/Application.h"
 #include "Framework/Engine.h"
 #include "Framework/AppObject.h"
+#include "Framework/Scene.h"
+#include "Framework/SceneObject.h"
 #include "Framework/ObjectBase.h"
 #include "Framework/ModuleManager.h"
 #include "Framework/Registry.h"
@@ -33,7 +39,7 @@
 
 //Utils
 #include "Utils/DataCache.h"
-#include "Utils/FileDialog.h"
+#include "Utils/FileSystem.h"
 #include "Utils/ImageLoader.h"
 #include "Utils/Paths.h"
 #include "Utils/Rand.h"

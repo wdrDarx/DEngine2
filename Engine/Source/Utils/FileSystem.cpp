@@ -1,4 +1,4 @@
-#include "FileDialog.h"
+#include "FileSystem.h"
 
 #include <windows.h>
 #include <commdlg.h>
@@ -48,4 +48,44 @@ std::string FileDialog::SaveFile(const char* filter)
 		fileNameStr = szFile;
 
 	return fileNameStr;
+}
+
+void File::ReadFile(const std::string& path, Buffer& buffer)
+{
+	std::ifstream stream(path, std::ios::in | std::ios::binary);
+	if (stream)
+	{
+		buffer.resize(GetFileSize(path));
+		stream.read((char*)buffer.data(), buffer.size());
+	}
+	stream.close();
+
+}
+
+void File::WriteFile(const std::string& path, const Buffer& buffer)
+{
+#ifdef FILE_THREADED 
+	std::async(std::launch::async, [&]() {
+#endif
+
+	std::ofstream stream(path, std::ios::out | std::ios::binary);
+	if (stream)
+	{
+		stream.write((char*)buffer.data(), buffer.size());
+	}
+	stream.close();
+
+#ifdef FILE_THREADED 
+		});
+#endif
+}
+
+int File::GetFileSize(const std::string& path)
+{
+	FILE* p_file = NULL;
+	p_file = fopen(path.c_str(), "rb");
+	fseek(p_file, 0, SEEK_END);
+	int size = ftell(p_file);
+	fclose(p_file);
+	return size;
 }

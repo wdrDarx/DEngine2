@@ -2,7 +2,9 @@
 //#define STB_IMAGE_IMPLEMENTATION
 #include "Core/Core.h"
 
-
+/*
+	Class to contain 2d texture data
+*/
 struct DENGINE_API Image
 {
 	Image() {};

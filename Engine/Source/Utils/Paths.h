@@ -2,6 +2,9 @@
 #include <Windows.h>
 #include <string>
 
+/*
+	static class to store paths
+*/
 class Paths
 {
 public:

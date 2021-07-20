@@ -21,7 +21,7 @@
 using Buffer = std::vector<byte>;
 
 //array of buffers
-struct ArrayBuffer
+struct DENGINE_API ArrayBuffer
 {
 	std::vector<Buffer> m_DataPieces;
 

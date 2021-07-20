@@ -10,7 +10,7 @@ constexpr float M_PI = (float)3.14159265358979323846; /* pi */
 const float DegToRad = M_PI / 180.f;
 const float RadToDeg = 180.f / M_PI;
 
-typedef unsigned int uint;
+typedef uint32_t uint;
 typedef uint64_t uint64;
 typedef uint8_t byte;
 

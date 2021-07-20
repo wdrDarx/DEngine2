@@ -102,6 +102,18 @@ void ModuleManager::CheckPendingModules()
 	}
 }
 
+void ModuleManager::HotReloadModule(const std::string& ModuleName)
+{
+	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
+	{
+		Module* mod = *it;
+		if (mod->m_Name == ModuleName)
+		{
+
+		}
+	}
+}
+
 void ModuleManager::LoadAllModules(const std::string& FolderPath)
 {
 	for (const auto& file : std::filesystem::directory_iterator(FolderPath))

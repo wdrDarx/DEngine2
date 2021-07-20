@@ -4,8 +4,6 @@
 void AppObject::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
-
-	//MarkDelete();
 }
 
 void AppObject::OnConstruct()
@@ -14,13 +12,10 @@ void AppObject::OnConstruct()
 
 	m_ModuleCallback.Assign([&](ModuleEvent* event)
 	{
-		if(event->GetEventType() == ModuleEventType::UNLOADED)
+		if(event->GetEventType() == ModuleEventType::UNLOADED && event->m_ModuleName == GetAssociatedModuleName())
 		{ 
-			//if (event->m_ModuleName == GetAssignedModuleName())
-			{
-				GetApplication()->DestroyAppObject(this);
-
-			}
+			GetApplication()->DestroyAppObject(this);
+		
 		}
 	});
 

@@ -7,8 +7,10 @@ struct DENGINE_API DataObject
 	const std::type_index type;
 	Ref<void> ptr;
 };
-
-class DENGINE_API  DataCache
+/*
+	class for storing Data pieces retrievable with a tag
+*/
+class DENGINE_API DataCache
 {
 public:
 	template<typename T>

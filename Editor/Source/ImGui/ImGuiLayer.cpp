@@ -24,7 +24,7 @@ void ImGuiLayer::Init(Ref<Window> window)
 	ImGui::SetCurrentContext(m_ImGuidContext);
 
 	ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);
-	ImGui_ImplOpenGL3_Init("#version 410");
+	ImGui_ImplOpenGL3_Init("#version 460");
 
 	//io.FontDefault = io.Fonts->AddFontFromFileTTF(std::string(Paths::GetBaseDirectory() + "\\res\\Fonts\\OpenSans-Regular.ttf").c_str(), 16.0f);
 	//io.Fonts->AddFontFromFileTTF(std::string(Paths::GetBaseDirectory() + "\\res\\Fonts\\OpenSans-Bold.ttf").c_str(), 16.0f);
@@ -37,7 +37,7 @@ void ImGuiLayer::Init(Ref<Window> window)
 void ImGuiLayer::Begin()
 {
 	m_Valid = false;
-	if(!m_Window->isContextBound()) return;
+	if(!m_Window || !m_Window->isContextBound()) return;
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -50,9 +50,10 @@ void ImGuiLayer::Begin()
 	bool open = true;
 	bool opt_fullscreen = true;
 	bool opt_padding = false;
-	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+	ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	//ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
 	if (opt_fullscreen)
 	{
 		ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -65,8 +66,8 @@ void ImGuiLayer::Begin()
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 	}
 
-	if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-		window_flags |= ImGuiWindowFlags_NoBackground;
+ 	if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+ 		window_flags |= ImGuiWindowFlags_NoBackground;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::Begin("DockSpace Demo", &open, window_flags);
@@ -87,7 +88,7 @@ void ImGuiLayer::Begin()
 void ImGuiLayer::End()
 {
 	m_Valid = false;
-	if (!m_Window->isContextBound()) return;
+	if (!m_Window || !m_Window->isContextBound()) return;
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2((float)m_Window->GetWidth(),  (float)m_Window->GetHeight());

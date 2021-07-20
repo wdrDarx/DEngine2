@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 #include "Serialization/Buffer.h"
+#include "Event/EditorCallback.h"
 #include <variant>
 
 template < template <typename...> class base, typename derived>
@@ -18,7 +19,7 @@ using is_base_of_template = typename is_base_of_template_impl<base, derived>::ty
 typedef std::variant<bool*, int*, float*, vec2d*, vec3d*> PropValue;
 
 struct Property;
-struct DStruct
+struct DENGINE_API DStruct
 {
 public:
 	std::vector<Property>& GetProps()
@@ -32,14 +33,14 @@ public:
 };
 
 
-enum PropFlags
+enum DENGINE_API PropFlags
 {	
 	NoSerialize = BIT(0),
 	EditAnywhere = BIT(1)
 };
 
 
-enum class PropType
+enum class DENGINE_API PropType
 {
 	BOOL = 0,
 	INT,
@@ -50,7 +51,7 @@ enum class PropType
 	DSTRUCT
 };
 
-struct Property
+struct DENGINE_API Property
 {
 	std::string m_name;
 	PropType m_Type;
@@ -79,41 +80,29 @@ struct Property
 		WRITE(&m_Flags, sizeof(int));
 		WRITE(&m_ValueSize, sizeof(uint));
 
-		if (m_Type == PropType::STRING)
+		switch(m_Type)
 		{
-			std::string temp = *(std::string*)m_Value;
-			WRITESTRING(temp);
-		}
-// 		else
-// 			if (m_Type == PropType::COMPONENT)
-// 			{
-// 				uint64_t local;
-// 				uint64_t owner;
-// 				auto ref = static_cast<ObjectComponentRef<ObjectComponent>*>(m_Value);
-// 				ref->_Get(owner, local);
-// 				bool localonly = ref->GetLocalOnly();
-// 
-// 				WRITE(&localonly, sizeof(bool));
-// 				WRITE(&local, sizeof(uint64_t));
-// 				WRITE(&owner, sizeof(uint64_t));
-// 			}
-// 			else
-// 				if (m_Type == PropType::OBJECT)
-// 				{
-// 					uint64_t ID;
-// 					static_cast<SceneObjectRef<SceneObject>*>(m_Value)->_Get(ID);
-// 					WRITE(&ID, sizeof(uint64_t));
-// 				}
-		if (m_Type == PropType::DSTRUCT)
-		{
-			DStruct* Struct = (DStruct*)(m_Value);
-			ArrayBuffer StructPropBuffer;
-			Struct->SerializeProps(StructPropBuffer);
-			WRITEBUFFER(StructPropBuffer.MakeBuffer());
-		}
-		else
-		{
-			WRITE(m_Value, m_ValueSize);
+			default :
+			{
+				WRITE(m_Value, m_ValueSize);
+				break;
+			}
+
+			case PropType::STRING : 
+			{
+				std::string temp = *(std::string*)m_Value;
+				WRITESTRING(temp);
+				break;
+			}
+
+			case PropType::DSTRUCT:
+			{
+				DStruct* Struct = (DStruct*)(m_Value);
+				ArrayBuffer StructPropBuffer;
+				Struct->SerializeProps(StructPropBuffer);
+				WRITEBUFFER(StructPropBuffer.MakeBuffer());
+				break;
+			}
 		}
 
 		return FinalBuffer;
@@ -136,48 +125,29 @@ struct Property
 		READ(&m_Flags, sizeof(PropType));
 		READ(&m_ValueSize, sizeof(uint));
 
-		if (m_Type == PropType::STRING)
+		switch (m_Type)
 		{
-			std::string temp;
-			READSTRING(temp);
-			((std::string*)m_Value)->assign(temp.c_str());
-		}
-// 		else
-// 			if (m_Type == PropType::COMPONENT)
-// 			{
-// 				auto ref = (ObjectComponentRef<ObjectComponent>*)(m_Value);
-// 				uint64_t local;
-// 				uint64_t owner;
-// 				bool localonly;
-// 
-// 				READ(&localonly, sizeof(bool));
-// 				READ(&local, sizeof(uint64_t));
-// 				READ(&owner, sizeof(uint64_t));
-// 
-// 				ref->_Set(owner, local);
-// 				ref->SetLocalOnly(localonly);
-// 			}
-// 			else
-// 				if (m_Type == PropType::OBJECT)
-// 				{
-// 					auto ref = (SceneObjectRef<SceneObject>*)(m_Value);
-// 					uint64_t ID;
-// 					READ(&ID, sizeof(uint64_t));
-// 					ref->_Set(ID);
-// 				}
-		if (m_Type == PropType::DSTRUCT)
-		{
-			auto StructProp = (DStruct*)(m_Value);
-			Buffer temp;
-			READBUFFER(temp);
-			ArrayBuffer StructPropBuffer;
-			StructPropBuffer.FromBuffer(temp);
-			StructProp->LoadProps(StructPropBuffer);
-		}
-		//for simple data like floats, ints, vec2d etc (where the size is constant)
-		else
-		{
-			READ(m_Value, m_ValueSize);
+			default:
+			{
+				READ(m_Value, m_ValueSize);
+				break;
+			}
+			case PropType::STRING:
+			{
+				std::string temp;
+				READSTRING(temp);
+				((std::string*)m_Value)->assign(temp.c_str());
+			}
+
+			case PropType::DSTRUCT :
+			{
+				auto StructProp = (DStruct*)(m_Value);
+				Buffer temp;
+				READBUFFER(temp);
+				ArrayBuffer StructPropBuffer;
+				StructPropBuffer.FromBuffer(temp);
+				StructProp->LoadProps(StructPropBuffer);
+			}
 		}
 	}
 };

@@ -58,22 +58,25 @@ public:
 		return m_Window;
 	}
 
-	//Creates an appobject with an assigned pointer to this app and a random id, then adds it to app object list here
-	template<class T, typename ... Args>
-	Ref<AppObject> CreateAppObject(Args&&... args)
+	/*Creates an appobject with an assigned pointer to this app and a random id, then adds it to app object list here
+		WARNING : does not work when called from a module, the created app object must also be associated with a module before being created
+	*/
+	template<class T>
+	Ref<T> CreateAppObject(ObjectInitializer& initializer = ObjectInitializer())
 	{
 		bool valid = std::is_base_of<AppObject, T>::value;
 		ASSERT(valid);
 
-		T* ptr = new T(this, std::forward<Args>(args)...);
+		Ref<T> ptr = MakeRef<T>(this);
 	
-		Ref<AppObject> obj = ToRef<AppObject>(dynamic_cast<AppObject*>(ptr));
+		Ref<AppObject> obj = Cast<AppObject>(ptr);
 		m_AppObjects.push_back(obj);
 
 		//Must call this
-		obj->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
+		initializer.Flags |= ContructFlags::RANDOMID;
+		ptr->Initialize(initializer);
 		
-		return obj;
+		return ptr;
 	}
 
 	//removed object from appobject array

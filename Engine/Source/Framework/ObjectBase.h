@@ -2,25 +2,28 @@
 #include "Core/Core.h"
 #include "Framework/Tick.h"
 #include "Framework/Property.h"
+#include "Event/EditorCallback.h"
 #include "Serialization/Buffer.h"
 
 
 //simple definitions given the name of the class and its super class
 #define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; \
 ClassType GetClassType() const override { return typeid(this); }; \
-using superclass::superclass; \
-class(const ObjectInitializer& initializer) : superclass(initializer) {};
+using superclass::superclass;  
 
 //get static properties of a class by constructing an instance of it
 #define OBJECT_STATIC_PROPERTIES(ObjectClass) [&]() -> std::vector<Property> { ObjectClass obj; obj.DefineProperties(); return obj.GetProperties(); }();
+
+//get static ClassType of a class by constructing an instance of it
+#define OBJECT_STATIC_CLASSTYPE(ObjectClass) [&]() -> ClassType { ObjectClass obj; return obj.GetClassType(); }();
 
 #define _PROP_MEMBER_NAME m_Properties
 
 //Simple prop additions macro
 #define PROPDEF_FLAGS(x, flags) { int _flags = flags; \
-if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::BOOL,			 &x, sizeof(bool),  _flags)); } else \
-if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::INT,			 &x, sizeof(int),   _flags)); } else \
-if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::FLOAT,		 &x, sizeof(float), _flags)); } else \
+if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::BOOL,							 &x, sizeof(bool),  _flags)); } else \
+if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::INT,							 &x, sizeof(int),   _flags)); } else \
+if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::FLOAT,				&x, sizeof(float), _flags)); } else \
 if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::STRING, &x, 256,           _flags)); } else \
 if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC2D,	     &x, sizeof(vec2d), _flags)); } else \
 if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC3D,		 &x, sizeof(vec3d), _flags)); } else \
@@ -34,17 +37,16 @@ if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Pr
 #define OBJECT_PROPS_BEGIN() void DefineProperties() override { 
 #define OBJECT_PROPS_END() }
 
-namespace ContructFlags
-{
-	enum DENGINE_API ContructFlags
-	{
-		//assign a random ID on construct
-		RANDOMID = BIT(0),
 
-		//start invalid
-		INVALIDATE = BIT(1)
-	};
-}
+enum DENGINE_API ContructFlags
+{
+	//assign a random ID on construct
+	RANDOMID = BIT(0),
+
+	//start invalid
+	INVALIDATE = BIT(1)
+};
+
 
 //unique ID (0 means invalid)
 struct DENGINE_API UID
@@ -53,18 +55,30 @@ struct DENGINE_API UID
 };
 
 //contains initializer values for an object
+class ObjectBase;
 struct DENGINE_API ObjectInitializer
 {
 	//TODO make name non-copy
 	std::string Name;
+
+	/*  
+		optional name of associated module of this object (used mainly for auto deleting objects when a module gets unloaded)
+		WILL OVERRIDE m_AssociatedModuleName WHEN AN OBJECT IS INITIALIZED WITH THIS
+    */
+	std::string AssociatedModuleName;
+
+	//Construct flags
 	int Flags;
+
+	// Will copy the associated module name from the passed in object into the returning object initializer
+	static ObjectInitializer Module(ObjectBase* ExistantModuleObject);
 
 	ObjectInitializer(const std::string& name, int flags) : Name(name), Flags(flags)
 	{
 
 	}
 
-	ObjectInitializer(ContructFlags::ContructFlags flags) : Flags(flags)
+	ObjectInitializer(ContructFlags flags) : Flags(flags)
 	{
 
 	}
@@ -75,7 +89,7 @@ struct DENGINE_API ObjectInitializer
 	}
 };
 
-struct ClassType 
+struct DENGINE_API ClassType 
 {
 	std::type_index typeIndex;
 	std::string Name;
@@ -93,17 +107,9 @@ struct ClassType
 	}
 };
 
-/* 
-	Simple class that has a property system, serialization interface,
-	a unique assignable id and an Event interface.
 
-	has an empty contrutor and an explicit initializer construtor
-	that needs to be called manually - Initialize(const ObjectInitializer& initializer)
 
-	also has a constructor that will call initializer - ObjectBase(const ObjectInitializer& initializer)
-*/
-
-class _placeholder
+class DENGINE_API _placeholder
 {
 protected:
 	virtual uint Serialize(Buffer& buffer)
@@ -116,6 +122,17 @@ protected:
 		return 0;
 	}
 };
+
+
+/*
+	Simple class that has a property system, serialization interface,
+	a unique assignable id and an Event interface.
+
+	has an empty contrutor and an explicit initializer construtor
+	that needs to be called manually - Initialize(const ObjectInitializer& initializer)
+
+	also has a constructor that will call initializer - ObjectBase(const ObjectInitializer& initializer)
+*/
 class DENGINE_API ObjectBase : public _placeholder
 {
 public:
@@ -125,13 +142,6 @@ public:
 	{
 
 	}
-
-	//Calls initialize 
-	ObjectBase(const ObjectInitializer& initializer)
-	{
-		Initialize(initializer);
-	}
-
 
 	//basically the actual constructor
 	void Initialize(const ObjectInitializer& initializer);
@@ -237,14 +247,19 @@ public:
 		return m_MarkDelete;
 	}
 
-	const std::string& GetAssignedModuleName() const
+	const ObjectInitializer& GetObjectInitializer() const
 	{
-		return m_AssignedModuleName;
+		return m_ObjectInitializer;
 	}
 
-	void SetAssignedModuleName(const std::string& name)
+	void SetAssociatedModuleName(const std::string& name)
 	{
-		m_AssignedModuleName = name;
+		m_AssociatedModuleName = name;
+	}
+
+	const std::string& GetAssociatedModuleName() const
+	{
+		return m_AssociatedModuleName;
 	}
 
 protected:
@@ -260,8 +275,11 @@ private:
 	//flag used for deleting this object next tick or something
 	bool m_MarkDelete = false;
 
-	//optional name of associated module of this object (used mainly for auto deleting objects when a module gets unloaded)
-	std::string m_AssignedModuleName;
+	//copy of the initializer that has been used when initializing
+	ObjectInitializer m_ObjectInitializer;
+
+	//WILL GET OVERRIDEN BY THE OBJECT INITIALIZER
+	std::string m_AssociatedModuleName;
 
 	//unique assignable ID
 	UID m_ID;

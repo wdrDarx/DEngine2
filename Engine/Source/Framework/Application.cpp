@@ -3,9 +3,10 @@
 #include "DEngine.h"
 
 
-Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initialie module manager
+Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initialize module manager
 {
 	RegisterBaseClasses();
+	m_Registry.m_App = ToRef<Application>(this);
 }
 
 void Application::MakeWindow(const std::string& name, int width, int height, bool vsync)
@@ -65,6 +66,8 @@ void Application::RegisterBaseClasses()
 {
 	REGISTER(GetRegistry(), ObjectBase, Engine, RegistryType::OBJECT);
 	REGISTER(GetRegistry(), AppObject, Engine, RegistryType::APPOBJECT);
+	REGISTER(GetRegistry(), Scene, Engine, RegistryType::APPOBJECT);
+	REGISTER(GetRegistry(), SceneObject, Engine, RegistryType::SCENEOBJECT);
 }
 
 void Application::Shutdown()

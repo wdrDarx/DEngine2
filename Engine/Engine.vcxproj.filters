@@ -13,11 +13,17 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{E3AE1F7C-4F19-D4F2-9857-85980401B247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Serialization">
+      <UniqueIdentifier>{2319AF09-8FD9-2A40-5814-74BDC4936F1C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{F68B420E-62A0-6ABF-2B22-0E1F97F566F0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Core\Allocator.h">
+      <Filter>Core</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Core\Core.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -35,6 +41,12 @@
       <Filter>Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\EventDispatcher.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\ModuleEvent.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\SceneEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\WindowEvent.h">
@@ -58,7 +70,16 @@
     <ClInclude Include="Source\Framework\ObjectBase.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Property.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Registry.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\Scene.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\SceneObject.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Tick.h">
@@ -67,10 +88,10 @@
     <ClInclude Include="Source\Rendering\Window.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\DataCache.h">
-      <Filter>Utils</Filter>
+    <ClInclude Include="Source\Serialization\Buffer.h">
+      <Filter>Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\FileDialog.h">
+    <ClInclude Include="Source\Utils\DataCache.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utils\ImageLoader.h">
@@ -91,13 +112,20 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Framework\Property.h" />
-    <ClInclude Include="Source\Serialization\Buffer.h" />
-    <ClInclude Include="Source\Event\ModuleEvent.h" />
+    <ClInclude Include="Source\Utils\FileSystem.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\EditorCallback.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\Allocater.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Core\Log.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\AppObject.cpp">
+      <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Application.cpp">
       <Filter>Framework</Filter>
@@ -111,11 +139,17 @@
     <ClCompile Include="Source\Framework\ObjectBase.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\Property.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\Scene.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\SceneObject.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\Window.cpp">
       <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\FileDialog.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\ImageLoader.cpp">
       <Filter>Utils</Filter>
@@ -132,7 +166,8 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Framework\Property.cpp" />
-    <ClCompile Include="Source\Framework\AppObject.cpp" />
+    <ClCompile Include="Source\Utils\FileSystem.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

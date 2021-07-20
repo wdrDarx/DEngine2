@@ -8,11 +8,19 @@ void Engine::AddApplication(Ref<Application> app)
 
 void Engine::Start()
 {
+	//start random engine
+	Rand::Init();
+
+	//main loop
 	while (true)
 	{
 		if (m_MarkShutdown)
 		{
-			//TODO for loop shutdown all apps
+			for (auto& app : m_Applications)
+			{
+				app->Shutdown();
+			}			
+			m_Applications.clear();
 			break;
 		}
 		else

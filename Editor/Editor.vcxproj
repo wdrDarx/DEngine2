@@ -104,6 +104,7 @@ IF NOT EXIST ..\bin\Release-windows-x86_64\Editor\Engine (mkdir ..\bin\Release-w
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Classes\EditorApp.h" />
+    <ClInclude Include="Source\Classes\PropertyWindow.h" />
     <ClInclude Include="Source\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h" />

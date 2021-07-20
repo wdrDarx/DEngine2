@@ -1,7 +1,8 @@
-#pragma once
+#pragma 
+#include "CustomClasses.h"
 #include "DEngine.h"
 
-class CustomAppObject : public AppObject
+class CUSTOMCLASSES CustomAppObject : public AppObject
 {
 public:
 	OBJECT_CLASS_DEF(CustomAppObject, AppObject)

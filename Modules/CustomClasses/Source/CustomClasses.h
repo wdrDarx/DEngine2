@@ -9,7 +9,7 @@
 #define CUSTOMCLASSES
 #endif
 
-class CustomClasses : public Module
+class CUSTOMCLASSES CustomClasses : public Module
 {
 public:
 	using Module::Module;

@@ -16,6 +16,7 @@ typedef unsigned char byte;
 #include <mutex>
 #include <chrono>
 #include <future>
+#include <fstream>
 #include <atomic>
 #include <string>
 #include <iostream>
@@ -64,11 +65,14 @@ constexpr Ref<T> ToRef(T* pointer)
 	return std::shared_ptr<T>(pointer);
 }
 
-// template<class T>
-// using Cast = dynamic_cast<T>;
-
 template<class T, class U>
 constexpr T* Cast(U* ptr)
+{
+	return dynamic_cast<T*>(ptr);
+}
+
+template<class T, class U>
+constexpr bool CastCheck(U* ptr)
 {
 	return dynamic_cast<T*>(ptr);
 }
@@ -77,6 +81,12 @@ template<class T, class U>
 constexpr Ref<T> Cast(Ref<U> ptr)
 {
 	return std::dynamic_pointer_cast<T>(ptr);
+}
+
+template<class T, class U>
+constexpr bool CastCheck(Ref<U> ptr)
+{
+	return dynamic_cast<T*>(ptr.get());
 }
 
 //Mapping macros to a list
