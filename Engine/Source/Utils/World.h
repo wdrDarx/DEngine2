@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 
 
-struct DENGINE_API Transform2D
+struct Transform2D
 {
 	Transform2D(const vec2d& p, const float& r, const vec2d& s) :pos(p), rot(r), scale(s)
 	{

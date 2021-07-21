@@ -17,7 +17,7 @@ enum class SceneEventType
 };
 
 class SceneObject;
-struct DENGINE_API SceneEvent : public Event
+struct  SceneEvent : public Event
 {
 	SceneEventType m_EventType;
 	SceneObjectClass m_ObjectClass;

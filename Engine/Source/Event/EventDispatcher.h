@@ -7,7 +7,7 @@ template<typename T>
 struct Callback;
 
 
-class DENGINE_API EventDispatcher
+class EventDispatcher
 {
 public:
 	

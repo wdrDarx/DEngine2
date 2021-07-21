@@ -8,7 +8,7 @@ enum class ModuleEventType
 	UNLOADED
 };
 
-struct DENGINE_API ModuleEvent : public Event
+struct  ModuleEvent : public Event
 {
 	ModuleEventType m_EventType;
 	std::string m_ModuleName;

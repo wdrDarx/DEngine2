@@ -3,7 +3,7 @@
 
 
 //inheritable class to represent an event
-struct DENGINE_API Event
+struct Event
 {
 public:
 

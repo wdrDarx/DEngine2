@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 
-struct DENGINE_API DataObject
+struct DataObject
 {
 	DataObject(std::type_index t, const Ref<void>& d) : type(t), ptr(d) {};
 	const std::type_index type;
@@ -10,7 +10,7 @@ struct DENGINE_API DataObject
 /*
 	class for storing Data pieces retrievable with a tag
 */
-class DENGINE_API DataCache
+class DataCache
 {
 public:
 	template<typename T>

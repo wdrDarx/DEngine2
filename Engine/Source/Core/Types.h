@@ -1,6 +1,10 @@
 #pragma once
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+#include <type_traits>
+#include <typeinfo>
+#include <typeindex>
 #include "glm/glm.hpp"
 #define USE_GLM_TYPES
 
@@ -13,6 +17,37 @@ const float RadToDeg = 180.f / M_PI;
 typedef uint32_t uint;
 typedef uint64_t uint64;
 typedef uint8_t byte;
+
+inline std::string Substring(const std::string& source, const size_t& start, const size_t& end)
+{
+	return std::string(source.begin() + start, source.begin() + end);
+}
+
+struct ClassType
+{
+	std::type_index typeIndex;
+	std::string Name;
+
+	static std::string GetFriendlyTypeName(const std::type_index& index)
+	{
+		std::string base = index.name();
+		auto endpos = base.find("const") - 1; //account for empty space
+		if (auto classpos = base.find("class") != std::string::npos)
+		{
+			return Substring(base, classpos + std::string("class").length(), endpos);
+		} else
+		if (auto structpos = base.find("struct") != std::string::npos)
+		{
+			return Substring(base, structpos + std::string("struct").length(), endpos);
+		}
+		return "";
+	}
+
+	ClassType(const std::type_index& index) : typeIndex(index)
+	{
+		Name = GetFriendlyTypeName(index);
+	}
+};
 
 #ifdef USE_GLM_TYPES
 using color4 = glm::vec4;

@@ -22,25 +22,49 @@ struct Property;
 struct DENGINE_API DStruct
 {
 public:
-	std::vector<Property>& GetProps()
+
+	DStruct()
 	{
-		return props;
+		
 	}
-	std::vector<Property> props;
+
+	virtual void DefineProperties()
+	{
+
+	}
+
+	const std::vector<Property>& GetProperties() const
+	{
+		return m_Properties;
+	}
+
+	std::vector<Property>& GetPropertiesMutable()
+	{
+		return m_Properties;
+	}
+
+	virtual ClassType GetClassType() const 
+	{ 
+		return typeid(this); 
+	};
 
 	void SerializeProps(ArrayBuffer& buffer) const;
 	void LoadProps(const ArrayBuffer& buffer);
+
+protected:
+	std::vector<Property> m_Properties;
 };
 
 
-enum DENGINE_API PropFlags
+
+enum PropFlags
 {	
 	NoSerialize = BIT(0),
 	EditAnywhere = BIT(1)
 };
 
 
-enum class DENGINE_API PropType
+enum class PropType
 {
 	BOOL = 0,
 	INT,
@@ -51,20 +75,23 @@ enum class DENGINE_API PropType
 	DSTRUCT
 };
 
-struct DENGINE_API Property
+struct Property
 {
 	std::string m_name;
+	std::string m_category;
 	PropType m_Type;
 	int m_Flags;
 	void* m_Value;
-	uint m_ValueSize;
+	size_t m_ValueSize;
 
 	Property()
 	{
 
 	}
 
-	Property(const std::string& name, PropType type, void* value, uint valueSize, int flags = 0) : m_name(name), m_Type(type), m_Flags(flags), m_Value(value), m_ValueSize(valueSize)
+	Property(const std::string& name, const std::string& category,
+		PropType type, void* value, const size_t& valueSize, int flags = 0) : m_name(name),
+		m_category(category), m_Type(type), m_Flags(flags), m_Value(value), m_ValueSize(valueSize)
 	{
 
 	}
@@ -77,8 +104,9 @@ struct DENGINE_API Property
 
 		WRITESTRING(m_name);
 		WRITE(&m_Type, sizeof(PropType));
+		WRITESTRING(m_category);
 		WRITE(&m_Flags, sizeof(int));
-		WRITE(&m_ValueSize, sizeof(uint));
+		WRITE(&m_ValueSize, sizeof(size_t));
 
 		switch(m_Type)
 		{
@@ -90,7 +118,7 @@ struct DENGINE_API Property
 
 			case PropType::STRING : 
 			{
-				std::string temp = *(std::string*)m_Value;
+				std::string temp = (*(std::string*)m_Value);
 				WRITESTRING(temp);
 				break;
 			}
@@ -108,22 +136,15 @@ struct DENGINE_API Property
 		return FinalBuffer;
 	}
 
-	//use for loading other props
-	void LoadNameAndType(const Buffer& buffer)
-	{
-		STARTREAD(buffer, 0);
-		READSTRING(m_name);
-		READ(&m_Type, sizeof(PropType));
-	}
-
 	//the props already exist with an address, DO NOT delete them or use "new", just cast them to their type
 	void FromBuffer(const Buffer& buffer)
 	{
 		STARTREAD(buffer, 0)
 		READSTRING(m_name);
 		READ(&m_Type, sizeof(PropType));
+		READSTRING(m_category);
 		READ(&m_Flags, sizeof(PropType));
-		READ(&m_ValueSize, sizeof(uint));
+		READ(&m_ValueSize, sizeof(size_t));
 
 		switch (m_Type)
 		{
@@ -136,7 +157,8 @@ struct DENGINE_API Property
 			{
 				std::string temp;
 				READSTRING(temp);
-				((std::string*)m_Value)->assign(temp.c_str());
+				(*(std::string*)m_Value) = temp;
+				break;
 			}
 
 			case PropType::DSTRUCT :
@@ -147,8 +169,17 @@ struct DENGINE_API Property
 				ArrayBuffer StructPropBuffer;
 				StructPropBuffer.FromBuffer(temp);
 				StructProp->LoadProps(StructPropBuffer);
+				break;
 			}
 		}
+	}
+
+	//use for loading other props
+	void LoadNameAndType(const Buffer& buffer)
+	{
+		STARTREAD(buffer, 0);
+		READSTRING(m_name);
+		READ(&m_Type, sizeof(PropType));
 	}
 };
 

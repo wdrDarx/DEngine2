@@ -123,6 +123,7 @@
     <ClInclude Include="Source\Utils\DataCache.h" />
     <ClInclude Include="Source\Utils\FileSystem.h" />
     <ClInclude Include="Source\Utils\ImageLoader.h" />
+    <ClInclude Include="Source\Utils\ObjectUtils.h" />
     <ClInclude Include="Source\Utils\Paths.h" />
     <ClInclude Include="Source\Utils\Rand.h" />
     <ClInclude Include="Source\Utils\Task.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Source\Rendering\Window.cpp" />
     <ClCompile Include="Source\Utils\FileSystem.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />
+    <ClCompile Include="Source\Utils\ObjectUtils.cpp" />
     <ClCompile Include="Source\Utils\Paths.cpp" />
     <ClCompile Include="Source\Utils\Rand.cpp" />
     <ClCompile Include="Source\Utils\Task.cpp" />

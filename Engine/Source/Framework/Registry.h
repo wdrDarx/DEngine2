@@ -6,7 +6,7 @@
 #define REGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Register<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
 #define UNREGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Unregister<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
 
-enum class DENGINE_API RegistryType
+enum class RegistryType
 {
 	OBJECT = 0,
 	APPOBJECT,
@@ -14,7 +14,7 @@ enum class DENGINE_API RegistryType
 	COMPONENT 
 };
 
-struct DENGINE_API RegisterKey
+struct RegisterKey
 {
 	RegistryType type;
 	std::string name;
@@ -48,7 +48,7 @@ namespace std
 class Application;
 
 template<typename Key, typename T, typename... ConstructionArgs>
-class DENGINE_API _RegistryBase
+class _RegistryBase
 {
 public:
 	using Instantiator = T* (*)(ConstructionArgs...);
@@ -57,12 +57,17 @@ protected:
 	template<typename U>
 	static T* createInstance(ConstructionArgs... args)
 	{
+		
+#if 0
 		//trying to allocate on the Engine module
 		Allocator alloc;
 		U* ptr = (U*)alloc.Allocate(sizeof(U));
 		std::allocator<U> stdalloc;
 		stdalloc.construct(ptr, std::forward<ConstructionArgs>(args)...);
 		return ptr;
+#else
+		return new U(std::forward<ConstructionArgs>(args)...);
+#endif
 	}
 	using Instantiators = std::unordered_map<Key, Instantiator>;
 	Instantiators subclassInstantiators;
@@ -124,6 +129,29 @@ public:
 		obj->SetAssociatedModuleName(subclass_key.AssignedModuleName);
 
 		return obj;
+	}
+
+	T* MakeAmbiguous(const std::string& FriendlyClassName, ConstructionArgs... args) const
+	{
+		//cant do this if the key isnt a RegisterKey
+		if constexpr (!std::is_same<Key, RegisterKey>::value) ASSERT(false);
+
+		for (auto it = subclassInstantiators.begin(); it != subclassInstantiators.end(); it++)
+		{
+			if ((*it).first.name == FriendlyClassName)
+			{
+				auto instantiator = it->second;
+				T* obj = instantiator(std::forward<ConstructionArgs>(args)...);
+
+				//set the assigned module name for the object
+				obj->SetAssociatedModuleName((*it).first.AssignedModuleName);
+
+				return obj;
+			}
+		}
+
+		//couldnt find a registered class
+		return nullptr;
 	}
 
 	bool canProduce(const Key& subclass_key) const

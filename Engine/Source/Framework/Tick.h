@@ -1,31 +1,28 @@
 #pragma once
 #include "Core/Core.h"
 
-namespace TickGroup
+
+enum  TickGroup
 {
-	enum DENGINE_API TickGroup
-	{
-		GAME = BIT(0),
-		EDITOR = BIT(1),
-		PAUSED = BIT(2)
-	};
+	GAME = BIT(0),
+	EDITOR = BIT(1),
+	PAUSED = BIT(2)
+};
 
-}
-
-struct DENGINE_API Tick
+struct Tick
 {
 	public:
-		Tick(const TickGroup::TickGroup& tg, float dt) : m_TickGroup(tg), DeltaTime(dt)
+		Tick(const TickGroup& tg, float dt) : m_TickGroup(tg), DeltaTime(dt)
 		{
 
 		}
 
-		const inline TickGroup::TickGroup& GetTickGroup() const
+		const inline TickGroup& GetTickGroup() const
 		{
 			return m_TickGroup;
 		}
 
 		float DeltaTime;
 	private:
-		TickGroup::TickGroup m_TickGroup;
+		TickGroup m_TickGroup;
 };

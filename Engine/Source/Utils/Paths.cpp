@@ -19,6 +19,11 @@ std::string Paths::GetBaseDirectory()
 	return std::string(buffer).substr(0, pos);
 }
 
+std::string Paths::GetEngineDirectory()
+{
+	return GetBaseDirectory() + "\\Engine\\";
+}
+
 std::string Paths::GetModulesDirectory()
 {
 	return GetBaseDirectory() + "\\Modules\\";

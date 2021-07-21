@@ -26,12 +26,17 @@ void Scene::OnConstruct()
 
 void Scene::DestroySceneObject(SceneObject* obj)
 {
-	auto end = std::remove_if(m_SceneObjects.begin(), m_SceneObjects.end(), [&](Ref<SceneObject> sceneobj)
+	auto remove = m_SceneObjects.end();
+	for (auto it = m_SceneObjects.begin(); it != m_SceneObjects.end(); it++)
 	{
-		return obj == sceneobj.get();
-	});
+		if (obj == (*it).get())
+		{
+			remove = it;
+			break;
+		}
+	}
 
-	if (end != m_SceneObjects.end())
+	if (remove != m_SceneObjects.end())
 	{
 		SceneEvent event;
 		event.m_EventType = SceneEventType::PRE_DELETE;
@@ -40,7 +45,7 @@ void Scene::DestroySceneObject(SceneObject* obj)
 
 		//Dispatch PRE_DELETE event
 		GetSceneEventDipatcher().Dispatch(event);
-		m_SceneObjects.erase(end);
+		m_SceneObjects.erase(remove);
 
 		//Dispatch POST_DELETE event
   		event.m_EventType = SceneEventType::POST_DELETE;

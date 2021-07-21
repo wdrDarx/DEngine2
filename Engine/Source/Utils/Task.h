@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 
-class DENGINE_API ThreadPool
+class ThreadPool
 {
 public:
 
@@ -113,7 +113,7 @@ protected:
 
 // Fixed size very simple thread safe ring buffer
 template <typename T, size_t capacity>
-class DENGINE_API ThreadSafeRingBuffer
+class ThreadSafeRingBuffer
 {
 public:
 	// Push an item to the end if there is free space
@@ -158,7 +158,7 @@ private:
 	std::mutex lock; // this just works better than a spinlock here (on windows)
 };
 // A Dispatched job will receive this as function argument:
-struct DENGINE_API JobDispatchArgs
+struct JobDispatchArgs
 {
 	uint32_t jobIndex;
 	uint32_t groupIndex;

@@ -1,5 +1,6 @@
 #pragma once
 
+//#define DENGINE_EXPORT
 #ifdef DENGINE_EXPORT
 #define DENGINE_API _declspec(dllexport)
 #else
@@ -31,9 +32,10 @@ typedef unsigned char byte;
 #undef min
 #undef max
 
+
 #define ASSERT_MESSAGE(condition, message) { if(!(condition)) { LogError(message); __debugbreak(); } }
-#define ERROR(condition, message) ASSERT_MESSAGE(condition, message)
 #define ASSERT(x) { if(!(x)) { __debugbreak(); } }
+
 #define BIT(x) 1 << x
 #define ENUM_BITWISE(enumClass) inline enumClass operator|(enumClass a, enumClass b) { return static_cast<AnimalFlags>(static_cast<int>(a) | static_cast<int>(b)); }
 
@@ -88,6 +90,7 @@ constexpr bool CastCheck(Ref<U> ptr)
 {
 	return dynamic_cast<T*>(ptr.get());
 }
+
 
 //Mapping macros to a list
 #pragma region Mapping

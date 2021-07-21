@@ -87,13 +87,23 @@ public:
 
 	void DestroyAppObject(AppObject* obj)
 	{
-		auto end = std::remove_if(m_AppObjects.begin(), m_AppObjects.end(), [&](Ref<AppObject> appobj)
-		{
-			return obj == appobj.get();
-		});
+// 		auto end = std::remove_if(m_AppObjects.begin(), m_AppObjects.end(), [&](Ref<AppObject> appobj)
+// 		{
+// 			return obj == appobj.get();
+// 		});
 
-		if (end != m_AppObjects.end())
-			m_AppObjects.erase(end);
+		auto remove = m_AppObjects.end();
+		for (auto it = m_AppObjects.begin(); it != m_AppObjects.end(); it++)
+		{
+			if (obj == (*it).get())
+			{
+				remove = it;
+				break;
+			}
+		}
+
+		if (remove != m_AppObjects.end())
+			m_AppObjects.erase(remove);
 	}
 
 	//Will call initialize to an already existing object 

@@ -55,6 +55,9 @@ EditorApp::EditorApp() : Application()
 
 	//bind scene events
 	m_EditorScene->GetSceneEventDipatcher().Bind(m_SceneEvent);
+
+	//property window
+	m_PropertyWindow.Init(ToRef<EditorApp>(this));
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
@@ -83,7 +86,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 
 		for (auto& obj : m_EditorScene->GetSceneObjects())
 		{
-			if (ImGui::Button((obj->GetClassType().Name + STRING(obj->GetID().ID)).c_str()))
+			if (ImGui::Button((obj->GetClassType().Name + " " + STRING(obj->GetID().ID)).c_str()))
 			{
 				m_PropertyWindow.m_SelectedSceneObject = obj;
 			}

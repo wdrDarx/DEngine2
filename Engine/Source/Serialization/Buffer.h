@@ -2,10 +2,10 @@
 #include "Core/Core.h"
 
 
-#define STARTREAD(bufferref, startoffset) const Buffer& _buffer = bufferref; uint m_Stride = startoffset; uint size = 0; std::vector<char> str;
-#define STARTWRITE(bufferref, startoffset) Buffer& _buffer = bufferref; uint m_Stride = startoffset; uint size = 0; std::vector<char> str;
-#define STOPREAD() return m_Stride;
-#define STOPWRITE() return m_Stride;
+#define STARTREAD(bufferref, startoffset) const Buffer& _buffer = bufferref; size_t m_Stride = startoffset; size_t size = 0; std::vector<char> str;
+#define STARTWRITE(bufferref, startoffset) Buffer& _buffer = bufferref; size_t m_Stride = startoffset; size_t size = 0; std::vector<char> str;
+#define STOPREAD() return (uint)m_Stride;
+#define STOPWRITE() return (uint)m_Stride;
 
 #define WRITE(x, s) if(_buffer.size() < m_Stride + s) _buffer.resize(m_Stride + s); memcpy(_buffer.data() + m_Stride, x, s); m_Stride += s
 #define READ(x, s)  memcpy(x, _buffer.data() + m_Stride, s); m_Stride += s

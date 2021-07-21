@@ -1,14 +1,14 @@
 #pragma once
-#include <Windows.h>
-#include <string>
+#include "Core/Core.h"
 
 /*
 	static class to store paths
 */
-class Paths
+class DENGINE_API Paths
 {
 public:
 	static std::string GetBaseDirectory();
+	static std::string GetEngineDirectory();
 	static std::string GetModulesDirectory();
 	static std::string GetContentDirectory();
 	static std::string RemoveExtension(const std::string& path);

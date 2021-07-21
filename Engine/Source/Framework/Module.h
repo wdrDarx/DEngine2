@@ -6,13 +6,13 @@
 #define MODULEDEF(name) Module* CreateModule() { return new name(#name); };
 #define DEPENDENCY(name) m_Dependencies.push_back({#name});
 
-struct DENGINE_API Dependency
+struct Dependency
 {
 	std::string ModuleName;
 };
 
 class Application;
-class DENGINE_API Module
+class Module
 {
 public:
 	Module(const std::string& name) : m_Name(name)

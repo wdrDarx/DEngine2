@@ -37,6 +37,9 @@
     <ClInclude Include="Source\Event\Callback.h">
       <Filter>Event</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Event\EditorCallback.h">
+      <Filter>Event</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Event\Event.h">
       <Filter>Event</Filter>
     </ClInclude>
@@ -94,7 +97,13 @@
     <ClInclude Include="Source\Utils\DataCache.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\FileSystem.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Utils\ImageLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Utils\ObjectUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Utils\Paths.h">
@@ -112,10 +121,6 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Utils\FileSystem.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Event\EditorCallback.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">
@@ -151,7 +156,13 @@
     <ClCompile Include="Source\Rendering\Window.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utils\FileSystem.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Utils\ImageLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\ObjectUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Paths.cpp">
@@ -164,9 +175,6 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\World.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Utils\FileSystem.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>

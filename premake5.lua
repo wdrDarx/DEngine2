@@ -109,7 +109,8 @@ project "Editor"
 	{
 		"{MKDIR} %{cfg.buildtarget.relpath}/../Modules",
 		"{MKDIR} %{cfg.buildtarget.relpath}/../Content",
-		"{MKDIR} %{cfg.buildtarget.relpath}/../Engine"
+		"{MKDIR} %{cfg.buildtarget.relpath}/../Engine",
+		("{COPY} ../EngineContent/  %{cfg.buildtarget.relpath}/../Engine")
 	}
 
 	filter "configurations:Debug"

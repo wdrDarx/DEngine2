@@ -5,7 +5,7 @@
 class EventDispatcher;
 
 template<typename EventType>
-struct DENGINE_API Callback
+struct Callback
 {
 public:
 	Callback()

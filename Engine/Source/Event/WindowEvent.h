@@ -8,7 +8,7 @@ enum class WindowEventType
 };
 
 //inheritable class to represent an event
-struct DENGINE_API WindowEvent : public Event
+struct WindowEvent : public Event
 {
 public:
 

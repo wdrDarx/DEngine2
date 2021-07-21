@@ -26,8 +26,8 @@ void ImGuiLayer::Init(Ref<Window> window)
 	ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	//io.FontDefault = io.Fonts->AddFontFromFileTTF(std::string(Paths::GetBaseDirectory() + "\\res\\Fonts\\OpenSans-Regular.ttf").c_str(), 16.0f);
-	//io.Fonts->AddFontFromFileTTF(std::string(Paths::GetBaseDirectory() + "\\res\\Fonts\\OpenSans-Bold.ttf").c_str(), 16.0f);
+	io.FontDefault = io.Fonts->AddFontFromFileTTF(std::string(Paths::GetEngineDirectory() + "//Fonts//OpenSans-Regular.ttf").c_str(), 16.0f);
+	io.Fonts->AddFontFromFileTTF(std::string(Paths::GetEngineDirectory() + "//Fonts//OpenSans-Bold.ttf").c_str(), 16.0f);
 
 	ImGui::StyleColorsDark();
 	SetDarkTheme();

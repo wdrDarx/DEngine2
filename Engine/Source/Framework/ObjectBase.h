@@ -21,24 +21,33 @@ using superclass::superclass;
 
 //Simple prop additions macro
 #define PROPDEF_FLAGS(x, flags) { int _flags = flags; \
-if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::BOOL,							 &x, sizeof(bool),  _flags)); } else \
-if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::INT,							 &x, sizeof(int),   _flags)); } else \
-if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::FLOAT,				&x, sizeof(float), _flags)); } else \
-if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::STRING, &x, 256,           _flags)); } else \
-if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC2D,	     &x, sizeof(vec2d), _flags)); } else \
-if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::VEC3D,		 &x, sizeof(vec3d), _flags)); } else \
-if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, PropType::DSTRUCT, &x, sizeof(x), _flags)); } \
+if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::BOOL,						 &x, sizeof(bool),  _flags)); } else \
+if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::INT,						 &x, sizeof(int),   _flags)); } else \
+if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::FLOAT,					 &x, sizeof(float), _flags)); } else \
+if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRING,				 &x, ((std::string*)&x)->length(), _flags)); } else \
+if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::VEC2D,					 &x, sizeof(vec2d), _flags)); } else \
+if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::VEC3D,					 &x, sizeof(vec3d), _flags)); } else \
+if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::DSTRUCT, &x, sizeof(x), _flags)); } \
 }
 
 //TODO give all "DStructs" a function that returns their serializable size based on their properties
 
 #define PROPDEF(x, flags) PROPDEF_FLAGS(x, flags)
 
-#define OBJECT_PROPS_BEGIN() void DefineProperties() override { 
+#define OBJECT_PROPS_BEGIN() void DefineProperties() override { Super::DefineProperties(); std::string _Category = "";
+#define PROPS_CATEGORY(category) _Category = #category; 
 #define OBJECT_PROPS_END() }
 
+//struct macros
+#define STRUCT_CLASS_DEF(class, superclass) using Super = superclass; \
+ClassType GetClassType() const override { return typeid(this); }; \
+class() : superclass() { DefineProperties(); };  
 
-enum DENGINE_API ContructFlags
+#define STRUCT_PROPS_BEGIN() void DefineProperties() override { Super::DefineProperties(); std::string _Category = "";
+#define STRUCT_PROPS_END() }
+
+
+enum ContructFlags
 {
 	//assign a random ID on construct
 	RANDOMID = BIT(0),
@@ -49,14 +58,14 @@ enum DENGINE_API ContructFlags
 
 
 //unique ID (0 means invalid)
-struct DENGINE_API UID
+struct UID
 {
 	uint64 ID = 0;
 };
 
 //contains initializer values for an object
 class ObjectBase;
-struct DENGINE_API ObjectInitializer
+struct ObjectInitializer
 {
 	//TODO make name non-copy
 	std::string Name;
@@ -89,27 +98,8 @@ struct DENGINE_API ObjectInitializer
 	}
 };
 
-struct DENGINE_API ClassType 
-{
-	std::type_index typeIndex;
-	std::string Name;
 
-	static std::string GetFriendlyTypeName(const std::type_index& index)
-	{
-		std::string base = index.name();
-
-		return base;
-	}
-
-	ClassType(const std::type_index& index) : typeIndex(index)
-	{
-		Name = GetFriendlyTypeName(index);
-	}
-};
-
-
-
-class DENGINE_API _placeholder
+class _placeholder
 {
 protected:
 	virtual uint Serialize(Buffer& buffer)
@@ -205,6 +195,11 @@ public:
 	}
 
 	const std::vector<Property>& GetProperties() const
+	{
+		return m_Properties;
+	}
+
+	std::vector<Property>& GetPropertiesMutable()
 	{
 		return m_Properties;
 	}
