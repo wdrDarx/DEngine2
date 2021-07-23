@@ -29,13 +29,15 @@ class CUSTOMCLASSES CustomSceneObject : public SceneObject
 public:
 	OBJECT_CLASS_DEF(CustomSceneObject, SceneObject)
 		OBJECT_PROPS_BEGIN()
-			PROPDEF(test1, EditAnywhere);
- 			PROPDEF(test2, EditAnywhere);
-			PROPDEF(test3, EditAnywhere);
- 			PROPDEF(test4, EditAnywhere);
- 			PROPDEF(test5, EditAnywhere);
-			PROPDEF(test6, EditAnywhere);
-			PROPDEF(struc, EditAnywhere);
+			PROPS_CATEGORY(TestCategory)
+				PROPDEF(test1, EditAnywhere);
+				PROPDEF(test2, EditAnywhere);
+				PROPDEF(test3, EditAnywhere);
+			PROPS_CATEGORY(TestCategory2)
+ 				PROPDEF(test4, EditAnywhere);
+ 				PROPDEF(test5, EditAnywhere);
+				PROPDEF(test6, EditAnywhere);
+				PROPDEF(struc, EditAnywhere);
 		OBJECT_PROPS_END()
 
 	void OnConstruct() override;

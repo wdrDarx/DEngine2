@@ -24,6 +24,7 @@ typedef unsigned char byte;
 #include <unordered_map>
 #include <typeindex>
 #include <memory>
+#include <map>
 #include <cstdint>
 #include <queue>
 #include <windows.h>
@@ -91,6 +92,15 @@ constexpr bool CastCheck(Ref<U> ptr)
 	return dynamic_cast<T*>(ptr.get());
 }
 
+
+template<class FwdIt, class Equal = std::equal_to<>>
+void cluster(FwdIt first, FwdIt last, Equal eq = Equal{})
+{
+	for (auto it = first; it != last; /* increment inside loop */)
+		it = std::partition(it, last, [=](auto const& elem) {
+		return eq(elem, *it);
+			});
+}
 
 //Mapping macros to a list
 #pragma region Mapping
