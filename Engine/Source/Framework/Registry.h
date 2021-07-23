@@ -3,20 +3,13 @@
 #include "ObjectBase.h"
 #include "Core/Allocator.h"
 
-#define REGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Register<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
-#define UNREGISTER(RegistryRef, ObjectClass, ModuleClass, RegistryType) RegistryRef.Unregister<ObjectClass>({RegistryType, #ObjectClass, #ModuleClass});
+#define REGISTER(RegistryRef, ObjectClass, ModuleClass, ObjectClassType) RegistryRef.Register<ObjectClass>({ObjectClassType, #ObjectClass, #ModuleClass});
+#define UNREGISTER(RegistryRef, ObjectClass, ModuleClass, ObjectClassType) RegistryRef.Unregister<ObjectClass>({ObjectClassType, #ObjectClass, #ModuleClass});
 
-enum class RegistryType
-{
-	OBJECT = 0,
-	APPOBJECT,
-	SCENEOBJECT,
-	COMPONENT 
-};
 
 struct RegisterKey
 {
-	RegistryType type;
+	ObjectClassType type;
 	std::string name;
 	std::string AssignedModuleName;
 

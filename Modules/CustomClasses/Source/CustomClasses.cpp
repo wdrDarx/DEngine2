@@ -7,14 +7,14 @@
 
 void CustomClasses::OnLoad()
 {
-	REGISTER(GetApplication()->GetRegistry(), CustomAppObject, CustomClasses, RegistryType::APPOBJECT);
-	REGISTER(GetApplication()->GetRegistry(), CustomSceneObject, CustomClasses, RegistryType::SCENEOBJECT);
-	REGISTER(GetApplication()->GetRegistry(), ChildSceneObject, CustomClasses, RegistryType::SCENEOBJECT);
+	REGISTER(GetApplication()->GetRegistry(), CustomAppObject, CustomClasses, ObjectClassType::APPOBJECT);
+	REGISTER(GetApplication()->GetRegistry(), CustomSceneObject, CustomClasses, ObjectClassType::SCENEOBJECT);
+	REGISTER(GetApplication()->GetRegistry(), ChildSceneObject, CustomClasses, ObjectClassType::SCENEOBJECT);
 }
 
 void CustomClasses::OnUnload()
 {
-	UNREGISTER(GetApplication()->GetRegistry(), CustomAppObject, CustomClasses, RegistryType::APPOBJECT);
-	UNREGISTER(GetApplication()->GetRegistry(), CustomSceneObject, CustomClasses, RegistryType::SCENEOBJECT);
-	UNREGISTER(GetApplication()->GetRegistry(), ChildSceneObject, CustomClasses, RegistryType::SCENEOBJECT);
+	UNREGISTER(GetApplication()->GetRegistry(), CustomAppObject, CustomClasses, ObjectClassType::APPOBJECT);
+	UNREGISTER(GetApplication()->GetRegistry(), CustomSceneObject, CustomClasses, ObjectClassType::SCENEOBJECT);
+	UNREGISTER(GetApplication()->GetRegistry(), ChildSceneObject, CustomClasses, ObjectClassType::SCENEOBJECT);
 }

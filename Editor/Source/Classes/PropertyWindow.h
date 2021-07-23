@@ -47,114 +47,118 @@ class PropertyWindow
 				if(!(prop.m_Flags & PropFlags::EditAnywhere)) continue;
 
 				std::string DisplayName = prefix + prop.m_name;
-
 				ImGui::PushID(prop.m_Value);
 
-				ImGui::Columns(2);		
-				ImGui::Text(DisplayName.c_str());
-				ImGui::SetColumnOffset(1, 100);
-				
-				ImGui::NextColumn();
-				
-				ImGui::PushItemWidth(ImGui::CalcItemWidth());
-				//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2,2 });
-
-				DisplayName = "";
-				DStruct* structToDraw = nullptr;
-				switch (prop.m_Type)
+				if (prop.m_Type == PropType::DSTRUCT)
 				{
-					case PropType::DSTRUCT :
-					{
-						structToDraw = ((DStruct*)prop.m_Value);						
-						break;
-					}
+					DStruct* structToDraw = (DStruct*)prop.m_Value;
 
-					case PropType::BOOL :
-					{
-						ImGui::Checkbox(DisplayName.c_str(), (bool*)prop.m_Value);
-						break;
-					}
-
-					case PropType::INT :
-					{
-						ImGui::DragInt(DisplayName.c_str(), (int*)prop.m_Value);
-						break;
-					}
-
-					case PropType::FLOAT:
-					{
-						ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);
-						break;
-					}
-
-					case PropType::STRING:
-					{
-						ImGui::InputText(DisplayName.c_str(), (std::string*)prop.m_Value);
-						break;
-					}
-
-					case PropType::VEC2D:
-					{
-						float drag2[2];
-						drag2[0] = ((vec2d*)prop.m_Value)->x; 
-						drag2[1] = ((vec2d*)prop.m_Value)->y;
-						ImGui::DragFloat2(DisplayName.c_str(), drag2);
-
-						((vec2d*)prop.m_Value)->x = drag2[0];
-						((vec2d*)prop.m_Value)->y = drag2[1];
-						break;
-					}
-
-					case PropType::VEC3D:
-					{
-						float drag3[3];
- 						drag3[0] = ((vec3d*)prop.m_Value)->x;
- 						drag3[1] = ((vec3d*)prop.m_Value)->y;
- 						drag3[2] = ((vec3d*)prop.m_Value)->z;				
- 						//ImGui::DragFloat3(DisplayName.c_str(), drag3);
-					    DrawVec3Control(prop.m_Value, drag3);
- 						((vec3d*)prop.m_Value)->x = drag3[0];
- 						((vec3d*)prop.m_Value)->y = drag3[1];
- 						((vec3d*)prop.m_Value)->z = drag3[2];
-						break;
-					}
-				}
-				ImGui::PopItemWidth();
-				ImGui::EndColumns();
-				ImGui::SameLine();
-
-				ImGui::PushItemWidth(-1);
-				
-
-				ImGui::PushItemWidth(ImGui::CalcItemWidth());
-				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
-				ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
-
-				//Reset button TODO add reset button to struct properties too
-				if(owner && prop.m_Type != PropType::DSTRUCT && ImGui::Button("<<", buttonSize))
-				{
-					ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
-				}
-
-				ImGui::PopItemWidth();
-
-				ImGui::PopID();
-
-				//Draw struct props
-				if (structToDraw)
-				{
-					ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() / 3.f);
+					ImGui::Columns(2);
+					ImGui::Text(prop.m_name.c_str());
+					ImGui::SetColumnOffset(1, 100);
+					ImGui::NextColumn();
+					ImGui::PushItemWidth(ImGui::CalcItemWidth());
 					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
 					bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed, structToDraw->GetClassType().Name.c_str());
 					if (expanded)
 					{
 						//ListProperties(structToDraw->GetPropertiesMutable(), std::string(structToDraw->GetClassType().Name + "::"), owner);
-						ListProperties(structToDraw->GetPropertiesMutable(), "", owner);
+						ListProperties(structToDraw->GetPropertiesMutable());
 						ImGui::TreePop();
 					}
-					ImGui::PopStyleVar();		
+					ImGui::EndColumns();
+					ImGui::PopStyleVar();
 					ImGui::PopItemWidth();
+					//ImGui::NewLine();
 				}
+				else
+				{ 
+
+					ImGui::Columns(2);		
+					ImGui::Text(DisplayName.c_str());
+					ImGui::SetColumnOffset(1, 100);
+				
+					ImGui::NextColumn();
+				
+					ImGui::PushItemWidth(ImGui::CalcItemWidth());
+					//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2,2 });
+
+					DisplayName = "";
+					DStruct* structToDraw = nullptr;
+					switch (prop.m_Type)
+					{
+						case PropType::BOOL :
+						{
+							ImGui::Checkbox(DisplayName.c_str(), (bool*)prop.m_Value);
+							break;
+						}
+
+						case PropType::INT :
+						{
+							ImGui::DragInt(DisplayName.c_str(), (int*)prop.m_Value);
+							break;
+						}
+
+						case PropType::FLOAT:
+						{
+							ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);
+							break;
+						}
+
+						case PropType::STRING:
+						{
+							ImGui::InputText(DisplayName.c_str(), (std::string*)prop.m_Value);
+							break;
+						}
+
+						case PropType::VEC2D:
+						{
+							float drag2[2];
+							drag2[0] = ((vec2d*)prop.m_Value)->x; 
+							drag2[1] = ((vec2d*)prop.m_Value)->y;
+							ImGui::DragFloat2(DisplayName.c_str(), drag2);
+
+							((vec2d*)prop.m_Value)->x = drag2[0];
+							((vec2d*)prop.m_Value)->y = drag2[1];
+							break;
+						}
+
+						case PropType::VEC3D:
+						{
+							float drag3[3];
+ 							drag3[0] = ((vec3d*)prop.m_Value)->x;
+ 							drag3[1] = ((vec3d*)prop.m_Value)->y;
+ 							drag3[2] = ((vec3d*)prop.m_Value)->z;				
+ 							//ImGui::DragFloat3(DisplayName.c_str(), drag3);
+							DrawVec3Control(prop.m_Value, drag3);
+ 							((vec3d*)prop.m_Value)->x = drag3[0];
+ 							((vec3d*)prop.m_Value)->y = drag3[1];
+ 							((vec3d*)prop.m_Value)->z = drag3[2];
+							break;
+						}
+					}
+					ImGui::PopItemWidth();
+					ImGui::EndColumns();
+					ImGui::SameLine();
+
+					//ImGui::PushItemWidth(-1);
+				
+
+					ImGui::PushItemWidth(ImGui::CalcItemWidth());
+					float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+					ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+					//Reset button TODO add reset button to struct properties too
+					if(owner && prop.m_Type != PropType::DSTRUCT && ImGui::Button("<<", buttonSize))
+					{
+						ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
+					}
+
+					ImGui::PopItemWidth();
+					
+				}
+
+				ImGui::PopID();
 			}
 		}
 
@@ -164,7 +168,7 @@ class PropertyWindow
 
 			ImGui::PushID(ID);
 
-			ImGui::PushMultiItemsWidths(3, ImGui::GetContentRegionAvailWidth() / 3.f);
+			ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
 
 			float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;

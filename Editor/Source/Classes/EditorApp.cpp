@@ -100,7 +100,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 		{
 			for (auto& reg : GetRegistry().GetRegisteredKeys())
 			{
-				if (reg.type == RegistryType::OBJECT)
+				if (reg.type == ObjectClassType::OBJECT)
 				{
 					if (ImGui::Button(reg.name.c_str()))
 					{
@@ -115,7 +115,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 		{
 			for (auto& reg : GetRegistry().GetRegisteredKeys())
 			{
-				if (reg.type == RegistryType::APPOBJECT)
+				if (reg.type == ObjectClassType::APPOBJECT)
 				{
 					if (ImGui::Button(reg.name.c_str()))
 					{
@@ -129,7 +129,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 		{
 			for (auto& reg : GetRegistry().GetRegisteredKeys())
 			{
-				if (reg.type == RegistryType::SCENEOBJECT)
+				if (reg.type == ObjectClassType::SCENEOBJECT)
 				{
 					if (ImGui::Button(reg.name.c_str()))
 					{

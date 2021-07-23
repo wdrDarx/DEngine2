@@ -13,4 +13,5 @@ class ObjectUtils
 		*/
 		static void ResetObjectProps(Ref<ObjectBase> object, Registry& registry);
 		static void ResetObjectProp(Ref<ObjectBase> object, const std::string& propName, Registry& registry);
+		static ObjectClassType GetObjectClassType(Ref<ObjectBase> obj);
 };

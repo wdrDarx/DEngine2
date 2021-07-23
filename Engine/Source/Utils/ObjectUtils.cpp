@@ -1,4 +1,5 @@
 #include "ObjectUtils.h"
+#include "DEngine.h"
 
 void ObjectUtils::ResetObjectProps(Ref<ObjectBase> object, Registry& registry)
 {
@@ -39,5 +40,26 @@ void ObjectUtils::ResetObjectProp(Ref<ObjectBase> object, const std::string& pro
 		}
 
 	}
+}
+
+ObjectClassType ObjectUtils::GetObjectClassType(Ref<ObjectBase> obj)
+{
+	ObjectClassType out;
+	if (Cast<AppObject>(obj))
+	{
+		out = ObjectClassType::APPOBJECT;
+	}
+	else
+		if (Cast<SceneObject>(obj))
+		{
+			out = ObjectClassType::SCENEOBJECT;
+		}
+		else
+			if (Cast<ObjectBase>(obj))
+			{
+				out = ObjectClassType::OBJECT;
+			}
+
+	return out;
 }
 

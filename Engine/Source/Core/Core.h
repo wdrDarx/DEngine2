@@ -32,7 +32,7 @@ typedef unsigned char byte;
 #undef min
 #undef max
 
-
+#define FORCEINLINE __forceinline
 #define ASSERT_MESSAGE(condition, message) { if(!(condition)) { LogError(message); __debugbreak(); } }
 #define ASSERT(x) { if(!(x)) { __debugbreak(); } }
 

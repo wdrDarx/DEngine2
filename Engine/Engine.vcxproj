@@ -55,6 +55,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -75,6 +76,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -117,6 +119,7 @@
     <ClInclude Include="Source\Framework\Registry.h" />
     <ClInclude Include="Source\Framework\Scene.h" />
     <ClInclude Include="Source\Framework\SceneObject.h" />
+    <ClInclude Include="Source\Framework\StaticClass.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Window.h" />
     <ClInclude Include="Source\Serialization\Buffer.h" />
@@ -141,6 +144,7 @@
     <ClCompile Include="Source\Framework\Property.cpp" />
     <ClCompile Include="Source\Framework\Scene.cpp" />
     <ClCompile Include="Source\Framework\SceneObject.cpp" />
+    <ClCompile Include="Source\Framework\StaticClass.cpp" />
     <ClCompile Include="Source\Rendering\Window.cpp" />
     <ClCompile Include="Source\Utils\FileSystem.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />

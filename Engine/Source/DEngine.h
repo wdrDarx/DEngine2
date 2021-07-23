@@ -30,6 +30,7 @@
 #include "Framework/Registry.h"
 #include "Framework/Module.h"
 #include "Framework/Property.h"
+#include "Framework/StaticClass.h"
 
 //Rendering 
 #include "Rendering/Window.h"

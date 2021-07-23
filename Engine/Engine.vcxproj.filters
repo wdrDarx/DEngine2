@@ -85,6 +85,9 @@
     <ClInclude Include="Source\Framework\SceneObject.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\StaticClass.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Tick.h">
       <Filter>Framework</Filter>
     </ClInclude>
@@ -151,6 +154,9 @@
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\SceneObject.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\StaticClass.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Window.cpp">

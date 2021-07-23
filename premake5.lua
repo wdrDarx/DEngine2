@@ -62,6 +62,12 @@ project "Engine"
 		"GLAD"
 	}
 
+	defines
+	{
+		"_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS",
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	filter "configurations:Debug"
       symbols "On"
 

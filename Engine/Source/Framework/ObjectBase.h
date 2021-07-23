@@ -4,10 +4,12 @@
 #include "Framework/Property.h"
 #include "Event/EditorCallback.h"
 #include "Serialization/Buffer.h"
+#include "Framework/StaticClass.h"
 
 
 //simple definitions given the name of the class and its super class
-#define OBJECT_CLASS_DEF(class, superclass) using Super = superclass; \
+#define OBJECT_CLASS_DEF(class, superclass) using ThisClass = class; \
+using Super = superclass; \
 ClassType GetClassType() const override { return typeid(this); }; \
 using superclass::superclass;  
 
@@ -16,6 +18,9 @@ using superclass::superclass;
 
 //get static ClassType of a class by constructing an instance of it
 #define OBJECT_STATIC_CLASSTYPE(ObjectClass) [&]() -> ClassType { ObjectClass obj; return obj.GetClassType(); }();
+
+//get static class of an object
+#define OBJECT_STATIC_CLASS(ObjectClass) [&]() -> StaticClass { return ObjectClass::_GetStaticClass<ObjectClass>(); }();
 
 #define _PROP_MEMBER_NAME m_Properties
 
@@ -39,7 +44,8 @@ if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Pr
 #define OBJECT_PROPS_END() }
 
 //struct macros
-#define STRUCT_CLASS_DEF(class, superclass) using Super = superclass; \
+#define STRUCT_CLASS_DEF(class, superclass) using ThisClass = class; \
+using Super = superclass; \
 ClassType GetClassType() const override { return typeid(this); }; \
 class() : superclass() { DefineProperties(); };  
 
@@ -127,6 +133,8 @@ class DENGINE_API ObjectBase : public _placeholder
 {
 public:
 	using Super = _placeholder;
+	using ThisClass = ObjectBase;
+
 	//empty constructor
 	ObjectBase()
 	{
@@ -141,6 +149,15 @@ public:
 	virtual ClassType GetClassType() const
 	{
 		return typeid(this);
+	}
+
+	//get static class - use OBJECT_STATIC_CLASS()
+	template<class T>
+	static StaticClass _GetStaticClass()
+	{
+		StaticClass out;
+		out.FromTemlate<T>();
+		return StaticClass();
 	}
 
 	virtual void OnConstruct()

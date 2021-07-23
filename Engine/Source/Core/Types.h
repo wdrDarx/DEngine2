@@ -23,6 +23,16 @@ inline std::string Substring(const std::string& source, const size_t& start, con
 	return std::string(source.begin() + start, source.begin() + end);
 }
 
+//enum with class type for DEngine
+enum class ObjectClassType
+{
+	OBJECT = 0,
+	APPOBJECT,
+	SCENEOBJECT,
+	COMPONENT
+};
+
+//contains type info and friendly name of a class
 struct ClassType
 {
 	std::type_index typeIndex;
@@ -47,6 +57,7 @@ struct ClassType
 	{
 		Name = GetFriendlyTypeName(index);
 	}
+
 };
 
 #ifdef USE_GLM_TYPES
