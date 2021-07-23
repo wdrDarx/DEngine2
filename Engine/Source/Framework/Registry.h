@@ -3,8 +3,8 @@
 #include "ObjectBase.h"
 #include "Core/Allocator.h"
 
-#define REGISTER(RegistryRef, ObjectClass, ModuleClass, ObjectClassType) RegistryRef.Register<ObjectClass>({ObjectClassType, #ObjectClass, #ModuleClass});
-#define UNREGISTER(RegistryRef, ObjectClass, ModuleClass, ObjectClassType) RegistryRef.Unregister<ObjectClass>({ObjectClassType, #ObjectClass, #ModuleClass});
+#define REGISTER(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Register<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
+#define UNREGISTER(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Unregister<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
 
 
 struct RegisterKey

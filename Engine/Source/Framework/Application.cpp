@@ -64,10 +64,10 @@ void Application::CoreUpdate(float DeltaTime)
 
 void Application::RegisterBaseClasses()
 {
-	REGISTER(GetRegistry(), ObjectBase, Engine, ObjectClassType::OBJECT);
-	REGISTER(GetRegistry(), AppObject, Engine, ObjectClassType::APPOBJECT);
-	REGISTER(GetRegistry(), Scene, Engine, ObjectClassType::APPOBJECT);
-	REGISTER(GetRegistry(), SceneObject, Engine, ObjectClassType::SCENEOBJECT);
+	REGISTER(GetRegistry(), ObjectBase, Engine);
+	REGISTER(GetRegistry(), AppObject, Engine);
+	REGISTER(GetRegistry(), Scene, Engine);
+	REGISTER(GetRegistry(), SceneObject, Engine);
 }
 
 void Application::Shutdown()

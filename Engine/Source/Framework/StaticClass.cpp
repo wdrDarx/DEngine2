@@ -4,6 +4,7 @@
 #include "Framework/SceneObject.h"
 #include "Utils/ObjectUtils.h"
 
+#ifdef STATICCLASS_DEPRECATED
 StaticClass::StaticClass(Ref<ObjectBase> obj)
 {
 	CreateStaticClass(obj);
@@ -54,6 +55,9 @@ void StaticClass::CreateStaticClass(Ref<ObjectBase> obj)
 			std::allocator<std::string>().construct((std::string*)CopyProp.m_Value);
 		}
 		else
+		//this is why this version is broken, the DStruct that needs to be constructed
+		//should be the actual class derived from DStruct but we cant know what that unless we use a template
+		// so instead the new implementation is just a scoped instance of the object
 		if (CopyProp.m_Type == PropType::DSTRUCT)
 		{
 			std::allocator<DStruct>().construct((DStruct*)CopyProp.m_Value);
@@ -63,3 +67,24 @@ void StaticClass::CreateStaticClass(Ref<ObjectBase> obj)
 		CopyProp.FromBuffer(OriginalBuffer);
 	}
 }
+
+
+
+#endif
+void StaticClass::CreateStaticClass()
+{
+	//set class type by copy
+	m_ClassType = MakeRef<ClassType>(m_ObjectRef->GetClassType());
+
+	//determine ObjectClassType
+	m_ObjectClassType = ObjectUtils::GetObjectClassType(m_ObjectRef);
+
+	//define properties for retrieval
+	m_ObjectRef->DefineProperties();
+}
+
+const std::vector<StaticProperty>& StaticClass::GetDefaultProperties() const
+{
+	return m_ObjectRef->GetProperties();
+}
+

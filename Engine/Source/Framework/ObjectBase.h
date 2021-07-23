@@ -20,7 +20,7 @@ using superclass::superclass;
 #define OBJECT_STATIC_CLASSTYPE(ObjectClass) [&]() -> ClassType { ObjectClass obj; return obj.GetClassType(); }();
 
 //get static class of an object
-#define OBJECT_STATIC_CLASS(ObjectClass) [&]() -> StaticClass { return ObjectClass::_GetStaticClass<ObjectClass>(); }();
+#define OBJECT_STATIC_CLASS(ObjectClass) ObjectClass::_GetStaticClass<ObjectClass>()
 
 #define _PROP_MEMBER_NAME m_Properties
 
@@ -157,7 +157,7 @@ public:
 	{
 		StaticClass out;
 		out.FromTemlate<T>();
-		return StaticClass();
+		return out;
 	}
 
 	virtual void OnConstruct()
