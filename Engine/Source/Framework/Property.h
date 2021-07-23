@@ -21,6 +21,14 @@ typedef std::variant<bool*, int*, float*, vec2d*, vec3d*> PropValue;
 struct Property;
 struct DENGINE_API DStruct
 {
+
+protected:
+	//exists to prevent property redefinition by inheritance since this class doesnt have a seperate "Initialize" method
+	DStruct(bool DefProps)
+	{
+		if (DefProps)
+			DefineProperties();
+	}
 public:
 
 	DStruct()

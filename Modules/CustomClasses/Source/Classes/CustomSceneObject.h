@@ -16,10 +16,12 @@ struct CUSTOMCLASSES TestStruct2 : public TestStruct
 {
 	STRUCT_CLASS_DEF(TestStruct2, TestStruct)
 		STRUCT_PROPS_BEGIN()
-			PROPDEF(test1, EditAnywhere);
-	STRUCT_PROPS_END()
+			PROPDEF(childProp, EditAnywhere);
+			PROPDEF(prop2, EditAnywhere);
+		STRUCT_PROPS_END()
 
-	TestStruct test1;
+	float childProp = 3.f;
+		TestStruct prop2;
 };
 
 class CUSTOMCLASSES CustomSceneObject : public SceneObject
@@ -46,6 +48,6 @@ public:
 	std::string test4 = "dabab6y";
 	vec2d test5 = {0,0};
 	vec3d test6 = {69,420,21};
-	TestStruct struc;
+	TestStruct2 struc;
 };
 

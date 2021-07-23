@@ -62,7 +62,6 @@ EditorApp::EditorApp() : Application()
 
 void EditorApp::OnUpdate(const Tick& tick)
 {
-	GetWindow()->SetCurrentContext();
 	GetWindow()->StartFrame();
 	m_ImGuiLayer.Begin();
 

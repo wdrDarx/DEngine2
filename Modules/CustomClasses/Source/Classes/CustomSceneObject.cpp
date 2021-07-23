@@ -8,8 +8,9 @@ void CustomSceneObject::OnConstruct()
 
 void CustomSceneObject::OnUpdate(const Tick& tick)
 {
-// 	Buffer buffer;
-// 	Serialize(buffer);
-// 	File::WriteFile(Paths::GetBaseDirectory() + "//Test.txt", buffer);
-// 	Deserialize(buffer);	
+	Super::OnUpdate(tick);
+//  	Buffer buffer;
+//  	Serialize(buffer);
+//  	File::WriteFile(Paths::GetBaseDirectory() + "//Test.txt", buffer);
+//  	Deserialize(buffer);	
 }

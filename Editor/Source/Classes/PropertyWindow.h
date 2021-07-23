@@ -40,7 +40,7 @@ class PropertyWindow
 			ImGui::PopStyleVar();
 		}
 
-		void ListProperties(std::vector<Property>& props, const std::string& prefix = std::string(), Ref<ObjectBase> owner = nullptr)
+		void ListProperties(std::vector<Property>& props, const std::string& prefix = std::string(), Ref<ObjectBase> owner = nullptr, bool ForceNewLine = false)
 		{
 			for (auto& prop : props)
 			{
@@ -52,28 +52,41 @@ class PropertyWindow
 				if (prop.m_Type == PropType::DSTRUCT)
 				{
 					DStruct* structToDraw = (DStruct*)prop.m_Value;
-
-					ImGui::Columns(2);
 					ImGui::Text(prop.m_name.c_str());
-					ImGui::SetColumnOffset(1, 100);
-					ImGui::NextColumn();
+					ImGui::SameLine();
+
 					ImGui::PushItemWidth(ImGui::CalcItemWidth());
-					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
-					bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed, structToDraw->GetClassType().Name.c_str());
+					bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap, structToDraw->GetClassType().Name.c_str());
+					ImGui::PopItemWidth();
+
+					ImGui::SameLine();
+					float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+					ImVec2 buttonSize = { lineHeight, lineHeight };
+
+					//Reset button TODO add reset button to struct properties too
+					if (owner && ImGui::Button("<", buttonSize))
+					{
+						ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
+					}
+
 					if (expanded)
 					{
-						//ListProperties(structToDraw->GetPropertiesMutable(), std::string(structToDraw->GetClassType().Name + "::"), owner);
-						ListProperties(structToDraw->GetPropertiesMutable());
-						ImGui::TreePop();
+						if(!owner)
+							ImGui::NewLine();
+
+						ListProperties(structToDraw->GetPropertiesMutable(), std::string(), nullptr, true);
+						//ImGui::NewLine();
+						ImGui::TreePop();					
 					}
-					ImGui::EndColumns();
-					ImGui::PopStyleVar();
-					ImGui::PopItemWidth();
-					//ImGui::NewLine();
+					else
+					{ 
+						if (!owner)
+							ImGui::NewLine();
+					}
+			
 				}
 				else
 				{ 
-
 					ImGui::Columns(2);		
 					ImGui::Text(DisplayName.c_str());
 					ImGui::SetColumnOffset(1, 100);
@@ -81,7 +94,6 @@ class PropertyWindow
 					ImGui::NextColumn();
 				
 					ImGui::PushItemWidth(ImGui::CalcItemWidth());
-					//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2,2 });
 
 					DisplayName = "";
 					DStruct* structToDraw = nullptr;
@@ -138,28 +150,29 @@ class PropertyWindow
 						}
 					}
 					ImGui::PopItemWidth();
-					ImGui::EndColumns();
+					ImGui::EndColumns();	
+					
 					ImGui::SameLine();
-
-					//ImGui::PushItemWidth(-1);
-				
-
 					ImGui::PushItemWidth(ImGui::CalcItemWidth());
 					float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
-					ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+					ImVec2 buttonSize = { lineHeight, lineHeight };
 
 					//Reset button TODO add reset button to struct properties too
-					if(owner && prop.m_Type != PropType::DSTRUCT && ImGui::Button("<<", buttonSize))
+					if (owner && prop.m_Type != PropType::DSTRUCT && ImGui::Button("<", buttonSize))
 					{
 						ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
 					}
 
 					ImGui::PopItemWidth();
-					
-				}
 
+					//exists cuz im dumb and idk how to make structs look good
+					if(ForceNewLine)
+						ImGui::NewLine();
+				}		
 				ImGui::PopID();
+				
 			}
+			
 		}
 
 		static void DrawVec3Control(void* ID, float* value, float ResetValue = 0.f, const float& Speed = 1.0f, float columnWidth = 100.f)

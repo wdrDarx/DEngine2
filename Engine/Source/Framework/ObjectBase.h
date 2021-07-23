@@ -43,11 +43,12 @@ if(std::is_base_of<DStruct, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Pr
 #define PROPS_CATEGORY(category) _Category = #category; 
 #define OBJECT_PROPS_END() }
 
-//struct macros
+//struct macros (std::is_same stuff because otherwise it will define inherited properties twice)
 #define STRUCT_CLASS_DEF(class, superclass) using ThisClass = class; \
 using Super = superclass; \
+using Super::Super; \
 ClassType GetClassType() const override { return typeid(this); }; \
-class() : superclass() { DefineProperties(); };  
+class() : superclass(false) { DefineProperties(); };  
 
 #define STRUCT_PROPS_BEGIN() void DefineProperties() override { Super::DefineProperties(); std::string _Category = "";
 #define STRUCT_PROPS_END() }
