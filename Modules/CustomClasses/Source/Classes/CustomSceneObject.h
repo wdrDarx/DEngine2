@@ -7,21 +7,25 @@ struct CUSTOMCLASSES TestStruct : public DStruct
 	STRUCT_CLASS_DEF(TestStruct, DStruct)
 		STRUCT_PROPS_BEGIN()
 			PROPDEF(porp, EditAnywhere);
+			PROPDEF(porp2, EditAnywhere);
 		STRUCT_PROPS_END()
 	
 	float porp = 12.f;
+	float porp2 = 12.f;
 };
 
-struct CUSTOMCLASSES TestStruct2 : public TestStruct
+struct CUSTOMCLASSES TestStruct2 : public DStruct
 {
-	STRUCT_CLASS_DEF(TestStruct2, TestStruct)
+	STRUCT_CLASS_DEF(TestStruct2, DStruct)
 		STRUCT_PROPS_BEGIN()
-			PROPDEF(childProp, EditAnywhere);
+			//PROPDEF(childProp, EditAnywhere);
+			//PROPDEF(childProp2, EditAnywhere);
 			PROPDEF(prop2, EditAnywhere);
 		STRUCT_PROPS_END()
 
 	float childProp = 3.f;
-		TestStruct prop2;
+	float childProp2 = 5.f;
+	TestStruct prop2;
 };
 
 class CUSTOMCLASSES CustomSceneObject : public SceneObject
@@ -42,6 +46,8 @@ public:
 
 	void OnConstruct() override;
 	void OnUpdate(const Tick& tick) override;
+
+	void testfunc(float test);
 
 public:
 	bool test1 = false;

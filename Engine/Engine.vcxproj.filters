@@ -124,6 +124,7 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Method.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">

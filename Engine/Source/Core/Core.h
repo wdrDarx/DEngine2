@@ -20,6 +20,10 @@ typedef unsigned char byte;
 #include <fstream>
 #include <atomic>
 #include <string>
+#include <tuple>
+#include <utility>
+#include <type_traits>
+#include <stdexcept>
 #include <iostream>
 #include <unordered_map>
 #include <typeindex>

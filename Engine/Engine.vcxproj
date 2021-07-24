@@ -112,6 +112,7 @@
     <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Application.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
+    <ClInclude Include="Source\Framework\Method.h" />
     <ClInclude Include="Source\Framework\Module.h" />
     <ClInclude Include="Source\Framework\ModuleManager.h" />
     <ClInclude Include="Source\Framework\ObjectBase.h" />

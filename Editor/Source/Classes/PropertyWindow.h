@@ -78,7 +78,7 @@ class PropertyWindow
 
 				std::string CurrectCategory;
 				bool LastCategoryExpanded = false;
-				uint CategoryIDindex = 21;
+				uint CategoryIDindex = 0;
 				for (uint i = 0; i < t_pairs.size(); i++)
 				{
 					auto& pair = t_pairs[i];
@@ -91,13 +91,13 @@ class PropertyWindow
 						CurrectCategory = pair.Category;
 						
 						//Draw category thing here
-						LastCategoryExpanded = ImGui::TreeNodeEx((void*)(CategoryIDindex), ImGuiTreeNodeFlags_Framed, CurrectCategory.c_str());
+						LastCategoryExpanded = ImGui::TreeNodeEx((void*)(CategoryIDindex), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, CurrectCategory.c_str());
 						CategoryIDindex++;
 					}
 					if (LastCategoryExpanded)
 					{
 						Property& prop = *pair.Prop;
-						DrawProperty(prop, owner);
+						DrawProperty(prop, owner, ForceNewLine);
 					
 						//we at at the end - pop the tree
 						if(i == t_pairs.size() - 1)
@@ -109,7 +109,7 @@ class PropertyWindow
 			{
 				for (auto& prop : props)
 				{
-					DrawProperty(prop, owner);
+					DrawProperty(prop, owner, ForceNewLine);
 				}
 			}
 		}
@@ -119,13 +119,8 @@ class PropertyWindow
 			std::string DisplayName = prop.m_name;
 			ImGui::PushID(prop.m_Value);
 
-			//exists cuz im dumb and idk how to make structs look good
-			if (ForceNewLine)
-				ImGui::NewLine();
-
 			if (prop.m_Type == PropType::DSTRUCT)
 			{
-				ImGui::NewLine();
 				DStruct* structToDraw = (DStruct*)prop.m_Value;
 				ImGui::Text(prop.m_name.c_str());
 				ImGui::SameLine();
@@ -146,20 +141,19 @@ class PropertyWindow
 
 				if (expanded)
 				{
+					if(!owner)
+						ImGui::NewLine();
+
 					ListProperties(structToDraw->GetPropertiesMutable(), nullptr, true, false);
 					ImGui::TreePop();
-				}
-				
+				}			
 			}
 			else
 			{
-				ImGui::Columns(2);
 				ImGui::Text(DisplayName.c_str());
-				ImGui::SetColumnOffset(1, 100);
+				ImGui::SameLine(0, 2);
 
-				ImGui::NextColumn();
-
-				ImGui::PushItemWidth(ImGui::CalcItemWidth());
+				ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - 30);
 
 				DisplayName = "";
 				DStruct* structToDraw = nullptr;
@@ -215,24 +209,23 @@ class PropertyWindow
 				}
 				}
 				ImGui::PopItemWidth();
-				ImGui::EndColumns();
 
-				ImGui::SameLine();
-				ImGui::PushItemWidth(ImGui::CalcItemWidth());
+				
+				ImGui::PushItemWidth(-1.f);
 				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 				ImVec2 buttonSize = { lineHeight, lineHeight };
-
+				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + 10);
 				//Reset button TODO add reset button to struct properties too
 				if (owner && prop.m_Type != PropType::DSTRUCT && ImGui::Button("<", buttonSize))
 				{
 					ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
 				}
 
-				ImGui::PopItemWidth();
-
-				
+				ImGui::PopItemWidth();			
 			}
-
+			//exists cuz im dumb and idk how to make structs look good
+			if (ForceNewLine)
+				ImGui::NewLine();
 			ImGui::PopID();
 		}
 
@@ -242,12 +235,11 @@ class PropertyWindow
 			auto BoldFont = ImGui::GetIO().Fonts->Fonts[0];
 
 			ImGui::PushID(ID);
-
-			ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
-
 			float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 			ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+			ImGui::PushMultiItemsWidths(3, (ImGui::CalcItemWidth() - buttonSize.x * 3.f) + buttonSize.x / 3.f);
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f,1.0f });
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f,1.0f });
