@@ -23,7 +23,7 @@ inline std::string Substring(const std::string& source, const size_t& start, con
 	return std::string(source.begin() + start, source.begin() + end);
 }
 
-//enum with class type for DEngine
+//enum with object class type
 enum class ObjectClassType
 {
 	OBJECT = 0,

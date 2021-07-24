@@ -125,6 +125,8 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Method.h" />
+    <ClInclude Include="Source\Framework\StructBase.h" />
+    <ClInclude Include="Source\Framework\FrameworkMacros.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">
@@ -146,9 +148,6 @@
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\ObjectBase.cpp">
-      <Filter>Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Framework\Property.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Scene.cpp">
@@ -184,5 +183,7 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\StructBase.cpp" />
+    <ClCompile Include="Source\Framework\Property.cpp" />
   </ItemGroup>
 </Project>

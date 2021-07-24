@@ -11,7 +11,10 @@ class ObjectUtils
 			polymorphically resets an objects properties by creating a fresh instance of it
 			requires object to be registered
 		*/
-		static void ResetObjectProps(Ref<ObjectBase> object, Registry& registry);
-		static void ResetObjectProp(Ref<ObjectBase> object, const std::string& propName, Registry& registry);
+		static void ResetObjectProps(ObjectBase* object, ObjectRegistry& registry);
+		static void ResetObjectProp(ObjectBase* object, const std::string& propName, ObjectRegistry& registry);
+
+		static void ResetStructProp(StructBase* Struct, const std::string& propName, StructRegistry& registry);
+
 		static ObjectClassType GetObjectClassType(Ref<ObjectBase> obj);
 };

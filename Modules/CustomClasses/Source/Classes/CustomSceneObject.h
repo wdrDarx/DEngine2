@@ -2,21 +2,20 @@
 #include "CustomClasses.h"
 #include "DEngine.h"
 
-struct CUSTOMCLASSES TestStruct : public DStruct
+struct CUSTOMCLASSES TestStruct : public StructBase
 {
-	STRUCT_CLASS_DEF(TestStruct, DStruct)
+	STRUCT_CLASS_DEF(TestStruct, StructBase)
 		STRUCT_PROPS_BEGIN()
 			PROPDEF(porp, EditAnywhere);
-			PROPDEF(porp2, EditAnywhere);
+			//PROPDEF(porp2, EditAnywhere);
 		STRUCT_PROPS_END()
 	
 	float porp = 12.f;
-	float porp2 = 12.f;
 };
 
-struct CUSTOMCLASSES TestStruct2 : public DStruct
+struct CUSTOMCLASSES TestStruct2 : public TestStruct
 {
-	STRUCT_CLASS_DEF(TestStruct2, DStruct)
+	STRUCT_CLASS_DEF(TestStruct2, TestStruct)
 		STRUCT_PROPS_BEGIN()
 			PROPDEF(childProp, EditAnywhere);
 			PROPDEF(childProp2, EditAnywhere);
@@ -56,6 +55,6 @@ public:
 	std::string test4 = "dabab6y";
 	vec2d test5 = {0,0};
 	vec3d test6 = {69,420,21};
-	TestStruct2 struc;
+	TestStruct struc;
 };
 

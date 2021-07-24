@@ -6,7 +6,8 @@
 Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initialize module manager
 {
 	RegisterBaseClasses();
-	m_Registry.m_App = ToRef<Application>(this);
+	GetObjectRegistry().m_App = ToRef<Application>(this);
+	GetStructRegistry().m_App = ToRef<Application>(this);
 }
 
 void Application::MakeWindow(const std::string& name, int width, int height, bool vsync)
@@ -64,10 +65,10 @@ void Application::CoreUpdate(float DeltaTime)
 
 void Application::RegisterBaseClasses()
 {
-	REGISTER(GetRegistry(), ObjectBase, Engine);
-	REGISTER(GetRegistry(), AppObject, Engine);
-	REGISTER(GetRegistry(), Scene, Engine);
-	REGISTER(GetRegistry(), SceneObject, Engine);
+ 	REGISTER_OBJECT(GetObjectRegistry(), ObjectBase, Engine);
+ 	REGISTER_OBJECT(GetObjectRegistry(), AppObject, Engine);
+ 	REGISTER_OBJECT(GetObjectRegistry(), Scene, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), SceneObject, Engine);
 }
 
 void Application::Shutdown()

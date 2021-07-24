@@ -95,15 +95,27 @@ void EditorApp::OnUpdate(const Tick& tick)
 
 		ImGui::Begin("Registry");
 
+		if (ImGui::TreeNode("Structs"))
+		{
+			for (auto& reg : GetStructRegistry().GetRegisteredKeys())
+			{
+				if (ImGui::Button(reg.name.c_str()))
+				{
+					//(GetStructRegistry().Make(reg));
+				}
+			}
+
+			ImGui::TreePop();
+		}
 		if (ImGui::TreeNode("Objects"))
 		{
-			for (auto& reg : GetRegistry().GetRegisteredKeys())
+			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
 			{
 				if (reg.type == ObjectClassType::OBJECT)
 				{
 					if (ImGui::Button(reg.name.c_str()))
 					{
-						(GetRegistry().Make(reg))->Initialize(ObjectInitializer());
+						(GetObjectRegistry().Make(reg))->Initialize(ObjectInitializer());
 					}
 				}
 			}
@@ -112,13 +124,13 @@ void EditorApp::OnUpdate(const Tick& tick)
 		}
 		if (ImGui::TreeNode("App Objects"))
 		{
-			for (auto& reg : GetRegistry().GetRegisteredKeys())
+			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
 			{
 				if (reg.type == ObjectClassType::APPOBJECT)
 				{
 					if (ImGui::Button(reg.name.c_str()))
 					{
-						AddAppObject(Cast<AppObject>(GetRegistry().Make(reg)));
+						AddAppObject(Cast<AppObject>(GetObjectRegistry().Make(reg)));
 					}
 				}
 			}
@@ -126,13 +138,13 @@ void EditorApp::OnUpdate(const Tick& tick)
 		}
 		if (ImGui::TreeNode("SceneObjects"))
 		{
-			for (auto& reg : GetRegistry().GetRegisteredKeys())
+			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
 			{
 				if (reg.type == ObjectClassType::SCENEOBJECT)
 				{
 					if (ImGui::Button(reg.name.c_str()))
 					{
-						m_EditorScene->AddSceneObject(Cast<SceneObject>(GetRegistry().Make(reg)));
+						m_EditorScene->AddSceneObject(Cast<SceneObject>(GetObjectRegistry().Make(reg)));
 					}
 				}
 			}

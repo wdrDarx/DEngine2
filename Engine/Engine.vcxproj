@@ -112,6 +112,7 @@
     <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Application.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
+    <ClInclude Include="Source\Framework\FrameworkMacros.h" />
     <ClInclude Include="Source\Framework\Method.h" />
     <ClInclude Include="Source\Framework\Module.h" />
     <ClInclude Include="Source\Framework\ModuleManager.h" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Source\Framework\Scene.h" />
     <ClInclude Include="Source\Framework\SceneObject.h" />
     <ClInclude Include="Source\Framework\StaticClass.h" />
+    <ClInclude Include="Source\Framework\StructBase.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Window.h" />
     <ClInclude Include="Source\Serialization\Buffer.h" />
@@ -146,6 +148,7 @@
     <ClCompile Include="Source\Framework\Scene.cpp" />
     <ClCompile Include="Source\Framework\SceneObject.cpp" />
     <ClCompile Include="Source\Framework\StaticClass.cpp" />
+    <ClCompile Include="Source\Framework\StructBase.cpp" />
     <ClCompile Include="Source\Rendering\Window.cpp" />
     <ClCompile Include="Source\Utils\FileSystem.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />

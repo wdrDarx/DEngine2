@@ -1,30 +1,45 @@
 #pragma once
 #include "Core/Core.h"
 #include "ObjectBase.h"
+#include "FrameworkMacros.h"
 #include "Core/Allocator.h"
 
-#define REGISTER(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Register<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
-#define UNREGISTER(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Unregister<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
+#define REGISTER_OBJECT(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Register<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
+#define UNREGISTER_OBJECT(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Unregister<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
+
+#define REGISTER_STRUCT(RegistryRef, StructClass) RegistryRef.Register<StructClass>({#StructClass});
+#define UNREGISTER_STRUCT(RegistryRef, StructClass) RegistryRef.Unregister<StructClass>({#StructClass});
 
 
-struct RegisterKey
+struct ObjectRegisterKey
 {
 	ObjectClassType type;
 	std::string name;
 	std::string AssignedModuleName;
 
-	bool operator==(const RegisterKey& other) const
+	bool operator==(const ObjectRegisterKey& other) const
 	{
 		return (type == other.type && name == other.name && AssignedModuleName == other.AssignedModuleName);
+	}
+};
+
+struct StructRegisterKey
+{
+	//just the name of the class
+	std::string name;
+
+	bool operator==(const StructRegisterKey& other) const
+	{
+		return (name == other.name);
 	}
 };
 
 namespace std 
 {
 	template <>
-	struct hash<RegisterKey>
+	struct hash<ObjectRegisterKey>
 	{
-		std::size_t operator()(const RegisterKey& k) const
+		std::size_t operator()(const ObjectRegisterKey& k) const
 		{
 			using std::size_t;
 			using std::hash;
@@ -33,6 +48,19 @@ namespace std
 			return ((hash<int>()((int)k.type)
 				^ (hash<string>()(k.name) << 1)) >> 1)			
 				^ (hash<string>()(k.AssignedModuleName) << 1);				
+		}
+	};
+
+	template <>
+	struct hash<StructRegisterKey>
+	{
+		std::size_t operator()(const StructRegisterKey& k) const
+		{
+			using std::size_t;
+			using std::hash;
+			using std::string;
+
+			return hash<std::string>()(k.name);
 		}
 	};
 
@@ -119,15 +147,16 @@ public:
 		T* obj = instantiator(std::forward<ConstructionArgs>(args)...);
 
 		//set the assigned module name for the object
-		obj->SetAssociatedModuleName(subclass_key.AssignedModuleName);
+		if constexpr (std::is_same<Key, ObjectRegisterKey>::value)
+			obj->SetAssociatedModuleName(subclass_key.AssignedModuleName);
 
 		return obj;
 	}
 
-	T* MakeAmbiguous(const std::string& FriendlyClassName, ConstructionArgs... args) const
+	T* MakeObjectFromClassName(const std::string& FriendlyClassName, ConstructionArgs... args) const
 	{
 		//cant do this if the key isnt a RegisterKey
-		if constexpr (!std::is_same<Key, RegisterKey>::value) ASSERT(false);
+		if constexpr (!std::is_same<Key, ObjectRegisterKey>::value) ASSERT(false);
 
 		for (auto it = subclassInstantiators.begin(); it != subclassInstantiators.end(); it++)
 		{
@@ -152,7 +181,9 @@ public:
 		return subclassInstantiators.find(subclass_key) != subclassInstantiators.end();
 	}
 
+	//here just in case i change some mad shit
 	Ref<Application> m_App;
 };
 
-using Registry = _RegistryBase<RegisterKey, ObjectBase>;
+using ObjectRegistry = _RegistryBase<ObjectRegisterKey, ObjectBase>;
+using StructRegistry = _RegistryBase<StructRegisterKey, StructBase>;

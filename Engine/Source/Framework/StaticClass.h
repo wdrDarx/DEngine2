@@ -2,15 +2,9 @@
 #include "Core/Core.h"
 #include "Framework/Property.h"
 
-
-//future implementation
-// struct StaticProperty
-// {
-// 
-// };
-
-using StaticProperty = Property;
 class ObjectBase;
+struct StructBase;
+class Application;
 
 
 #ifdef STATICCLASS_DEPRECATED
@@ -55,7 +49,8 @@ private:
 };
 #endif
 
-//stores things like default property values, and object registry type by hosting a scoped instance of the obejct
+// stores things like default property values, and object registry type by hosting a scoped instance of the object/struct
+// yes this supports structs too
 class DENGINE_API StaticClass
 {
 public:
@@ -64,7 +59,7 @@ public:
 
 	}
 
-	const std::vector<StaticProperty>& GetDefaultProperties() const;
+	const std::vector<Property>& GetDefaultProperties() const;
 
 	const ClassType& GetClassType() const
 	{
@@ -72,25 +67,40 @@ public:
 	}
 
 	const ObjectClassType& GetObjectClassType() const
-	{
+	{		
+		ASSERT(!m_IsStruct); //were a structure static class, cant do this
 		return m_ObjectClassType;
 	}
 
 	template<class T>
 	void FromTemlate()
 	{
-		bool valid = std::is_base_of<ObjectBase, T>::value;
-		ASSERT(valid);
+		if(!std::is_base_of<ObjectBase, T>::value)
+		{
+			if(std::is_base_of<StructBase, T>::value)
+				m_IsStruct = true;
+			else
+				ASSERT(false) //type not an ObjectBase nor a StructBase
+		}
 
 		//create an instance and create the static class
-		m_ObjectRef = MakeRef<T>();
+		if(m_IsStruct)
+			m_StructRef = Cast<StructBase>(MakeRef<T>());
+		else
+			m_ObjectRef = Cast<ObjectBase>(MakeRef<T>());
+
 		CreateStaticClass();
 	}
 
+	//takes app as input because both an object registry and a struct registry is required
+	std::vector<StaticProperty> GenerateStaticProperties(Application* App) const;
+
 private:
 	void CreateStaticClass();
+	bool m_IsStruct = false;
 
 	Ref<ObjectBase> m_ObjectRef;
+	Ref<StructBase> m_StructRef;
 	Ref<ClassType> m_ClassType;
 	ObjectClassType m_ObjectClassType;
 };

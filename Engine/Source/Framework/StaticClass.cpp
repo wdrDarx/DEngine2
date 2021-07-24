@@ -2,6 +2,9 @@
 #include "Framework/ObjectBase.h"
 #include "Framework/AppObject.h"
 #include "Framework/SceneObject.h"
+#include "Framework/Application.h"
+#include "Framework/StructBase.h"
+#include "Framework/Registry.h"
 #include "Utils/ObjectUtils.h"
 
 #ifdef STATICCLASS_DEPRECATED
@@ -71,20 +74,79 @@ void StaticClass::CreateStaticClass(Ref<ObjectBase> obj)
 
 
 #endif
+
 void StaticClass::CreateStaticClass()
 {
-	//set class type by copy
-	m_ClassType = MakeRef<ClassType>(m_ObjectRef->GetClassType());
+	if (m_IsStruct)
+	{
+		//set class type by copy
+		m_ClassType = MakeRef<ClassType>(m_StructRef->GetClassType());
+	}
+	else
+	{
+		//set class type by copy
+		m_ClassType = MakeRef<ClassType>(m_ObjectRef->GetClassType());
 
-	//determine ObjectClassType
-	m_ObjectClassType = ObjectUtils::GetObjectClassType(m_ObjectRef);
+		//determine ObjectClassType
+		m_ObjectClassType = ObjectUtils::GetObjectClassType(m_ObjectRef);
 
-	//define properties for retrieval
-	m_ObjectRef->DefineProperties();
+		//define properties for retrieval
+		m_ObjectRef->DefineProperties();
+	}	
 }
 
-const std::vector<StaticProperty>& StaticClass::GetDefaultProperties() const
+const std::vector<Property>& StaticClass::GetDefaultProperties() const
 {
-	return m_ObjectRef->GetProperties();
+	if(m_IsStruct)
+		return m_StructRef->GetProperties();
+	else
+		return m_ObjectRef->GetProperties();
 }
+
+std::vector<StaticProperty> StaticClass::GenerateStaticProperties(Application* App) const
+{
+	std::vector<StaticProperty> out;
+	auto covertFunc = [&](const std::vector<Property>& props)
+	{
+		//copy all property values to StaticProperty array
+		for (auto& OriginalProp : props)
+		{
+			StaticProperty CopyProp;
+
+			//allocate value bytes
+			CopyProp.m_Value = new byte[OriginalProp.m_ValueSize];
+
+			//gen buffer from original props
+			Buffer OriginalBuffer = OriginalProp.MakeBuffer();
+
+			//load type mainly
+			CopyProp.LoadNameAndType(OriginalBuffer);
+
+			//call constructor for the value (necessary only for DStruct and String)
+			if (CopyProp.m_Type == PropType::STRING)
+			{
+				std::allocator<std::string>().construct((std::string*)CopyProp.m_Value);
+			}
+			else
+				//constucts a copy of the same class that the original struct was using - magic with the registry (: 
+				if (CopyProp.m_Type == PropType::STRUCT)
+				{
+					CopyProp.m_Value = App->GetStructRegistry().Make({((StructBase*)OriginalProp.m_Value)->GetClassType().Name});
+				}
+
+			//now its safe to copy memory
+			CopyProp.FromBuffer(OriginalBuffer);
+			out.push_back(CopyProp);
+		}
+	};
+	
+	if(m_IsStruct)
+		covertFunc(m_StructRef->GetProperties());
+	else
+		covertFunc(m_ObjectRef->GetProperties());
+
+	return out;
+}
+
+
 

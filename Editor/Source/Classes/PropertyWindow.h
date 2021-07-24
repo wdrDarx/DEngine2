@@ -119,9 +119,9 @@ class PropertyWindow
 			std::string DisplayName = prop.m_name;
 			ImGui::PushID(prop.m_Value);
 
-			if (prop.m_Type == PropType::DSTRUCT)
+			if (prop.m_Type == PropType::STRUCT)
 			{
-				DStruct* structToDraw = (DStruct*)prop.m_Value;
+				StructBase* structToDraw = (StructBase*)prop.m_Value;
 				ImGui::Text(prop.m_name.c_str());
 				ImGui::SameLine();
 
@@ -133,10 +133,9 @@ class PropertyWindow
 				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 				ImVec2 buttonSize = { lineHeight, lineHeight };
 
-				//Reset button TODO add reset button to struct properties too
 				if (owner && ImGui::Button("<", buttonSize))
 				{
-					ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
+					ObjectUtils::ResetObjectProp(owner.get(), prop.m_name, m_App->GetObjectRegistry());
 				}
 
 				if (expanded)
@@ -156,7 +155,7 @@ class PropertyWindow
 				ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - 30);
 
 				DisplayName = "";
-				DStruct* structToDraw = nullptr;
+				StructBase* structToDraw = nullptr;
 				switch (prop.m_Type)
 				{
 				case PropType::BOOL:
@@ -215,10 +214,10 @@ class PropertyWindow
 				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 				ImVec2 buttonSize = { lineHeight, lineHeight };
 				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + 10);
-				//Reset button TODO add reset button to struct properties too
-				if (owner && prop.m_Type != PropType::DSTRUCT && ImGui::Button("<", buttonSize))
+				
+				if (owner && prop.m_Type != PropType::STRUCT && ImGui::Button("<", buttonSize))
 				{
-					ObjectUtils::ResetObjectProp(owner, prop.m_name, m_App->GetRegistry());
+					ObjectUtils::ResetObjectProp(owner.get(), prop.m_name, m_App->GetObjectRegistry());
 				}
 
 				ImGui::PopItemWidth();			
@@ -226,6 +225,7 @@ class PropertyWindow
 			//exists cuz im dumb and idk how to make structs look good
 			if (ForceNewLine)
 				ImGui::NewLine();
+
 			ImGui::PopID();
 		}
 

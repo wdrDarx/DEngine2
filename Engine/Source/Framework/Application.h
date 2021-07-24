@@ -125,9 +125,14 @@ public:
 		return m_AppObjects;
 	}
 
-	Registry& GetRegistry()
+	ObjectRegistry& GetObjectRegistry()
 	{
-		return m_Registry;
+		return m_ObjectRegistry;
+	}
+
+	StructRegistry& GetStructRegistry()
+	{
+		return m_StructRegistry;
 	}
 
 	ModuleManager& GetModuleManager()
@@ -157,7 +162,9 @@ protected:
 
 	std::vector<Ref<AppObject>> m_AppObjects;
 
-	Registry m_Registry;
+	ObjectRegistry m_ObjectRegistry;
+	StructRegistry m_StructRegistry;
+
 	ModuleManager m_ModuleManager;
 };
 

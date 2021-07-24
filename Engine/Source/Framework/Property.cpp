@@ -1,33 +1,78 @@
 #include "Property.h"
+#include "StructBase.h"
 
-void DStruct::SerializeProps(ArrayBuffer& buffer) const
+Buffer Property::MakeBuffer() const
 {
-	for (const auto& prop : GetProperties())
+	Buffer FinalBuffer;
+	STARTWRITE(FinalBuffer, 0)
+
+	WRITESTRING(m_name);
+	WRITE(&m_Type, sizeof(PropType));
+	WRITESTRING(m_category);
+	WRITE(&m_Flags, sizeof(int));
+	WRITE(&m_ValueSize, sizeof(size_t));
+
+	switch (m_Type)
 	{
-		buffer.AddPiece(prop.MakeBuffer());
-		//LogTemp("(DStruct) " + std::string("Loading Struct Property : ") + prop.m_name);
+	default:
+	{
+		WRITE(m_Value, m_ValueSize);
+		break;
 	}
+
+	case PropType::STRING:
+	{
+		std::string temp = (*(std::string*)m_Value);
+		WRITESTRING(temp);
+		break;
+	}
+
+	case PropType::STRUCT:
+	{
+		StructBase* Struct = (StructBase*)(m_Value);
+		ArrayBuffer StructPropBuffer;
+		Struct->SerializeProps(StructPropBuffer);
+		WRITEBUFFER(StructPropBuffer.MakeBuffer());
+		break;
+	}
+	}
+
+	return FinalBuffer;
 }
 
-void DStruct::LoadProps(const ArrayBuffer& buffer)
+void Property::FromBuffer(const Buffer& buffer)
 {
-	for (auto& piece : buffer.m_DataPieces)
+	STARTREAD(buffer, 0)
+	READSTRING(m_name);
+	READ(&m_Type, sizeof(PropType));
+	READSTRING(m_category);
+	READ(&m_Flags, sizeof(PropType));
+	READ(&m_ValueSize, sizeof(size_t));
+
+	switch (m_Type)
 	{
-		Property NewProp;
-		//need to deserialize new prop to get its name and type
-		NewProp.LoadNameAndType(piece);
+	default:
+	{
+		READ(m_Value, m_ValueSize);
+		break;
+	}
+	case PropType::STRING:
+	{
+		std::string temp;
+		READSTRING(temp);
+		(*(std::string*)m_Value) = temp;
+		break;
+	}
 
-		//Go through old props and update them if a new one overdies it
-		for (auto& oldProp : m_Properties)
-		{
-			//If a new prop didnt exist before then ignore it and dont laod it
-			if (oldProp.m_name == NewProp.m_name && oldProp.m_Type == NewProp.m_Type)
-			{
-				//LogTemp("(DStruct) " + std::string("Loading Property : ") + NewProp.m_name);
-
-				//load the old prop with the new prop data
-				oldProp.FromBuffer(piece);
-			}
-		}
+	case PropType::STRUCT:
+	{
+		StructBase* StructProp = (StructBase*)(m_Value);
+		Buffer temp;
+		READBUFFER(temp);
+		ArrayBuffer StructPropBuffer;
+		StructPropBuffer.FromBuffer(temp);
+		StructProp->LoadProps(StructPropBuffer);
+		break;
+	}
 	}
 }
