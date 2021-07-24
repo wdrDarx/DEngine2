@@ -18,8 +18,8 @@ struct CUSTOMCLASSES TestStruct2 : public DStruct
 {
 	STRUCT_CLASS_DEF(TestStruct2, DStruct)
 		STRUCT_PROPS_BEGIN()
-			//PROPDEF(childProp, EditAnywhere);
-			//PROPDEF(childProp2, EditAnywhere);
+			PROPDEF(childProp, EditAnywhere);
+			PROPDEF(childProp2, EditAnywhere);
 			PROPDEF(prop2, EditAnywhere);
 		STRUCT_PROPS_END()
 
