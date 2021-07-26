@@ -107,6 +107,7 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
   <ItemGroup>
     <ClInclude Include="Source\Classes\EditorApp.h" />
     <ClInclude Include="Source\Classes\PropertyWindow.h" />
+    <ClInclude Include="Source\Classes\Viewport.h" />
     <ClInclude Include="Source\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h" />

@@ -6,12 +6,26 @@ EditorApp::EditorApp() : Application()
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
+	//application event for end frame on the scene
+	m_ApplicationEvent.Assign([&](ApplicationEvent* event)
+	{
+		if (event->GetEventType() == ApplicationEventType::OBJECTFINSIHUPDATE)
+		{
+			EndFrame();
+		}
+	});
+
 	//close event for window
 	m_WindowEvent.Assign([&](WindowEvent* event)
 	{
 		if (event->GetEventType() == WindowEventType::CLOSED)
 		{
 			m_ImGuiLayer.Shutdown();
+		}
+
+		if (event->GetEventType() == WindowEventType::RESIZED)
+		{
+			LogTemp("New Window Size : " + Log::string(event->GetNewSize()));
 		}
 	});
 
@@ -29,7 +43,7 @@ EditorApp::EditorApp() : Application()
 	m_SceneEvent.Assign([&](SceneEvent* event)
 	{
 		//Auto unassign selected scene object in property window if that object was deleted
-		if (event->GetEventType() == SceneEventType::PRE_DELETE)
+		if (event->GetEventType() == SceneEventType::OBJECT_PRE_DELETE)
 		{
 			if (event->GetSceneObject() && m_PropertyWindow.m_SelectedSceneObject.get() == event->GetSceneObject())
 			{
@@ -37,6 +51,9 @@ EditorApp::EditorApp() : Application()
 			}
 		}
 	});
+
+	//bind the application event callback 
+	GetEventDispatcher().Bind(m_ApplicationEvent);
 
 	//bind the window event callback 
 	GetEventDispatcher().Bind(m_WindowEvent);
@@ -58,16 +75,17 @@ EditorApp::EditorApp() : Application()
 
 	//property window
 	m_PropertyWindow.Init(ToRef<EditorApp>(this));
+
+	//main viewport
+	CreateViewport(m_EditorScene);
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
 {
-	GetWindow()->StartFrame();
-	m_ImGuiLayer.Begin();
+	BeginFrame();
 
-
-	if(m_ImGuiLayer.IsValid())
-	{ 
+	if (m_ImGuiLayer.IsValid())
+	{
 		m_PropertyWindow.Render();
 		ImGui::Begin("Application Objects");
 
@@ -75,7 +93,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 		{
 			if (ImGui::Button(obj->GetClassType().Name.c_str()))
 			{
-				
+
 			}
 		}
 
@@ -178,16 +196,36 @@ void EditorApp::OnUpdate(const Tick& tick)
 		ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
 		ImGui::End();
 	}
+}
 
-	
+void EditorApp::BeginFrame()
+{
+	GetWindow()->StartFrame();
+	m_ImGuiLayer.Begin();
+	if (!m_ImGuiLayer.IsValid()) return;
 
-	glBegin(GL_TRIANGLES);
-	glColor3f(0.1, 0.2, 0.3);
-	glVertex3f(0, 0, 0);
-	glVertex3f(1, 0, 0);
-	glVertex3f(0, 1, 0);
-	glEnd();
+	//begin frame for all viewports (requires imGui context)
+	for (auto& viewport : m_Viewports)
+	{
+		viewport->BeginFrame();
+	}
+}
+
+void EditorApp::EndFrame()
+{
+	if (!m_ImGuiLayer.IsValid()) return;
+
+	//end frame for all viewports (calls end frame on the scene)
+	for (auto& viewport : m_Viewports)
+	{
+		viewport->EndFrame();
+	}
 	
 	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
+}
+
+void EditorApp::CreateViewport(Ref<Scene> scene)
+{
+	m_Viewports.push_back(MakeRef<Viewport>(scene, GetWindow()->GetRenderAPI()));
 }

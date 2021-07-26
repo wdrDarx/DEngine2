@@ -96,7 +96,15 @@ void ObjectBase::LoadPropsFromBuffer(const Buffer& buffer)
 ObjectInitializer ObjectInitializer::Module(ObjectBase* ExistantModuleObject)
 {
 	ASSERT(ExistantModuleObject);
+
 	ObjectInitializer init;
 	init.AssociatedModuleName = ExistantModuleObject->GetAssociatedModuleName();
+	return init;
+}
+
+ObjectInitializer ObjectInitializer::Module(const std::string& AssociatedModuleName)
+{
+	ObjectInitializer init;
+	init.AssociatedModuleName = AssociatedModuleName;
 	return init;
 }

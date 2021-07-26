@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Framework/Application.h"
 
 void Scene::OnUpdate(const Tick& tick)
 {
@@ -11,17 +12,43 @@ void Scene::OnUpdate(const Tick& tick)
 
 		if(CastCheck<SceneObject>(obj))
 			obj->OnUpdate(tick);
-		else
-		{
-			LogTemp("bruh");
-		}
 	}
 }
 
 void Scene::OnConstruct()
 {
 	Super::OnConstruct();
+	CreateDefaultRenderers();
 
+	SceneEvent constructEvent;
+	constructEvent.m_Scene = this;
+	constructEvent.m_EventType = SceneEventType::SCENE_ONCONSTRUCT;
+	GetApplication()->GetEventDispatcher().Dispatch(constructEvent);
+}
+
+void Scene::BeginFrame()
+{
+	if(!GetRenderAPI()) return; //cant render with no context
+
+	for (uint i = 0; i < m_Renderers.size(); i++)
+	{
+		m_Renderers[i]->BeginFrame();
+	}
+}
+
+void Scene::EndFrame()
+{
+	if (!GetRenderAPI()) return; //cant render with no context
+
+	for (uint i = 0; i < m_Renderers.size(); i++)
+	{
+		m_Renderers[i]->EndFrame();
+	}
+}
+
+void Scene::CreateDefaultRenderers()
+{
+	
 }
 
 void Scene::DestroySceneObject(SceneObject* obj)
@@ -39,7 +66,7 @@ void Scene::DestroySceneObject(SceneObject* obj)
 	if (remove != m_SceneObjects.end())
 	{
 		SceneEvent event;
-		event.m_EventType = SceneEventType::PRE_DELETE;
+		event.m_EventType = SceneEventType::OBJECT_PRE_DELETE;
 		event.m_ObjectClass = SceneObjectClass::SCENEOBJECT;
 		event.m_SceneObject = obj;
 
@@ -48,7 +75,7 @@ void Scene::DestroySceneObject(SceneObject* obj)
 		m_SceneObjects.erase(remove);
 
 		//Dispatch POST_DELETE event
-  		event.m_EventType = SceneEventType::POST_DELETE;
+  		event.m_EventType = SceneEventType::OBJECT_POST_DELETE;
 		GetSceneEventDipatcher().Dispatch(event);
 	}
 }
@@ -56,7 +83,7 @@ void Scene::DestroySceneObject(SceneObject* obj)
 void Scene::DestroySceneObject(Ref<SceneObject> obj)
 {
 	SceneEvent event;
-	event.m_EventType = SceneEventType::PRE_DELETE;
+	event.m_EventType = SceneEventType::OBJECT_PRE_DELETE;
 	event.m_ObjectClass = SceneObjectClass::SCENEOBJECT;
 	event.m_SceneObject = obj.get();
 
@@ -66,8 +93,26 @@ void Scene::DestroySceneObject(Ref<SceneObject> obj)
 	m_SceneObjects.erase(std::find(m_SceneObjects.begin(), m_SceneObjects.end(), obj));
 
 	//Dispatch POST_DELETE event
-	event.m_EventType = SceneEventType::POST_DELETE;
+	event.m_EventType = SceneEventType::OBJECT_POST_DELETE;
 	GetSceneEventDipatcher().Dispatch(event);
+}
+
+void Scene::DestroyRenderer(Renderer* renderer)
+{
+	auto remove = m_Renderers.end();
+	for (auto it = m_Renderers.begin(); it != m_Renderers.end(); it++)
+	{
+		if (renderer == (*it).get())
+		{
+			remove = it;
+			break;
+		}
+	}
+
+	if (remove != m_Renderers.end())
+	{
+		m_Renderers.erase(remove);
+	}
 }
 
 void Scene::AddSceneObject(SceneObject* obj)
@@ -75,7 +120,7 @@ void Scene::AddSceneObject(SceneObject* obj)
 	ASSERT(obj);
 
 	SceneEvent event;
-	event.m_EventType = SceneEventType::PRE_INITIALIZE;
+	event.m_EventType = SceneEventType::OBJECT_PRE_INITIALIZE;
 	event.m_ObjectClass = SceneObjectClass::SCENEOBJECT;
 	event.m_SceneObject = obj;
 	//Dispatch PRE_INITIALIZE event
@@ -90,6 +135,6 @@ void Scene::AddSceneObject(SceneObject* obj)
 	obj->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
 
 	//Dispatch POST_INITIALIZE event
-	event.m_EventType = SceneEventType::POST_INITIALIZE;
+	event.m_EventType = SceneEventType::OBJECT_POST_INITIALIZE;
 	GetSceneEventDipatcher().Dispatch(event);
 }

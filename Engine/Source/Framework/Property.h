@@ -26,7 +26,7 @@ enum class PropType
 	(the value is a pointer to an already constructed variable)
 	if you need properties that hold their own values use StaticProperty
 */
-struct Property
+struct DENGINE_API Property
 {
 	std::string m_name;
 	std::string m_category;
@@ -69,7 +69,7 @@ struct Property
 
 //only difference is that the Value pointer is tied to this property instance and not an external class,
 //its therefor also deleted by ~StaticProperty()
-struct StaticProperty : public Property
+struct DENGINE_API StaticProperty : public Property
 {
 	using Property::Property;
 

@@ -44,23 +44,16 @@ void Application::CoreUpdate(float DeltaTime)
 	for (uint i = 0; i < m_AppObjects.size(); i++)
 	{
 		auto obj = m_AppObjects[i];
-		/*delete the object if its marked for deletion
-		if((*it)->IsMarkedForDeletion())
-		{	
-			m_AppObjects.erase(it);
-
-			if(m_AppObjects.size() == 0)
-				break;
-			else
-				continue;
-		}
-		*/
 
 		//increment the itterator here 
 		if(obj)
 			obj->OnUpdate(tick);
-		//it++;
 	}
+
+	//dipatch on end object update event
+	ApplicationEvent updateEndEvent;
+	updateEndEvent.m_EventType = ApplicationEventType::OBJECTFINSIHUPDATE;
+	GetEventDispatcher().Dispatch(updateEndEvent);
 }
 
 void Application::RegisterBaseClasses()

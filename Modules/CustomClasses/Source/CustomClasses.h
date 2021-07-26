@@ -1,5 +1,6 @@
 #pragma once
 #include "Framework/Module.h"
+#include "DEngine.h"
 
 #define CUSTOMCLASSES_API
 
@@ -16,5 +17,7 @@ public:
 
 	void OnLoad() override;
 	void OnUnload() override;
+
+	Callback<SceneEvent> m_SceneEvent;
 };
 

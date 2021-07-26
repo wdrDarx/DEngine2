@@ -1,9 +1,9 @@
 #pragma once
 #include "Core/Core.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 #include "Event/EventDispatcher.h"
+#include "RenderAPI.h"
 
+//houses 
 class DENGINE_API Window
 {
 public:
@@ -21,32 +21,17 @@ public:
 		glfwSwapInterval(vsync);
 	}
 
-	void SetCurrentContext()
-	{
-		glfwMakeContextCurrent(m_Window);
-		m_ContextBound = true;
-	}
+	void OnWindowResize(GLFWwindow* window, int width, int height);
 
-	void ClearCurrentContext()
-	{
-		glfwMakeContextCurrent(nullptr);
-		m_ContextBound = false;
-	}
+	void SetCurrentContext();
 
-	bool isContextBound() const
-	{
-		return m_ContextBound;
-	}
+	void ClearCurrentContext();
 
-	int GetWidth() const
-	{
-		return m_Width;
-	}
+	bool isContextBound();
 
-	int GetHeight() const
-	{
-		return m_Height;
-	}
+	int GetWidth() const;
+
+	int GetHeight() const;
 
 	GLFWwindow* GetGlfwWindow() const
 	{
@@ -58,14 +43,19 @@ public:
 		return m_EventDispatcher;
 	}
 
+	Ref<RenderAPI> GetRenderAPI() const
+	{
+		return m_RenderAPI;
+	}
+
 private:
 
 	//calls window events
 	EventDispatcher m_EventDispatcher;
 
 	GLFWwindow* m_Window;
-	int m_Width = 0;
-	int m_Height = 0;
+	Ref<RenderAPI> m_RenderAPI;
+
 	bool m_Vsync = false;
 	bool m_ContextBound = false;
 };

@@ -18,6 +18,7 @@ typedef unsigned char byte;
 #include <chrono>
 #include <future>
 #include <fstream>
+#include <sstream>
 #include <atomic>
 #include <string>
 #include <tuple>
@@ -76,6 +77,12 @@ template<class T, class U>
 constexpr T* Cast(U* ptr)
 {
 	return dynamic_cast<T*>(ptr);
+}
+
+template<class T, class U>
+constexpr T* StaticCast(U* ptr)
+{
+	return static_cast<T*>(ptr);
 }
 
 template<class T, class U>

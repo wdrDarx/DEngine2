@@ -15,12 +15,7 @@ public:
 	
 	~Callback()
 	{
-		delete m_PlaceholderEvent;
-
-		if (m_EventDispatcher)
-		{
-			m_EventDispatcher->Unbind<EventType>(*(this));
-		}
+		Destroy();
 	}
 
 	//assign a function (from a class) to the actual callback
@@ -32,6 +27,16 @@ public:
 	void Clear()
 	{
 		m_OnTrigger = nullptr;
+	}
+
+	void Destroy()
+	{
+		delete m_PlaceholderEvent;
+
+		if (m_EventDispatcher)
+		{
+			m_EventDispatcher->Unbind<EventType>(*(this));
+		}
 	}
 
 	//called when the event is dispached to the bound object

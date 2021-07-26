@@ -42,6 +42,9 @@ struct ObjectInitializer
 	// Will copy the associated module name from the passed in object into the returning object initializer
 	static ObjectInitializer Module(ObjectBase* ExistantModuleObject);
 
+	//create an instance with an associated module name
+	static ObjectInitializer Module(const std::string& AssociatedModuleName);
+
 	ObjectInitializer(const std::string& name, int flags) : Name(name), Flags(flags)
 	{
 

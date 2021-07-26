@@ -103,7 +103,7 @@ enum MethodFlags
 	None = BIT(0)
 };
 
-struct Method
+struct DENGINE_API Method
 {
 	std::string m_Name;
 	std::string m_OwningClassName;

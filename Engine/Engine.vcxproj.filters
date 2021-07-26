@@ -13,6 +13,9 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{E3AE1F7C-4F19-D4F2-9857-85980401B247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\Renderers">
+      <UniqueIdentifier>{7C9F39FB-E800-1709-716E-5DBBDDCE4DC8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Serialization">
       <UniqueIdentifier>{2319AF09-8FD9-2A40-5814-74BDC4936F1C}</UniqueIdentifier>
     </Filter>
@@ -34,6 +37,9 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\DEngine.h" />
+    <ClInclude Include="Source\Event\ApplicationEvent.h">
+      <Filter>Event</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Event\Callback.h">
       <Filter>Event</Filter>
     </ClInclude>
@@ -64,6 +70,12 @@
     <ClInclude Include="Source\Framework\Engine.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\FrameworkMacros.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\Method.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Module.h">
       <Filter>Framework</Filter>
     </ClInclude>
@@ -88,8 +100,38 @@
     <ClInclude Include="Source\Framework\StaticClass.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\StructBase.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Tick.h">
       <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\FrameBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Indexbuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\RenderAPI.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Renderers\Renderer.h">
+      <Filter>Rendering\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Shader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Texture.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\VertexArray.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\VertexBufferLayout.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Vertexbuffer.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Window.h">
       <Filter>Rendering</Filter>
@@ -124,9 +166,6 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Framework\Method.h" />
-    <ClInclude Include="Source\Framework\StructBase.h" />
-    <ClInclude Include="Source\Framework\FrameworkMacros.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">
@@ -150,6 +189,9 @@
     <ClCompile Include="Source\Framework\ObjectBase.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\Property.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Framework\Scene.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
@@ -158,6 +200,33 @@
     </ClCompile>
     <ClCompile Include="Source\Framework\StaticClass.cpp">
       <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\StructBase.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\FrameBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Indexbuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\RenderAPI.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Renderers\Renderer.cpp">
+      <Filter>Rendering\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Shader.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Texture.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\VertexArray.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Vertexbuffer.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Window.cpp">
       <Filter>Rendering</Filter>
@@ -183,7 +252,5 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Framework\StructBase.cpp" />
-    <ClCompile Include="Source\Framework\Property.cpp" />
   </ItemGroup>
 </Project>

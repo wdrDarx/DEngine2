@@ -17,6 +17,7 @@
 #include "Event/ModuleEvent.h"
 #include "Event/SceneEvent.h"
 #include "Event/EditorCallback.h"
+#include "Event/ApplicationEvent.h"
 
 //Framework
 #include "Framework/Tick.h"
@@ -37,6 +38,14 @@
 
 //Rendering 
 #include "Rendering/Window.h"
+#include "Rendering/RenderAPI.h"
+#include "Rendering/FrameBuffer.h"
+#include "Rendering/Indexbuffer.h"
+#include "Rendering/Shader.h"
+#include "Rendering/Texture.h"
+#include "Rendering/VertexArray.h"
+#include "Rendering/Vertexbuffer.h"
+#include "Rendering/VertexBufferLayout.h"
 
 //Serialization
 #include "Serialization/Buffer.h"

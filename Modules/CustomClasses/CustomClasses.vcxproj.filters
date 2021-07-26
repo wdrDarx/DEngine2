@@ -15,6 +15,9 @@
     <ClInclude Include="Source\Classes\CustomSceneObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\QuadRenderer.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
@@ -25,6 +28,9 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\QuadRenderer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\CustomClasses.cpp" />

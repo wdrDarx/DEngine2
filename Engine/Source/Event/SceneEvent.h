@@ -10,19 +10,22 @@ enum class SceneObjectClass
 
 enum class SceneEventType
 {
-	PRE_INITIALIZE = 0,
-	POST_INITIALIZE,
-	PRE_DELETE,
-	POST_DELETE
+	OBJECT_PRE_INITIALIZE = 0,
+	OBJECT_POST_INITIALIZE,
+	OBJECT_PRE_DELETE,
+	OBJECT_POST_DELETE,
+	SCENE_ONCONSTRUCT
 };
 
 class SceneObject;
+class Scene;
 struct  SceneEvent : public Event
 {
 	SceneEventType m_EventType;
 	SceneObjectClass m_ObjectClass;
 
-	SceneObject* m_SceneObject;
+	SceneObject* m_SceneObject = nullptr;
+	Scene* m_Scene = nullptr;
 
 	SceneEvent()
 	{
@@ -42,5 +45,10 @@ struct  SceneEvent : public Event
 	const SceneObject* GetSceneObject() const
 	{
 		return m_SceneObject;
+	}
+
+	Scene* GetScene() const
+	{
+		return m_Scene;
 	}
 }; 

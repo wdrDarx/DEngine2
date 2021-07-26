@@ -15,6 +15,9 @@
     <ClInclude Include="Source\Classes\PropertyWindow.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\Viewport.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\ImGui\ImGuiLayer.h">
       <Filter>ImGui</Filter>
     </ClInclude>
