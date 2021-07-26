@@ -30,6 +30,7 @@ class DENGINE_API Renderer : public ObjectBase
 
 		virtual void BeginFrame();
 		virtual void EndFrame();
+		virtual void ClearFrame();
 
 	private:
 		Scene* m_Scene = nullptr;

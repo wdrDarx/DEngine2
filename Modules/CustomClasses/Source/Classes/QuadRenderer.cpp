@@ -32,25 +32,35 @@ void QuadRenderer::BeginFrame()
 void QuadRenderer::EndFrame()
 {
 	Super::EndFrame();
+	if(m_Verticies.size() == 0) return;
 
 	vec2d size = GetScene()->GetRenderAPI()->GetViewportSize();
-	glm::mat4 CameraTransform = glm::translate(glm::mat4(1.0f), {0,0, -10});
-	m_ViewProjectionMatrix = glm::perspective(glm::radians(90.f), size.x / size.y, 0.01f, 10000.f) * glm::inverse(CameraTransform);
-
-	m_ViewProjectionMatrix = glm::ortho(-size.x, size.x, -size.y, size.y, -1.0f, 1.0f);
 
 	m_VertexBuffer->SetNewData(m_Verticies.data(), sizeof(Vertex) * m_Verticies.size());
 	std::vector<uint> indexbuffer;
 	uint quadCount = m_Verticies.size() / 4;
 	for(uint i = 0; i < quadCount; i++)
 	{ 		
-		indexbuffer.insert(indexbuffer.end(), m_QuadIndecies.begin(), m_QuadIndecies.end());
+		//indexbuffer.insert(indexbuffer.end(), m_QuadIndecies.begin(), m_QuadIndecies.end());
+		for (uint j = 0; j < m_QuadIndecies.size(); j++)
+		{
+			uint ogIndex = m_QuadIndecies[j];
+
+			indexbuffer.push_back(ogIndex + i * 4);
+		}
 	}
 	m_IndexBuffer->SetData(indexbuffer.data(), indexbuffer.size());
 
 	m_QuadShader->Bind();
-	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", m_ViewProjectionMatrix);
+	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", GetScene()->GetRenderAPI()->GetCamera()->GetViewProjectionMatrix());
 	GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *m_VertexArray, *m_IndexBuffer);
+
+	
+}
+
+void QuadRenderer::ClearFrame()
+{
+	Super::ClearFrame();
 
 	m_Verticies.clear();
 }
@@ -59,22 +69,38 @@ void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4
 {
 	glm::mat4 Transform = glm::translate(glm::mat4(1.0f), {pos.x, pos.y, 0.f}) * glm::scale(glm::mat4(1.0f), {scale.x, scale.y, 1.f});
 
-	Vertex v1 
+	DrawQuad(Transform, color);
+
+}
+
+void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color)
+{
+	Transform final = trans;
+	final.scale *= size;
+
+	glm::mat4 Transform = World::MakeMatrix(final);
+
+	DrawQuad(Transform, color);
+}
+
+void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color)
+{
+	Vertex v1
 	{
 		{-0.5f, -0.5f, 0.f},
 		{0,0},
 		0.f,
 		color,
-		Transform
+		matrix
 	};
-		
+
 	Vertex v2
 	{
 		{-0.5f, 0.5f, 0.f},
 		{0,0},
 		0.f,
 		color,
-		Transform
+		matrix
 	};
 
 	Vertex v3
@@ -83,7 +109,7 @@ void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4
 		{0,0},
 		0.f,
 		color,
-		Transform
+		matrix
 	};
 
 	Vertex v4
@@ -92,7 +118,7 @@ void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4
 		{0,0},
 		0.f,
 		color,
-		Transform
+		matrix
 	};
 
 	m_Verticies.push_back(v1);

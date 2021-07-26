@@ -75,7 +75,12 @@ void RenderAPI::DrawIndexed(Shader& shader, VertexArray& vertexArray, IndexBuffe
 	shader.Bind();
 	vertexArray.Bind();
 	indexBuffer.Bind();
+
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+
+	shader.Unbind();
+	vertexArray.Unbind();
+	indexBuffer.Unbind();
 
 	//record draw calls
 	m_Stats.DrawCalls++;

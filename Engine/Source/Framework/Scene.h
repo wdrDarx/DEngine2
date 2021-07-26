@@ -21,8 +21,15 @@ public:
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 
+	//call for each render target (e.g a viewport)
 	void BeginFrame();
+
+	//call for each render target (e.g a viewport)
 	void EndFrame();
+
+	// call once after finished rendering to all render targets 
+	// (used to clear renderer data)
+	void ClearFrame();
 
 	const std::vector<Ref<SceneObject>>& GetSceneObjects() const
 	{

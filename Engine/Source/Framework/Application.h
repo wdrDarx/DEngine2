@@ -79,6 +79,21 @@ public:
 		return ptr;
 	}
 
+	template<class T>
+	Ref<T> FindObjectByClass()
+	{
+		bool valid = std::is_base_of<AppObject, T>::value;
+		ASSERT(valid);
+
+		for (auto& obj : m_AppObjects)
+		{
+			if(Ref<T> out = Cast<T>(obj))
+				return out;
+		}
+
+		return nullptr;
+	}
+
 	//removed object from appobject array
 	void DestroyAppObject(Ref<AppObject> obj)
 	{
@@ -87,11 +102,6 @@ public:
 
 	void DestroyAppObject(AppObject* obj)
 	{
-// 		auto end = std::remove_if(m_AppObjects.begin(), m_AppObjects.end(), [&](Ref<AppObject> appobj)
-// 		{
-// 			return obj == appobj.get();
-// 		});
-
 		auto remove = m_AppObjects.end();
 		for (auto it = m_AppObjects.begin(); it != m_AppObjects.end(); it++)
 		{

@@ -1,9 +1,8 @@
 #pragma once
 #include "Core/Core.h"
-#include "glm/glm.hpp"
 
 
-struct Transform2D
+struct DENGINE_API Transform2D
 {
 	Transform2D(const vec2d& p, const float& r, const vec2d& s) :pos(p), rot(r), scale(s)
 	{
@@ -28,8 +27,8 @@ public:
 	static bool BoxvsPointCollisionCheck2D(const vec2d& v1, const vec2d& v2, const vec2d& v3, const vec2d& v4, const vec2d& worldPos);
 	static bool BoxvsPointCollisionCheck2D(const Bound& Box, const vec2d& worldPos);
 
-	static vec2d ScreenSpaceToWorldSpace(Camera* camera, const vec2d& in);
-	static vec2d WorldSpaceToScreenSpace(Camera* camera, const vec2d& in);
+// 	static vec2d ScreenSpaceToWorldSpace(Camera* camera, const vec2d& in);
+// 	static vec2d WorldSpaceToScreenSpace(Camera* camera, const vec2d& in);
 
 	static vec2d Rotate2D(const vec2d& in, const float& Angle = 0.f);
 	static vec3d Rotate3D(const vec3d& in, const vec3d& rot = {0,0,0});

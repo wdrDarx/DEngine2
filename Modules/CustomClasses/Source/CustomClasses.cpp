@@ -14,22 +14,36 @@ void CustomClasses::OnLoad()
 
 	//custom renderer
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
-	m_SceneEvent.Assign([&](SceneEvent* event)
-	{
-		if (event->GetEventType() == SceneEventType::SCENE_ONCONSTRUCT)
-		{
-			if (!gladLoadGL())
-			{
-				std::cout << "Failed to initialize OpenGL context" << std::endl;
-			}
 
-			event->GetScene()->CreateRenderer<QuadRenderer>(ObjectInitializer::Module("CustomClasses"));
+	if (Ref<Scene> scene = GetApplication()->FindObjectByClass<Scene>())
+	{
+		if (!gladLoadGL())
+		{
+			std::cout << "Failed to initialize OpenGL context" << std::endl;
 		}
-	});
-	GetApplication()->GetEventDispatcher().Bind(m_SceneEvent);
+
+		scene->CreateRenderer<QuadRenderer>(ObjectInitializer::Module("CustomClasses"));
+	}
+	else
+	{ 
+		m_SceneEvent.Assign([&](SceneEvent* event)
+			{
+				if (event->GetEventType() == SceneEventType::SCENE_ONCONSTRUCT)
+				{
+					if (!gladLoadGL())
+					{
+						std::cout << "Failed to initialize OpenGL context" << std::endl;
+					}
+
+					event->GetScene()->CreateRenderer<QuadRenderer>(ObjectInitializer::Module("CustomClasses"));
+				}
+			});
+		GetApplication()->GetEventDispatcher().Bind(m_SceneEvent);
+	}
 
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
+	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), StringStruct);
 }
 
 void CustomClasses::OnUnload()
@@ -43,4 +57,5 @@ void CustomClasses::OnUnload()
 
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
+	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), StringStruct);
 }

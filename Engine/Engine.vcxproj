@@ -125,6 +125,7 @@
     <ClInclude Include="Source\Framework\StaticClass.h" />
     <ClInclude Include="Source\Framework\StructBase.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
+    <ClInclude Include="Source\Rendering\Camera.h" />
     <ClInclude Include="Source\Rendering\FrameBuffer.h" />
     <ClInclude Include="Source\Rendering\Indexbuffer.h" />
     <ClInclude Include="Source\Rendering\RenderAPI.h" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Source\Framework\SceneObject.cpp" />
     <ClCompile Include="Source\Framework\StaticClass.cpp" />
     <ClCompile Include="Source\Framework\StructBase.cpp" />
+    <ClCompile Include="Source\Rendering\Camera.cpp" />
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Indexbuffer.cpp" />
     <ClCompile Include="Source\Rendering\RenderAPI.cpp" />

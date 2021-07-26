@@ -18,6 +18,9 @@ enum class PropType
 	STRING,
 	VEC2D,
 	VEC3D,
+	TRANSFORM,
+	COLOR3,
+	COLOR4,
 	STRUCT
 };
 

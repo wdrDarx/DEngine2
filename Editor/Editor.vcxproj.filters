@@ -27,6 +27,7 @@
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\MenuBar.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\EditorApp.cpp">
@@ -42,5 +43,6 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Source.cpp" />
+    <ClCompile Include="Source\Classes\MenuBar.cpp" />
   </ItemGroup>
 </Project>

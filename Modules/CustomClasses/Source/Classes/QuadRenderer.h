@@ -53,8 +53,11 @@ public:
 
 	void BeginFrame() override;
 	void EndFrame() override;
+	void ClearFrame() override;
 
 	void DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4& color);
+	void DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color);
+	void DrawQuad(const glm::mat4& matrix, const color4& color);
 public:
 	Ref<Shader> m_QuadShader;
 

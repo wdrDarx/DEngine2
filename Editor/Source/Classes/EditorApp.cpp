@@ -25,7 +25,7 @@ EditorApp::EditorApp() : Application()
 
 		if (event->GetEventType() == WindowEventType::RESIZED)
 		{
-			LogTemp("New Window Size : " + Log::string(event->GetNewSize()));
+			//LogTemp("New Window Size : " + Log::string(event->GetNewSize()));
 		}
 	});
 
@@ -86,6 +86,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 
 	if (m_ImGuiLayer.IsValid())
 	{
+		m_MenuBar.Render(this);
 		m_PropertyWindow.Render();
 		ImGui::Begin("Application Objects");
 
@@ -221,11 +222,12 @@ void EditorApp::EndFrame()
 		viewport->EndFrame();
 	}
 	
+	m_EditorScene->ClearFrame();
 	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
 }
 
 void EditorApp::CreateViewport(Ref<Scene> scene)
 {
-	m_Viewports.push_back(MakeRef<Viewport>(scene, GetWindow()->GetRenderAPI()));
+	m_Viewports.push_back(MakeRef<Viewport>(scene, GetWindow()->GetRenderAPI(), nullptr, std::string("Viewport " + STRING(m_Viewports.size()))));
 }

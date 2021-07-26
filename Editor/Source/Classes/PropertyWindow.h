@@ -9,14 +9,6 @@ struct CategoryPair
 	Property* Prop;
 };
 
-struct MyStruct {
-	int key;
-	std::string data;
-	MyStruct(int key, std::string data) {
-		this->key = key;
-		this->data = data;
-	}
-};
 
 class PropertyWindow
 {
@@ -158,54 +150,75 @@ class PropertyWindow
 				StructBase* structToDraw = nullptr;
 				switch (prop.m_Type)
 				{
-				case PropType::BOOL:
-				{
-					ImGui::Checkbox(DisplayName.c_str(), (bool*)prop.m_Value);
-					break;
-				}
+					case PropType::BOOL:
+					{
+						ImGui::Checkbox(DisplayName.c_str(), (bool*)prop.m_Value);
+						break;
+					}
 
-				case PropType::INT:
-				{
-					ImGui::DragInt(DisplayName.c_str(), (int*)prop.m_Value);
-					break;
-				}
+					case PropType::INT:
+					{
+						ImGui::DragInt(DisplayName.c_str(), (int*)prop.m_Value);
+						break;
+					}
 
-				case PropType::FLOAT:
-				{
-					ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);
-					break;
-				}
+					case PropType::FLOAT:
+					{
+						ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);
+						break;
+					}
 
-				case PropType::STRING:
-				{
-					ImGui::InputText(DisplayName.c_str(), (std::string*)prop.m_Value);
-					break;
-				}
+					case PropType::STRING:
+					{
+						ImGui::InputText(DisplayName.c_str(), (std::string*)prop.m_Value);
+						break;
+					}
 
-				case PropType::VEC2D:
-				{
-					float drag2[2];
-					drag2[0] = ((vec2d*)prop.m_Value)->x;
-					drag2[1] = ((vec2d*)prop.m_Value)->y;
-					ImGui::DragFloat2(DisplayName.c_str(), drag2);
+					case PropType::VEC2D:
+					{
+						float drag2[2];
+						drag2[0] = ((vec2d*)prop.m_Value)->x;
+						drag2[1] = ((vec2d*)prop.m_Value)->y;
+						ImGui::DragFloat2(DisplayName.c_str(), drag2);
 
-					((vec2d*)prop.m_Value)->x = drag2[0];
-					((vec2d*)prop.m_Value)->y = drag2[1];
-					break;
-				}
+						((vec2d*)prop.m_Value)->x = drag2[0];
+						((vec2d*)prop.m_Value)->y = drag2[1];
+						break;
+					}
 
-				case PropType::VEC3D:
-				{
-					float drag3[3];
-					drag3[0] = ((vec3d*)prop.m_Value)->x;
-					drag3[1] = ((vec3d*)prop.m_Value)->y;
-					drag3[2] = ((vec3d*)prop.m_Value)->z;
-					DrawVec3Control(prop.m_Value, drag3);
-					((vec3d*)prop.m_Value)->x = drag3[0];
-					((vec3d*)prop.m_Value)->y = drag3[1];
-					((vec3d*)prop.m_Value)->z = drag3[2];
-					break;
-				}
+					case PropType::VEC3D:
+					{
+						DrawVec3Control(prop.m_Value, glm::value_ptr(*(vec3d*)prop.m_Value));
+						break;
+					}
+					case PropType::COLOR3:
+					{
+						ImGui::ColorEdit3(DisplayName.c_str(), glm::value_ptr(*(color3*)prop.m_Value));
+						break;
+					}
+					case PropType::COLOR4:
+					{
+						ImGui::ColorEdit4(DisplayName.c_str(), glm::value_ptr(*(color4*)prop.m_Value));
+						break;
+					}
+					case PropType::TRANSFORM:
+					{
+						//draw transform
+						ImGui::PushItemWidth(ImGui::CalcItemWidth());
+						bool expanded = ImGui::TreeNodeEx(prop.m_Value, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed, "Transform");
+						if (expanded)
+						{
+							Transform* transform = (Transform*)prop.m_Value;
+					
+							DrawVec3Control("Position", glm::value_ptr(transform->pos));
+							DrawVec3Control("Rotation", glm::value_ptr(transform->rot));
+							DrawVec3Control("Scale", glm::value_ptr(transform->scale), 1.0f, 0.05f);
+							ImGui::TreePop();
+						}
+						ImGui::PopItemWidth();
+						break;
+					}
+					
 				}
 				ImGui::PopItemWidth();
 

@@ -5,13 +5,19 @@
 void ChildSceneObject::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
-
-	GetScene()->GetRenderer<QuadRenderer>()->DrawQuad2D(QuadPos, {50, 50 }, {1, 0,0,1});
+	for (uint i = 0; i < 1000; i++)
+	{
+		Transform finalTrans = QuadTransform;
+		finalTrans.pos.y += i * 110.f;
+		GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ 100,100,1 }, finalTrans, QuadColor);
+	}
+		
 }
 
 void ChildSceneObject::OnConstruct()
 {
 	Super::OnConstruct();
+	
 // 	auto staticClass = OBJECT_STATIC_CLASS(ChildSceneObject);
 // 	auto& props = staticClass.GetDefaultProperties();
 // 

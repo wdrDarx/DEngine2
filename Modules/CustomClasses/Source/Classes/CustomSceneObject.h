@@ -33,6 +33,7 @@ public:
 	OBJECT_CLASS_DEF(CustomSceneObject, SceneObject)
 		OBJECT_PROPS_BEGIN()
 			PROPS_CATEGORY(TestCategory)
+				PROPDEF(trans, EditAnywhere);
 				PROPDEF(test1, EditAnywhere);
 				PROPDEF(test2, EditAnywhere);
 				PROPDEF(test3, EditAnywhere);
@@ -49,6 +50,7 @@ public:
 	void testfunc(float test);
 
 public:
+	Transform trans;
 	bool test1 = false;
 	int test2 = 0;
 	float test3 = 0.f;

@@ -3,8 +3,6 @@
 //Dependencies
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 //Core
 #include "Core/Core.h"
@@ -46,6 +44,7 @@
 #include "Rendering/VertexArray.h"
 #include "Rendering/Vertexbuffer.h"
 #include "Rendering/VertexBufferLayout.h"
+#include "Rendering/Camera.h"
 
 //Serialization
 #include "Serialization/Buffer.h"

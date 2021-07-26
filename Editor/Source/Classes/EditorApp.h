@@ -3,6 +3,7 @@
 #include "ImGui/ImGuiLayer.h"
 #include "PropertyWindow.h"
 #include "Viewport.h"
+#include "MenuBar.h"
 
 class EditorApp : public Application
 {
@@ -23,5 +24,6 @@ public:
 	Callback<ApplicationEvent> m_ApplicationEvent;
 	ImGuiLayer m_ImGuiLayer;
 	PropertyWindow m_PropertyWindow;
+	MenuBar m_MenuBar;
 };
 

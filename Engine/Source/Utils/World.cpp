@@ -1,15 +1,8 @@
 #pragma once
-#if 0
 #include "World.h"
-#include "Rendering/Core/Renderer.h"
-#include "Rendering/Core/Window.h"
-#include "glm/gtc/matrix_transform.hpp"
-#include <glm/gtx/matrix_decompose.hpp>
-#include <glm/gtx/quaternion.hpp>
 #include "Core/Core.h"
-#include "Rendering/2D/Camera.h"
 #include "GLFW/glfw3.h"
-#include "Box2D/box2d.h"
+
 
 vec3d World::Degrees(const vec3d& rad)
 {
@@ -53,35 +46,35 @@ vec3d World::Radians(const vec3d& deg)
 	return *(vec3d*)&glm::vec3(glm::radians(degs.x), glm::radians(degs.y), glm::radians(degs.z));
 }
 
-vec2d World::ScreenSpaceToWorldSpace(Camera* camera, const vec2d& in)
-{
-	float width = (float)camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Width;
-	float height = (float)camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Height;
-	vec2d out2 = in;
-	out2.x = (2.0f * ((float)(in.x - 0) / (width - 0))) - 1.0f;
-	out2.y = (2.0f * ((float)(in.y - 0) / (height - 0))) -1.0f;
- 	glm::mat4 mat = camera->GetProjectionMatrix();
- 	glm::vec4 v = glm::vec4(out2.x, out2.y, 1.f,1.f) * glm::inverse(mat);
-	out2.x = v.x;
-	out2.y = v.y;
-	out2.x += camera->GetPostition().x;
-	out2.y += camera->GetPostition().y;
-	return out2;
-}
+// vec2d World::ScreenSpaceToWorldSpace(Camera* camera, const vec2d& in)
+// {
+// 	float width = (float)camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Width;
+// 	float height = (float)camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Height;
+// 	vec2d out2 = in;
+// 	out2.x = (2.0f * ((float)(in.x - 0) / (width - 0))) - 1.0f;
+// 	out2.y = (2.0f * ((float)(in.y - 0) / (height - 0))) -1.0f;
+//  	glm::mat4 mat = camera->GetProjectionMatrix();
+//  	glm::vec4 v = glm::vec4(out2.x, out2.y, 1.f,1.f) * glm::inverse(mat);
+// 	out2.x = v.x;
+// 	out2.y = v.y;
+// 	out2.x += camera->GetPostition().x;
+// 	out2.y += camera->GetPostition().y;
+// 	return out2;
+// }
 
-vec2d World::WorldSpaceToScreenSpace(Camera* camera, const vec2d& in)
-{
-	uint width = camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Width;
-	uint height = camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Height;
-
-	glm::mat4 viewin = camera->GetViewMatrix();
-	glm::mat4 projin = camera->GetProjectionMatrix();
-	glm::mat4 both = viewin * projin;
-
-	glm::vec4 out4 = glm::vec4(in.x, in.y, 0, 0) * both;
-	vec2d out2 = vec2d(out4.x, out4.y);
-	return out2;
-}
+// vec2d World::WorldSpaceToScreenSpace(Camera* camera, const vec2d& in)
+// {
+// 	uint width = camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Width;
+// 	uint height = camera->GetTargetWindow()->GetRenderer()->m_FrameBuffer->GetSpec().Height;
+// 
+// 	glm::mat4 viewin = camera->GetViewMatrix();
+// 	glm::mat4 projin = camera->GetProjectionMatrix();
+// 	glm::mat4 both = viewin * projin;
+// 
+// 	glm::vec4 out4 = glm::vec4(in.x, in.y, 0, 0) * both;
+// 	vec2d out2 = vec2d(out4.x, out4.y);
+// 	return out2;
+//}
 
 vec2d World::Rotate2D(const vec2d& in, const float& Angle)
 {
@@ -302,4 +295,8 @@ vec3d World::GetUpVector(const vec3d& Rot)
 
 	return *(vec3d*)&f;
 }
-#endif
+
+glm::quat World::MatToQuat(const glm::mat4& mat)
+{
+	return glm::quat();
+}

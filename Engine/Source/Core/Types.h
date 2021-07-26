@@ -5,7 +5,11 @@
 #include <type_traits>
 #include <typeinfo>
 #include <typeindex>
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #define USE_GLM_TYPES
 
 //# define M_PI  3.14159265358979323846  /* pi */
@@ -62,9 +66,10 @@ struct ClassType
 
 #ifdef USE_GLM_TYPES
 using color4 = glm::vec4;
+using color3 = glm::vec3;
 using vec3d = glm::vec3;
 using vec2d = glm::vec2;
-using rotator = glm::quat;
+using quat = glm::quat;
 
 struct Transform
 {
@@ -76,6 +81,9 @@ struct Transform
 	{
 
 	}
+
+	Transform(const Transform& other) = default;
+	Transform(Transform&& other) = default;
 
 	Transform(const vec3d& p, const vec3d& r, const vec3d& s) : pos(p), rot(r), scale(s)
 	{}

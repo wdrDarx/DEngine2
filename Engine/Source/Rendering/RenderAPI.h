@@ -14,6 +14,7 @@ struct DENGINE_API RenderStats
 struct VertexArray;
 struct IndexBuffer;
 struct Shader;
+class Camera;
 
 //houses a context and provides functions for a bunch of render stuff
 class DENGINE_API RenderAPI
@@ -51,9 +52,24 @@ class DENGINE_API RenderAPI
 			return m_Stats;
 		}
 
+		void SetCamera(Ref<Camera> camera)
+		{
+			m_Camera = camera;
+		}
+
+		Ref<Camera> GetCamera()
+		{
+			ASSERT(m_Camera);
+			return m_Camera;
+		}
+
 	private:
 		RenderStats m_Stats;
 		vec2d m_LastViewportSize;
+
+		//optional
+		Ref<Camera> m_Camera;
+
 		GLFWwindow* m_windowContext = nullptr;
 		bool m_ContextBound = false;
 };

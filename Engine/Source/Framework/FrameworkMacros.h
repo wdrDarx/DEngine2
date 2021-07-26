@@ -27,7 +27,10 @@ if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Categ
 if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRING,				 &x, ((std::string*)&x)->length(), _flags)); } else \
 if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::VEC2D,					 &x, sizeof(vec2d), _flags)); } else \
 if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::VEC3D,					 &x, sizeof(vec3d), _flags)); } else \
-if(std::is_base_of<StructBase, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRUCT,   &x, sizeof(x), _flags)); } \
+if(typeid(x) == typeid(color3)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::COLOR3,					 &x, sizeof(color3), _flags)); } else \
+if(typeid(x) == typeid(color4)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::COLOR4,					 &x, sizeof(color4), _flags)); } else \
+if(typeid(x) == typeid(Transform)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::TRANSFORM,		     &x, sizeof(Transform), _flags)); } else \
+if(std::is_base_of<StructBase, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRUCT,&x, sizeof(x), _flags)); } \
 }
 
 //TODO give all "DStructs" a function that returns their serializable size based on their properties

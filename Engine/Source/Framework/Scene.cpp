@@ -46,6 +46,16 @@ void Scene::EndFrame()
 	}
 }
 
+void Scene::ClearFrame()
+{
+	if (!GetRenderAPI()) return; //cant render with no context
+
+	for (uint i = 0; i < m_Renderers.size(); i++)
+	{
+		m_Renderers[i]->ClearFrame();
+	}
+}
+
 void Scene::CreateDefaultRenderers()
 {
 	

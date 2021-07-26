@@ -29,8 +29,6 @@ void Window::StartFrame()
 {
 	if (!GetRenderAPI()->GetCurrentContext()) return;
 
-	GetRenderAPI()->SetCurrentContext(m_Window);
-
 	if (glfwWindowShouldClose(GetRenderAPI()->GetCurrentContext()))
 	{
 		WindowEvent event;
@@ -42,14 +40,13 @@ void Window::StartFrame()
 		return;
 	}
 
+	GetRenderAPI()->SetClearColor({0,0,0,0});
 	GetRenderAPI()->Clear();
 }
 
 void Window::EndFrame()
 {
 	if(!GetRenderAPI()->GetCurrentContext()) return;
-
-	GetRenderAPI()->SetCurrentContext(m_Window);
 
 	glfwSwapBuffers(GetRenderAPI()->GetCurrentContext());
 	glfwPollEvents();
@@ -63,7 +60,6 @@ void Window::OnWindowResize(GLFWwindow* window, int width, int height)
 	event.m_NewSize = {width, height};
 	m_EventDispatcher.Dispatch(event);
 
-	GetRenderAPI()->SetCurrentContext(m_Window);
 	GetRenderAPI()->SetViewport({width, height});
 }
 

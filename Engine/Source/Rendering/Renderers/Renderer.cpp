@@ -27,3 +27,8 @@ void Renderer::EndFrame()
 	if (!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
 }
 
+void Renderer::ClearFrame()
+{
+	if (!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
+}
+

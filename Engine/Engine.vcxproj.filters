@@ -166,6 +166,7 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">
@@ -252,5 +253,6 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\Camera.cpp" />
   </ItemGroup>
 </Project>
