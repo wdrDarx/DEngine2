@@ -8,9 +8,6 @@ void Engine::AddApplication(Ref<Application> app)
 
 void Engine::Start()
 {
-	//start random engine
-	Rand::Init();
-
 	//main loop
 	while (true)
 	{

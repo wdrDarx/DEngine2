@@ -99,8 +99,8 @@ private:
 	void CreateStaticClass();
 	bool m_IsStruct = false;
 
-	Ref<ObjectBase> m_ObjectRef;
-	Ref<StructBase> m_StructRef;
-	Ref<ClassType> m_ClassType;
-	ObjectClassType m_ObjectClassType;
+	Ref<ObjectBase> m_ObjectRef = nullptr;
+	Ref<StructBase> m_StructRef = nullptr;
+	Ref<ClassType> m_ClassType = nullptr;
+	ObjectClassType m_ObjectClassType = ObjectClassType::OBJECT;
 };

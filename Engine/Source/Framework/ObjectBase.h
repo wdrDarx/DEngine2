@@ -17,12 +17,6 @@ enum ContructFlags
 };
 
 
-//unique ID (0 means invalid)
-struct UID
-{
-	uint64 ID = 0;
-};
-
 //contains initializer values for an object
 class ObjectBase;
 struct ObjectInitializer
@@ -37,7 +31,7 @@ struct ObjectInitializer
 	std::string AssociatedModuleName;
 
 	//Construct flags
-	int Flags;
+	int Flags = 0;
 
 	// Will copy the associated module name from the passed in object into the returning object initializer
 	static ObjectInitializer Module(ObjectBase* ExistantModuleObject);

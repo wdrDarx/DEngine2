@@ -30,6 +30,7 @@ if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Categ
 if(typeid(x) == typeid(color3)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::COLOR3,					 &x, sizeof(color3), _flags)); } else \
 if(typeid(x) == typeid(color4)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::COLOR4,					 &x, sizeof(color4), _flags)); } else \
 if(typeid(x) == typeid(Transform)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::TRANSFORM,		     &x, sizeof(Transform), _flags)); } else \
+if(is_base_of_template<AssetRef, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::ASSETREF, &x, sizeof(x), _flags)); } else \
 if(std::is_base_of<StructBase, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRUCT,&x, sizeof(x), _flags)); } \
 }
 

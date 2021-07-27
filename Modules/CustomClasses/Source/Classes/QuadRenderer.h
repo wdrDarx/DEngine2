@@ -18,32 +18,6 @@ struct CUSTOMCLASSES Quad2D
 	color4 color;
 };
 
-struct CUSTOMCLASSES GLQuad
-{
-public:
-	GLQuad() {};
-	GLQuad(const glm::vec4& vi1, const glm::vec4& vi2, const glm::vec4& vi3, const glm::vec4& vi4, const float& slot, const glm::vec2& uv, const glm::vec4& color)
-	{
-		v1 = vi1;
-		v2 = vi2;
-		v3 = vi3;
-		v4 = vi4;
-
-		textureSlot = slot;
-		UVScale = uv;
-		Color = color;
-	}
-	glm::vec4 v1;
-	glm::vec4 v2;
-	glm::vec4 v3;
-	glm::vec4 v4;
-
-	float textureSlot;
-	glm::vec2 UVScale;
-	glm::vec4 Color;
-};
-
-
 class CUSTOMCLASSES QuadRenderer :  public Renderer
 {
 public:
@@ -51,13 +25,13 @@ public:
 
 	void OnConstruct() override;
 
-	void BeginFrame() override;
-	void EndFrame() override;
+	void PrepareFrame() override;
+	void RenderFrame(Ref<Camera> camera) override;
 	void ClearFrame() override;
 
 	void DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4& color);
-	void DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color);
-	void DrawQuad(const glm::mat4& matrix, const color4& color);
+	void DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color, float TextureID = 0.f);
+	void DrawQuad(const glm::mat4& matrix, const color4& color, float TextureID = 0.f);
 public:
 	Ref<Shader> m_QuadShader;
 
@@ -70,6 +44,6 @@ public:
 	Ref<VertexArray> m_VertexArray;
 	Ref<IndexBuffer> m_IndexBuffer;
 
-	glm::mat4 m_ViewProjectionMatrix;
+	glm::mat4 m_ViewProjectionMatrix = glm::mat4(1.0f);
 };
 

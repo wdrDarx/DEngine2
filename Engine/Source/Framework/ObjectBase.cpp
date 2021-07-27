@@ -6,8 +6,13 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 	//assign the member initializer for later use
 	m_ObjectInitializer = initializer;
 
+#if 0
 	//assign name (could be empty)
 	m_Name = initializer.Name;
+#else
+	//assign same name as class name by default
+	m_Name = GetClassType().Name;
+#endif
 
 	//override AssociatedModuleName 
 	if(!initializer.AssociatedModuleName.empty())
@@ -35,6 +40,10 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 uint ObjectBase::Serialize(Buffer& buffer)
 {
 	STARTWRITE(buffer, 0);
+
+	WRITE(&m_ID, sizeof(UID));
+	WRITESTRING(m_Name);
+
 	WRITEBUFFER(GeneratePropBuffer());
 	STOPWRITE()
 }
@@ -42,9 +51,14 @@ uint ObjectBase::Serialize(Buffer& buffer)
 uint ObjectBase::Deserialize(const Buffer& buffer)
 {
 	STARTREAD(buffer, 0);
+
+	READ(&m_ID, sizeof(UID));
+	READSTRING(m_Name);
+
 	Buffer PropBuffer;
 	READBUFFER(PropBuffer);
 	LoadPropsFromBuffer(PropBuffer);
+
 	STOPREAD()
 }
 

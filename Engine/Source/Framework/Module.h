@@ -62,9 +62,9 @@ public:
 	}
 
 	std::string m_Name;
-	HINSTANCE m_Instance;
+	HINSTANCE m_Instance = nullptr;
 	std::vector<Dependency> m_Dependencies;
 	std::function<void(void)> m_InvokeFunc;
-	ModuleManager* m_ModuleManager;
+	ModuleManager* m_ModuleManager = nullptr;
 	Ref<Application> m_App;
 };

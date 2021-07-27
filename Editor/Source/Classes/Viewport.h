@@ -6,11 +6,11 @@ class Viewport
 	public:
 		Viewport(Ref<Scene> scene, Ref<RenderAPI> ParentWindowContext, Ref<Camera> camera, const std::string& viewportName ) : m_Scene(scene), m_RenderAPI(ParentWindowContext), m_ViewportName(viewportName)
 		{
-			scene->SetRenderAPI(m_RenderAPI);
+			m_Scene->SetRenderAPI(m_RenderAPI);
 
 			FrameBuferSpec spec;
-			spec.Width = m_RenderAPI->GetViewportSize().x;
-			spec.Height = m_RenderAPI->GetViewportSize().y;
+			spec.Width = 1;
+			spec.Height = 1;
 			m_Framebuffer = MakeRef<FrameBuffer>(spec);
 
 			if(camera)
@@ -24,23 +24,21 @@ class Viewport
 			
 		}
 
+		//only used to clear the sceen basically
 		void BeginFrame()
 		{
 			m_Framebuffer->Bind();
-			m_RenderAPI->SetViewport({m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height});
+			m_RenderAPI->SetViewport(m_LastViewportSize);
 			m_RenderAPI->SetCamera(m_Camera);
-			m_RenderAPI->SetClearColor({0.1,0.2,0,1});
+			m_RenderAPI->SetClearColor({0,0,0,1});
 			m_RenderAPI->Clear();
-
-			m_Scene->BeginFrame();	
 		}
 		void EndFrame()
 		{
 			m_Framebuffer->Bind();
-			m_RenderAPI->SetViewport({ m_Framebuffer->GetSpec().Width, m_Framebuffer->GetSpec().Height });
+			m_RenderAPI->SetViewport(m_LastViewportSize);
 			m_RenderAPI->SetCamera(m_Camera);
-
-			m_Scene->EndFrame();
+			m_Scene->RenderFrame(m_Camera);
 			m_Framebuffer->Unbind();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
@@ -68,7 +66,7 @@ class Viewport
 		
 	public:
 		std::string m_ViewportName;
-		vec2d m_LastViewportSize = {0,0};
+		vec2d m_LastViewportSize = {1,1};
 		vec2d m_ViewportPos;
 		bool m_FocusedOnviewport;
 		Ref<FrameBuffer> m_Framebuffer;

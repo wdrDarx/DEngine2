@@ -27,6 +27,15 @@ Buffer Property::MakeBuffer() const
 		break;
 	}
 
+	case PropType::ASSETREF:
+	{
+		Buffer assetRefBuffer;
+		AssetRef<Asset>* assetRef = (AssetRef<Asset>*)(m_Value);
+		assetRef->Serialize(assetRefBuffer);
+		WRITEBUFFER(assetRefBuffer);
+		break;
+	}
+
 	case PropType::STRUCT:
 	{
 		StructBase* Struct = (StructBase*)(m_Value);
@@ -61,6 +70,15 @@ void Property::FromBuffer(const Buffer& buffer)
 		std::string temp;
 		READSTRING(temp);
 		(*(std::string*)m_Value) = temp;
+		break;
+	}
+
+	case PropType::ASSETREF:
+	{
+		Buffer assetRefBuffer;		
+		READBUFFER(assetRefBuffer);
+		AssetRef<Asset>* assetRef = (AssetRef<Asset>*)(m_Value);
+		assetRef->Deserialize(assetRefBuffer);
 		break;
 	}
 

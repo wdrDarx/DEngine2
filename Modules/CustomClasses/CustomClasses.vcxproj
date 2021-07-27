@@ -99,13 +99,16 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\ChildSceneObject.h" />
     <ClInclude Include="Source\Classes\CustomAppObject.h" />
     <ClInclude Include="Source\Classes\CustomSceneObject.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
+    <ClInclude Include="Source\Classes\TextureAsset.h" />
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />
     <ClCompile Include="Source\Classes\CustomAppObject.cpp" />
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp" />

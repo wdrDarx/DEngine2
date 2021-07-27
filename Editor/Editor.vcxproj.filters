@@ -28,6 +28,7 @@
       <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Classes\MenuBar.h" />
+    <ClInclude Include="Source\Classes\SceneObjectPannel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\EditorApp.cpp">
@@ -44,5 +45,6 @@
     </ClCompile>
     <ClCompile Include="Source\Source.cpp" />
     <ClCompile Include="Source\Classes\MenuBar.cpp" />
+    <ClCompile Include="Source\Classes\SceneObjectPannel.cpp" />
   </ItemGroup>
 </Project>

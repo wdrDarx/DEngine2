@@ -17,12 +17,12 @@ void Renderer::OnConstruct()
 	m_Scene->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
 }
 
-void Renderer::BeginFrame()
+void Renderer::PrepareFrame()
 {
 	if(!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
 }
 
-void Renderer::EndFrame()
+void Renderer::RenderFrame(Ref<Camera> camera)
 {
 	if (!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
 }

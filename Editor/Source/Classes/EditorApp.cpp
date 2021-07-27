@@ -22,11 +22,6 @@ EditorApp::EditorApp() : Application()
 		{
 			m_ImGuiLayer.Shutdown();
 		}
-
-		if (event->GetEventType() == WindowEventType::RESIZED)
-		{
-			//LogTemp("New Window Size : " + Log::string(event->GetNewSize()));
-		}
 	});
 
 	//module events
@@ -39,15 +34,33 @@ EditorApp::EditorApp() : Application()
 			LogTemp("UNLOADED : " + event->m_ModuleName);
 	});
 
-	//Scene events
+	//Scene events (Auto unissign for property and pannel windows)
 	m_SceneEvent.Assign([&](SceneEvent* event)
 	{
-		//Auto unassign selected scene object in property window if that object was deleted
+		//Auto unassign selected scene object in property window and scene pannel if that object/component was deleted
 		if (event->GetEventType() == SceneEventType::OBJECT_PRE_DELETE)
 		{
 			if (event->GetSceneObject() && m_PropertyWindow.m_SelectedSceneObject.get() == event->GetSceneObject())
 			{
 				m_PropertyWindow.m_SelectedSceneObject = nullptr;
+			}
+
+			if (event->GetSceneObject() && m_SceneObjectPannel.m_SelectedObject.get() == event->GetSceneObject())
+			{
+				m_SceneObjectPannel.m_SelectedObject = nullptr;
+			}
+		} 
+
+		if (event->GetEventType() == SceneEventType::COMPONENT_PRE_DELETE)
+		{
+			if (m_PropertyWindow.m_SelectedComponent.get() == event->GetComponent())
+			{
+				m_PropertyWindow.m_SelectedComponent = nullptr;
+			}
+
+			if (m_SceneObjectPannel.m_SelectedComponent.get() == event->GetComponent())
+			{
+				m_SceneObjectPannel.m_SelectedComponent = nullptr;
 			}
 		}
 	});
@@ -63,6 +76,9 @@ EditorApp::EditorApp() : Application()
 
 	//load all modules
 	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
+
+	//here to make sure any loaded modules could load their asset types
+	GetAssetManager().DiscoverAssets();
 
 	//init imgui layer
 	m_ImGuiLayer.Init(GetWindow());
@@ -86,117 +102,164 @@ void EditorApp::OnUpdate(const Tick& tick)
 
 	if (m_ImGuiLayer.IsValid())
 	{
-		m_MenuBar.Render(this);
-		m_PropertyWindow.Render();
-		ImGui::Begin("Application Objects");
+		RenderImGui(tick);
+	}
+}
 
-		for (auto& obj : GetAppObjects())
+void EditorApp::RenderImGui(const Tick& tick)
+{
+	m_MenuBar.Render(this);
+
+	m_SceneObjectPannel.Render(m_EditorScene);
+	if (m_SceneObjectPannel.m_SelectedComponent)
+	{
+		m_PropertyWindow.m_SelectedSceneObject = nullptr;
+		m_PropertyWindow.m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
+	}
+	else if (m_SceneObjectPannel.m_SelectedObject)
+	{
+		m_PropertyWindow.m_SelectedSceneObject = m_SceneObjectPannel.m_SelectedObject;
+		m_PropertyWindow.m_SelectedComponent = nullptr;
+	}
+	m_PropertyWindow.Render();
+
+	ImGui::Begin("Application Objects");
+
+	for (auto& obj : GetAppObjects())
+	{
+		ImGui::Text(obj->GetClassType().Name.c_str());
+	}
+
+	ImGui::End();
+
+	ImGui::Begin("Registry");
+
+	if (ImGui::TreeNode("Structs"))
+	{
+		for (auto& reg : GetStructRegistry().GetRegisteredKeys())
 		{
-			if (ImGui::Button(obj->GetClassType().Name.c_str()))
+			if (ImGui::Button(reg.name.c_str()))
 			{
-
+				//(GetStructRegistry().Make(reg));
 			}
 		}
 
-		ImGui::End();
-
-		ImGui::Begin("Scene Objects");
-
-		for (auto& obj : m_EditorScene->GetSceneObjects())
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("Objects"))
+	{
+		for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
 		{
-			if (ImGui::Button((obj->GetClassType().Name + " " + STRING(obj->GetID().ID)).c_str()))
-			{
-				m_PropertyWindow.m_SelectedSceneObject = obj;
-			}
-		}
-
-		ImGui::End();
-
-		ImGui::Begin("Registry");
-
-		if (ImGui::TreeNode("Structs"))
-		{
-			for (auto& reg : GetStructRegistry().GetRegisteredKeys())
+			if (reg.type == ObjectClassType::OBJECT)
 			{
 				if (ImGui::Button(reg.name.c_str()))
 				{
-					//(GetStructRegistry().Make(reg));
+					(GetObjectRegistry().Make(reg))->Initialize(ObjectInitializer());
 				}
 			}
-
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("Objects"))
-		{
-			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
-			{
-				if (reg.type == ObjectClassType::OBJECT)
-				{
-					if (ImGui::Button(reg.name.c_str()))
-					{
-						(GetObjectRegistry().Make(reg))->Initialize(ObjectInitializer());
-					}
-				}
-			}
-
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("App Objects"))
-		{
-			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
-			{
-				if (reg.type == ObjectClassType::APPOBJECT)
-				{
-					if (ImGui::Button(reg.name.c_str()))
-					{
-						AddAppObject(Cast<AppObject>(GetObjectRegistry().Make(reg)));
-					}
-				}
-			}
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("SceneObjects"))
-		{
-			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
-			{
-				if (reg.type == ObjectClassType::SCENEOBJECT)
-				{
-					if (ImGui::Button(reg.name.c_str()))
-					{
-						m_EditorScene->AddSceneObject(Cast<SceneObject>(GetObjectRegistry().Make(reg)));
-					}
-				}
-			}
-
-			ImGui::TreePop();
 		}
 
-		ImGui::End();
-
-		ImGui::Begin("Modules");
-
-		if (ImGui::Button("Reload All"))
-		{
-			GetModuleManager().UnloadAllModules();
-			GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
-		}
-
-		for (const auto& mod : GetModuleManager().GetLoadedModules())
-		{
-			ImGui::Text(mod->m_Name.c_str());
-			ImGui::SameLine();
-			if (ImGui::Button("Unload"))
-			{
-				GetModuleManager().UnloadModule(mod->m_Name);
-			}
-		}
-
-		ImGui::End();
-
-		ImGui::Begin("Render Stats");
-		ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
-		ImGui::End();
+		ImGui::TreePop();
 	}
+	if (ImGui::TreeNode("App Objects"))
+	{
+		for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
+		{
+			if (reg.type == ObjectClassType::APPOBJECT)
+			{
+				if (ImGui::Button(reg.name.c_str()))
+				{
+					AddAppObject(Cast<AppObject>(GetObjectRegistry().Make(reg)));
+				}
+			}
+		}
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("SceneObjects"))
+	{
+		for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
+		{
+			if (reg.type == ObjectClassType::SCENEOBJECT)
+			{
+				if (ImGui::Button(reg.name.c_str()))
+				{
+					m_EditorScene->AddSceneObject(Cast<SceneObject>(GetObjectRegistry().Make(reg)));
+				}
+			}
+		}
+
+		ImGui::TreePop();
+	}
+	if (ImGui::TreeNode("Components"))
+	{
+		for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
+		{
+			if (reg.type == ObjectClassType::OBJECTCOMPONENT)
+			{
+				if (ImGui::Button(reg.name.c_str()))
+				{
+
+				}
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
+
+	ImGui::Begin("Asset Manager");
+
+	if (ImGui::TreeNode("AssetTypes"))
+	{
+		for (auto& type : GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
+		{
+			ImGui::Text(type.name.c_str());
+		}
+		ImGui::TreePop();
+	}
+
+	if (ImGui::Button("Discover Assets"))
+	{
+		GetAssetManager().DiscoverAssets();
+	}
+
+	if (ImGui::TreeNode("Discovered Assets"))
+	{
+		for (auto& asset : GetAssetManager().GetAllDiscorveredAssets())
+		{
+			std::string display = "(" + asset.m_AssetType + ") " + asset.m_AssetName + " (" + STRING(asset.m_AssetID.ID) + ")";
+			ImGui::Text(display.c_str());
+		}
+		ImGui::TreePop();
+	}
+
+
+	ImGui::End();
+
+	ImGui::Begin("Modules");
+
+	if (ImGui::Button("Reload All"))
+	{
+		GetModuleManager().UnloadAllModules();
+		GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
+	}
+
+	for (const auto& mod : GetModuleManager().GetLoadedModules())
+	{
+		ImGui::Text(mod->m_Name.c_str());
+		ImGui::SameLine();
+		if (ImGui::Button("Unload"))
+		{
+			GetModuleManager().UnloadModule(mod->m_Name);
+		}
+	}
+
+	ImGui::End();
+
+	ImGui::Begin("Render Stats");
+	ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
+	ImGui::End();
 }
 
 void EditorApp::BeginFrame()
@@ -215,6 +278,7 @@ void EditorApp::BeginFrame()
 void EditorApp::EndFrame()
 {
 	if (!m_ImGuiLayer.IsValid()) return;
+	m_EditorScene->PrepareFrame();
 
 	//end frame for all viewports (calls end frame on the scene)
 	for (auto& viewport : m_Viewports)

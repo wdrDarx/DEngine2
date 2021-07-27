@@ -3,14 +3,18 @@
 #include "Classes/CustomAppObject.h"
 #include "Classes/CustomSceneObject.h"
 #include "Classes/ChildSceneObject.h"
+#include "Classes/QuadComponent.h"
 
 #include "Classes/QuadRenderer.h"
+
+#include "Classes/TextureAsset.h"
 
 void CustomClasses::OnLoad()
 {
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 
 	//custom renderer
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
@@ -43,7 +47,9 @@ void CustomClasses::OnLoad()
 
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
-	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), StringStruct);
+
+
+	REGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
 }
 
 void CustomClasses::OnUnload()
@@ -52,10 +58,12 @@ void CustomClasses::OnUnload()
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
-	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), StringStruct);
+
+	UNREGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
 }

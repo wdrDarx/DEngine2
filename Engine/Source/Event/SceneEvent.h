@@ -5,7 +5,8 @@
 enum class SceneObjectClass
 {
 	SCENEOBJECT = 0,
-	OBJECTCOMPONENT
+	OBJECTCOMPONENT,
+	SCENE
 };
 
 enum class SceneEventType
@@ -14,18 +15,21 @@ enum class SceneEventType
 	OBJECT_POST_INITIALIZE,
 	OBJECT_PRE_DELETE,
 	OBJECT_POST_DELETE,
+	COMPONENT_PRE_DELETE,
 	SCENE_ONCONSTRUCT
 };
 
 class SceneObject;
 class Scene;
+class ObjectComponent;
 struct  SceneEvent : public Event
 {
-	SceneEventType m_EventType;
-	SceneObjectClass m_ObjectClass;
+	SceneEventType m_EventType = SceneEventType::OBJECT_PRE_INITIALIZE;
+	SceneObjectClass m_ObjectClass = SceneObjectClass::SCENEOBJECT;
 
 	SceneObject* m_SceneObject = nullptr;
 	Scene* m_Scene = nullptr;
+	ObjectComponent* m_Component = nullptr;
 
 	SceneEvent()
 	{
@@ -45,6 +49,11 @@ struct  SceneEvent : public Event
 	const SceneObject* GetSceneObject() const
 	{
 		return m_SceneObject;
+	}
+
+	const ObjectComponent* GetComponent() const
+	{
+		return m_Component;
 	}
 
 	Scene* GetScene() const

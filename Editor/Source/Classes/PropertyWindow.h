@@ -22,17 +22,27 @@ class PropertyWindow
 		{
 			ImGui::Begin("Properties");
 
+			if (m_SelectedComponent)
+			{
+				DrawComponentProps(m_SelectedComponent);
+			}
+			else
 			if (m_SelectedSceneObject)
 			{
-				DrawSceneObject(m_SelectedSceneObject);
+				DrawSceneObjectProps(m_SelectedSceneObject);
 			}
 
 			ImGui::End();
 		}
 
-		void DrawSceneObject(Ref<SceneObject> sceneObject)
+		void DrawSceneObjectProps(Ref<SceneObject> sceneObject)
 		{			
 			ListProperties(sceneObject->GetPropertiesMutable(), sceneObject);
+		}
+
+		void DrawComponentProps(Ref<ObjectComponent> Comp)
+		{
+			ListProperties(Comp->GetPropertiesMutable(), Comp);
 		}
 
 		void BeginCategory(const std::string& CategoryName)
@@ -103,6 +113,30 @@ class PropertyWindow
 				{
 					DrawProperty(prop, owner, ForceNewLine);
 				}
+			}
+		}
+
+		void DrawAssetRef(AssetRef<Asset>* assetRef)
+		{
+			Ref<AssetHandle> handle = assetRef->GetAssetHandle();
+			std::string buttonText = handle ? "(" + handle->GetAssetType() + ") " + handle->GetAssetName() : "None";
+
+			if (ImGui::Button(buttonText.c_str()))
+				ImGui::OpenPopup("Select Asset");			
+
+			if (ImGui::BeginPopup("Select Asset"))
+			{
+				for (auto& asset : m_App->GetAssetManager().GetAllDiscorveredAssets())
+				{
+					std::string ItemText = "(" + asset.GetAssetType() + ") " + asset.GetAssetName();
+					if (ImGui::MenuItem(ItemText.c_str()))
+					{
+						assetRef->SetAssetHandle(asset);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+				ImGui::EndPopup();
 			}
 		}
 
@@ -218,6 +252,12 @@ class PropertyWindow
 						ImGui::PopItemWidth();
 						break;
 					}
+
+					case PropType::ASSETREF:
+					{
+						DrawAssetRef((AssetRef<Asset>*)prop.m_Value);
+						break;
+					}
 					
 				}
 				ImGui::PopItemWidth();
@@ -305,6 +345,7 @@ class PropertyWindow
 		}
 public:
 	Ref<SceneObject> m_SelectedSceneObject;
+	Ref<ObjectComponent> m_SelectedComponent;
 	Ref<Application> m_App;
 	float m_ColumnWidth = 100.f;
 };

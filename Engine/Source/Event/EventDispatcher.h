@@ -20,14 +20,14 @@ public:
 			return;
 		}
 
+		//if event is handled then stop
+		if (static_cast<Event*>(&event)->m_IsHandled)
+			return;
+
 		//using a queue because callbacks could be popped off in the for loop so we need a seperate one
 		std::vector<std::function<void(T* event)>> CallbacksToCall;
 		for (auto callback : m_BoundCallbacks)
 		{		
-			//if event is handled then stop
-			if(static_cast<Event*>(&event)->m_IsHandled)
-				return;
-
 			//try casting the event, if it works then call the callback			
  			T* castedEvent = dynamic_cast<T*>(callback->m_PlaceholderEvent);
 

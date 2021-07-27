@@ -14,6 +14,9 @@
 #include "Event/Callback.h"
 #include "Event/WindowEvent.h"
 
+//assets
+#include "Assets/AssetManager.h"
+
 enum class AppState
 {
 	GAME = 1,
@@ -154,11 +157,17 @@ public:
 	{
 		return m_EventDispatcher;
 	}
+
+	AssetManager& GetAssetManager()
+	{
+		return m_AssetManager;
+	}
 	
 protected:
 	void MakeWindow(const std::string& name, int width, int height, bool vsync);
 	void CoreUpdate(float DeltaTime);
 	void RegisterBaseClasses();
+	void RegisterBaseAssetTypes();
 	void Shutdown();
 
 	AppState m_AppState;
@@ -176,5 +185,7 @@ protected:
 	StructRegistry m_StructRegistry;
 
 	ModuleManager m_ModuleManager;
+
+	AssetManager m_AssetManager;
 };
 

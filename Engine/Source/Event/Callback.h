@@ -32,10 +32,13 @@ public:
 	void Destroy()
 	{
 		delete m_PlaceholderEvent;
+		m_PlaceholderEvent = nullptr;
 
 		if (m_EventDispatcher)
 		{
 			m_EventDispatcher->Unbind<EventType>(*(this));
+			m_EventDispatcher = nullptr;
+			m_OnTrigger = nullptr;
 		}
 	}
 

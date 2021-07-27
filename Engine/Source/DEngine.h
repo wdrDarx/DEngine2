@@ -25,6 +25,7 @@
 #include "Framework/Scene.h"
 #include "Framework/SceneObject.h"
 #include "Framework/ObjectBase.h"
+#include "Framework/ObjectComponent.h"
 #include "Framework/ModuleManager.h"
 #include "Framework/Registry.h"
 #include "Framework/Module.h"
@@ -33,6 +34,12 @@
 #include "Framework/FrameworkMacros.h"
 #include "Framework/Method.h"
 #include "Framework/StaticClass.h"
+
+//Assets
+#include "Assets/Asset.h"
+#include "Assets/AssetHandle.h"
+#include "Assets/AssetManager.h"
+#include "Assets/AssetRef.h"
 
 //Rendering 
 #include "Rendering/Window.h"

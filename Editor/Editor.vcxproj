@@ -108,6 +108,7 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
     <ClInclude Include="Source\Classes\EditorApp.h" />
     <ClInclude Include="Source\Classes\MenuBar.h" />
     <ClInclude Include="Source\Classes\PropertyWindow.h" />
+    <ClInclude Include="Source\Classes\SceneObjectPannel.h" />
     <ClInclude Include="Source\Classes\Viewport.h" />
     <ClInclude Include="Source\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_glfw.h" />
@@ -116,6 +117,7 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
   <ItemGroup>
     <ClCompile Include="Source\Classes\EditorApp.cpp" />
     <ClCompile Include="Source\Classes\MenuBar.cpp" />
+    <ClCompile Include="Source\Classes\SceneObjectPannel.cpp" />
     <ClCompile Include="Source\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Source\ImGui\imgui_impl_opengl3.cpp" />

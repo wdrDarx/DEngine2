@@ -6,8 +6,13 @@
 Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initialize module manager
 {
 	RegisterBaseClasses();
+	RegisterBaseAssetTypes();
 	GetObjectRegistry().m_App = ToRef<Application>(this);
 	GetStructRegistry().m_App = ToRef<Application>(this);
+	GetAssetManager().GetAssetTypeRegistry().m_App = ToRef<Application>(this);
+
+	//mount default content directory
+	GetAssetManager().MountContentDirectory(Paths::GetContentDirectory());
 }
 
 void Application::MakeWindow(const std::string& name, int width, int height, bool vsync)
@@ -45,12 +50,11 @@ void Application::CoreUpdate(float DeltaTime)
 	{
 		auto obj = m_AppObjects[i];
 
-		//increment the itterator here 
 		if(obj)
 			obj->OnUpdate(tick);
 	}
 
-	//dipatch on end object update event
+	//dispatch on end object update event (slow, but clean solution with events)
 	ApplicationEvent updateEndEvent;
 	updateEndEvent.m_EventType = ApplicationEventType::OBJECTFINSIHUPDATE;
 	GetEventDispatcher().Dispatch(updateEndEvent);
@@ -64,7 +68,12 @@ void Application::RegisterBaseClasses()
 	REGISTER_OBJECT(GetObjectRegistry(), SceneObject, Engine);
 }
 
+void Application::RegisterBaseAssetTypes()
+{
+	
+}
+
 void Application::Shutdown()
 {
-
+	
 }

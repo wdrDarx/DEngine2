@@ -10,6 +10,9 @@
 #define REGISTER_STRUCT(RegistryRef, StructClass) RegistryRef.Register<StructClass>({#StructClass});
 #define UNREGISTER_STRUCT(RegistryRef, StructClass) RegistryRef.Unregister<StructClass>({#StructClass});
 
+#define REGISTER_ASSETCLASS(RegistryRef, AssetClass) RegistryRef.Register<AssetClass>({#AssetClass});
+#define UNREGISTER_ASSETCLASS(RegistryRef, AssetClass) RegistryRef.Unregister<AssetClass>({#AssetClass});
+
 
 struct ObjectRegisterKey
 {
@@ -184,6 +187,10 @@ public:
 	//here just in case i change some mad shit
 	Ref<Application> m_App;
 };
+//they are the same basically
+using AssetRegisterKey = StructRegisterKey;
+class Asset;
 
 using ObjectRegistry = _RegistryBase<ObjectRegisterKey, ObjectBase>;
 using StructRegistry = _RegistryBase<StructRegisterKey, StructBase>;
+using AssetRegistry = _RegistryBase<AssetRegisterKey, Asset>;

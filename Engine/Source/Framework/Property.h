@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Serialization/Buffer.h"
 #include "Event/EditorCallback.h"
-#include <variant>
+#include "Assets/AssetRef.h"
 
 enum PropFlags
 {	
@@ -21,6 +21,7 @@ enum class PropType
 	TRANSFORM,
 	COLOR3,
 	COLOR4,
+	ASSETREF,
 	STRUCT
 };
 
@@ -31,12 +32,12 @@ enum class PropType
 */
 struct DENGINE_API Property
 {
-	std::string m_name;
-	std::string m_category;
-	PropType m_Type;
-	int m_Flags;
-	void* m_Value;
-	size_t m_ValueSize;
+	std::string m_name = "";
+	std::string m_category = "";
+	PropType m_Type = PropType::BOOL; 
+	int m_Flags = 0;
+	void* m_Value = nullptr;
+	size_t m_ValueSize = 0;
 
 	Property()
 	{
@@ -90,7 +91,7 @@ struct DENGINE_API StaticProperty : public Property
 		m_ValueSize = other.m_ValueSize;
 	}
 
-	StaticProperty(StaticProperty&& other)
+	StaticProperty(StaticProperty&& other) noexcept
 	{
 		ASSERT(false) //dont wanna be calling this cuz idk what it will do
 

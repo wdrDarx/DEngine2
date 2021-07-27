@@ -76,10 +76,15 @@ ObjectClassType ObjectUtils::GetObjectClassType(Ref<ObjectBase> obj)
 			out = ObjectClassType::SCENEOBJECT;
 		}
 		else
-			if (Cast<ObjectBase>(obj))
+			if (Cast<ObjectComponent>(obj))
 			{
-				out = ObjectClassType::OBJECT;
+				out = ObjectClassType::OBJECTCOMPONENT;
 			}
+			else
+				if (Cast<ObjectBase>(obj))
+				{
+					out = ObjectClassType::OBJECT;
+				}
 
 	return out;
 }

@@ -23,26 +23,27 @@ void Scene::OnConstruct()
 	SceneEvent constructEvent;
 	constructEvent.m_Scene = this;
 	constructEvent.m_EventType = SceneEventType::SCENE_ONCONSTRUCT;
+	constructEvent.m_ObjectClass = SceneObjectClass::SCENE;
 	GetApplication()->GetEventDispatcher().Dispatch(constructEvent);
 }
 
-void Scene::BeginFrame()
+void Scene::PrepareFrame()
 {
 	if(!GetRenderAPI()) return; //cant render with no context
 
 	for (uint i = 0; i < m_Renderers.size(); i++)
 	{
-		m_Renderers[i]->BeginFrame();
+		m_Renderers[i]->PrepareFrame();
 	}
 }
 
-void Scene::EndFrame()
+void Scene::RenderFrame(Ref<Camera> camera)
 {
 	if (!GetRenderAPI()) return; //cant render with no context
 
 	for (uint i = 0; i < m_Renderers.size(); i++)
 	{
-		m_Renderers[i]->EndFrame();
+		m_Renderers[i]->RenderFrame(camera);
 	}
 }
 

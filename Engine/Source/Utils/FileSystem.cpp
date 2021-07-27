@@ -50,6 +50,13 @@ std::string FileDialog::SaveFile(const char* filter)
 	return fileNameStr;
 }
 
+std::string remove_extension(const std::string& filename)
+{
+	size_t lastdot = filename.find_last_of(".");
+	if (lastdot == std::string::npos) return filename;
+	return filename.substr(0, lastdot);
+}
+
 void File::ReadFile(const std::string& path, Buffer& buffer)
 {
 	std::ifstream stream(path, std::ios::in | std::ios::binary);
@@ -60,6 +67,35 @@ void File::ReadFile(const std::string& path, Buffer& buffer)
 	}
 	stream.close();
 
+}
+
+void File::ReadFile(const std::string& path, Buffer& buffer, const size_t& bytesToRead /*= 0*/)
+{
+	std::ifstream stream(path, std::ios::in | std::ios::binary);
+	if (stream)
+	{
+		buffer.resize(bytesToRead);
+		stream.read((char*)buffer.data(), bytesToRead);
+	}
+	stream.close();
+}
+
+std::string File::GetFileExtenstion(const std::string& path)
+{
+	size_t lastdot = path.find_last_of(".");
+	if (lastdot == std::string::npos) return "";
+
+	return Substring(path, lastdot + 1, path.length());
+}
+
+std::string File::RemoveFileExtension(const std::string& path)
+{
+	return remove_extension(path);
+}
+
+std::string File::GetFileNameFromPath(const std::string& path)
+{
+	return Substring(path, path.find_last_of("\\") + 1, path.find_last_of("."));
 }
 
 void File::WriteFile(const std::string& path, const Buffer& buffer)
@@ -88,4 +124,10 @@ int File::GetFileSize(const std::string& path)
 	int size = ftell(p_file);
 	fclose(p_file);
 	return size;
+}
+
+bool File::DoesFileExist(const std::string& path)
+{
+	std::ifstream f(path.c_str());
+	return f.good();
 }

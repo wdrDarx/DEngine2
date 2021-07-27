@@ -13,6 +13,7 @@
 *
 *
 */
+class Camera;
 class DENGINE_API Scene : public AppObject
 {
 public:
@@ -21,11 +22,11 @@ public:
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 
-	//call for each render target (e.g a viewport)
-	void BeginFrame();
+	//once per tick after everything is updated
+	void PrepareFrame();
 
 	//call for each render target (e.g a viewport)
-	void EndFrame();
+	void RenderFrame(Ref<Camera> camera);
 
 	// call once after finished rendering to all render targets 
 	// (used to clear renderer data)

@@ -97,6 +97,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Assets\AssetHandle.h" />
+    <ClInclude Include="Source\Assets\AssetManager.h" />
+    <ClInclude Include="Source\Assets\Asset.h" />
+    <ClInclude Include="Source\Assets\AssetRef.h" />
+    <ClInclude Include="Source\Framework\ObjectComponent.h" />
     <ClInclude Include="Source\Core\Allocator.h" />
     <ClInclude Include="Source\Core\Core.h" />
     <ClInclude Include="Source\Core\Log.h" />
@@ -148,6 +153,8 @@
     <ClInclude Include="Source\Utils\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Assets\Asset.cpp" />
+    <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
     <ClCompile Include="Source\Core\Allocater.cpp" />
     <ClCompile Include="Source\Core\Log.cpp" />
     <ClCompile Include="Source\Framework\AppObject.cpp" />

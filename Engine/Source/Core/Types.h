@@ -33,7 +33,35 @@ enum class ObjectClassType
 	OBJECT = 0,
 	APPOBJECT,
 	SCENEOBJECT,
-	COMPONENT
+	OBJECTCOMPONENT
+};
+
+//unique ID (0 means invalid)
+struct UID
+{
+	uint64 ID = 0;
+
+	bool operator==(const UID& other) const
+	{
+		return ID == other.ID;
+	}
+
+	bool operator!=(const UID& other) const
+	{
+		return ID != other.ID;
+	}
+
+	// 0 = invalid
+	operator bool() const
+	{
+		return ID != 0;
+	}
+
+	// 0 = invalid
+	bool operator!() const
+	{
+		return ID == 0;
+	}
 };
 
 //contains type info and friendly name of a class
@@ -45,7 +73,13 @@ struct ClassType
 	static std::string GetFriendlyTypeName(const std::type_index& index)
 	{
 		std::string base = index.name();
-		auto endpos = base.find("const") - 1; //account for empty space
+		auto endpos = base.find("const"); 
+
+		if(endpos == std::string::npos)
+			endpos = base.length(); //for non pointer types
+		else
+			endpos--; //account for empty space
+
 		if (auto classpos = base.find("class") != std::string::npos)
 		{
 			return Substring(base, classpos + std::string("class").length(), endpos);

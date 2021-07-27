@@ -1,29 +1,25 @@
 #include "ChildSceneObject.h"
-#include "CustomSceneObject.h"
-#include "QuadRenderer.h"
+#include "TextureAsset.h"
+
 
 void ChildSceneObject::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
-	for (uint i = 0; i < 1000; i++)
-	{
-		Transform finalTrans = QuadTransform;
-		finalTrans.pos.y += i * 110.f;
-		GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ 100,100,1 }, finalTrans, QuadColor);
-	}
-		
+	ASSERT(m_QuadComponent);
 }
 
 void ChildSceneObject::OnConstruct()
 {
 	Super::OnConstruct();
-	
-// 	auto staticClass = OBJECT_STATIC_CLASS(ChildSceneObject);
-// 	auto& props = staticClass.GetDefaultProperties();
+// 
+//   	Image loadedimg(FileDialog::OpenFile(".png"));
+// 	AssetRef<TextureAsset> textureRef(Paths::GetContentDirectory() + "Textures\\test");
+//   	Ref<TextureAsset> texture1 = MakeRef<TextureAsset>(loadedimg);
+//   	GetScene()->GetApplication()->GetAssetManager().SaveAsset(texture1, textureRef.GetAssetHandle());
 // 
 // 
-// 	auto staticClassStruct = STRUCT_STATIC_CLASS(TestStruct2);
-// 	auto& prop2s = staticClassStruct.GetDefaultProperties();
-// 
-// 	auto props3 = staticClassStruct.GenerateStaticProperties(GetScene()->GetApplication());
+// 	auto texture = GetScene()->GetApplication()->GetAssetManager().LoadAsset(textureRef);
+// 	GetScene()->GetApplication()->GetAssetManager().Unload(textureRef.GetAssetHandle()->GetAssetPath());
+
+	m_QuadComponent = CreateComponent<QuadComponent>(ObjectInitializer::Module(this));
 }

@@ -24,18 +24,27 @@ void QuadRenderer::OnConstruct()
 	m_VertexArray->Addbuffer(*m_VertexBuffer, *m_VertexBufferLayout);
 }
 
-void QuadRenderer::BeginFrame()
+void QuadRenderer::RenderFrame(Ref<Camera> camera)
 {
-	Super::BeginFrame();
+	Super::RenderFrame(camera);
+
+	glEnable(GL_DEPTH_TEST);
+
+	if (m_Verticies.size() == 0) return;
+
+	m_QuadShader->Bind();
+	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *m_VertexArray, *m_IndexBuffer);
+
+	glDisable(GL_DEPTH_TEST);
 }
 
-void QuadRenderer::EndFrame()
+void QuadRenderer::PrepareFrame()
 {
-	Super::EndFrame();
+	Super::PrepareFrame();
+
 	if(m_Verticies.size() == 0) return;
-
 	vec2d size = GetScene()->GetRenderAPI()->GetViewportSize();
-
 	m_VertexBuffer->SetNewData(m_Verticies.data(), sizeof(Vertex) * m_Verticies.size());
 	std::vector<uint> indexbuffer;
 	uint quadCount = m_Verticies.size() / 4;
@@ -50,12 +59,6 @@ void QuadRenderer::EndFrame()
 		}
 	}
 	m_IndexBuffer->SetData(indexbuffer.data(), indexbuffer.size());
-
-	m_QuadShader->Bind();
-	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", GetScene()->GetRenderAPI()->GetCamera()->GetViewProjectionMatrix());
-	GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *m_VertexArray, *m_IndexBuffer);
-
-	
 }
 
 void QuadRenderer::ClearFrame()
@@ -73,23 +76,23 @@ void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4
 
 }
 
-void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color)
+void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color, float TextureID)
 {
 	Transform final = trans;
 	final.scale *= size;
 
 	glm::mat4 Transform = World::MakeMatrix(final);
 
-	DrawQuad(Transform, color);
+	DrawQuad(Transform, color, TextureID);
 }
 
-void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color)
+void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, float TextureID )
 {
 	Vertex v1
 	{
 		{-0.5f, -0.5f, 0.f},
 		{0,0},
-		0.f,
+		TextureID,
 		color,
 		matrix
 	};
@@ -98,7 +101,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color)
 	{
 		{-0.5f, 0.5f, 0.f},
 		{0,0},
-		0.f,
+		TextureID,
 		color,
 		matrix
 	};
@@ -107,7 +110,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color)
 	{
 		{0.5f, 0.5f, 0.f},
 		{0,0},
-		0.f,
+		TextureID,
 		color,
 		matrix
 	};
@@ -116,7 +119,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color)
 	{
 		{0.5f, -0.5f, 0.f},
 		{0,0},
-		0.f,
+		TextureID,
 		color,
 		matrix
 	};

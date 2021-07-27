@@ -15,7 +15,12 @@ class DENGINE_API File
 {
 	public:
 		static void ReadFile(const std::string& path, Buffer& buffer);
+		static void ReadFile(const std::string& path, Buffer& buffer, const size_t& bytesToRead);
+		static std::string GetFileExtenstion(const std::string& path);
+		static std::string RemoveFileExtension(const std::string& path);
+		static std::string GetFileNameFromPath(const std::string& path);
 		static void WriteFile(const std::string& path, const Buffer& buffer);
 		static int GetFileSize(const std::string& path);
+		static bool DoesFileExist(const std::string& path);
 };
 

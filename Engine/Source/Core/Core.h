@@ -23,6 +23,7 @@ typedef unsigned char byte;
 #include <string>
 #include <tuple>
 #include <utility>
+#include <set>
 #include <type_traits>
 #include <stdexcept>
 #include <iostream>
@@ -83,6 +84,12 @@ template<class T, class U>
 constexpr T* StaticCast(U* ptr)
 {
 	return static_cast<T*>(ptr);
+}
+
+template<class T, class U>
+constexpr Ref<T> StaticCast(Ref<U> ptr)
+{
+	return std::static_pointer_cast<T>(ptr);
 }
 
 template<class T, class U>

@@ -1,5 +1,5 @@
 #pragma once
-//#define STB_IMAGE_IMPLEMENTATION
+
 #include "Core/Core.h"
 
 /*
@@ -12,8 +12,8 @@ struct DENGINE_API Image
 	~Image();
 
 	float* LoadHDR(const std::string& path);
-    unsigned char* LoadImage(const std::string& path);
-    unsigned char* LoadPNG(const std::string& path, const uint& channels);
+	byte* LoadImage(const std::string& path);
+    byte* LoadPNG(const std::string& path, const uint& channels);
 	void FreeImage();
 
 
@@ -21,7 +21,7 @@ struct DENGINE_API Image
 	int Height = 0;
 	int BPP = 0;
 
-	unsigned char* pixels = nullptr;
+	byte* pixels = nullptr;
 };
 
 

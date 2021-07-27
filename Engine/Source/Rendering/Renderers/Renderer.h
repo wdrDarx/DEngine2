@@ -5,7 +5,7 @@
 #include "Event/ModuleEvent.h"
 
 class Scene;
-
+class Camera;
 /*
 * inheritable custom class for modules to implement custom rendering (auto destroyed when a module unloads)
 * exists in the scope of a scene
@@ -28,8 +28,13 @@ class DENGINE_API Renderer : public ObjectBase
 
 		void OnConstruct() override;
 
-		virtual void BeginFrame();
-		virtual void EndFrame();
+		//called after every object ran their update function so its safe to handle data from there (CALLED ONCE PER TICK)
+		virtual void PrepareFrame();
+
+		//called for every camera that wants a render of this renderer
+		virtual void RenderFrame(Ref<Camera> camera);
+
+		//called once per tick after all the frames are rendered and data is safe to discard
 		virtual void ClearFrame();
 
 	private:

@@ -167,6 +167,11 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Camera.h" />
+    <ClInclude Include="Source\Framework\ObjectComponent.h" />
+    <ClInclude Include="Source\Assets\AssetManager.h" />
+    <ClInclude Include="Source\Assets\Asset.h" />
+    <ClInclude Include="Source\Assets\AssetRef.h" />
+    <ClInclude Include="Source\Assets\AssetHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">
@@ -254,5 +259,7 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Camera.cpp" />
+    <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
+    <ClCompile Include="Source\Assets\Asset.cpp" />
   </ItemGroup>
 </Project>
