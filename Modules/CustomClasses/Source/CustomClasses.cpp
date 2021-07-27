@@ -8,6 +8,7 @@
 #include "Classes/QuadRenderer.h"
 
 #include "Classes/TextureAsset.h"
+#include "Classes/TestAsset.h"
 
 void CustomClasses::OnLoad()
 {
@@ -50,6 +51,9 @@ void CustomClasses::OnLoad()
 
 
 	REGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
+	REGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TestAsset);
+
+	GetApplication()->GetAssetManager().MountContentDirectory(Paths::GetModulesDirectory());
 }
 
 void CustomClasses::OnUnload()
@@ -66,4 +70,7 @@ void CustomClasses::OnUnload()
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
 
 	UNREGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
+	UNREGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TestAsset);
+
+	GetApplication()->GetAssetManager().UnmountContentDirectory(Paths::GetModulesDirectory());
 }

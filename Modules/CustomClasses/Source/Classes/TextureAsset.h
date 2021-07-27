@@ -12,7 +12,7 @@ class CUSTOMCLASSES TextureAsset : public Asset
 
 		~TextureAsset()
 		{
-			LogWarning("ok");
+			
 		}
 
 		TextureAsset(const Image& image) : m_width(image.Width), m_height(image.Height), m_Pixels(std::vector<byte>(image.pixels, image.pixels + image.Width * image.Height * 4))

@@ -32,6 +32,7 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 
 	if (m_Verticies.size() == 0) return;
 
+
 	m_QuadShader->Bind();
 	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 	GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *m_VertexArray, *m_IndexBuffer);

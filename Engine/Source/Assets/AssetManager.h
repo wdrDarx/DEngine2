@@ -85,10 +85,12 @@ public:
 	template<class T>
 	Ref<T> LoadAsset(AssetRef<T>& assetRef)
 	{		
+		if (!assetRef.GetAssetHandle()) return nullptr;
+
 		//set the search directories
 		assetRef.GetAssetHandle()->m_SearchDirectories = &GetMountedDirectories();
 
-		//actually load the asset
+		//actually load the asset	
 		return LoadAsset<T>(assetRef.GetAssetHandle()->GetAssetPath());
 	}
 

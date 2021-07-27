@@ -21,6 +21,7 @@
     <ClInclude Include="Source\CustomClasses.h" />
     <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\TextureAsset.h" />
+    <ClInclude Include="Source\Classes\TestAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp">

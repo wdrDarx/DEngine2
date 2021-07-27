@@ -1,6 +1,7 @@
 #pragma once
 #include "CustomClasses.h"
 #include "TextureAsset.h"
+#include "TestAsset.h"
 #include "DEngine.h"
 
 class CUSTOMCLASSES QuadComponent : public ObjectComponent
@@ -12,6 +13,7 @@ public:
 			PROPDEF(QuadSize, EditAnywhere)
 			PROPDEF(QuadColor, EditAnywhere)
 			PROPDEF(QuadTexture, EditAnywhere)
+			PROPDEF(MessageAsset, EditAnywhere)
 		OBJECT_PROPS_END()
 
 	void OnUpdate(const Tick& tick) override;
@@ -23,5 +25,6 @@ public:
 	vec2d QuadSize = {100,100};
 	color4 QuadColor = { 1,0,0,1 };
 	AssetRef<TextureAsset> QuadTexture;
+	AssetRef<TestAsset> MessageAsset;
 };
 
