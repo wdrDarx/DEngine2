@@ -10,6 +10,33 @@
 #include "Classes/TextureAsset.h"
 #include "Classes/TestAsset.h"
 
+#include "tlhelp32.h"
+#include <comdef.h> 
+
+void GetModuleMemory(DWORD dwProcID, char* szModuleName, uptr& memPtr, uint64& memSize)
+{
+	uptr ModuleBaseAddress = 0;
+	HANDLE hSnapshot = CreateToolhelp32Snapshot(0x00000008 | 0x00000010, dwProcID);
+	if (hSnapshot != INVALID_HANDLE_VALUE)
+	{
+		MODULEENTRY32 ModuleEntry32;
+		ModuleEntry32.dwSize = sizeof(MODULEENTRY32);
+		if (Module32First(hSnapshot, &ModuleEntry32))
+		{
+			do
+			{
+				if (strcmp(_bstr_t(ModuleEntry32.szModule), szModuleName) == 0)
+				{
+					memPtr = (uptr)ModuleEntry32.modBaseAddr;
+					memSize = (uint64)ModuleEntry32.modBaseSize;
+					break;
+				}
+			} while (Module32Next(hSnapshot, &ModuleEntry32));
+		}
+		CloseHandle(hSnapshot);
+	}
+}
+
 void CustomClasses::OnLoad()
 {
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
@@ -20,17 +47,14 @@ void CustomClasses::OnLoad()
 	//custom renderer
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 
-	if (Ref<Scene> scene = GetApplication()->FindObjectByClass<Scene>())
+	if (!gladLoadGL())
 	{
-		if (!gladLoadGL())
-		{
-			std::cout << "Failed to initialize OpenGL context" << std::endl;
-		}
-
-		scene->CreateRenderer<QuadRenderer>(ObjectInitializer::Module("CustomClasses"));
+		std::cout << "Failed to initialize OpenGL context" << std::endl;
 	}
-	else
-	{ 
+
+	auto vec = GetApplication()->FindObjectsByClass<Scene>();
+	if(vec.size() == 0)
+	{
 		m_SceneEvent.Assign([&](SceneEvent* event)
 			{
 				if (event->GetEventType() == SceneEventType::SCENE_ONCONSTRUCT)
@@ -40,12 +64,17 @@ void CustomClasses::OnLoad()
 						std::cout << "Failed to initialize OpenGL context" << std::endl;
 					}
 
-					event->GetScene()->CreateRenderer<QuadRenderer>(ObjectInitializer::Module("CustomClasses"));
+					event->GetScene()->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
 				}
 			});
 		GetApplication()->GetEventDispatcher().Bind(m_SceneEvent);
 	}
-
+	else
+	for(const Ref<Scene>& scene : vec)
+	{
+		scene->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
+	}
+	
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
 

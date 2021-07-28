@@ -61,6 +61,11 @@ public:
 		return nullptr;
 	}
 
+	const std::string GetThisModuleName() const
+	{
+		return m_Name;
+	}
+
 	std::string m_Name;
 	HINSTANCE m_Instance = nullptr;
 	std::vector<Dependency> m_Dependencies;

@@ -261,5 +261,7 @@
     <ClCompile Include="Source\Rendering\Camera.cpp" />
     <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
     <ClCompile Include="Source\Assets\Asset.cpp" />
+    <ClCompile Include="Source\Assets\AssetHandle.cpp" />
+    <ClCompile Include="Source\Assets\AssetManager.cpp" />
   </ItemGroup>
 </Project>

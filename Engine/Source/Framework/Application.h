@@ -83,18 +83,19 @@ public:
 	}
 
 	template<class T>
-	Ref<T> FindObjectByClass()
+	std::vector<Ref<T>> FindObjectsByClass()
 	{
 		bool valid = std::is_base_of<AppObject, T>::value;
 		ASSERT(valid);
 
+		std::vector<Ref<T>> out;
 		for (auto& obj : m_AppObjects)
 		{
-			if(Ref<T> out = Cast<T>(obj))
-				return out;
+			if(Ref<T> outObj = Cast<T>(obj))
+				out.push_back(outObj);
 		}
 
-		return nullptr;
+		return out;
 	}
 
 	//removed object from appobject array

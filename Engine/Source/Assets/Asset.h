@@ -1,27 +1,22 @@
 #pragma once
 #include "Core/Core.h"
 #include "Serialization/Buffer.h"
-#include "Utils/Rand.h"
 
 class DENGINE_API Asset
 {
 public:
 	Asset();
 
-	virtual uint Serialize(Buffer& buffer) const
+	virtual uint Serialize(Buffer& buffer) const;
+
+	virtual uint Deserialize(const Buffer& buffer);
+
+	const UID& GetID() const
 	{
-		STARTWRITE(buffer, 0);
-		WRITE(&m_ID.ID, sizeof(uint64));
-		STOPWRITE();
+		return m_ID;
 	}
 
-	virtual uint Deserialize(const Buffer& buffer)
-	{
-		STARTREAD(buffer, 0);
-		READ(&m_ID, sizeof(UID));
-		STOPREAD();
-	}
-
+private:
 	//unique asset ID
 	UID m_ID;
 };

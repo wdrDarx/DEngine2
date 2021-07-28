@@ -119,7 +119,7 @@ class PropertyWindow
 		void DrawAssetRef(AssetRef<Asset>* assetRef)
 		{
 			Ref<AssetHandle> handle = assetRef->GetAssetHandle();
-			std::string buttonText = handle ? "(" + handle->GetAssetType() + ") " + handle->GetAssetName() : "None";
+			std::string buttonText = handle->IsValid() ? "(" + handle->GetAssetType() + ") " + handle->GetAssetName() : "None";
 
 			if (ImGui::Button(buttonText.c_str()))
 				ImGui::OpenPopup("Select Asset");			
@@ -128,11 +128,14 @@ class PropertyWindow
 			{
 				for (auto& asset : m_App->GetAssetManager().GetAllDiscorveredAssets())
 				{
-					std::string ItemText = "(" + asset.GetAssetType() + ") " + asset.GetAssetName();
-					if (ImGui::MenuItem(ItemText.c_str()))
+					if (asset.GetAssetType() == assetRef->GetAssetType())
 					{
-						assetRef->SetAssetHandle(asset);
-						ImGui::CloseCurrentPopup();
+						std::string ItemText = "(" + asset.GetAssetType() + ") " + asset.GetAssetName();
+						if (ImGui::MenuItem(ItemText.c_str()))
+						{
+							assetRef->SetAssetHandle(asset);
+							ImGui::CloseCurrentPopup();
+						}
 					}
 				}
 

@@ -154,6 +154,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp" />
+    <ClCompile Include="Source\Assets\AssetHandle.cpp" />
+    <ClCompile Include="Source\Assets\AssetManager.cpp" />
     <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
     <ClCompile Include="Source\Core\Allocater.cpp" />
     <ClCompile Include="Source\Core\Log.cpp" />

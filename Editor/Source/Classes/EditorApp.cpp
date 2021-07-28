@@ -228,7 +228,7 @@ void EditorApp::RenderImGui(const Tick& tick)
 	{
 		for (auto& asset : GetAssetManager().GetAllDiscorveredAssets())
 		{
-			std::string display = "(" + asset.m_AssetType + ") " + asset.m_AssetName + " (" + STRING(asset.m_AssetID.ID) + ")";
+			std::string display = "(" + asset.GetAssetType() + ") " + asset.GetAssetName() + " (" + STRING(asset.GetAssetID().ID) + ")";
 			ImGui::Text(display.c_str());
 		}
 		ImGui::TreePop();
@@ -289,6 +289,13 @@ void EditorApp::EndFrame()
 	m_EditorScene->ClearFrame();
 	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
+}
+
+void EditorApp::HotReload()
+{
+// 	Buffer sceneBuffer;
+// 	m_EditorScene->Serialize()
+// 	GetModuleManager()->UnloadAllModules();
 }
 
 void EditorApp::CreateViewport(Ref<Scene> scene)

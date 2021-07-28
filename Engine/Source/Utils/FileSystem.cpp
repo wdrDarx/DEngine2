@@ -80,7 +80,7 @@ void File::ReadFile(const std::string& path, Buffer& buffer, const size_t& bytes
 	stream.close();
 }
 
-std::string File::GetFileExtenstion(const std::string& path)
+std::string File::GetFileExtenstionFromPath(const std::string& path)
 {
 	size_t lastdot = path.find_last_of(".");
 	if (lastdot == std::string::npos) return "";
@@ -88,7 +88,7 @@ std::string File::GetFileExtenstion(const std::string& path)
 	return Substring(path, lastdot + 1, path.length());
 }
 
-std::string File::RemoveFileExtension(const std::string& path)
+std::string File::RemoveFileExtensionFromPath(const std::string& path)
 {
 	return remove_extension(path);
 }

@@ -21,6 +21,7 @@ const float RadToDeg = 180.f / M_PI;
 typedef uint32_t uint;
 typedef uint64_t uint64;
 typedef uint8_t byte;
+typedef uintptr_t uptr;
 
 inline std::string Substring(const std::string& source, const size_t& start, const size_t& end)
 {

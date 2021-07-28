@@ -16,6 +16,7 @@ public:
 		m_AssetCache = MakeRef<DataCache>();
 	}
 
+
 	template<class T>
 	void SaveAsset(Ref<T> asset, Ref<AssetHandle> handle)
 	{
@@ -86,6 +87,7 @@ public:
 	Ref<T> LoadAsset(AssetRef<T>& assetRef)
 	{		
 		if (!assetRef.GetAssetHandle()) return nullptr;
+		if(!assetRef.IsValid()) return nullptr;
 
 		//set the search directories
 		assetRef.GetAssetHandle()->m_SearchDirectories = &GetMountedDirectories();
@@ -130,31 +132,7 @@ public:
 	}
 
 	//goes through and discovers any registered asset types in all mounted directories (ASSETS WITH THE SAME ASSET ID WILL BE IGNORED AND NOT INCLUDED HERE)
-	void DiscoverAssets()
-	{
-		for(auto& dir : GetMountedDirectories())
-		{ 
-			//this set makes sure duplicated asset id's are ignored
-			std::set<AssetHandle> AssetHandles;
-			for (const auto& file : std::filesystem::recursive_directory_iterator(dir.c_str()))
-			{
-				if (file.is_regular_file())
-				{
-					for (auto& reg : m_AssetTypeRegistry.GetRegisteredKeys())
-					{
-						if(reg.name == File::GetFileExtenstion(file.path().string()))
-						{
-							AssetHandles.insert(AssetHandle(file.path().string()));
-							break;
-						}
-					}
-				}
-			}
-
-			//replace the directory assets with this new set
-			m_DiscoveredAssets[dir] = AssetHandles;
-		}
-	}
+	void DiscoverAssets();
 
 	void MountContentDirectory(const std::string& FullPath)
 	{
@@ -178,27 +156,8 @@ public:
 	}
 
 	//appends all asset handles from all mounted directories into 1 set (ASSETS WITH THE SAME ASSET ID WILL BE IGNORED AND NOT INCLUDED HERE)
-	std::set<AssetHandle> GetAllDiscorveredAssets() 
-	{
-		std::set<AssetHandle> out;
-		for (auto& dir : GetMountedDirectories())
-		{
-			const auto& assets = m_DiscoveredAssets[dir];
-			out.insert(assets.begin(), assets.end());
-		}
-		return out;
-	}
-
-	std::vector<std::string>& GetMountedDirectories()
-	{
-		std::vector<std::string> out;
-		for (auto& dir : m_DiscoveredAssets)
-		{
-			out.push_back(dir.first);
-		}
-		m_MountedDirectoriesCache = out;
-		return m_MountedDirectoriesCache;
-	}
+	std::set<AssetHandle> GetAllDiscorveredAssets();
+	std::vector<std::string>& GetMountedDirectories();
 
 private:
 	//the tag is the full path to the asset (extension included)

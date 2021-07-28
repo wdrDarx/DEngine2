@@ -16,6 +16,8 @@ public:
 	void BeginFrame();
 	void EndFrame();
 
+	void HotReload();
+
 	void CreateViewport(Ref<Scene> scene);
 
 	std::vector<Ref<Viewport>> m_Viewports;
