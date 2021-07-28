@@ -3,6 +3,8 @@
 #include "Core/Core.h"
 #include "Utils/ImageLoader.h"
 
+#define ANISOTROPIC_FILTERING 1
+
 Texture::Texture(const std::string& path) : m_RendererID(0), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0)
 {
 	Image tex(path);
@@ -51,8 +53,16 @@ Texture::Texture(const uint& width, const uint& height, byte* pixeldata) : m_Ren
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixeldata);
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+	if (ANISOTROPIC_FILTERING)
+	{
+		GLfloat MaxAnisotripy;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &MaxAnisotripy);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, MaxAnisotripy);
+	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

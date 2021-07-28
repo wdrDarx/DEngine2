@@ -11,11 +11,10 @@ void ChildSceneObject::OnUpdate(const Tick& tick)
 void ChildSceneObject::OnConstruct()
 {
 	Super::OnConstruct();
-// 
-//   	Image loadedimg(FileDialog::OpenFile(".png"));
-// 	AssetRef<TextureAsset> textureRef(Paths::GetContentDirectory() + "Textures\\test");
-//   	Ref<TextureAsset> texture1 = MakeRef<TextureAsset>(loadedimg);
-//   	GetScene()->GetApplication()->GetAssetManager().SaveAsset(texture1, textureRef.GetAssetHandle());
+
+  	Image loadedimg(FileDialog::OpenFile(".png"));
+  	Ref<TextureAsset> texture1 = MakeRef<TextureAsset>(loadedimg);
+  	GetScene()->GetApplication()->GetAssetManager().SaveAsset(texture1, FileDialog::SaveFile(".TextureAsset"));
 // 
 // 
 // 	auto texture = GetScene()->GetApplication()->GetAssetManager().LoadAsset(textureRef);

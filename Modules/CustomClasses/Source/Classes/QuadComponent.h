@@ -9,6 +9,7 @@ class CUSTOMCLASSES QuadComponent : public ObjectComponent
 public:
 	OBJECT_CLASS_DEF(QuadComponent, ObjectComponent)
 		OBJECT_PROPS_BEGIN()
+			QuadTransform.pos = {0,0, -200.f};
 			PROPDEF(QuadTransform, EditAnywhere)
 			PROPDEF(QuadSize, EditAnywhere)
 			PROPDEF(QuadColor, EditAnywhere)
@@ -18,7 +19,6 @@ public:
 
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
-
 
 public:
 	Transform QuadTransform;

@@ -15,12 +15,12 @@ class CUSTOMCLASSES TextureAsset : public Asset
 			
 		}
 
-		TextureAsset(const Image& image) : m_width(image.Width), m_height(image.Height), m_Pixels(std::vector<byte>(image.pixels, image.pixels + image.Width * image.Height * 4))
+		TextureAsset(const Image& image) : m_width(image.Width), m_height(image.Height), m_Pixels(Buffer(image.pixels, image.pixels + image.Width * image.Height * 4))
 		{
 
 		}
 
-		TextureAsset(const uint& width, const uint& height, const std::vector<unsigned char>& pixels) : m_width(width), m_height(height), m_Pixels(pixels)
+		TextureAsset(const uint& width, const uint& height, const Buffer& pixels) : m_width(width), m_height(height), m_Pixels(pixels)
 		{
 
 		}
@@ -30,7 +30,7 @@ class CUSTOMCLASSES TextureAsset : public Asset
 			STARTWRITE(buffer, Asset::Serialize(buffer))
 			WRITE(&m_width, 4);
 			WRITE(&m_height, 4);
-			WRITEVEC(m_Pixels, 1);
+			WRITEBUFFER(m_Pixels);
 			STOPWRITE();
 		}
 
@@ -39,7 +39,7 @@ class CUSTOMCLASSES TextureAsset : public Asset
 			STARTREAD(buffer, Asset::Deserialize(buffer))
 			READ(&m_width, 4);
 			READ(&m_height, 4);
-			READVEC(m_Pixels, 1);
+			READBUFFER(m_Pixels);
 			STOPREAD();
 		}
 
@@ -56,6 +56,6 @@ class CUSTOMCLASSES TextureAsset : public Asset
 
 		uint m_width = 0;
 		uint m_height = 0;
-		std::vector<byte> m_Pixels;
+		Buffer m_Pixels;
 		Ref<Texture> m_LoadedTexture;
 };

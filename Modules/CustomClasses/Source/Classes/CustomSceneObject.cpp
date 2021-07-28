@@ -5,10 +5,6 @@
 void CustomSceneObject::OnConstruct()
 {
 	Super::OnConstruct();
-
-//	AssetRef<TestAsset> ref(Paths::GetModulesDirectory() + "\\Message");
-	Ref<TestAsset> assetref = MakeRef<TestAsset>("hello this is test asset");
-	GetScene()->GetApplication()->GetAssetManager().SaveAsset(assetref, Paths::GetModulesDirectory() + "\\Message.TestAsset");
 }
 
 void CustomSceneObject::OnUpdate(const Tick& tick)

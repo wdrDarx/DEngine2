@@ -4,7 +4,7 @@ void QuadRenderer::OnConstruct()
 {
 	Super::OnConstruct();
 
-	m_QuadShader = MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader.shader");
+	m_QuadShader = MakeRef<Shader>(Paths::GetModulesDirectory() + "QuadShader.shader");
 	m_VertexArray = MakeRef<VertexArray>();
 	m_IndexBuffer = MakeRef<IndexBuffer>();
 	m_VertexBuffer = MakeRef<VertexBuffer>();
@@ -32,8 +32,15 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 
 	if (m_Verticies.size() == 0) return;
 
-
 	m_QuadShader->Bind();
+
+	for (uint i = 0; i < m_CurrentTextureBinding; i++)
+	{			
+ 		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, m_TextureBindings[i]);
+		m_QuadShader->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
+	}
+
 	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 	GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *m_VertexArray, *m_IndexBuffer);
 
@@ -67,6 +74,13 @@ void QuadRenderer::ClearFrame()
 	Super::ClearFrame();
 
 	m_Verticies.clear();
+	
+	for (uint i = 0; i < 32; i++)
+	{
+		m_TextureBindings[i] = 0;
+	}
+
+	m_CurrentTextureBinding = 0;
 }
 
 void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4& color)
@@ -77,18 +91,26 @@ void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4
 
 }
 
-void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color, float TextureID)
+void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color, Ref<Texture> texture)
 {
 	Transform final = trans;
 	final.scale *= size;
 
 	glm::mat4 Transform = World::MakeMatrix(final);
 
-	DrawQuad(Transform, color, TextureID);
+	DrawQuad(Transform, color, texture);
 }
 
-void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, float TextureID )
+void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Texture> texture)
 {
+	float TextureID = 0.f;
+	if(texture)
+	{
+		m_TextureBindings[m_CurrentTextureBinding] = texture->m_RendererID;
+		TextureID = m_CurrentTextureBinding;
+		m_CurrentTextureBinding++;
+	}
+
 	Vertex v1
 	{
 		{-0.5f, -0.5f, 0.f},
@@ -101,7 +123,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, float 
 	Vertex v2
 	{
 		{-0.5f, 0.5f, 0.f},
-		{0,0},
+		{0,1},
 		TextureID,
 		color,
 		matrix
@@ -110,7 +132,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, float 
 	Vertex v3
 	{
 		{0.5f, 0.5f, 0.f},
-		{0,0},
+		{1,1},
 		TextureID,
 		color,
 		matrix
@@ -119,7 +141,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, float 
 	Vertex v4
 	{
 		{0.5f, -0.5f, 0.f},
-		{0,0},
+		{1,0},
 		TextureID,
 		color,
 		matrix
