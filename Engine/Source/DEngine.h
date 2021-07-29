@@ -34,6 +34,8 @@
 #include "Framework/FrameworkMacros.h"
 #include "Framework/Method.h"
 #include "Framework/StaticClass.h"
+#include "Framework/Array.h"
+#include "Framework/EnumBase.h"
 
 //Assets
 #include "Assets/Asset.h"

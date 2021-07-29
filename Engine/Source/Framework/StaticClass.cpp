@@ -5,6 +5,7 @@
 #include "Framework/Application.h"
 #include "Framework/StructBase.h"
 #include "Framework/Registry.h"
+#include "Assets/AssetRef.h"
 #include "Utils/ObjectUtils.h"
 
 #ifdef STATICCLASS_DEPRECATED
@@ -95,6 +96,7 @@ void StaticClass::CreateStaticClass()
 	}	
 }
 
+//these property values could be null if you exit the scope
 const std::vector<Property>& StaticClass::GetDefaultProperties() const
 {
 	if(m_IsStruct)
@@ -105,6 +107,8 @@ const std::vector<Property>& StaticClass::GetDefaultProperties() const
 
 std::vector<StaticProperty> StaticClass::GenerateStaticProperties(Application* App) const
 {
+	ASSERT(false); //does not work property right now, it needs to be refactored
+
 	std::vector<StaticProperty> out;
 	auto covertFunc = [&](const std::vector<Property>& props)
 	{
@@ -113,26 +117,34 @@ std::vector<StaticProperty> StaticClass::GenerateStaticProperties(Application* A
 		{
 			StaticProperty CopyProp;
 
-			//allocate value bytes
-			CopyProp.m_Value = new byte[OriginalProp.m_ValueSize];
-
 			//gen buffer from original props
 			Buffer OriginalBuffer = OriginalProp.MakeBuffer();
 
 			//load type mainly
 			CopyProp.LoadNameAndType(OriginalBuffer);
 
-			//call constructor for the value (necessary only for DStruct and String)
+			//call constructor for the value (necessary only for struct, string, and assetref)
 			if (CopyProp.m_Type == PropType::STRING)
 			{
-				std::allocator<std::string>().construct((std::string*)CopyProp.m_Value);
+				CopyProp.m_Value = new std::string();
 			}
-			else
-				//constucts a copy of the same class that the original struct was using - magic with the registry (: 
-				if (CopyProp.m_Type == PropType::STRUCT)
+			else				
+				//constucts an asset ref
+				if (CopyProp.m_Type == PropType::ASSETREF)
 				{
-					CopyProp.m_Value = App->GetStructRegistry().Make({((StructBase*)OriginalProp.m_Value)->GetClassType().Name});
+					CopyProp.m_Value = new AssetRef<Asset>();
 				}
+				else
+					//constucts a copy of the same class that the original struct was using - magic with the registry (: 
+					if (CopyProp.m_Type == PropType::STRUCT)
+					{
+						CopyProp.m_Value = App->GetStructRegistry().Make({((StructBase*)OriginalProp.m_Value)->GetClassType().Name});
+					} 
+					else
+					{ 
+						//allocate value bytes
+						CopyProp.m_Value = new byte[OriginalProp.m_ValueSize];
+					}
 
 			//now its safe to copy memory
 			CopyProp.FromBuffer(OriginalBuffer);

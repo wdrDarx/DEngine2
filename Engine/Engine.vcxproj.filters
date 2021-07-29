@@ -172,6 +172,9 @@
     <ClInclude Include="Source\Assets\Asset.h" />
     <ClInclude Include="Source\Assets\AssetRef.h" />
     <ClInclude Include="Source\Assets\AssetHandle.h" />
+    <ClInclude Include="Source\Core\Enum.h" />
+    <ClInclude Include="Source\Framework\EnumBase.h" />
+    <ClInclude Include="Source\Framework\Array.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Allocater.cpp">

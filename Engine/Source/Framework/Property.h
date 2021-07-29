@@ -22,7 +22,10 @@ enum class PropType
 	COLOR3,
 	COLOR4,
 	ASSETREF,
-	STRUCT
+	ENUM,
+	ARRAY,
+	STRUCT,
+	NONE
 };
 
 /*
@@ -91,10 +94,16 @@ struct DENGINE_API StaticProperty : public Property
 		m_ValueSize = other.m_ValueSize;
 	}
 
-	StaticProperty(StaticProperty&& other) noexcept
+	//copy constructor from a static value
+	StaticProperty(void* StaticValue, size_t ValueSize)
 	{
-		ASSERT(false) //dont wanna be calling this cuz idk what it will do
+		m_Value = new byte[ValueSize];
+		m_ValueSize = ValueSize;
+		memcpy(m_Value, StaticValue, ValueSize);
+	}
 
+	StaticProperty& operator=(const StaticProperty& other)
+	{
 		m_name = other.m_name;
 		m_category = other.m_category;
 		m_Type = other.m_Type;
@@ -104,6 +113,32 @@ struct DENGINE_API StaticProperty : public Property
 		memcpy(m_Value, other.m_Value, other.m_ValueSize);
 
 		m_ValueSize = other.m_ValueSize;
+
+		return *this;
+	}
+
+	StaticProperty(StaticProperty&& other) noexcept
+	{
+		m_name = other.m_name;
+		m_category = other.m_category;
+		m_Type = other.m_Type;
+		m_Flags = other.m_Flags;
+
+		m_Value = new byte[other.m_ValueSize];
+		memmove(m_Value, other.m_Value, other.m_ValueSize);
+
+		m_ValueSize = other.m_ValueSize;
+
+		//disable the other
+		other.m_Value = nullptr;
+	}
+
+	//copy constructor from a static value
+	void Assign(void* StaticValue, size_t ValueSize)
+	{
+		m_Value = new byte[ValueSize];
+		m_ValueSize = ValueSize;
+		memcpy(m_Value, StaticValue, ValueSize);
 	}
 
 	~StaticProperty()

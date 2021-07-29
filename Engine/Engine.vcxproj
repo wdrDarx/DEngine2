@@ -101,6 +101,9 @@
     <ClInclude Include="Source\Assets\AssetManager.h" />
     <ClInclude Include="Source\Assets\Asset.h" />
     <ClInclude Include="Source\Assets\AssetRef.h" />
+    <ClInclude Include="Source\Core\Enum.h" />
+    <ClInclude Include="Source\Framework\Array.h" />
+    <ClInclude Include="Source\Framework\EnumBase.h" />
     <ClInclude Include="Source\Framework\ObjectComponent.h" />
     <ClInclude Include="Source\Core\Allocator.h" />
     <ClInclude Include="Source\Core\Core.h" />

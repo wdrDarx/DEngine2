@@ -3,6 +3,7 @@
 #include "Framework/ObjectBase.h"
 #include "Framework/Property.h"
 #include "Framework/Registry.h"
+#include "Framework/Array.h"
 
 class ObjectUtils
 {
@@ -13,6 +14,7 @@ class ObjectUtils
 		*/
 		static void ResetObjectProps(ObjectBase* object, ObjectRegistry& registry);
 		static void ResetObjectProp(ObjectBase* object, const std::string& propName, ObjectRegistry& registry);
+		static void AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, StructRegistry& registry);
 
 		static void ResetStructProp(StructBase* Struct, const std::string& propName, StructRegistry& registry);
 

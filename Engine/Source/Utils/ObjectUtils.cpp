@@ -42,6 +42,40 @@ void ObjectUtils::ResetObjectProp(ObjectBase* object, const std::string& propNam
 	}
 }
 
+void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, StructRegistry& registry)
+{
+	//construct a new element based on the element class name if its not a regular type
+	StaticProperty newElem;
+	newElem.m_Type = arrayProperty->m_ElementType;
+
+	if (arrayProperty->m_ElementType == PropType::STRING)
+	{		
+		std::string string;
+		newElem.Assign(&string, sizeof(string));
+	}
+	else
+		if (arrayProperty->m_ElementType == PropType::STRUCT)
+		{
+			//create struct with the correct class 
+			auto struc = registry.Make({ arrayProperty->m_ElementClassName });
+			newElem.Assign(&struc, sizeof(struc));
+		}
+		else
+			if (arrayProperty->m_ElementType == PropType::ASSETREF)
+			{
+				AssetRef<Asset> asset;
+				newElem.Assign(&asset, sizeof(asset));
+			} 
+			else
+			{
+				//allocate the value bytes
+				newElem.Assign(new byte[arrayProperty->m_ElementSize], arrayProperty->m_ElementSize);
+			}
+
+	//add the array element
+	arrayProperty->m_InternalArray.push_back(newElem);
+}
+
 void ObjectUtils::ResetStructProp(StructBase* Struct, const std::string& propName, StructRegistry& registry)
 {
 	Ref<StructBase> str = ToRef<StructBase>(registry.Make({Struct->GetClassType().Name}));

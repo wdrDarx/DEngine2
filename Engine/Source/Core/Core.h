@@ -35,6 +35,7 @@ typedef unsigned char byte;
 #include <queue>
 #include <windows.h>
 #include <filesystem>
+#include "Enum.h"
 
 #undef min
 #undef max
@@ -120,16 +121,27 @@ void cluster(FwdIt first, FwdIt last, Equal eq = Equal{})
 			});
 }
 
-template < template <typename...> class base, typename derived>
-struct is_base_of_template_impl
+template <template <typename...> class BaseTemplate, typename Derived, typename TCheck = void>
+struct test_base_template;
+
+template <template <typename...> class BaseTemplate, typename Derived>
+using is_base_of_template = typename test_base_template<BaseTemplate, Derived>::is_base;
+
+//Derive - is a class. Let inherit from Derive, so it can cast to its protected parents
+template <template <typename...> class BaseTemplate, typename Derived>
+struct test_base_template<BaseTemplate, Derived, std::enable_if_t<std::is_class_v<Derived>>> : Derived
 {
-	template<typename... Ts>
-	static constexpr std::true_type  test(const base<Ts...>*);
+	template<typename...T>
+	static constexpr std::true_type test(BaseTemplate<T...>*);
 	static constexpr std::false_type test(...);
-	using type = decltype(test(std::declval<derived*>()));
+	using is_base = decltype(test((test_base_template*) nullptr));
 };
 
-template < template <typename...> class base, typename derived>
-using is_base_of_template = typename is_base_of_template_impl<base, derived>::type;
+//Derive - is not a class, so it is always false_type
+template <template <typename...> class BaseTemplate, typename Derived>
+struct test_base_template<BaseTemplate, Derived, std::enable_if_t<!std::is_class_v<Derived>>>
+{
+	using is_base = std::false_type;
+};
 
 

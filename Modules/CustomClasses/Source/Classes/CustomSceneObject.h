@@ -57,6 +57,6 @@ public:
 	std::string test4 = "dabab6y";
 	vec2d test5 = {0,0};
 	vec3d test6 = {69,420,21};
-	TestStruct struc;
+	TestStruct2 struc;
 };
 

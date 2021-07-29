@@ -1,5 +1,6 @@
 #include "Property.h"
 #include "StructBase.h"
+#include "Array.h"
 
 Buffer Property::MakeBuffer() const
 {
@@ -36,6 +37,15 @@ Buffer Property::MakeBuffer() const
 		break;
 	}
 
+	case PropType::ARRAY:
+	{
+		Array<bool>* arrayRef = (Array<bool>*)(m_Value);
+		Buffer arrayBuffer = arrayRef->MakeBuffer();
+		WRITEBUFFER(arrayBuffer);
+
+		break;
+	}
+
 	case PropType::STRUCT:
 	{
 		StructBase* Struct = (StructBase*)(m_Value);
@@ -55,7 +65,7 @@ void Property::FromBuffer(const Buffer& buffer)
 	READSTRING(m_name);
 	READ(&m_Type, sizeof(PropType));
 	READSTRING(m_category);
-	READ(&m_Flags, sizeof(PropType));
+	READ(&m_Flags, sizeof(int));
 	READ(&m_ValueSize, sizeof(size_t));
 
 	switch (m_Type)
@@ -75,10 +85,19 @@ void Property::FromBuffer(const Buffer& buffer)
 
 	case PropType::ASSETREF:
 	{
-		Buffer assetRefBuffer;		
+		Buffer assetRefBuffer;
 		READBUFFER(assetRefBuffer);
 		AssetRef<Asset>* assetRef = (AssetRef<Asset>*)(m_Value);
 		assetRef->Deserialize(assetRefBuffer);
+		break;
+	}
+
+	case PropType::ARRAY:
+	{
+		Buffer arrayBuffer;
+		READBUFFER(arrayBuffer);
+		Array<bool>* arrayRef = (Array<bool>*)(m_Value);
+		arrayRef->FromBuffer(arrayBuffer);
 		break;
 	}
 

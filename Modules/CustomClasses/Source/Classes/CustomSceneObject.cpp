@@ -5,6 +5,9 @@
 void CustomSceneObject::OnConstruct()
 {
 	Super::OnConstruct();
+
+	auto staticClass = STRUCT_STATIC_CLASS(TestStruct2);
+	auto props = staticClass.GetDefaultProperties();
 }
 
 void CustomSceneObject::OnUpdate(const Tick& tick)

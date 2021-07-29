@@ -148,6 +148,38 @@ class PropertyWindow
 			std::string DisplayName = prop.m_name;
 			ImGui::PushID(prop.m_Value);
 
+			if (prop.m_Type == PropType::ARRAY)
+			{
+				Array<bool>* arrayToDraw = (Array<bool>*)prop.m_Value;
+				ImGui::Text(prop.m_name.c_str());
+				ImGui::SameLine();
+
+				ImGui::PushItemWidth(ImGui::CalcItemWidth());
+				bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap, "Array");
+				ImGui::PopItemWidth();
+
+				ImGui::SameLine();
+				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+				ImVec2 buttonSize = { lineHeight, lineHeight };
+
+				if (owner && ImGui::Button("+", buttonSize))
+				{
+					ObjectUtils::AddEmptyArrayPropertyElement(arrayToDraw, m_App->GetStructRegistry());
+				}
+// 
+// 				if (owner && ImGui::Button("<", buttonSize))
+// 				{
+// 					ObjectUtils::ResetObjectProp(owner.get(), prop.m_name, m_App->GetObjectRegistry());
+// 				}
+
+				if (expanded)
+				{
+					
+					ListProperties(*(std::vector<Property>*)&arrayToDraw->m_InternalArray, nullptr, true, false);
+					ImGui::TreePop();
+				}
+			}
+			else
 			if (prop.m_Type == PropType::STRUCT)
 			{
 				StructBase* structToDraw = (StructBase*)prop.m_Value;
