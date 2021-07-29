@@ -22,8 +22,6 @@ void StructBase::LoadProps(const ArrayBuffer& buffer)
 			//If a new prop didnt exist before then ignore it and dont laod it
 			if (oldProp.m_name == NewProp.m_name && oldProp.m_Type == NewProp.m_Type)
 			{
-				//LogTemp("(DStruct) " + std::string("Loading Property : ") + NewProp.m_name);
-
 				//load the old prop with the new prop data
 				oldProp.FromBuffer(piece);
 			}

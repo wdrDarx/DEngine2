@@ -57,8 +57,8 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 		if (arrayProperty->m_ElementType == PropType::STRUCT)
 		{
 			//create struct with the correct class 
-			auto struc = registry.Make({ arrayProperty->m_ElementClassName });
-			newElem.Assign(&struc, sizeof(struc));
+			StructBase* struc = registry.Make({ arrayProperty->m_ElementClassName });
+			newElem.Assign(struc, sizeof(*struc));
 		}
 		else
 			if (arrayProperty->m_ElementType == PropType::ASSETREF)
@@ -69,7 +69,9 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 			else
 			{
 				//allocate the value bytes
-				newElem.Assign(new byte[arrayProperty->m_ElementSize], arrayProperty->m_ElementSize);
+				void* mem = new byte[arrayProperty->m_ElementSize];
+				memset(mem, 0, arrayProperty->m_ElementSize);
+				newElem.Assign(mem, arrayProperty->m_ElementSize);
 			}
 
 	//add the array element

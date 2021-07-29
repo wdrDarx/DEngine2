@@ -45,6 +45,6 @@ public:
 	AssetRef<TextureAsset> QuadTexture;
 	AssetRef<TestAsset> MessageAsset;
 	WeekEnd m_Enum;
-	Array<std::string> m_TestArray;
+	Array<TestStruct> m_TestArray;
 };
 

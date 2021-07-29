@@ -151,8 +151,10 @@ class PropertyWindow
 			if (prop.m_Type == PropType::ARRAY)
 			{
 				Array<bool>* arrayToDraw = (Array<bool>*)prop.m_Value;
+				ImGui::Columns(3);				
 				ImGui::Text(prop.m_name.c_str());
-				ImGui::SameLine();
+				ImGui::NextColumn();
+				ImGui::PushItemWidth(-1);
 
 				ImGui::PushItemWidth(ImGui::CalcItemWidth());
 				bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap, "Array");
@@ -166,18 +168,19 @@ class PropertyWindow
 				{
 					ObjectUtils::AddEmptyArrayPropertyElement(arrayToDraw, m_App->GetStructRegistry());
 				}
-// 
-// 				if (owner && ImGui::Button("<", buttonSize))
-// 				{
-// 					ObjectUtils::ResetObjectProp(owner.get(), prop.m_name, m_App->GetObjectRegistry());
-// 				}
-
-				if (expanded)
+				ImGui::SameLine();
+				if (ImGui::Button("<"))
 				{
-					
+					arrayToDraw->m_InternalArray.clear();
+				}
+				if (expanded)
+				{		
 					ListProperties(*(std::vector<Property>*)&arrayToDraw->m_InternalArray, nullptr, true, false);
 					ImGui::TreePop();
 				}
+				ImGui::PopItemWidth();
+
+				ImGui::NextColumn();
 			}
 			else
 			if (prop.m_Type == PropType::STRUCT)

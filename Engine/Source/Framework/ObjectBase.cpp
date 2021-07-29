@@ -72,8 +72,7 @@ Buffer ObjectBase::GeneratePropBuffer() const
 
 		propBuffer.AddPiece(prop.MakeBuffer());
 	}
-
-	Buffer bf = propBuffer.MakeBuffer();
+	
 	return propBuffer.MakeBuffer();
 }
 

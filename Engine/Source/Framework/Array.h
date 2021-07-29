@@ -88,8 +88,7 @@ struct Array : public _ArrayInternal
 private:
 	PropType GetElementType() const
 	{
-		_Type temp;
-		PropType out = TO_PROP_TYPE(temp);
+		PropType out = _TO_PROP_TYPE(_Type);
 		if (out == PropType::NONE || out == PropType::ARRAY) 
 			ASSERT(false); //invalid types
 
@@ -105,6 +104,6 @@ private:
 	//(THIS USES THE _TYPE TEMPLATE, DONT CALL AFTER DOING A CAST TO ANOTHER TEMPLATE)
 	size_t GetElementSize()
 	{
-		return sizeof(size_t);
+		return sizeof(_Type);
 	}
 };

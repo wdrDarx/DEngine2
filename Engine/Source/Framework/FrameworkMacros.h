@@ -14,21 +14,25 @@ using superclass::superclass;
 #define _PROP_MEMBER_NAME m_Properties
 
 //returns a PropType from a cpp value input
-#define TO_PROP_TYPE(cppType) [&]() -> PropType { PropType out = PropType::NONE; \
-if(typeid(cppType) == typeid(bool)) { out = PropType::BOOL; } else \
-if(typeid(cppType) == typeid(int)) { out = PropType::INT; } else \
-if(typeid(cppType) == typeid(float)) { out = PropType::FLOAT; } else \
-if(typeid(cppType) == typeid(std::string)) { out =  PropType::STRING; } else \
-if(typeid(cppType) == typeid(vec2d)) {out = PropType::VEC2D; } else \
-if(typeid(cppType) == typeid(vec3d)) {out = PropType::VEC3D; } else \
-if(typeid(cppType) == typeid(color3)) {out = PropType::COLOR3; } else \
-if(typeid(cppType) == typeid(color4)) {out = PropType::COLOR4; } else \
-if(typeid(cppType) == typeid(Transform)) {out = PropType::TRANSFORM; } else \
-if(std::is_enum<decltype(cppType)>::value) {out = PropType::ENUM; } else \
-if(is_base_of_template<AssetRef, decltype(cppType)>::value) {out = PropType::ASSETREF;} else \
-if(std::is_base_of<_ArrayInternal, decltype(cppType)>::value) {out = PropType::ARRAY;} else \
-if(std::is_base_of<StructBase, decltype(cppType)>::value) {out = PropType::STRUCT; } \
+#define _TO_PROP_TYPE(cppType) [&]() -> PropType { PropType out = PropType::NONE; \
+if(std::is_same<cppType, bool>::value) { out = PropType::BOOL; } else \
+if(std::is_same<cppType, int>::value) { out = PropType::INT; } else \
+if(std::is_same<cppType, float>::value) { out = PropType::FLOAT; } else \
+if(std::is_same<cppType, std::string>::value) { out =  PropType::STRING; } else \
+if(std::is_same<cppType, vec2d>::value) {out = PropType::VEC2D; } else \
+if(std::is_same<cppType, vec3d>::value) {out = PropType::VEC3D; } else \
+if(std::is_same<cppType, color3>::value) {out = PropType::COLOR3; } else \
+if(std::is_same<cppType, color4>::value) {out = PropType::COLOR4; } else \
+if(std::is_same<cppType, Transform>::value) {out = PropType::TRANSFORM; } else \
+if(std::is_enum<cppType>::value) {out = PropType::ENUM; } else \
+if(is_base_of_template<AssetRef, cppType>::value) {out = PropType::ASSETREF;} else \
+if(std::is_base_of<_ArrayInternal, cppType>::value) {out = PropType::ARRAY;} else \
+if(std::is_base_of<StructBase, cppType>::value) {out = PropType::STRUCT; } \
  return out; }();
+
+ #define TO_PROP_TYPE(cppValue) _TO_PROP_TYPE(decltype(cppValue))
+
+
 
 //return std::type_info from a PropType input
 #define FROM_PROP_TYPE(propType)  [&]() ->  std::type_index {  std::type_index out = typeid(bool); \

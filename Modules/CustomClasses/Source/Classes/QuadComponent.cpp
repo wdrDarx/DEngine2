@@ -5,10 +5,10 @@ void QuadComponent::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
 
-	Buffer thisBuffer;
-	Serialize(thisBuffer);
-	File::WriteFile(Paths::GetBaseDirectory() + "\\test.txt", thisBuffer);
-	Deserialize(thisBuffer);
+// 	Buffer thisBuffer;
+// 	Serialize(thisBuffer);
+// 	File::WriteFile(Paths::GetBaseDirectory() + "\\test.txt", thisBuffer);
+// 	Deserialize(thisBuffer);
 
 	if(auto asset = GetOwner()->GetScene()->GetApplication()->GetAssetManager().LoadAsset(QuadTexture))
 		GetOwner()->GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ QuadSize.x, QuadSize.y,1 }, QuadTransform, QuadColor, asset->GetTexture());
@@ -23,9 +23,10 @@ void QuadComponent::OnConstruct()
 // 
 // 	TestStruct test2;
 // 	test2.porp = 11;
-	std::string test = "batman";
-	m_TestArray.Add(test);
-	m_TestArray.Add(test);
+// 	m_TestArray.Add(21);
+// 	m_TestArray.Add(11);
+
+
 // 	m_TestArray.Add(test2);
 // 	m_TestArray.Add(test);
 // 
