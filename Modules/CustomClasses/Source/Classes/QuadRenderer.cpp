@@ -4,7 +4,7 @@ void QuadRenderer::OnConstruct()
 {
 	Super::OnConstruct();
 
-	m_QuadShader = MakeRef<Shader>(Paths::GetModulesDirectory() + "QuadShader.shader");
+	m_QuadShader = MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader.shader");
 	m_VertexArray = MakeRef<VertexArray>();
 	m_IndexBuffer = MakeRef<IndexBuffer>();
 	m_VertexBuffer = MakeRef<VertexBuffer>();

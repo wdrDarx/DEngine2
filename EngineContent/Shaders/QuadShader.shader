@@ -26,12 +26,15 @@ void main()
 
 layout(location = 0) out vec4 color;
 
+uniform sampler2D u_Textures[32];
+
 in vec4 v_Color;
 in vec2 v_TexCoord;
 in float v_TexIndex;
 
 void main()
 {	
-	color = v_Color * texture(v_TexIndex, v_TexCoord);
-	//color = vec4(1.0);
+	int index = int(floor(v_TexIndex + 0.1));
+	color = texture(u_Textures[index], v_TexCoord) * v_Color;
+	//color = vec4(v_TexCoord.x, v_TexCoord.y, 0, 1);
 }
