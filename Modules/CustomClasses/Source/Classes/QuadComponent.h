@@ -30,9 +30,7 @@ public:
 			PROPDEF(QuadSize, EditAnywhere)
 			PROPDEF(QuadColor, EditAnywhere)
 			PROPDEF(QuadTexture, EditAnywhere)
-			PROPDEF(MessageAsset, EditAnywhere)
-			PROPDEF(m_Enum, EditAnywhere)
-			PROPDEF(m_TestArray, EditAnywhere)
+			PROPDEF_ARRAY(m_Quads, GetOwner()->GetScene()->GetApplication()->GetStructRegistry(), EditAnywhere)
 		OBJECT_PROPS_END()
 
 	void OnUpdate(const Tick& tick) override;
@@ -43,8 +41,6 @@ public:
 	vec2d QuadSize = {100,100};
 	color4 QuadColor = { 1,0,0,1 };
 	AssetRef<TextureAsset> QuadTexture;
-	AssetRef<TestAsset> MessageAsset;
-	WeekEnd m_Enum;
-	Array<TestStruct> m_TestArray;
+	Array<Transform> m_Quads;
 };
 

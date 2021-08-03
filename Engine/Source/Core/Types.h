@@ -110,7 +110,7 @@ struct Transform
 {
 	vec3d pos;
 	vec3d rot;
-	vec3d scale;
+	vec3d scale = {1,1,1};
 
 	Transform() : pos({ 0,0,0 }), rot({ 0,0,0 }), scale({ 1,1,1 })
 	{

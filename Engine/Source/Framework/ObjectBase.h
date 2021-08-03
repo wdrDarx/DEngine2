@@ -225,6 +225,12 @@ public:
 		return m_AssociatedModuleName;
 	}
 
+	//true if Initialize() has been called
+	bool IsInitialized() const
+	{
+		return m_Initialized;
+	}
+
 protected:
 
 	//array of properties (used for serialization and reflection)
@@ -237,6 +243,9 @@ private:
 
 	//flag used for deleting this object next tick or something
 	bool m_MarkDelete = false;
+
+	//set true after initialize is called (needed for checking things like is this a static class or an actual object?)
+	bool m_Initialized = false;
 
 	//copy of the initializer that has been used when initializing
 	ObjectInitializer m_ObjectInitializer;

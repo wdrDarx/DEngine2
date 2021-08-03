@@ -10,37 +10,16 @@ void QuadComponent::OnUpdate(const Tick& tick)
 // 	File::WriteFile(Paths::GetBaseDirectory() + "\\test.txt", thisBuffer);
 // 	Deserialize(thisBuffer);
 
-	if(auto asset = GetOwner()->GetScene()->GetApplication()->GetAssetManager().LoadAsset(QuadTexture))
-		GetOwner()->GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ QuadSize.x, QuadSize.y,1 }, QuadTransform, QuadColor, asset->GetTexture());
+	if (auto asset = GetOwner()->GetScene()->GetApplication()->GetAssetManager().LoadAsset(QuadTexture))
+	{
+		for(uint i = 0; i < m_Quads.Size(); i++)
+			GetOwner()->GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ QuadSize.x, QuadSize.y,1 }, m_Quads[i], QuadColor, asset->GetTexture());
+	}
+	
 }
 
 void QuadComponent::OnConstruct()
 {
 	Super::OnConstruct();
 
-// 	TestStruct test;
-// 	test.porp = 21;
-// 
-// 	TestStruct test2;
-// 	test2.porp = 11;
-// 	m_TestArray.Add(21);
-// 	m_TestArray.Add(11);
-
-
-// 	m_TestArray.Add(test2);
-// 	m_TestArray.Add(test);
-// 
-// 	for (uint i = 0; i < m_TestArray.m_InternalArray.size(); i++)
-// 	{
-// 		TestStruct test = m_TestArray[i];
-// 		LogTemp(Log::string(test.porp));
-// 	}
-// 
-	
-// 
-// 	for (uint i = 0; i < m_TestArray.m_InternalArray.size(); i++)
-// 	{
-// 		TestStruct test = m_TestArray[i];
-// 		LogTemp(Log::string(test.porp));
-// 	}
 }

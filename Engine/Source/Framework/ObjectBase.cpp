@@ -6,6 +6,9 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 	//assign the member initializer for later use
 	m_ObjectInitializer = initializer;
 
+	//flag initialized as true
+	m_Initialized = true;
+
 #if 0
 	//assign name (could be empty)
 	m_Name = initializer.Name;

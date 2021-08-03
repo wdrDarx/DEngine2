@@ -37,11 +37,23 @@ class PropertyWindow
 
 		void DrawSceneObjectProps(Ref<SceneObject> sceneObject)
 		{			
+			if (ImGui::Button("Serialize/Reload"))
+			{
+				Buffer temp;
+				sceneObject->Serialize(temp);
+				sceneObject->Deserialize(temp);
+			}
 			ListProperties(sceneObject->GetPropertiesMutable(), sceneObject);
 		}
 
 		void DrawComponentProps(Ref<ObjectComponent> Comp)
 		{
+			if (ImGui::Button("Serialize/Reload"))
+			{
+				Buffer temp;
+				Comp->Serialize(temp);
+				Comp->Deserialize(temp);
+			}
 			ListProperties(Comp->GetPropertiesMutable(), Comp);
 		}
 

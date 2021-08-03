@@ -59,6 +59,8 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 			//create struct with the correct class 
 			StructBase* struc = registry.Make({ arrayProperty->m_ElementClassName });
 			newElem.Assign(struc, sizeof(*struc));
+
+			//delete struc; //beacuse assign copies the pointer
 		}
 		else
 			if (arrayProperty->m_ElementType == PropType::ASSETREF)

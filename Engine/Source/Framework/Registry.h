@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/Core.h"
-#include "ObjectBase.h"
 #include "FrameworkMacros.h"
 #include "Core/Allocator.h"
 
@@ -190,6 +189,8 @@ public:
 //they are the same basically
 using AssetRegisterKey = StructRegisterKey;
 class Asset;
+class ObjectBase;
+struct StructBase;
 
 using ObjectRegistry = _RegistryBase<ObjectRegisterKey, ObjectBase>;
 using StructRegistry = _RegistryBase<StructRegisterKey, StructBase>;

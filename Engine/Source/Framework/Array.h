@@ -23,6 +23,11 @@ struct Array : public _ArrayInternal
 		return *(_Type*)(elem.m_Value);
 	}
 
+	size_t Size() const
+	{
+		return m_InternalArray.size();
+	}
+
 	void Add(const _Type& elem)
 	{
 		StaticProperty newElem((void*)&elem, sizeof(elem));
@@ -53,7 +58,7 @@ struct Array : public _ArrayInternal
 		return finalBuffer;
 	}
 
-	//clears the current elements and creates new ones from this buffer (THIS USES THE _TYPE TEMPLATE, DONT CALL AFTER DOING A CAST TO ANOTHER TEMPLATE)
+	//clears the current elements and creates new ones from this buffer, required the struct registry
 	void FromBuffer(const Buffer& buffer) override
 	{
 		STARTREAD(buffer, 0);
@@ -69,14 +74,12 @@ struct Array : public _ArrayInternal
 
 		for (auto& piece : in.m_DataPieces)
 		{
-			//construct the static property with the correct type before deserializing
+			//allocate the value for the static property with the correct size before deserializing
 			StaticProperty prop;
-			prop.m_Value = new _Type();
-			prop.m_ValueSize = sizeof(_Type);
-
-			//now we can copy over the data safely 
-			prop.FromBuffer(piece);
 			m_InternalArray.push_back(prop);
+
+			//get that copied static property and make it load the data
+			m_InternalArray[m_InternalArray.size() - 1].FromStaticBuffer(piece, *m_StructRegistry);
 		}
 	}
 
@@ -85,7 +88,10 @@ struct Array : public _ArrayInternal
 	size_t m_ElementSize = GetElementSize();
 	std::vector<StaticProperty> m_InternalArray;
 
+	//set with the macro PROPDEF_ARRAY
+	StructRegistry* m_StructRegistry;
 private:
+
 	PropType GetElementType() const
 	{
 		PropType out = _TO_PROP_TYPE(_Type);

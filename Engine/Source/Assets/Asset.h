@@ -2,6 +2,9 @@
 #include "Core/Core.h"
 #include "Serialization/Buffer.h"
 
+/*
+	inheritable class for serializing data into an asset, contains unique asset id 
+*/
 class DENGINE_API Asset
 {
 public:
