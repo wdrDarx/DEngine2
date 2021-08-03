@@ -93,7 +93,7 @@ public:
 	}
 
 	//takes app as input because both an object registry and a struct registry is required
-	std::vector<StaticProperty> GenerateStaticProperties(Application* App) const;
+	std::vector<StaticProperty> GenerateStaticProperties(StructRegistry& structRegistry) const;
 
 private:
 	void CreateStaticClass();

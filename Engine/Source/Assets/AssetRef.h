@@ -3,7 +3,7 @@
 #include "AssetHandle.h"
 
 /*
-	houses an AssetHandle
+	houses an AssetHandle, a property type
 */
 template<class T>
 struct AssetRef

@@ -105,10 +105,8 @@ const std::vector<Property>& StaticClass::GetDefaultProperties() const
 		return m_ObjectRef->GetProperties();
 }
 
-std::vector<StaticProperty> StaticClass::GenerateStaticProperties(Application* App) const
+std::vector<StaticProperty> StaticClass::GenerateStaticProperties(StructRegistry& structRegistry) const
 {
-	ASSERT(false); //does not work property right now, it needs to be refactored
-
 	std::vector<StaticProperty> out;
 	auto covertFunc = [&](const std::vector<Property>& props)
 	{
@@ -118,47 +116,17 @@ std::vector<StaticProperty> StaticClass::GenerateStaticProperties(Application* A
 			StaticProperty CopyProp;
 
 			//gen buffer from original props
-			Buffer OriginalBuffer = OriginalProp.MakeBuffer();
-
-			//load type mainly
-			CopyProp.LoadNameAndType(OriginalBuffer);
-
-			//call constructor for the value (necessary only for struct, string, and assetref)
-			if (CopyProp.m_Type == PropType::STRING)
-			{
-				CopyProp.m_Value = new std::string();
-			}
-			else				
-				//constucts an asset ref
-				if (CopyProp.m_Type == PropType::ASSETREF)
-				{
-					CopyProp.m_Value = new AssetRef<Asset>();
-				}
-				else
-					//constucts a copy of the same class that the original struct was using - magic with the registry (: 
-					if (CopyProp.m_Type == PropType::STRUCT)
-					{
-						CopyProp.m_Value = App->GetStructRegistry().Make({((StructBase*)OriginalProp.m_Value)->GetClassType().Name});
-					} 
-					else
-					{ 
-						//allocate value bytes
-						CopyProp.m_Value = new byte[OriginalProp.m_ValueSize];
-					}
-
-			//now its safe to copy memory
-			CopyProp.FromBuffer(OriginalBuffer);
+			CopyProp.FromStaticBuffer(OriginalProp.MakeBuffer(), structRegistry);
 			out.push_back(CopyProp);
 		}
 	};
-	
-	if(m_IsStruct)
+
+	if (m_IsStruct)
 		covertFunc(m_StructRef->GetProperties());
 	else
 		covertFunc(m_ObjectRef->GetProperties());
 
 	return out;
 }
-
 
 

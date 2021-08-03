@@ -166,8 +166,10 @@ private:
 	//list of available asset handles (key = Base Directory, Value = set of asset handles)
 	std::unordered_map<std::string, std::set<AssetHandle>> m_DiscoveredAssets;
 
+	//list of directories the manager is aware of when discovering assets
 	std::vector<std::string> m_MountedDirectoriesCache;
 
+	//stores asset types in a factory (key is the class name)
 	AssetRegistry m_AssetTypeRegistry;
 };
 
