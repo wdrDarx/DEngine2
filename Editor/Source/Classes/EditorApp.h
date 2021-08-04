@@ -5,6 +5,8 @@
 #include "Viewport.h"
 #include "MenuBar.h"
 #include "SceneObjectPannel.h"
+#include "ContentBrowser.h"
+#include "AssetEditor.h"
 
 class EditorApp : public Application
 {
@@ -18,7 +20,11 @@ public:
 
 	void HotReload();
 
-	void CreateViewport(Ref<Scene> scene);
+	Ref<Viewport> CreateViewport(Ref<Scene> scene);
+	void DestroyViewport(Ref<Viewport> viewport);
+
+	void AddAssetEditor(Ref<AssetHandle> TargetAssetHandle);
+	void RemoveAssetEditor(AssetEditor* assetEditor);
 
 	std::vector<Ref<Viewport>> m_Viewports;
 	Ref<Scene> m_EditorScene;
@@ -30,5 +36,8 @@ public:
 	PropertyWindow m_PropertyWindow;
 	MenuBar m_MenuBar;
 	SceneObjectPannel m_SceneObjectPannel;
+	ContentBrowser m_ContentBrowser;
+
+	std::vector<Ref<AssetEditor>> m_ActiveAssetEditors;
 };
 

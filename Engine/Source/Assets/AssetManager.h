@@ -30,14 +30,8 @@ public:
 
 
 	//This is an internal function, you should use an AssetRef<> instead
-	template<class T>
-	void SaveAsset(Ref<T> asset, const std::string& FullPath)
+	void SaveAsset(Ref<Asset> asset, const std::string& FullPath)
 	{
-		if (!std::is_base_of<Asset, T>::value)
-		{
-			ASSERT(false);
-		}
-
 		Buffer buffer;
 		asset->Serialize(buffer);
 
@@ -94,6 +88,20 @@ public:
 
 		//actually load the asset	
 		return LoadAsset<T>(assetRef.GetAssetHandle()->GetAssetPath());
+	}
+
+	//this is only if you're sure the asset pointer to is the correct type and stuff
+	template<class T>
+	Ref<T> LoadAsset(Ref<AssetHandle> assetHandle)
+	{
+		if (!assetHandle) return nullptr;
+		if (!assetHandle->IsValid()) return nullptr;
+
+		//set the search directories
+		assetHandle->m_SearchDirectories = &GetMountedDirectories();
+
+		//actually load the asset	
+		return LoadAsset<T>(assetHandle->GetAssetPath());
 	}
 
 	//This is an internal function, you should use an AssetRef<> instead

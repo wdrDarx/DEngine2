@@ -97,16 +97,14 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Assets\Asset.h" />
     <ClInclude Include="Source\Assets\AssetHandle.h" />
     <ClInclude Include="Source\Assets\AssetManager.h" />
-    <ClInclude Include="Source\Assets\Asset.h" />
     <ClInclude Include="Source\Assets\AssetRef.h" />
-    <ClInclude Include="Source\Core\Enum.h" />
-    <ClInclude Include="Source\Framework\Array.h" />
-    <ClInclude Include="Source\Framework\EnumBase.h" />
-    <ClInclude Include="Source\Framework\ObjectComponent.h" />
+    <ClInclude Include="Source\Assets\Classes\TextureAsset.h" />
     <ClInclude Include="Source\Core\Allocator.h" />
     <ClInclude Include="Source\Core\Core.h" />
+    <ClInclude Include="Source\Core\Enum.h" />
     <ClInclude Include="Source\Core\Log.h" />
     <ClInclude Include="Source\Core\Types.h" />
     <ClInclude Include="Source\DEngine.h" />
@@ -120,12 +118,15 @@
     <ClInclude Include="Source\Event\WindowEvent.h" />
     <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Application.h" />
+    <ClInclude Include="Source\Framework\Array.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
+    <ClInclude Include="Source\Framework\EnumBase.h" />
     <ClInclude Include="Source\Framework\FrameworkMacros.h" />
     <ClInclude Include="Source\Framework\Method.h" />
     <ClInclude Include="Source\Framework\Module.h" />
     <ClInclude Include="Source\Framework\ModuleManager.h" />
     <ClInclude Include="Source\Framework\ObjectBase.h" />
+    <ClInclude Include="Source\Framework\ObjectComponent.h" />
     <ClInclude Include="Source\Framework\Property.h" />
     <ClInclude Include="Source\Framework\Registry.h" />
     <ClInclude Include="Source\Framework\Scene.h" />
@@ -137,6 +138,8 @@
     <ClInclude Include="Source\Rendering\FrameBuffer.h" />
     <ClInclude Include="Source\Rendering\Indexbuffer.h" />
     <ClInclude Include="Source\Rendering\RenderAPI.h" />
+    <ClInclude Include="Source\Rendering\RenderCore.h" />
+    <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h" />
     <ClInclude Include="Source\Rendering\Renderers\Renderer.h" />
     <ClInclude Include="Source\Rendering\Shader.h" />
     <ClInclude Include="Source\Rendering\Texture.h" />
@@ -159,7 +162,6 @@
     <ClCompile Include="Source\Assets\Asset.cpp" />
     <ClCompile Include="Source\Assets\AssetHandle.cpp" />
     <ClCompile Include="Source\Assets\AssetManager.cpp" />
-    <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
     <ClCompile Include="Source\Core\Allocater.cpp" />
     <ClCompile Include="Source\Core\Log.cpp" />
     <ClCompile Include="Source\Framework\AppObject.cpp" />
@@ -167,6 +169,7 @@
     <ClCompile Include="Source\Framework\Engine.cpp" />
     <ClCompile Include="Source\Framework\ModuleManager.cpp" />
     <ClCompile Include="Source\Framework\ObjectBase.cpp" />
+    <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
     <ClCompile Include="Source\Framework\Property.cpp" />
     <ClCompile Include="Source\Framework\Scene.cpp" />
     <ClCompile Include="Source\Framework\SceneObject.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Indexbuffer.cpp" />
     <ClCompile Include="Source\Rendering\RenderAPI.cpp" />
+    <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Renderers\Renderer.cpp" />
     <ClCompile Include="Source\Rendering\Shader.cpp" />
     <ClCompile Include="Source\Rendering\Texture.cpp" />

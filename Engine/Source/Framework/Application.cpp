@@ -5,11 +5,12 @@
 
 Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initialize module manager
 {
-	RegisterBaseClasses();
-	RegisterBaseAssetTypes();
 	GetObjectRegistry().m_App = ToRef<Application>(this);
 	GetStructRegistry().m_App = ToRef<Application>(this);
 	GetAssetManager().GetAssetTypeRegistry().m_App = ToRef<Application>(this);
+
+	RegisterBaseClasses();
+	RegisterBaseAssetTypes();
 
 	//mount default content directory
 	GetAssetManager().MountContentDirectory(Paths::GetContentDirectory());
@@ -70,7 +71,7 @@ void Application::RegisterBaseClasses()
 
 void Application::RegisterBaseAssetTypes()
 {
-	
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
 }
 
 void Application::Shutdown()

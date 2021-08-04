@@ -15,13 +15,16 @@
     <ClInclude Include="Source\Classes\CustomSceneObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\QuadComponent.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\QuadRenderer.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\TestAsset.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />
-    <ClInclude Include="Source\Classes\QuadComponent.h" />
-    <ClInclude Include="Source\Classes\TextureAsset.h" />
-    <ClInclude Include="Source\Classes\TestAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp">
@@ -33,11 +36,13 @@
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Classes\QuadComponent.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Classes\QuadRenderer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\QuadComponent.cpp" />
   </ItemGroup>
 </Project>

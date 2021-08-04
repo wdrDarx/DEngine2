@@ -1,3 +1,4 @@
+#if 0
 #include "QuadRenderer.h"
 
 void QuadRenderer::OnConstruct()
@@ -152,3 +153,4 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Te
 	m_Verticies.push_back(v3);
 	m_Verticies.push_back(v4);
 }
+#endif

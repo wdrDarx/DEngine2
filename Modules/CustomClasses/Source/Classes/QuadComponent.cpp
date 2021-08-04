@@ -1,5 +1,4 @@
 #include "QuadComponent.h"
-#include "QuadRenderer.h"
 
 void QuadComponent::OnUpdate(const Tick& tick)
 {
@@ -11,10 +10,12 @@ void QuadComponent::OnUpdate(const Tick& tick)
 // 	Deserialize(thisBuffer);
 
 	auto asset = GetOwner()->GetScene()->GetApplication()->GetAssetManager().LoadAsset(QuadTexture);
+// 
+// 	for(uint i = 0; i < m_Quads.Size(); i++)
+// 		GetOwner()->GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ QuadSize.x, QuadSize.y,1 }, m_Quads[i], QuadColor, asset ? asset->GetTexture() : nullptr);
 
-	for(uint i = 0; i < m_Quads.Size(); i++)
-		GetOwner()->GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ QuadSize.x, QuadSize.y,1 }, m_Quads[i], QuadColor, asset ? asset->GetTexture() : nullptr);
-	
+
+	GetOwner()->GetScene()->GetRenderer<QuadRenderer>()->DrawQuad3D({ QuadSize.x, QuadSize.y,1 }, QuadTransform, QuadColor, asset ? asset->GetTexture() : nullptr);	
 }
 
 void QuadComponent::OnConstruct()

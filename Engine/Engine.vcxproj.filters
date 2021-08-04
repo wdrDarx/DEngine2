@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{3824E0A7-24C6-0A7E-0D81-1ED2F9C191CE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
@@ -24,10 +27,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Assets\Asset.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\AssetHandle.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\AssetManager.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\AssetRef.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Core\Allocator.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Enum.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Log.h">
@@ -67,7 +85,13 @@
     <ClInclude Include="Source\Framework\Application.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Array.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Engine.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\EnumBase.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\FrameworkMacros.h">
@@ -83,6 +107,9 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\ObjectBase.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\ObjectComponent.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Property.h">
@@ -105,6 +132,9 @@
     </ClInclude>
     <ClInclude Include="Source\Framework\Tick.h">
       <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Camera.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\FrameBuffer.h">
       <Filter>Rendering</Filter>
@@ -166,17 +196,20 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Rendering\Camera.h" />
-    <ClInclude Include="Source\Framework\ObjectComponent.h" />
-    <ClInclude Include="Source\Assets\AssetManager.h" />
-    <ClInclude Include="Source\Assets\Asset.h" />
-    <ClInclude Include="Source\Assets\AssetRef.h" />
-    <ClInclude Include="Source\Assets\AssetHandle.h" />
-    <ClInclude Include="Source\Core\Enum.h" />
-    <ClInclude Include="Source\Framework\EnumBase.h" />
-    <ClInclude Include="Source\Framework\Array.h" />
+    <ClInclude Include="Source\Assets\Classes\TextureAsset.h" />
+    <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h" />
+    <ClInclude Include="Source\Rendering\RenderCore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Assets\Asset.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Assets\AssetHandle.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Assets\AssetManager.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Core\Allocater.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -198,6 +231,9 @@
     <ClCompile Include="Source\Framework\ObjectBase.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\ObjectComponent.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Framework\Property.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
@@ -212,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="Source\Framework\StructBase.cpp">
       <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Camera.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp">
       <Filter>Rendering</Filter>
@@ -261,10 +300,6 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\Camera.cpp" />
-    <ClCompile Include="Source\Framework\ObjectComponent.cpp" />
-    <ClCompile Include="Source\Assets\Asset.cpp" />
-    <ClCompile Include="Source\Assets\AssetHandle.cpp" />
-    <ClCompile Include="Source\Assets\AssetManager.cpp" />
+    <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp" />
   </ItemGroup>
 </Project>

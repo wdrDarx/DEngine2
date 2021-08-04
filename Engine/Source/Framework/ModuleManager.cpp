@@ -116,7 +116,7 @@ void ModuleManager::HotReloadModule(const std::string& ModuleName)
 
 void ModuleManager::LoadAllModules(const std::string& FolderPath)
 {
-	for (const auto& file : std::filesystem::directory_iterator(FolderPath))
+	for (const auto& file : std::filesystem::recursive_directory_iterator(FolderPath))
 	{
 		if (file.is_regular_file() && file.path().extension() == ".dll")
 		{

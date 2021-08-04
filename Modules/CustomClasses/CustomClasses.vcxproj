@@ -71,7 +71,8 @@
       <ImportLibrary>..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Editor\Modules &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Editor\Modules &gt; nul)</Command>
+      <Command>IF NOT EXIST ..\..\bin\Debug-windows-x86_64\Editor\Modules\$(ProjectName) (mkdir ..\..\bin\Debug-windows-x86_64\Editor\Modules\$(ProjectName))
+IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Debug-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -95,24 +96,24 @@
       <ImportLibrary>..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules &gt; nul)</Command>
+      <Command>IF NOT EXIST ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) (mkdir ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName))
+IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\ChildSceneObject.h" />
     <ClInclude Include="Source\Classes\CustomAppObject.h" />
     <ClInclude Include="Source\Classes\CustomSceneObject.h" />
+    <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
     <ClInclude Include="Source\Classes\TestAsset.h" />
-    <ClInclude Include="Source\Classes\TextureAsset.h" />
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />
     <ClCompile Include="Source\Classes\CustomAppObject.cpp" />
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp" />
+    <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\QuadRenderer.cpp" />
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />

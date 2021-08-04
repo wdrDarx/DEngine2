@@ -1,5 +1,4 @@
 #include "ChildSceneObject.h"
-#include "TextureAsset.h"
 
 
 void ChildSceneObject::OnUpdate(const Tick& tick)

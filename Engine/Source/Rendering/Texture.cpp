@@ -5,45 +5,11 @@
 
 #define ANISOTROPIC_FILTERING 1
 
-Texture::Texture(const std::string& path) : m_RendererID(0), m_LocalBuffer(nullptr), m_Width(0), m_Height(0), m_BPP(0)
+void Texture::Construct(const uint& width, const uint& height, byte* pixeldata)
 {
-	Image tex(path);
+	m_Width = width;
+	m_Height = height;
 
-	m_LocalBuffer = tex.pixels;
-	m_Width = tex.Width;
-	m_Height = tex.Height;
-
-	glGenTextures(1, &m_RendererID);
-	glBindTexture(GL_TEXTURE_2D, m_RendererID);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	tex.FreeImage();
-}
-
-Texture::Texture() : m_RendererID(0), m_LocalBuffer(nullptr), m_Width(1), m_Height(1), m_BPP(0)
-{
-	uint32_t data = 0xffffffff;
-	glGenTextures(1, &m_RendererID);
-	glBindTexture(GL_TEXTURE_2D, m_RendererID);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &data);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-Texture::Texture(const uint& width, const uint& height, byte* pixeldata) : m_RendererID(0),  m_LocalBuffer(nullptr), m_Width(width), m_Height(height), m_BPP(0)
-{
 	glGenTextures(1, &m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
@@ -51,8 +17,6 @@ Texture::Texture(const uint& width, const uint& height, byte* pixeldata) : m_Ren
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixeldata);
 	glGenerateMipmap(GL_TEXTURE_2D);
@@ -65,6 +29,23 @@ Texture::Texture(const uint& width, const uint& height, byte* pixeldata) : m_Ren
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+Texture::Texture(const std::string& path)
+{
+	Image tex(path);
+	Construct(tex.Width, tex.Height, tex.pixels);
+}
+
+Texture::Texture()
+{
+	uint32_t data = 0xffffffff;
+	Construct(1, 1, (byte*)&data);
+}
+
+Texture::Texture(const uint& width, const uint& height, byte* pixeldata)
+{
+	Construct(width, height, pixeldata);
 }
 
 Texture::~Texture()
@@ -82,3 +63,4 @@ void Texture::Unbind() const
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+

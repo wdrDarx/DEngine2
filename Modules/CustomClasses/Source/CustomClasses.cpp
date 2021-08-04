@@ -6,8 +6,6 @@
 #include "Classes/QuadComponent.h"
 
 #include "Classes/QuadRenderer.h"
-
-#include "Classes/TextureAsset.h"
 #include "Classes/TestAsset.h"
 
 #include "tlhelp32.h"
@@ -44,42 +42,40 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 
-	//custom renderer
-	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
-
-	if (!gladLoadGL())
-	{
-		std::cout << "Failed to initialize OpenGL context" << std::endl;
-	}
-
-	auto vec = GetApplication()->FindObjectsByClass<Scene>();
-	if(vec.size() == 0)
-	{
-		m_SceneEvent.Assign([&](SceneEvent* event)
-			{
-				if (event->GetEventType() == SceneEventType::SCENE_ONCONSTRUCT)
-				{
-					if (!gladLoadGL())
-					{
-						std::cout << "Failed to initialize OpenGL context" << std::endl;
-					}
-
-					event->GetScene()->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
-				}
-			});
-		GetApplication()->GetEventDispatcher().Bind(m_SceneEvent);
-	}
-	else
-	for(const Ref<Scene>& scene : vec)
-	{
-		scene->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
-	}
+// 	//custom renderer
+// 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
+// 
+// 	if (!gladLoadGL())
+// 	{
+// 		std::cout << "Failed to initialize OpenGL context" << std::endl;
+// 	}
+// 
+// 	auto vec = GetApplication()->FindObjectsByClass<Scene>();
+// 	if(vec.size() == 0)
+// 	{
+// 		m_SceneEvent.Assign([&](SceneEvent* event)
+// 			{
+// 				if (event->GetEventType() == SceneEventType::SCENE_ONCONSTRUCT)
+// 				{
+// 					if (!gladLoadGL())
+// 					{
+// 						std::cout << "Failed to initialize OpenGL context" << std::endl;
+// 					}
+// 
+// 					event->GetScene()->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
+// 				}
+// 			});
+// 		GetApplication()->GetEventDispatcher().Bind(m_SceneEvent);
+// 	}
+// 	else
+// 	for(const Ref<Scene>& scene : vec)
+// 	{
+// 		scene->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
+// 	}
 	
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
 
-
-	REGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
 	REGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TestAsset);
 
 	GetApplication()->GetAssetManager().MountContentDirectory(Paths::GetModulesDirectory());
@@ -93,12 +89,10 @@ void CustomClasses::OnUnload()
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
+	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
-
-	UNREGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
 	UNREGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TestAsset);
 
 	GetApplication()->GetAssetManager().UnmountContentDirectory(Paths::GetModulesDirectory());

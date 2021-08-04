@@ -6,7 +6,8 @@ class Viewport
 	public:
 		Viewport(Ref<Scene> scene, Ref<RenderAPI> ParentWindowContext, Ref<Camera> camera, const std::string& viewportName ) : m_Scene(scene), m_RenderAPI(ParentWindowContext), m_ViewportName(viewportName)
 		{
-			m_Scene->SetRenderAPI(m_RenderAPI);
+			if(m_Scene)
+				m_Scene->SetRenderAPI(m_RenderAPI);
 
 			FrameBuferSpec spec;
 			spec.Width = 1;
@@ -33,16 +34,21 @@ class Viewport
 			m_RenderAPI->SetClearColor({0,0,0,1});
 			m_RenderAPI->Clear();
 		}
-		void EndFrame()
+		void EndFrame(bool DrawImGui = true)
 		{
 			m_Framebuffer->Bind();
-			m_RenderAPI->SetViewport(m_LastViewportSize);
 			m_RenderAPI->SetCamera(m_Camera);
-			m_Scene->RenderFrame(m_Camera);
+
+			if(m_Scene)
+				m_Scene->RenderFrame(m_Camera);
+
 			m_Framebuffer->Unbind();
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
-			ImGui::Begin(m_ViewportName.c_str());
+
+			if(DrawImGui)
+				ImGui::Begin(m_ViewportName.c_str());
+
  			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
  			ImVec2 viewportPanelPos = ImGui::GetWindowPos();
  			vec2d ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -51,16 +57,20 @@ class Viewport
 
   			if (m_LastViewportSize.x != ViewportSize.x || m_LastViewportSize.y != ViewportSize.y)
  			{
+				m_LastViewportSize = ViewportSize;
  				m_Framebuffer->Resize(ViewportSize.x, ViewportSize.y);
-				m_Camera->RecalculateViewMatrix();
- 				m_LastViewportSize = ViewportSize;
+				m_RenderAPI->SetViewport(m_LastViewportSize);
+				m_Camera->RecalculateViewMatrix();		
  			}
  			m_ViewportPos = vec2d(viewportPanelPos.x, viewportPanelPos.y);
 
  			uint64_t textureID = m_Framebuffer->GetColorAttachement();
  			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_LastViewportSize.x, m_LastViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
  			m_FocusedOnviewport = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();
-			ImGui::End();
+
+			if (DrawImGui)
+				ImGui::End();
+
 			ImGui::PopStyleVar();
 		}
 		

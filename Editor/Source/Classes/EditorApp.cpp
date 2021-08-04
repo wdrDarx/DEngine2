@@ -1,6 +1,9 @@
 #include "EditorApp.h"
 #include "Event/Event.h"
 
+//asset editors
+#include "Classes/AssetEditors/TextureAssetEditor.h"
+
 EditorApp::EditorApp() : Application()
 {
 	MakeWindow("DEditor", 1280, 720, false);
@@ -92,6 +95,9 @@ EditorApp::EditorApp() : Application()
 	//property window
 	m_PropertyWindow.Init(ToRef<EditorApp>(this));
 
+	//content browser
+	m_ContentBrowser.Init();
+
 	//main viewport
 	CreateViewport(m_EditorScene);
 }
@@ -109,6 +115,7 @@ void EditorApp::OnUpdate(const Tick& tick)
 void EditorApp::RenderImGui(const Tick& tick)
 {
 	m_MenuBar.Render(this);
+	m_ContentBrowser.Render(this);
 
 	m_SceneObjectPannel.Render(m_EditorScene);
 	if (m_SceneObjectPannel.m_SelectedComponent)
@@ -285,6 +292,12 @@ void EditorApp::EndFrame()
 	{
 		viewport->EndFrame();
 	}
+
+	//render for each active asset editor
+	for (uint i = 0; i < m_ActiveAssetEditors.size(); i++)
+	{
+		m_ActiveAssetEditors[i]->Render();
+	}
 	
 	m_EditorScene->ClearFrame();
 	m_ImGuiLayer.End();
@@ -298,7 +311,49 @@ void EditorApp::HotReload()
 // 	GetModuleManager()->UnloadAllModules();
 }
 
-void EditorApp::CreateViewport(Ref<Scene> scene)
+Ref<Viewport> EditorApp::CreateViewport(Ref<Scene> scene)
 {
-	m_Viewports.push_back(MakeRef<Viewport>(scene, GetWindow()->GetRenderAPI(), nullptr, std::string("Viewport " + STRING(m_Viewports.size()))));
+	Ref<Viewport> viewport = MakeRef<Viewport>(scene, GetWindow()->GetRenderAPI(), nullptr, std::string("Viewport " + STRING(m_Viewports.size())));
+	m_Viewports.push_back(viewport);
+	return viewport;
+}
+
+void EditorApp::DestroyViewport(Ref<Viewport> viewport)
+{
+	m_Viewports.erase(std::find(m_Viewports.begin(), m_Viewports.end(), viewport));
+}
+
+
+void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)
+{
+	std::string assetType = TargetAssetHandle->GetAssetType();
+	Ref<AssetEditor> NewEditor;
+
+	if(assetType == "TextureAsset")
+	{
+		NewEditor = MakeRef<TextureAssetEditor>();
+	}
+
+	NewEditor->m_TargetAsset = TargetAssetHandle;
+	NewEditor->m_App = this;
+	NewEditor->Init();
+	m_ActiveAssetEditors.push_back(NewEditor);
+}
+
+void EditorApp::RemoveAssetEditor(AssetEditor* assetEditor)
+{
+	auto remove = m_ActiveAssetEditors.end();
+	for (auto it = m_ActiveAssetEditors.begin(); it != m_ActiveAssetEditors.end(); it++)
+	{
+		if (assetEditor == (*it).get())
+		{
+			remove = it;
+			break;
+		}
+	}
+
+	if (remove != m_ActiveAssetEditors.end())
+	{
+		m_ActiveAssetEditors.erase(remove);
+	}
 }

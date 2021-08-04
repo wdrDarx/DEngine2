@@ -1,6 +1,5 @@
 #pragma once
 #include "CustomClasses.h"
-#include "TextureAsset.h"
 #include "CustomSceneObject.h"
 #include "TestAsset.h"
 #include "DEngine.h"

@@ -12,7 +12,13 @@
     <ClInclude Include="Source\Classes\EditorApp.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\MenuBar.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\PropertyWindow.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Classes\SceneObjectPannel.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Classes\Viewport.h">
@@ -27,11 +33,18 @@
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\MenuBar.h" />
-    <ClInclude Include="Source\Classes\SceneObjectPannel.h" />
+    <ClInclude Include="Source\Classes\ContentBrowser.h" />
+    <ClInclude Include="Source\Classes\AssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\EditorApp.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\MenuBar.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\SceneObjectPannel.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\ImGui\ImGuiLayer.cpp">
@@ -44,7 +57,7 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\MenuBar.cpp" />
-    <ClCompile Include="Source\Classes\SceneObjectPannel.cpp" />
+    <ClCompile Include="Source\Classes\ContentBrowser.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
   </ItemGroup>
 </Project>

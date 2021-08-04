@@ -8,6 +8,11 @@ struct DataObject
 		
 	}
 
+	DataObject()
+	{
+	
+	}
+
 	~DataObject()
 	{
 		
@@ -26,7 +31,8 @@ public:
 	void Set(const std::string& tag, Ref<void> data)
 	{	
 		//create new data object
-		m_ObjectCache.insert(std::make_pair(tag, DataObject(data)));
+		//m_ObjectCache.insert(std::make_pair(tag, DataObject(data)));
+		m_ObjectCache[tag] = DataObject(data);
 	}
 
 	void Remove(const std::string& tag)
