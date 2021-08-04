@@ -45,10 +45,10 @@ void CustomClasses::OnLoad()
 // 	//custom renderer
 // 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 // 
-// 	if (!gladLoadGL())
-// 	{
-// 		std::cout << "Failed to initialize OpenGL context" << std::endl;
-// 	}
+	if (!gladLoadGL())
+	{
+		std::cout << "Failed to initialize OpenGL context" << std::endl;
+	}
 // 
 // 	auto vec = GetApplication()->FindObjectsByClass<Scene>();
 // 	if(vec.size() == 0)

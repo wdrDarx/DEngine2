@@ -9,7 +9,7 @@ class DENGINE_API TextureAsset : public Asset
 public:
 	TextureAsset() : Asset()
 	{
-
+		
 	}
 
 	~TextureAsset()
@@ -56,8 +56,8 @@ public:
 			return m_LoadedTexture;
 	}
 
-	uint m_width = 0;
-	uint m_height = 0;
+	uint m_width = 1;
+	uint m_height = 1;
 	Buffer m_Pixels;
 	Ref<Texture> m_LoadedTexture;
 };

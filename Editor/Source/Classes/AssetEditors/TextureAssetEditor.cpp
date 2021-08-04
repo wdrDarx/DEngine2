@@ -20,7 +20,7 @@ void TextureAssetEditor::Render()
 
 	title = m_TargetAsset->GetAssetName() + " Texture Editor";
 	bool isOpen;
-	ImGui::Begin(title.c_str(), &isOpen);
+	ImGui::Begin(title.c_str(), &isOpen, ImGuiWindowFlags_NoDocking);
 
 	if (ImGui::Button("Save"))
 	{
@@ -35,7 +35,7 @@ void TextureAssetEditor::Render()
 
 	Transform trans;
 	trans.pos.z = -200.f;
-	float ratio = m_TextureAsset->m_width / m_TextureAsset->m_height;
+	float ratio = (float)m_TextureAsset->m_width / (float)m_TextureAsset->m_height;
 	float sizeY = 100.f / ratio;
 
 	m_QuadRenderer->DrawQuad3D({100, sizeY ,1}, trans, {1,1,1,1}, m_TextureAsset->GetTexture());
@@ -45,8 +45,8 @@ void TextureAssetEditor::Render()
 	m_Viewport->EndFrame(false);
 
 	ImGui::NextColumn();
-	//properties
 
+	//properties
 	if (ImGui::Button("Load From file"))
 	{
 		Image loadedimg(FileDialog::OpenFile(".png"));

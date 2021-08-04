@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Framework/Application.h"
+#include "Rendering/Renderers/QuadRenderer.h"
 
 void Scene::OnUpdate(const Tick& tick)
 {
@@ -59,7 +60,7 @@ void Scene::ClearFrame()
 
 void Scene::CreateDefaultRenderers()
 {
-	
+	CreateRenderer<QuadRenderer>(ObjectInitializer());
 }
 
 void Scene::DestroySceneObject(SceneObject* obj)
