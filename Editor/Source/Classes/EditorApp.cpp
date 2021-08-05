@@ -100,6 +100,10 @@ EditorApp::EditorApp() : Application()
 
 	//main viewport
 	CreateViewport(m_EditorScene);
+
+	//bind key event to input manager
+	m_OnKeyDownCallback.Assign(std::bind(&EditorApp::OnKeyDown, this, std::placeholders::_1));
+	GetWindow()->GetInputManager().BindOnKeyDown(m_OnKeyDownCallback);
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
@@ -276,9 +280,32 @@ void EditorApp::BeginFrame()
 	if (!m_ImGuiLayer.IsValid()) return;
 
 	//begin frame for all viewports (requires imGui context)
+	bool InputSet = false;
 	for (auto& viewport : m_Viewports)
 	{
-		viewport->BeginFrame();
+		//forward input to viewport
+		if(!InputSet)
+		{ 
+			if(viewport->m_Scene)
+			{
+				GetWindow()->GetInputManager().StopForwarding(viewport->m_Scene->GetInputManager());
+
+				//for camera movement and stuff
+				GetWindow()->GetInputManager().StopForwarding(viewport->m_InputManager);
+				
+			}
+			if (viewport->m_Scene && viewport->m_FocusedOnviewport)
+			{
+				GetWindow()->GetInputManager().ForwardTo(viewport->m_Scene->GetInputManager());
+
+				//for camera movement and stuff
+				GetWindow()->GetInputManager().ForwardTo(viewport->m_InputManager);
+				InputSet = true;
+			}
+		}
+
+		//begin frame for viewport
+		viewport->BeginFrame();		
 	}
 }
 
@@ -324,16 +351,22 @@ void EditorApp::DestroyViewport(Ref<Viewport> viewport)
 }
 
 
+void EditorApp::OnKeyDown(KeyEvent* event)
+{
+
+}
+
 void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)
 {
 	std::string assetType = TargetAssetHandle->GetAssetType();
-	Ref<AssetEditor> NewEditor;
+	Ref<AssetEditor> NewEditor = nullptr;
 
 	if(assetType == "TextureAsset")
 	{
 		NewEditor = MakeRef<TextureAssetEditor>();
 	}
 
+	if(!NewEditor) return;
 	NewEditor->m_TargetAsset = TargetAssetHandle;
 	NewEditor->m_App = this;
 	NewEditor->Init();

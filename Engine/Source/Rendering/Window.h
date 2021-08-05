@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Event/EventDispatcher.h"
 #include "RenderAPI.h"
+#include "Framework/InputManager.h"
 
 //houses 
 class DENGINE_API Window
@@ -43,6 +44,11 @@ public:
 		return m_EventDispatcher;
 	}
 
+	InputManager& GetInputManager()
+	{
+		return m_InputManager;
+	}
+
 	Ref<RenderAPI> GetRenderAPI() const
 	{
 		return m_RenderAPI;
@@ -52,6 +58,9 @@ private:
 
 	//calls window events
 	EventDispatcher m_EventDispatcher;
+
+	//main input manager recieveing any window inputs and relaying them
+	InputManager m_InputManager;
 
 	GLFWwindow* m_Window;
 	Ref<RenderAPI> m_RenderAPI;

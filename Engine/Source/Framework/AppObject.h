@@ -33,7 +33,19 @@ public:
 		return m_Application;
 	}
 
+	//get the last tick that was set on update
+	const Tick& GetLastTick() const
+	{
+		return m_LastTick;
+	}
+
+	void SetLastTick(const Tick& tick)
+	{
+		m_LastTick = tick;
+	}
+
 private:
 	Application* m_Application = nullptr;
 	Callback<ModuleEvent> m_ModuleCallback;
+	Tick m_LastTick;
 };

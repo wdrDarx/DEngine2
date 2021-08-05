@@ -19,7 +19,7 @@ void TextureAssetEditor::Render()
 	if(!m_TextureAsset) return;
 
 	title = m_TargetAsset->GetAssetName() + " Texture Editor";
-	bool isOpen;
+	bool isOpen = true;
 	ImGui::Begin(title.c_str(), &isOpen, ImGuiWindowFlags_NoDocking);
 
 	if (ImGui::Button("Save"))

@@ -47,6 +47,12 @@ public:
 	}
 
 	template<typename T>
+	bool IsBound(Callback<T>& callback)
+	{
+		return std::find(m_BoundCallbacks.begin(), m_BoundCallbacks.end(), (Callback<Event>*)(&callback)) != m_BoundCallbacks.end();
+	}
+
+	template<typename T>
 	void Bind(Callback<T>& callback)
 	{
 		callback.m_EventDispatcher = this;
@@ -57,7 +63,9 @@ public:
 	template<typename T>
 	void Unbind(Callback<T>& callback)
 	{
-		m_BoundCallbacks.erase(std::find(m_BoundCallbacks.begin(), m_BoundCallbacks.end(), (Callback<Event>*)(&callback)));
+		auto it = std::find(m_BoundCallbacks.begin(), m_BoundCallbacks.end(), (Callback<Event>*)(&callback));
+		if(it != m_BoundCallbacks.end())
+			m_BoundCallbacks.erase(it);
 	}
 
 	std::vector<Callback<Event>*> m_BoundCallbacks;

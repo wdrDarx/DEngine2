@@ -17,6 +17,11 @@ struct Tick
 
 		}
 
+		Tick()
+		{
+
+		}
+
 		const inline TickGroup& GetTickGroup() const
 		{
 			return m_TickGroup;

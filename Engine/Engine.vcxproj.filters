@@ -199,6 +199,8 @@
     <ClInclude Include="Source\Assets\Classes\TextureAsset.h" />
     <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h" />
     <ClInclude Include="Source\Rendering\RenderCore.h" />
+    <ClInclude Include="Source\Framework\InputManager.h" />
+    <ClInclude Include="Source\Event\KeyEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -301,5 +303,6 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp" />
+    <ClCompile Include="Source\Framework\InputManager.cpp" />
   </ItemGroup>
 </Project>

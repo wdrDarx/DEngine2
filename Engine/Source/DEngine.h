@@ -16,6 +16,7 @@
 #include "Event/SceneEvent.h"
 #include "Event/EditorCallback.h"
 #include "Event/ApplicationEvent.h"
+#include "Event/KeyEvent.h"
 
 //Framework
 #include "Framework/Tick.h"
@@ -27,6 +28,7 @@
 #include "Framework/ObjectBase.h"
 #include "Framework/ObjectComponent.h"
 #include "Framework/ModuleManager.h"
+#include "Framework/InputManager.h"
 #include "Framework/Registry.h"
 #include "Framework/Module.h"
 #include "Framework/Property.h"

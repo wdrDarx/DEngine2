@@ -5,13 +5,12 @@
 #include "Event/SceneEvent.h"
 #include "Event/EventDispatcher.h"
 #include "Rendering/Renderers/Renderer.h"
+#include "Framework/InputManager.h"
 
 /*
 * An AppObject that contains scoped SceneObjects and relays functions to them
 * Contains an array of renderers that can be invoked by scene objects
-* Must call Initialize(const ObjectInitializer& initializer) mannually after constructing
-*
-*
+* Must call Initialize(const ObjectInitializer& initializer) manually after constructing
 */
 class Camera;
 class DENGINE_API Scene : public AppObject
@@ -126,10 +125,18 @@ public:
 		return m_EventDispatcher;
 	}
 
+	InputManager& GetInputManager()
+	{
+		return m_InputManager;
+	}
+
 private:
 
 	//for scene events
 	EventDispatcher m_EventDispatcher;
+
+	//input manager specific to a scene
+	InputManager m_InputManager;
 
 	//array of scene objects
 	std::vector<Ref<SceneObject>> m_SceneObjects;

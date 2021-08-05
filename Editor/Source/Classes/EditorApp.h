@@ -23,6 +23,8 @@ public:
 	Ref<Viewport> CreateViewport(Ref<Scene> scene);
 	void DestroyViewport(Ref<Viewport> viewport);
 
+	void OnKeyDown(KeyEvent* event);
+
 	void AddAssetEditor(Ref<AssetHandle> TargetAssetHandle);
 	void RemoveAssetEditor(AssetEditor* assetEditor);
 
@@ -37,6 +39,8 @@ public:
 	MenuBar m_MenuBar;
 	SceneObjectPannel m_SceneObjectPannel;
 	ContentBrowser m_ContentBrowser;
+
+	Callback<KeyEvent> m_OnKeyDownCallback;
 
 	std::vector<Ref<AssetEditor>> m_ActiveAssetEditors;
 };

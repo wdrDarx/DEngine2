@@ -113,6 +113,7 @@
     <ClInclude Include="Source\Event\EditorCallback.h" />
     <ClInclude Include="Source\Event\Event.h" />
     <ClInclude Include="Source\Event\EventDispatcher.h" />
+    <ClInclude Include="Source\Event\KeyEvent.h" />
     <ClInclude Include="Source\Event\ModuleEvent.h" />
     <ClInclude Include="Source\Event\SceneEvent.h" />
     <ClInclude Include="Source\Event\WindowEvent.h" />
@@ -122,6 +123,7 @@
     <ClInclude Include="Source\Framework\Engine.h" />
     <ClInclude Include="Source\Framework\EnumBase.h" />
     <ClInclude Include="Source\Framework\FrameworkMacros.h" />
+    <ClInclude Include="Source\Framework\InputManager.h" />
     <ClInclude Include="Source\Framework\Method.h" />
     <ClInclude Include="Source\Framework\Module.h" />
     <ClInclude Include="Source\Framework\ModuleManager.h" />
@@ -167,6 +169,7 @@
     <ClCompile Include="Source\Framework\AppObject.cpp" />
     <ClCompile Include="Source\Framework\Application.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
+    <ClCompile Include="Source\Framework\InputManager.cpp" />
     <ClCompile Include="Source\Framework\ModuleManager.cpp" />
     <ClCompile Include="Source\Framework\ObjectBase.cpp" />
     <ClCompile Include="Source\Framework\ObjectComponent.cpp" />

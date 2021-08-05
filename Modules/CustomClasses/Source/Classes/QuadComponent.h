@@ -4,20 +4,6 @@
 #include "TestAsset.h"
 #include "DEngine.h"
 
-enum WeekEnd
-{
-	Sunday = 1,
-	Saturday = 7
-};
-
-// String support for WeekEnd
-Begin_Enum_String(WeekEnd)
-{
-	Enum_String(Sunday);
-	Enum_String(Saturday);
-}
-End_Enum_String;
-
 
 class CUSTOMCLASSES QuadComponent : public ObjectComponent
 {	
@@ -29,7 +15,7 @@ public:
 			PROPDEF(QuadSize, EditAnywhere)
 			PROPDEF(QuadColor, EditAnywhere)
 			PROPDEF(QuadTexture, EditAnywhere)
-			PROPDEF_ARRAY(m_Quads, GetOwner()->GetScene()->GetApplication()->GetStructRegistry(), EditAnywhere)
+			PROPDEF_ARRAY(m_Test, GetOwner()->GetScene()->GetApplication()->GetStructRegistry(), EditAnywhere)
 		OBJECT_PROPS_END()
 
 	void OnUpdate(const Tick& tick) override;
@@ -38,8 +24,8 @@ public:
 public:
 	Transform QuadTransform;
 	vec2d QuadSize = {100,100};
-	color4 QuadColor = { 1,0,0,1 };
+	color4 QuadColor = { 1,1,1,1 };
 	AssetRef<TextureAsset> QuadTexture;
-	Array<Transform> m_Quads;
+	Array<Transform> m_Test;
 };
 

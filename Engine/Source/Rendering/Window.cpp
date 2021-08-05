@@ -22,7 +22,12 @@ Window::Window(const std::string& name, int width, int height)
 	{
 		StaticCast<Window>(glfwGetWindowUserPointer(window))->OnWindowResize(window, width, height);
 	});
-	
+
+	//bind key input callback to the input manager
+	glfwSetKeyCallback(GetRenderAPI()->GetCurrentContext(), [](GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		StaticCast<Window>(glfwGetWindowUserPointer(window))->GetInputManager().GlfwKey(window, key, scancode, action, mods);
+	});	
 }
 
 void Window::StartFrame()

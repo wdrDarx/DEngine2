@@ -7,7 +7,9 @@ class Viewport
 		Viewport(Ref<Scene> scene, Ref<RenderAPI> ParentWindowContext, Ref<Camera> camera, const std::string& viewportName ) : m_Scene(scene), m_RenderAPI(ParentWindowContext), m_ViewportName(viewportName)
 		{
 			if(m_Scene)
+			{ 
 				m_Scene->SetRenderAPI(m_RenderAPI);
+			}
 
 			FrameBuferSpec spec;
 			spec.Width = 1;
@@ -32,7 +34,9 @@ class Viewport
 			m_RenderAPI->SetViewport(m_LastViewportSize);
 			m_RenderAPI->SetCamera(m_Camera);
 			m_RenderAPI->SetClearColor({0,0,0,1});
-			m_RenderAPI->Clear();
+			m_RenderAPI->Clear();		
+
+			HandleCameraMovement();
 		}
 		void EndFrame(bool DrawImGui = true)
 		{
@@ -66,12 +70,58 @@ class Viewport
 
  			uint64_t textureID = m_Framebuffer->GetColorAttachement();
  			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_LastViewportSize.x, m_LastViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
- 			m_FocusedOnviewport = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();
+ 			m_FocusedOnviewport = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();		
 
 			if (DrawImGui)
 				ImGui::End();
 
 			ImGui::PopStyleVar();
+		}
+
+		void HandleCameraMovement()
+		{
+			if (m_Scene && m_FocusedOnviewport)
+			{
+				auto trans = m_Camera->GetTransform();
+
+				//movement
+				if (m_InputManager.IsKeyDown(GLFW_KEY_W))
+				{					
+					trans.pos += World::GetForwardVector(trans.rot) * m_CameraMovementSpeed * m_Scene->GetLastTick().DeltaTime;					
+				}
+				if (m_InputManager.IsKeyDown(GLFW_KEY_S))
+				{
+					trans.pos -= World::GetForwardVector(trans.rot) * m_CameraMovementSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+				if (m_InputManager.IsKeyDown(GLFW_KEY_A))
+				{
+					trans.pos -= World::GetRightVector(trans.rot) * m_CameraMovementSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+				if (m_InputManager.IsKeyDown(GLFW_KEY_D))
+				{
+					trans.pos += World::GetRightVector(trans.rot) * m_CameraMovementSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+
+				//Rotation 
+				if (m_InputManager.IsKeyDown(GLFW_KEY_UP))
+				{
+					trans.rot.x += m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+				if (m_InputManager.IsKeyDown(GLFW_KEY_DOWN))
+				{
+					trans.rot.x -= m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+				if (m_InputManager.IsKeyDown(GLFW_KEY_LEFT))
+				{
+					trans.rot.y += m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+				if (m_InputManager.IsKeyDown(GLFW_KEY_RIGHT))
+				{
+					trans.rot.y -= m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
+
+				m_Camera->SetTransform(trans);
+			}
 		}
 		
 	public:
@@ -84,6 +134,11 @@ class Viewport
 		Ref<RenderAPI> m_RenderAPI;
 		Ref<RenderAPI> m_ParentWindowContext;
 		Ref<Camera> m_Camera;
+
+		float m_CameraMovementSpeed = 100.f;
+		float m_CameraRotationSpeed = 90.f;
+
+		InputManager m_InputManager;
 };
 
 
