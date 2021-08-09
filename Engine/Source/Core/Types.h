@@ -74,7 +74,7 @@ struct ClassType
 	static std::string GetFriendlyTypeName(const std::type_index& index)
 	{
 		std::string base = index.name();
-		auto endpos = base.find("const"); 
+		auto endpos = std::min<size_t>(base.find("const"), base.find("*"));
 
 		if(endpos == std::string::npos)
 			endpos = base.length(); //for non pointer types

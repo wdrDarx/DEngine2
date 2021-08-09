@@ -127,7 +127,7 @@ void Scene::DestroyRenderer(Renderer* renderer)
 	}
 }
 
-void Scene::AddSceneObject(SceneObject* obj)
+void Scene::AddSceneObject(SceneObject* obj, const ObjectInitializer& Initializer)
 {
 	ASSERT(obj);
 
@@ -138,13 +138,36 @@ void Scene::AddSceneObject(SceneObject* obj)
 	//Dispatch PRE_INITIALIZE event
 	GetSceneEventDipatcher().Dispatch(event);
 
-	//assign application and add to object array
+	//assign scene and add to scene object array
 	obj->m_Scene = (this);
 	Ref<SceneObject> objref = ToRef<SceneObject>(obj);
 	m_SceneObjects.push_back(objref);
 
 	//Must call
-	obj->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
+	obj->Initialize(Initializer);
+
+	//Dispatch POST_INITIALIZE event
+	event.m_EventType = SceneEventType::OBJECT_POST_INITIALIZE;
+	GetSceneEventDipatcher().Dispatch(event);
+}
+
+void Scene::AddSceneObject(Ref<SceneObject> obj, const ObjectInitializer& Initializer)
+{
+	ASSERT(obj);
+
+	SceneEvent event;
+	event.m_EventType = SceneEventType::OBJECT_PRE_INITIALIZE;
+	event.m_ObjectClass = SceneObjectClass::SCENEOBJECT;
+	event.m_SceneObject = obj.get();
+	//Dispatch PRE_INITIALIZE event
+	GetSceneEventDipatcher().Dispatch(event);
+
+	//assign scene and add to scene object array
+	obj->m_Scene = (this);
+	m_SceneObjects.push_back(obj);
+
+	//Must call
+	obj->Initialize(Initializer);
 
 	//Dispatch POST_INITIALIZE event
 	event.m_EventType = SceneEventType::OBJECT_POST_INITIALIZE;

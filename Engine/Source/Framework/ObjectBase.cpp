@@ -1,6 +1,11 @@
 #include "ObjectBase.h"
 #include "Utils/Rand.h"
 
+ObjectBase::~ObjectBase()
+{
+	LogWarning("Object Destroyed"); 
+}
+
 void ObjectBase::Initialize(const ObjectInitializer& initializer)
 {
 	//assign the member initializer for later use
@@ -9,13 +14,11 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 	//flag initialized as true
 	m_Initialized = true;
 
-#if 0
-	//assign name (could be empty)
-	m_Name = initializer.Name;
-#else
-	//assign same name as class name by default
-	m_Name = GetClassType().Name;
-#endif
+	//assign name, class name by default
+	if (initializer.Name.empty())
+		m_Name = GetClassType().Name;
+	else
+		m_Name = initializer.Name;
 
 	//override AssociatedModuleName 
 	if(!initializer.AssociatedModuleName.empty())
@@ -34,13 +37,15 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 	}
 
 	//Define Properties
-	DefineProperties();
+	if ((initializer.Flags & ContructFlags::NOPROPS) == 0) //if the flag is not set
+		DefineProperties();
 
 	//call the virtual constructor
-	OnConstruct();
+	if((initializer.Flags & ContructFlags::NOCONSTRUCT) == 0) //if the flag is not set
+		OnConstruct();
 }
 
-uint ObjectBase::Serialize(Buffer& buffer)
+uint ObjectBase::Serialize(Buffer& buffer) const
 {
 	STARTWRITE(buffer, 0);
 

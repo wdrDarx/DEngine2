@@ -5,7 +5,7 @@ class EditorApp;
 class SceneObjectPannel
 {
 public:
-	void Render(Ref<Scene> scene);
+	void Render(Ref<Scene> scene, bool DrawimGui = true);
 
 	void DrawSceneObjectNode(Ref<SceneObject> object);
 	void DrawComponentNode(Ref<ObjectComponent> comp);

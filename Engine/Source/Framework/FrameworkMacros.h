@@ -5,7 +5,7 @@
 //simple definitions given the name of the class and its super class
 #define OBJECT_CLASS_DEF(class, superclass) using ThisClass = class; \
 using Super = superclass; \
-ClassType GetClassType() const override { return typeid(this); }; \
+ClassType GetClassType() override { return typeid(this); }; \
 using superclass::superclass;  
 
 //get static class of an object

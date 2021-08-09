@@ -15,7 +15,5 @@ public:
 	std::string title;
 	Ref<Viewport> m_Viewport;
 	Ref<QuadRenderer> m_QuadRenderer;
-	
-
 };
 

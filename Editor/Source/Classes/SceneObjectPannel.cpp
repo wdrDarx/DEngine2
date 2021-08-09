@@ -1,17 +1,17 @@
 #include "SceneObjectPannel.h"
 #include "ImGui/ImGuiLayer.h"
 
-void SceneObjectPannel::Render(Ref<Scene> scene)
+void SceneObjectPannel::Render(Ref<Scene> scene, bool DrawimGui)
 {
 	m_Scene = scene;
 
-	ImGui::Begin("Scene Objects");
+	if(DrawimGui)
+		ImGui::Begin("Scene Objects");
 
 	for (auto& obj : scene->GetSceneObjects())
 	{
 		DrawSceneObjectNode(obj);
 	}
-
 
 	//delete stuff
 	if(m_ObjectToDelete)
@@ -26,7 +26,8 @@ void SceneObjectPannel::Render(Ref<Scene> scene)
 		m_ComponentToDelete = nullptr;
 	}
 
-	ImGui::End();
+	if (DrawimGui)
+		ImGui::End();
 }
 
 void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
@@ -35,8 +36,6 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 	flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
 	std::string name = object->GetName();
-// 	if (m_Debug)
-// 		name += "_" + std::to_string(obj->GetID());
 
 	bool expanded = ImGui::TreeNodeEx((void*)object->GetID().ID, flags, name.c_str());
 	if (ImGui::IsItemClicked())
@@ -48,11 +47,6 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 	bool ObjectDeleted = false;
 	if (ImGui::BeginPopupContextItem())
 	{
-// 		if (ImGui::MenuItem("Save Object"))
-// 		{
-// 			SceneUtils::SaveSceneObjectToFile(obj, FileDialog::SaveFile("SceneObject (*.sceneobject)\0*.sceneobject\0"));
-// 		}
-
 		if (ImGui::MenuItem("Destroy Object"))
 			ObjectDeleted = true;
 
@@ -84,25 +78,11 @@ void SceneObjectPannel::DrawComponentNode(Ref<ObjectComponent> comp)
 {
 	ImGuiTreeNodeFlags flags = (m_SelectedComponent == comp ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 	std::string name = comp->GetName();
-// 	if (m_Debug)
-// 		name += "_" + std::to_string(comp->GetID().ID);
 
 	bool expanded = ImGui::TreeNodeEx((void*)comp->GetID().ID, flags, name.c_str());
-	//TransformComponent* tcomp = dynamic_cast<TransformComponent*>(comp);
 
 	if (ImGui::IsItemClicked())
 	{
-// 		if (m_WantsToAttach && tcomp)
-// 		{
-// 			m_WantsToAttach->AttachTo(tcomp);
-// 			m_WantsToAttach = nullptr;
-// 		}
-// 		if (m_ComponentReferenceContext)
-// 		{
-// 			m_ComponentReferenceContext->MakeReference(comp);
-// 			m_ComponentReferenceContext = nullptr;
-// 		}
-// 		else
 			m_SelectedComponent = comp;
 			m_SelectedObject = nullptr;
 	}
@@ -110,28 +90,6 @@ void SceneObjectPannel::DrawComponentNode(Ref<ObjectComponent> comp)
 	bool CompDeleted = false;
 	if (ImGui::BeginPopupContextItem())
 	{
-// 
-// 		if (tcomp && !tcomp->IsRootComponent())
-// 		{
-// 			if (tcomp->GetParentComponent())
-// 			{
-// 				if (ImGui::MenuItem("Detach"))
-// 				{
-// 					tcomp->Detach();
-// 				}
-// 			}
-// 			else
-// 			{
-// 				if (ImGui::MenuItem("Attach To"))
-// 				{
-// 					m_WantsToAttach = tcomp;
-// 				}
-// 				if (ImGui::MenuItem("Make Root"))
-// 				{
-// 					tcomp->GetOwner()->SetRootComponent(tcomp);
-// 				}
-// 			}
-// 		}
 		if (ImGui::MenuItem("Destroy Component"))
 			CompDeleted = true;
 

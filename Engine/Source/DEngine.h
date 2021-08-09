@@ -47,6 +47,7 @@
 
 //Asset Classes
 #include "Assets/Classes/TextureAsset.h"
+#include "Assets/Classes/PrefabAsset.h"
 
 //Rendering 
 #include "Rendering/RenderCore.h"

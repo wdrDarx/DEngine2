@@ -28,7 +28,7 @@ class Viewport
 		}
 
 		//only used to clear the sceen basically
-		void BeginFrame()
+		void BeginFrame(bool overrideFocus = false)
 		{
 			m_Framebuffer->Bind();
 			m_RenderAPI->SetViewport(m_LastViewportSize);
@@ -36,7 +36,7 @@ class Viewport
 			m_RenderAPI->SetClearColor({0,0,0,1});
 			m_RenderAPI->Clear();		
 
-			HandleCameraMovement();
+			HandleCameraMovement(overrideFocus);
 		}
 		void EndFrame(bool DrawImGui = true)
 		{
@@ -73,14 +73,46 @@ class Viewport
  			m_FocusedOnviewport = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();		
 
 			if (DrawImGui)
+			{
+				if (ImGui::BeginDragDropTarget())
+				{
+					std::string assetTag = "Asset_PrefabAsset";
+					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(assetTag.c_str());
+
+					if (payload)
+					{
+						std::string assetPath((char*)payload->Data);
+
+						if (File::DoesFileExist(assetPath))
+						{
+							Ref<AssetHandle> handle = MakeRef<AssetHandle>(assetPath);
+
+							if (m_Scene)
+							{
+								Ref<PrefabAsset> prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset<PrefabAsset>(handle);
+								Transform trans;
+								trans = m_Camera->GetTransform();
+								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 300.f;
+
+								ObjectUtils::SpawnPrefabInScene(prefabAsset, m_Scene, trans);
+							}
+						}
+					}
+
+					ImGui::EndDragDropTarget();
+				}
+			}
+
+
+			if (DrawImGui)
 				ImGui::End();
 
 			ImGui::PopStyleVar();
 		}
 
-		void HandleCameraMovement()
+		void HandleCameraMovement(bool overrideFocus = false)
 		{
-			if (m_Scene && m_FocusedOnviewport)
+			if (m_Scene && (m_FocusedOnviewport || overrideFocus))
 			{
 				auto trans = m_Camera->GetTransform();
 

@@ -13,14 +13,15 @@ struct CategoryPair
 class PropertyWindow
 {
 	public:
-		void Init(Ref<Application> app)
+		void Init(Application* app)
 		{
 			m_App = app;
 		}
 
-		void Render()
+		void Render(bool DrawimGui = true)
 		{
-			ImGui::Begin("Properties");
+			if(DrawimGui)
+				ImGui::Begin("Properties");
 
 			if (m_SelectedComponent)
 			{
@@ -32,7 +33,8 @@ class PropertyWindow
 				DrawSceneObjectProps(m_SelectedSceneObject);
 			}
 
-			ImGui::End();
+			if (DrawimGui)
+				ImGui::End();
 		}
 
 		void DrawSceneObjectProps(Ref<SceneObject> sceneObject)
@@ -136,6 +138,25 @@ class PropertyWindow
 			if (ImGui::Button(buttonText.c_str()))
 				ImGui::OpenPopup("Select Asset");			
 
+			if (ImGui::BeginDragDropTarget())
+			{
+				std::string assetTag = "Asset_" + assetRef->GetAssetType();
+				const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(assetTag.c_str());
+
+				if (payload)
+				{
+					std::string assetPath((char*)payload->Data);
+
+					if (File::DoesFileExist(assetPath))
+					{
+						AssetHandle handle(assetPath);
+						assetRef->SetAssetHandle(handle);
+					}
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
 			if (ImGui::BeginPopup("Select Asset"))
 			{
 				for (auto& asset : m_App->GetAssetManager().GetAllDiscorveredAssets())
@@ -162,11 +183,10 @@ class PropertyWindow
 
 			if (prop.m_Type == PropType::ARRAY)
 			{
-				Array<bool>* arrayToDraw = (Array<bool>*)prop.m_Value;
-				ImGui::Columns(3);				
+				Array<bool>* arrayToDraw = (Array<bool>*)prop.m_Value;				
 				ImGui::Text(prop.m_name.c_str());
-				ImGui::NextColumn();
 				ImGui::PushItemWidth(-1);
+				ImGui::SameLine();
 
 				ImGui::PushItemWidth(ImGui::CalcItemWidth());
 				bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap, "Array");
@@ -191,8 +211,6 @@ class PropertyWindow
 					ImGui::TreePop();
 				}
 				ImGui::PopItemWidth();
-
-				ImGui::NextColumn();
 			}
 			else
 			if (prop.m_Type == PropType::STRUCT)
@@ -396,6 +414,6 @@ class PropertyWindow
 public:
 	Ref<SceneObject> m_SelectedSceneObject;
 	Ref<ObjectComponent> m_SelectedComponent;
-	Ref<Application> m_App;
+	Application* m_App;
 	float m_ColumnWidth = 100.f;
 };

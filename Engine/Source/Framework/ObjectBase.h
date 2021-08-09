@@ -13,7 +13,13 @@ enum ContructFlags
 	RANDOMID = BIT(0),
 
 	//start invalid
-	INVALIDATE = BIT(1)
+	INVALIDATE = BIT(1),
+
+	//dont call OnContruct()
+	NOCONSTRUCT = BIT(2),
+
+	//dont define properties
+	NOPROPS = BIT(3)
 };
 
 
@@ -39,7 +45,12 @@ struct ObjectInitializer
 	//create an instance with an associated module name
 	static ObjectInitializer Module(const std::string& AssociatedModuleName);
 
-	ObjectInitializer(const std::string& name, int flags) : Name(name), Flags(flags)
+	ObjectInitializer(const std::string& name, ContructFlags flags) : Name(name), Flags(flags)
+	{
+
+	}
+
+	ObjectInitializer(const std::string& name) : Name(name)
 	{
 
 	}
@@ -89,15 +100,16 @@ public:
 	//empty constructor
 	ObjectBase()
 	{
-
+	
 	}
+
+	~ObjectBase();
 
 	//basically the actual constructor
 	void Initialize(const ObjectInitializer& initializer);
 
-
 	//this is manually overriden on all object classes with a macro
-	virtual ClassType GetClassType() const
+	virtual ClassType GetClassType()
 	{
 		return typeid(this);
 	}
@@ -129,7 +141,7 @@ public:
 	//use to define props here with PROPDEF(x)
 	virtual void DefineProperties()
 	{
-
+		
 	}
 
 	bool IsValid() const
@@ -173,7 +185,7 @@ public:
 	}
 
 	//automatically serializes props, can be customized and overriden
-	virtual uint Serialize(Buffer& buffer);
+	virtual uint Serialize(Buffer& buffer) const;
 
 	//automatically Deserializes props, can be customized and overriden
 	virtual uint Deserialize(const Buffer& buffer);

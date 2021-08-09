@@ -118,7 +118,12 @@ public:
 	void DestroyRenderer(Renderer* renderer);
 
 	//Will call initialize to an already existing scene object 
-	void AddSceneObject(SceneObject* obj);
+	//overridable object initializer (default flags are RANDOMID)
+	void AddSceneObject(SceneObject* obj, const ObjectInitializer& Initializer = ObjectInitializer(ContructFlags::RANDOMID));
+
+	//Will call initialize to an already existing scene object 
+	//overridable object initializer (default flags are RANDOMID)
+	void AddSceneObject(Ref<SceneObject> obj, const ObjectInitializer& Initializer = ObjectInitializer(ContructFlags::RANDOMID));
 
 	EventDispatcher& GetSceneEventDipatcher() 
 	{

@@ -41,7 +41,7 @@ public:
 	std::vector<Vertex> m_Verticies;
 
 	uint m_TextureBindings[32];
-	uint m_CurrentTextureBinding;
+	uint m_CurrentTextureBinding = 0;
 
 	Ref<VertexBuffer> m_VertexBuffer;
 	Ref<VertexBufferLayout> m_VertexBufferLayout;

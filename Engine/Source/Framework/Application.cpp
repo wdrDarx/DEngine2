@@ -72,6 +72,7 @@ void Application::RegisterBaseClasses()
 void Application::RegisterBaseAssetTypes()
 {
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), PrefabAsset);
 }
 
 void Application::Shutdown()

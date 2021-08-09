@@ -101,6 +101,17 @@ void ObjectUtils::ResetStructProp(StructBase* Struct, const std::string& propNam
 	}
 }
 
+Ref<SceneObject> ObjectUtils::SpawnPrefabInScene(Ref<PrefabAsset> prefabAset, Ref<Scene> scene, const Transform& transform)
+{
+	auto sceneObject = ToRef<SceneObject>(Cast<SceneObject>(scene->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(prefabAset->GetPrefabBaseClassName())));
+	scene->AddSceneObject(sceneObject);
+
+	//load the prefab data
+	prefabAset->LoadPrefab(sceneObject, false);
+
+	return sceneObject;
+}
+
 ObjectClassType ObjectUtils::GetObjectClassType(Ref<ObjectBase> obj)
 {
 	ObjectClassType out;

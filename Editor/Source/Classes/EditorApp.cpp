@@ -3,6 +3,7 @@
 
 //asset editors
 #include "Classes/AssetEditors/TextureAssetEditor.h"
+#include "Classes/AssetEditors/PrefabAssetEditor.h"
 
 EditorApp::EditorApp() : Application()
 {
@@ -93,7 +94,7 @@ EditorApp::EditorApp() : Application()
 	m_EditorScene->GetSceneEventDipatcher().Bind(m_SceneEvent);
 
 	//property window
-	m_PropertyWindow.Init(ToRef<EditorApp>(this));
+	m_PropertyWindow.Init(this);
 
 	//content browser
 	m_ContentBrowser.Init();
@@ -364,6 +365,11 @@ void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)
 	if(assetType == "TextureAsset")
 	{
 		NewEditor = MakeRef<TextureAssetEditor>();
+	}
+
+	if (assetType == "PrefabAsset")
+	{
+		NewEditor = MakeRef<PrefabAssetEditor>();
 	}
 
 	if(!NewEditor) return;

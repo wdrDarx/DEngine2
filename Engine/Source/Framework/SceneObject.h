@@ -9,8 +9,6 @@ class Scene;
 /*
 * An Object existing in the scope of a Scene, can contain components
 * Must call Initialize(const ObjectInitializer& initializer) mannually after constructing
-*
-*
 */
 class DENGINE_API SceneObject : public ObjectBase
 {
@@ -31,6 +29,15 @@ public:
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 
+
+	//serializes properties and all current component data like component properties, etc
+	uint Serialize(Buffer& buffer) const override;
+
+	//loads in properties and any component data 
+	//must be called after construct as to create any components
+	//(this doesnt actually create any components)
+	uint Deserialize(const Buffer& buffer) override;
+
 	Scene* GetScene() const
 	{
 		ASSERT(m_Scene);
@@ -44,13 +51,14 @@ public:
 
 	/*  
 		Creates an ObjectComponent with an assigned pointer to this SceneObject and a random id, then adds it to scene object list here
-		WARNING : does not work when called from a module, the created ObjectComponent must also be associated with a module before being created
+		ComponentName is used a key in serialization, so this must be unique
+		WARNING : When creating from a module you must pass in the module name with ObjectInitializer::Module()
 	*/
 	template<class T>
-	Ref<T> CreateComponent(ObjectInitializer& initializer = ObjectInitializer())
+	Ref<T> CreateComponent(ObjectInitializer& initializer, const std::string& ComponentName)
 	{
 		bool valid = std::is_base_of<ObjectComponent, T>::value;
-		ASSERT(valid);
+		ASSERT(valid && !ComponentName.empty()); //must be a component and must have a name
 
 		Ref<T> ptr = MakeRef<T>(this);
 
@@ -59,6 +67,7 @@ public:
 
 		//Must call this
 		initializer.Flags |= ContructFlags::RANDOMID;
+		initializer.Name = ComponentName;
 		ptr->Initialize(initializer);
 
 		return ptr;

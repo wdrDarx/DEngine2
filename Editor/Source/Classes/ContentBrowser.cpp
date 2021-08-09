@@ -50,6 +50,8 @@ void ContentBrowser::Render(EditorApp* m_App)
 		columnCount = 1;
 	ImGui::Columns(columnCount, 0, false);
 
+	uint AssetIndex = 0;
+
 	for (auto& directory : std::filesystem::directory_iterator(m_CurrentPath))
 	{
 		//if its a file, check if the asset type is registered, otherwise skip it
@@ -74,8 +76,32 @@ void ContentBrowser::Render(EditorApp* m_App)
 		auto relativePath = std::filesystem::relative(path, ContentPath);
 		std::string filenameString = relativePath.filename().string();
 
+		ImGui::PushID(AssetIndex++); //AssetID
+
 		Ref<Texture> icon = directory.is_directory() ? m_FolderIcon : m_FileIcon;
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0,0,0,0});
 		ImGui::ImageButton((ImTextureID)icon->m_RendererID, { m_ThumbnailSize,m_ThumbnailSize }, {0,1}, {1,0});
+		ImGui::PopStyleColor();
+
+		if (!directory.is_directory() && !m_IsDragging)
+		{
+			bool dragging = false;
+			if (dragging = ImGui::BeginDragDropSource())
+			{
+				m_IsDragging = true;
+
+				std::string payloadTag = "Asset_" + File::GetFileExtenstionFromPath(path.string());
+				std::string FullPath = path.string();
+				std::string TagName = File::GetFileNameFromPath(FullPath) + "." + File::GetFileExtenstionFromPath(FullPath);
+
+				ImGui::SetDragDropPayload(payloadTag.c_str(), FullPath.c_str(), FullPath.size() + 1); // + 1 for the null terminator
+				ImGui::TextUnformatted(TagName.c_str());
+				ImGui::EndDragDropSource();
+			}
+		}
+
+
+
 		if ( ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
 			if (directory.is_directory())
@@ -90,9 +116,12 @@ void ContentBrowser::Render(EditorApp* m_App)
 		}
 		ImGui::TextWrapped(filenameString.c_str());
 
+		ImGui::PopID(); //AssetID
 
 		ImGui::NextColumn();
 	}
+
+	m_IsDragging = false;
 
 	ImGui::Columns(1);
 

@@ -46,6 +46,76 @@ void SceneObject::OnConstruct()
 	m_Scene->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
 }
 
+uint SceneObject::Serialize(Buffer& buffer) const
+{
+	STARTWRITE(buffer, Super::Serialize(buffer))
+	
+
+	ArrayBuffer ComponentsData;
+	for (auto& comp : GetComponents())
+	{		
+		[&comp, &ComponentsData]()
+		{
+			//write ID and Class name for finding the same component on deserialize
+			Buffer CompPiece;
+			STARTWRITE(CompPiece, 0);
+
+			WRITE(&comp->GetID(), sizeof(UID));
+			std::string compClassName = comp->GetClassType().Name;
+			std::string compName = comp->GetName(); //used as the unique id for deserialization as ID's are generated on construction
+			WRITESTRING(compClassName);
+			WRITESTRING(compName);
+
+			//write actual component data
+			Buffer compBuffer;
+			comp->Serialize(compBuffer);
+			WRITEBUFFER(compBuffer);
+
+			ComponentsData.AddPiece(CompPiece);
+		}();
+	}
+	WRITEBUFFER(ComponentsData.MakeBuffer());
+
+	STOPWRITE();
+}
+
+uint SceneObject::Deserialize(const Buffer& buffer)
+{
+	STARTREAD(buffer, Super::Deserialize(buffer))
+
+	Buffer rawComponentsData;
+	READBUFFER(rawComponentsData);
+
+	ArrayBuffer ComponentsData;
+	ComponentsData.FromBuffer(rawComponentsData);
+
+	for (auto& piece : ComponentsData.m_DataPieces)
+	{
+		UID compID;
+		std::string compClassName;
+		std::string compName;
+		Buffer compData;
+
+		[&piece, &compID, &compClassName, &compName, &compData]()
+		{
+			STARTREAD(piece, 0);
+			READ(&compID, sizeof(UID));
+			READSTRING(compClassName);
+			READSTRING(compName);
+			READBUFFER(compData);
+		}();
+
+		//now find a corresponding component and deserialize
+		for (auto& comp : GetComponents())
+		{
+			if(comp->GetName() == compName && comp->GetClassType().Name == compClassName)	
+				comp->Deserialize(compData);
+		}
+	}
+
+	STOPREAD();
+}
+
 void SceneObject::DestroyComponent(Ref<ObjectComponent> comp)
 {
 	//call pre delete event

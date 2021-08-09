@@ -36,6 +36,7 @@
     <ClInclude Include="Source\Classes\ContentBrowser.h" />
     <ClInclude Include="Source\Classes\AssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\EditorApp.cpp">
@@ -59,5 +60,6 @@
     <ClCompile Include="Source\Source.cpp" />
     <ClCompile Include="Source\Classes\ContentBrowser.cpp" />
     <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp" />
   </ItemGroup>
 </Project>

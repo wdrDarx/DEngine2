@@ -101,6 +101,7 @@
     <ClInclude Include="Source\Assets\AssetHandle.h" />
     <ClInclude Include="Source\Assets\AssetManager.h" />
     <ClInclude Include="Source\Assets\AssetRef.h" />
+    <ClInclude Include="Source\Assets\Classes\PrefabAsset.h" />
     <ClInclude Include="Source\Assets\Classes\TextureAsset.h" />
     <ClInclude Include="Source\Core\Allocator.h" />
     <ClInclude Include="Source\Core\Core.h" />

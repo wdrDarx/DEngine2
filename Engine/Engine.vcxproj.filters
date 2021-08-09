@@ -201,6 +201,7 @@
     <ClInclude Include="Source\Rendering\RenderCore.h" />
     <ClInclude Include="Source\Framework\InputManager.h" />
     <ClInclude Include="Source\Event\KeyEvent.h" />
+    <ClInclude Include="Source\Assets\Classes\PrefabAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
