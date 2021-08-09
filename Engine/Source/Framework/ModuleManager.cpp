@@ -102,6 +102,18 @@ void ModuleManager::CheckPendingModules()
 	}
 }
 
+bool ModuleManager::isModuleLoaded(const std::string& ModuleName)
+{
+	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
+	{
+		Module* mod = *it;
+		if (mod->m_Name == ModuleName)
+		{
+			return true;
+		}
+	}
+}
+
 void ModuleManager::HotReloadModule(const std::string& ModuleName)
 {
 	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)

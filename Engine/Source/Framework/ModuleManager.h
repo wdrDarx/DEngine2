@@ -19,6 +19,8 @@ public:
 	void LoadAllModules(const std::string& FolderPath);
 	void CheckPendingModules();
 
+	bool isModuleLoaded(const std::string& ModuleName);
+
 	void HotReloadModule(const std::string& ModuleName);
 	//void HotReloadAll();
 

@@ -21,6 +21,21 @@ void PrefabAssetEditor::Init()
 	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow()->GetRenderAPI(), nullptr, "Prefab View");
 
 	m_PropertyWindow.Init(m_App);
+
+
+	m_ModuleCallback.Assign([&](ModuleEvent* event)
+	{
+		if (event->GetEventType() == ModuleEventType::UNLOADED)
+		{
+			if (m_SceneObject->GetAssociatedModuleName() == event->m_ModuleName)
+			{
+				m_App->RemoveAssetEditor(this);
+			}
+		}
+	
+	});
+
+	m_App->GetEventDispatcher().Bind(m_ModuleCallback);
 	
 
 	if(!m_PrefabAsset->GetPrefabBaseClassName().empty())
@@ -34,7 +49,13 @@ void PrefabAssetEditor::UpdatePrefabClass()
 		m_Scene->DestroySceneObject(m_SceneObject);
 
 	//create the new scene object from the correct class
-	m_SceneObject = ToRef<SceneObject>(Cast<SceneObject>(m_App->GetObjectRegistry().MakeObjectFromClassName(m_PrefabAsset->GetPrefabBaseClassName())));
+	auto obj = m_App->GetObjectRegistry().MakeObjectFromClassName(m_PrefabAsset->GetPrefabBaseClassName());
+	if(!obj)
+	{
+		return;
+	}
+
+	m_SceneObject = ToRef<SceneObject>(Cast<SceneObject>(obj));
 	m_Scene->AddSceneObject(m_SceneObject);
 
 	//load the prefab data

@@ -25,5 +25,8 @@ public:
 
 	SceneObjectPannel m_SceneObjectPannel;
 	PropertyWindow m_PropertyWindow;
+
+
+	Callback<ModuleEvent> m_ModuleCallback;
 };
 
