@@ -100,8 +100,6 @@ void ContentBrowser::Render(EditorApp* m_App)
 			}
 		}
 
-
-
 		if ( ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
 			if (directory.is_directory())
@@ -114,6 +112,7 @@ void ContentBrowser::Render(EditorApp* m_App)
 				m_App->AddAssetEditor(assetHandle);
 			}
 		}
+
 		ImGui::TextWrapped(filenameString.c_str());
 
 		ImGui::PopID(); //AssetID

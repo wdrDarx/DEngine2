@@ -4,6 +4,7 @@
 #include "Framework/Property.h"
 #include "Framework/Registry.h"
 #include "Framework/SceneObject.h"
+#include "Assets/Classes/PrefabAsset.h"
 #include "Framework/Array.h"
 
 /*
@@ -22,6 +23,12 @@ class ObjectUtils
 			Resets an object property based on its name
 		*/
 		static void ResetObjectProp(ObjectBase* object, const std::string& propName, ObjectRegistry& registry);
+
+		/*
+			Resets an SceneObject property based on its name
+			Takes a reference to a prefab asset to load the default property based on the asset property
+		*/
+		static void ResetObjectProp(SceneObject* object, const std::string& propName, Ref<PrefabAsset> prefabAsset);
 
 		/*
 			Resets a structs property based on its name

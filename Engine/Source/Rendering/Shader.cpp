@@ -27,6 +27,13 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
+void Shader::ReloadFromFile()
+{
+	glDeleteProgram(m_RendererID);
+	ShaderProgramSource source = ParseShader(m_Filepath);
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+}
+
 void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
 {
 	glUniform3f(GetUniformLocation(name), v0, v1, v2);

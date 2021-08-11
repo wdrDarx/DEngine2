@@ -5,7 +5,6 @@ void QuadRenderer::OnConstruct()
 {
 	Super::OnConstruct();
 
-	m_QuadShader = MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader.shader");
 	m_BlankTexture = MakeRef<Texture>();
 
 	m_DrawCalls.reserve(MaxDrawCalls);
@@ -34,8 +33,8 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 	if(m_CurrentDrawCallIndex < 0) return;
 
 	glEnable(GL_DEPTH_TEST);
-	m_QuadShader->Bind();
-	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->Bind();
+	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 
 	//draw each draw call
 	for (int i = 0; i <= m_CurrentDrawCallIndex; i++)
@@ -46,10 +45,10 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, call.TextureBindings[i]);
-			m_QuadShader->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
+			GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
 		}
 
-		GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *call.vertexArray, *call.indexBuffer);
+		GetScene()->GetRenderAPI()->DrawIndexed(*GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader"), *call.vertexArray, *call.indexBuffer);
 	}
 	glDisable(GL_DEPTH_TEST);
 }
@@ -57,6 +56,10 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 void QuadRenderer::PrepareFrame()
 {
 	Super::PrepareFrame();
+
+	if(!GetScene()->GetRenderAPI()->IsShaderInCache("QuadShader"))
+		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader.shader"), "QuadShader");
+
 	if(m_CurrentDrawCallIndex < 0) return;
 
 	for(int i = 0; i <= m_CurrentDrawCallIndex; i++)
@@ -64,11 +67,11 @@ void QuadRenderer::PrepareFrame()
 		auto& call = m_DrawCalls[i];
 
 		//copy over vertex data
-		call.vertexBuffer->SetNewData(call.Verticies.data(), sizeof(Vertex) * call.Verticies.size());
+		call.vertexBuffer->SetNewData(call.Verticies.data(), (uint)sizeof(Vertex) * (uint)call.Verticies.size());
 
 		//generate index buffer
 		std::vector<uint> indexbuffer;
-		uint quadCount = call.Verticies.size() / 4;
+		uint quadCount = (uint)call.Verticies.size() / 4;
 		for (uint i = 0; i < quadCount; i++)
 		{
 			for (uint j = 0; j < m_QuadIndecies.size(); j++)
@@ -80,7 +83,7 @@ void QuadRenderer::PrepareFrame()
 		}
 
 		//set index buffer
-		call.indexBuffer->SetData(indexbuffer.data(), indexbuffer.size());
+		call.indexBuffer->SetData(indexbuffer.data(), (uint)indexbuffer.size());
 
 		//set vertex array
 		call.vertexArray->Addbuffer(*call.vertexBuffer, *m_VertexBufferLayout);
@@ -141,7 +144,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Te
 		{
 			if(texture->m_RendererID == CurrentDrawCall->TextureBindings[i])
 			{
-				TextureID = i;
+				TextureID = (float)i;
 				found = true;
 				break;
 			}
@@ -150,7 +153,7 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Te
 		if(!found)
 		{ 
 			CurrentDrawCall->TextureBindings.push_back(texture->m_RendererID);
-			TextureID = CurrentDrawCall->TextureBindings.size() - 1;
+			TextureID = (float)CurrentDrawCall->TextureBindings.size() - 1.f;
 		}
 	}
 

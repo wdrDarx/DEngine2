@@ -53,6 +53,14 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 		if (ImGui::MenuItem("Destroy Object"))
 			ObjectDeleted = true;
 
+		if (object->IsPrefab())
+		{
+			if (ImGui::MenuItem("Reload Prefab"))
+			{
+				object->GetPrefabAssetRef()->LoadPrefab(object, false);
+			}
+		}
+
 		ImGui::EndPopup();
 	}
 

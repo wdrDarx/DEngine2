@@ -42,6 +42,43 @@ void ObjectUtils::ResetObjectProp(ObjectBase* object, const std::string& propNam
 	}
 }
 
+void ObjectUtils::ResetObjectProp(SceneObject* object, const std::string& propName, Ref<PrefabAsset> prefabAsset)
+{
+	ArrayBuffer propArrayBuffer;
+	{
+		Buffer& objBuffer = prefabAsset->m_SceneObjectBuffer;
+		STARTREAD(objBuffer, 0);
+		UID id;
+		std::string name;
+		READ(&id, sizeof(UID));
+		READSTRING(name);
+
+		Buffer PropBuffer;
+		READBUFFER(PropBuffer);
+		propArrayBuffer.FromBuffer(PropBuffer);
+	}
+
+
+	for (auto& prop : object->GetPropertiesMutable())
+	{
+		if (prop.m_name == propName)
+		{
+			for (auto& piece : propArrayBuffer.GetDataPieces())
+			{
+				Property defaultProp;
+				defaultProp.LoadAllMetadata(piece);
+
+				if (prop.m_name == defaultProp.m_name && prop.m_Type == defaultProp.m_Type)
+				{
+					prop.FromBuffer(piece);
+					break;
+				}
+			}
+		}
+
+	}
+}
+
 void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, StructRegistry& registry)
 {
 	//construct a new element based on the element class name if its not a regular type

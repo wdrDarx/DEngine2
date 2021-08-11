@@ -60,7 +60,6 @@ public:
 	void DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Texture> texture = nullptr);
 
 public:
-	Ref<Shader> m_QuadShader;
 	Ref<Texture> m_BlankTexture;
 
 	std::vector<QuadRendererDrawCall> m_DrawCalls;

@@ -33,6 +33,7 @@ class Viewport
 			m_Framebuffer->Bind();
 			m_RenderAPI->SetViewport(m_LastViewportSize);
 			m_RenderAPI->SetCamera(m_Camera);
+			m_RenderAPI->SetActiveFramebuffer(m_Framebuffer);
 			m_RenderAPI->SetClearColor({0,0,0,1});
 			m_RenderAPI->Clear();		
 
@@ -47,6 +48,7 @@ class Viewport
 				m_Scene->RenderFrame(m_Camera);
 
 			m_Framebuffer->Unbind();
+			m_RenderAPI->SetActiveFramebuffer(nullptr);
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
 

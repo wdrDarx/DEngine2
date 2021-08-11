@@ -85,10 +85,10 @@ bool Window::isContextBound()
 
 int Window::GetWidth() const
 {
-	return GetRenderAPI()->GetViewportSize().x;
+	return (int)GetRenderAPI()->GetViewportSize().x;
 }
 
 int Window::GetHeight() const
 {
-	return GetRenderAPI()->GetViewportSize().y;
+	return (int)GetRenderAPI()->GetViewportSize().y;
 }

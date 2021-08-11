@@ -3,6 +3,8 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "Rendering/Shader.h"
+
 
 struct DENGINE_API RenderStats
 {
@@ -11,7 +13,7 @@ struct DENGINE_API RenderStats
 
 struct VertexArray;
 struct IndexBuffer;
-struct Shader;
+struct FrameBuffer;
 class Camera;
 
 //houses a context and provides functions for a bunch of render stuff
@@ -45,7 +47,7 @@ class DENGINE_API RenderAPI
 			return m_ContextBound;
 		}
 
-		const RenderStats& GetRenderStats() const
+		RenderStats& GetRenderStats()
 		{
 			return m_Stats;
 		}
@@ -61,12 +63,49 @@ class DENGINE_API RenderAPI
 			return m_Camera;
 		}
 
+		void SetActiveFramebuffer(Ref<FrameBuffer> framebuffer)
+		{
+			m_ActiveFrameBuffer = framebuffer;
+		}
+
+		Ref<FrameBuffer> GetActiveFrameBuffer()
+		{
+			return m_ActiveFrameBuffer;
+		}
+
+		void AddShaderToCache(Ref<Shader> shader, const std::string& shaderName);
+
+		Ref<Shader> GetShaderFromCache(const std::string& shaderName)
+		{
+			return m_ShaderCache[shaderName];
+		}
+
+		std::vector<std::pair<std::string, Ref<Shader>>> GetAllShadersInCache() const
+		{
+			std::vector<std::pair<std::string, Ref<Shader>>> temp;
+			for (auto& pair : m_ShaderCache)
+			{
+				temp.push_back(pair);
+			}
+
+			return temp;
+		}
+
+		void ReloadShader(const std::string& shaderName);
+		bool IsShaderInCache(const std::string& shaderName);
+
 	private:
 		RenderStats m_Stats;
 		vec2d m_LastViewportSize;
 
 		//optional
 		Ref<Camera> m_Camera;
+
+		//optional
+		Ref<FrameBuffer> m_ActiveFrameBuffer;
+
+		//Shader cache
+		std::unordered_map<std::string, Ref<Shader>> m_ShaderCache;
 
 		GLFWwindow* m_windowContext = nullptr;
 		bool m_ContextBound = false;

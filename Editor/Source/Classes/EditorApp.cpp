@@ -263,9 +263,20 @@ void EditorApp::RenderImGui(const Tick& tick)
 
 	ImGui::End();
 
-	ImGui::Begin("Render Stats");
+	ImGui::Begin("Renderer");
 	ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
 	ImGui::Text(std::string("Draw Calls : " + STRING(m_EditorScene->GetRenderAPI()->GetRenderStats().DrawCalls)).c_str());
+	ImGui::Text("Shader Cache");
+	for (const auto& shader : GetWindow()->GetRenderAPI()->GetAllShadersInCache())
+	{
+		ImGui::Text(shader.first.c_str());
+		ImGui::SameLine();
+		
+		if (ImGui::Button("Reload"))
+		{
+			GetWindow()->GetRenderAPI()->ReloadShader(shader.first);
+		}
+	}
 	ImGui::End();
 }
 

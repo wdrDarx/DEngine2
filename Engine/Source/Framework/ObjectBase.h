@@ -174,6 +174,11 @@ public:
 	{
 		return m_Name;
 	}
+
+	std::string& GetNameMutable()
+	{
+		return m_Name;
+	}
 	
 	void SetName(const std::string& name)
 	{

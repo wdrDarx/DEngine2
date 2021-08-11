@@ -112,6 +112,8 @@ bool ModuleManager::isModuleLoaded(const std::string& ModuleName)
 			return true;
 		}
 	}
+
+	return false;
 }
 
 void ModuleManager::HotReloadModule(const std::string& ModuleName)

@@ -38,7 +38,11 @@ class PropertyWindow
 		}
 
 		void DrawSceneObjectProps(Ref<SceneObject> sceneObject)
-		{			
+		{		
+			ImGui::Text("Name");
+			ImGui::SameLine();
+			ImGui::InputText("##Name", &sceneObject->GetNameMutable());
+
 			if (ImGui::Button("Serialize/Reload"))
 			{
 				Buffer temp;
@@ -69,6 +73,21 @@ class PropertyWindow
 				ImGui::TreePop();
 			}
 			ImGui::PopStyleVar();
+		}
+
+		void ResetProperty(ObjectBase* object, const std::string& propName, ObjectRegistry& objRegistry)
+		{
+			SceneObject* sceneObj = Cast<SceneObject>(object);
+			if (sceneObj && sceneObj->IsPrefab())
+			{
+				//reset prop from prefab asset defaults
+				ObjectUtils::ResetObjectProp(sceneObj, propName, sceneObj->GetPrefabAssetRef());
+			}
+			else
+			{
+				//reset from c++ class defaults
+				ObjectUtils::ResetObjectProp(object, propName, objRegistry);
+			}
 		}
 
 		void ListProperties(std::vector<Property>& props, Ref<ObjectBase> owner = nullptr, bool ForceNewLine = false, bool DrawCategories = true)
@@ -229,7 +248,7 @@ class PropertyWindow
 
 				if (owner && ImGui::Button("<", buttonSize))
 				{
-					ObjectUtils::ResetObjectProp(owner.get(), prop.m_name, m_App->GetObjectRegistry());
+					ResetProperty(owner.get(), prop.m_name, m_App->GetObjectRegistry());
 				}
 
 				if (expanded)
@@ -338,7 +357,7 @@ class PropertyWindow
 				
 				if (owner && prop.m_Type != PropType::STRUCT && ImGui::Button("<", buttonSize))
 				{
-					ObjectUtils::ResetObjectProp(owner.get(), prop.m_name, m_App->GetObjectRegistry());
+					ResetProperty(owner.get(), prop.m_name, m_App->GetObjectRegistry());
 				}
 
 				ImGui::PopItemWidth();			

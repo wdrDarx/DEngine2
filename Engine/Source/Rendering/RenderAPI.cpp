@@ -65,7 +65,7 @@ void RenderAPI::SetClearColor(const color4& color)
 
 void RenderAPI::SetViewport(const vec2d& Size)
 {
-	glViewport(0,0, Size.x, Size.y);
+	glViewport(0,0, (GLsizei)Size.x, (GLsizei)Size.y);
 	m_LastViewportSize = Size;
 }
 
@@ -84,5 +84,36 @@ void RenderAPI::DrawIndexed(Shader& shader, VertexArray& vertexArray, IndexBuffe
 
 	//record draw calls
 	m_Stats.DrawCalls++;
+}
+
+void RenderAPI::AddShaderToCache(Ref<Shader> shader, const std::string& shaderName)
+{
+	m_ShaderCache[shaderName] = shader;
+}
+
+void RenderAPI::ReloadShader(const std::string& shaderName)
+{
+	for (auto& pair : m_ShaderCache)
+	{
+		if (pair.first == shaderName)
+		{ 
+			pair.second = MakeRef<Shader>(pair.second->m_Filepath);
+			break;
+		}
+	}
+}
+
+bool RenderAPI::IsShaderInCache(const std::string& shaderName)
+{
+	bool found = false;
+	for (auto& pair : m_ShaderCache)
+	{
+		if (pair.first == shaderName)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 

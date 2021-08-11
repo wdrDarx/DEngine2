@@ -11,7 +11,7 @@ struct DENGINE_API ShaderProgramSource
 
 struct DENGINE_API Shader
 {
-private:
+public:
 	std::string m_Filepath;
 	std::unordered_map<std::string, int> m_UniformLocationCache;
 public:
@@ -20,6 +20,7 @@ public:
 	uint m_RendererID;
 	void Bind() const;
 	void Unbind() const;
+	void ReloadFromFile();
 
 	void SetUniform3f(const std::string& name, float v0, float v1, float v2);
 	void SetUniform3fv(const std::string& name, int count, vec3d* array);

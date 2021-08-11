@@ -53,7 +53,12 @@ void SceneObject::OnConstruct()
 			Ref<PrefabAsset> prefabAsset = Cast<PrefabAsset>(event->GetAsset());
 			if (prefabAsset && event->GetAsset()->GetID() == GetPrefabAssetRef()->GetID())
 			{
+				Buffer MyBuffer; //save myself then load later after the prefab loaded
+				Serialize(MyBuffer);
+
 				prefabAsset->LoadPrefab(this, false);
+
+				Deserialize(MyBuffer);
 			}
 		}
 	});
@@ -65,7 +70,6 @@ uint SceneObject::Serialize(Buffer& buffer) const
 {
 	STARTWRITE(buffer, Super::Serialize(buffer))
 	
-
 	ArrayBuffer ComponentsData;
 	for (auto& comp : GetComponents())
 	{		
