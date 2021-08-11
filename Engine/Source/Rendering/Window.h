@@ -4,7 +4,7 @@
 #include "RenderAPI.h"
 #include "Framework/InputManager.h"
 
-//houses 
+//houses a window with a rendering context and input manager specific to this window
 class DENGINE_API Window
 {
 public:

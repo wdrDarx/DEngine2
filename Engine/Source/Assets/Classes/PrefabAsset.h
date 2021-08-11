@@ -38,9 +38,18 @@ public:
 	*/
 	void LoadPrefab(Ref<SceneObject> prefab, bool LoadID = true) const
 	{
-		if(m_SceneObjectBuffer.size() < 1) return;
+		LoadPrefab(prefab.get(), LoadID);
+	}
 
-		if(LoadID)
+	/*
+		loads in all saved object data (including properties) from this assets buffer
+		Object must have initialized properties
+	*/
+	void LoadPrefab(SceneObject* prefab, bool LoadID = true) const
+	{
+		if (m_SceneObjectBuffer.size() < 1) return;
+
+		if (LoadID)
 			prefab->Deserialize(m_SceneObjectBuffer);
 		else //preserve the object id
 		{

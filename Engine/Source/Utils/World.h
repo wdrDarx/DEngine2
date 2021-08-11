@@ -1,7 +1,9 @@
 #pragma once
 #include "Core/Core.h"
 
-
+/*
+	2 dimentional transform
+*/
 struct DENGINE_API Transform2D
 {
 	Transform2D(const vec2d& p, const float& r, const vec2d& s) :pos(p), rot(r), scale(s)
@@ -16,6 +18,10 @@ struct DENGINE_API Transform2D
 class b2World;
 struct b2RayCastOutput;
 class Camera;
+
+/*
+	Util class for transformations and matrix stuff
+*/
 class DENGINE_API World
 {
 public:

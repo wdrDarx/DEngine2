@@ -69,7 +69,7 @@ void PrefabAssetEditor::Render()
 
 	title = m_TargetAsset->GetAssetName() + " Prefab Editor";
 	bool isOpen = true;
-	ImGui::Begin(title.c_str(), &isOpen, ImGuiWindowFlags_NoDocking);
+	ImGui::Begin(title.c_str(), &isOpen);
 
 	if (ImGui::Button("Save"))
 	{
@@ -95,9 +95,10 @@ void PrefabAssetEditor::Render()
 
 	ImGui::NextColumn();
 
+
 	//viewport
 	m_App->GetWindow()->GetInputManager().ForwardTo(m_Viewport->m_InputManager);
-	m_Viewport->BeginFrame(true);
+	m_Viewport->BeginFrame();
 	m_Scene->PrepareFrame();
 	m_Viewport->EndFrame(false);
 	m_Scene->ClearFrame();

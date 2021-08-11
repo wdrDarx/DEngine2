@@ -38,7 +38,7 @@ void TextureAssetEditor::Render()
 	float ratio = (float)m_TextureAsset->m_width / (float)m_TextureAsset->m_height;
 	float sizeY = 100.f / ratio;
 
-	m_QuadRenderer->DrawQuad3D({100, sizeY ,1}, trans, {1,1,1,1}, m_TextureAsset->GetTexture());
+	m_QuadRenderer->DrawQuad3D({100, sizeY}, trans, {1,1,1,1}, m_TextureAsset->GetTexture());
 	m_QuadRenderer->PrepareFrame();
 	m_QuadRenderer->RenderFrame(m_Viewport->m_Camera);
 

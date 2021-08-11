@@ -16,6 +16,7 @@
 #include "Event/SceneEvent.h"
 #include "Event/EditorCallback.h"
 #include "Event/ApplicationEvent.h"
+#include "Event/AssetEvent.h"
 #include "Event/KeyEvent.h"
 
 //Framework
@@ -66,3 +67,4 @@
 #include "Utils/Timer.h"
 #include "Utils/World.h"
 #include "Utils/ObjectUtils.h"
+#include "Utils/SceneUtils.h"

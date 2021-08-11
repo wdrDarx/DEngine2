@@ -37,7 +37,10 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 
 	std::string name = object->GetName();
 
+	//prefab color
+	ImGui::PushStyleColor(ImGuiCol_Text, object->IsPrefab() ? ImVec4{0.6f, 0.7f, 1.0f, 1.0f} : ImVec4{ 1.f, 1.f, 1.0f, 1.0f });
 	bool expanded = ImGui::TreeNodeEx((void*)object->GetID().ID, flags, name.c_str());
+	ImGui::PopStyleColor();
 	if (ImGui::IsItemClicked())
 	{
 		m_SelectedObject = object;

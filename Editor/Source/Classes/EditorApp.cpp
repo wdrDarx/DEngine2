@@ -10,15 +10,6 @@ EditorApp::EditorApp() : Application()
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
-	//application event for end frame on the scene
-	m_ApplicationEvent.Assign([&](ApplicationEvent* event)
-	{
-		if (event->GetEventType() == ApplicationEventType::OBJECTFINSIHUPDATE)
-		{
-			EndFrame();
-		}
-	});
-
 	//close event for window
 	m_WindowEvent.Assign([&](WindowEvent* event)
 	{
@@ -69,9 +60,6 @@ EditorApp::EditorApp() : Application()
 		}
 	});
 
-	//bind the application event callback 
-	GetEventDispatcher().Bind(m_ApplicationEvent);
-
 	//bind the window event callback 
 	GetEventDispatcher().Bind(m_WindowEvent);
 
@@ -109,12 +97,18 @@ EditorApp::EditorApp() : Application()
 
 void EditorApp::OnUpdate(const Tick& tick)
 {
+	//call begin frame before updating any app objects
 	BeginFrame();
+	Super::OnUpdate(tick);
 
+	//call the rest of the rendering stuff after all objects have updated
 	if (m_ImGuiLayer.IsValid())
 	{
 		RenderImGui(tick);
 	}
+
+	//call endframe at the end of the update
+	EndFrame();
 }
 
 void EditorApp::RenderImGui(const Tick& tick)
@@ -271,6 +265,7 @@ void EditorApp::RenderImGui(const Tick& tick)
 
 	ImGui::Begin("Render Stats");
 	ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
+	ImGui::Text(std::string("Draw Calls : " + STRING(m_EditorScene->GetRenderAPI()->GetRenderStats().DrawCalls)).c_str());
 	ImGui::End();
 }
 

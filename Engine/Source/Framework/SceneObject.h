@@ -3,8 +3,10 @@
 #include "ObjectComponent.h"
 #include "Event/Callback.h"
 #include "Event/ModuleEvent.h"
+#include "Event/AssetEvent.h"
 #include "Event/EventDispatcher.h"
 
+class PrefabAsset;
 class Scene;
 /*
 * An Object existing in the scope of a Scene, can contain components
@@ -82,11 +84,35 @@ public:
 	//Will call initialize to an already existing Component
 	void AddComponent(ObjectComponent* comp);
 
+	bool IsPrefab() const
+	{
+		return (GetObjectFlags() & ObjectFlags::PREFAB);
+	}
+
+	void MarkPrefab(Ref<PrefabAsset> prefab)
+	{
+		GetObjectFlagsMutable() = (ObjectFlags)(GetObjectFlags() | ObjectFlags::PREFAB);
+		m_PrefabAssetReference = prefab;
+	}
+
+	Ref<PrefabAsset> GetPrefabAssetRef()
+	{
+		ASSERT(IsPrefab()) //must be a prefab
+		return m_PrefabAssetReference;
+	}
+
 private:
 	Scene* m_Scene = nullptr;
+
+	//used to auto destroy on module unload
 	Callback<ModuleEvent> m_ModuleCallback;
+
+	//used to auto update from prefab assets
+	Callback<AssetEvent> m_AssetCallback;
 
 	//array of owning components
 	std::vector<Ref<ObjectComponent>> m_Components;
 
+	//valid when we are a prefab
+	Ref<PrefabAsset> m_PrefabAssetReference;
 };

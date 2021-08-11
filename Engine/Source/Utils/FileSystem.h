@@ -4,6 +4,9 @@
 
 #define FILE_THREADED 
 
+/*
+	Class for opening file dialogs
+*/
 class DENGINE_API FileDialog
 {
 public:
@@ -11,6 +14,9 @@ public:
 	static std::string SaveFile(const char* filter);
 };
 
+/*
+	Utility class for the filesystem
+*/
 class DENGINE_API File
 {
 	public:

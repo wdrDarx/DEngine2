@@ -202,6 +202,8 @@
     <ClInclude Include="Source\Framework\InputManager.h" />
     <ClInclude Include="Source\Event\KeyEvent.h" />
     <ClInclude Include="Source\Assets\Classes\PrefabAsset.h" />
+    <ClInclude Include="Source\Utils\SceneUtils.h" />
+    <ClInclude Include="Source\Event\AssetEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -305,5 +307,6 @@
     </ClCompile>
     <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Framework\InputManager.cpp" />
+    <ClCompile Include="Source\Utils\SceneUtils.cpp" />
   </ItemGroup>
 </Project>

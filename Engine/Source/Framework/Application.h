@@ -40,10 +40,7 @@ public:
 
 	}
 
-	virtual void OnUpdate(const Tick& tick)
-	{
-		
-	}
+	virtual void OnUpdate(const Tick& tick);
 
 	const AppState& GetAppState() const
 	{		

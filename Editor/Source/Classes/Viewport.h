@@ -70,7 +70,16 @@ class Viewport
 
  			uint64_t textureID = m_Framebuffer->GetColorAttachement();
  			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_LastViewportSize.x, m_LastViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
- 			m_FocusedOnviewport = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();		
+
+			bool isFocused = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();
+
+			//clear input on unfocus
+			if (!isFocused && m_FocusedOnviewport)
+			{
+				m_InputManager.ClearInput();
+			}
+
+ 			m_FocusedOnviewport = isFocused;
 
 			if (DrawImGui)
 			{
@@ -94,7 +103,7 @@ class Viewport
 								trans = m_Camera->GetTransform();
 								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 300.f;
 
-								ObjectUtils::SpawnPrefabInScene(prefabAsset, m_Scene, trans);
+								SceneUitls::SpawnPrefabInScene(prefabAsset, m_Scene, trans);
 							}
 						}
 					}

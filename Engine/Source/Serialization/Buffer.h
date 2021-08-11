@@ -25,6 +25,11 @@ struct DENGINE_API ArrayBuffer
 {
 	std::vector<Buffer> m_DataPieces;
 
+	const std::vector<Buffer>& GetDataPieces() const
+	{
+		return m_DataPieces;
+	}
+
 	void AddPiece(const Buffer& piece)
 	{
 		m_DataPieces.push_back(piece);

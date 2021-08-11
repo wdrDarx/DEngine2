@@ -7,6 +7,9 @@
 #include "Framework/Registry.h"
 #include "Asset.h"
 #include "AssetRef.h"
+#include "Event/AssetEvent.h"
+#include "Event/EventDispatcher.h"
+#include "Event/Callback.h"
 
 class DENGINE_API AssetManager
 {
@@ -37,6 +40,12 @@ public:
 
 		//update the cache since we know the asset changed
 		m_AssetCache->Set(FullPath, asset);
+
+		//Asset Load Event
+		AssetEvent event;
+		event.m_Asset = asset;
+		event.m_EventType = AssetEventType::ASSETSAVE;
+		GetEventDispatcher().Dispatch(event);
 
 		LogTemp("Saving Asset : " + FullPath);
 		File::WriteFile(FullPath, buffer);
@@ -136,6 +145,12 @@ public:
 		//add to cache
 		m_AssetCache->Set(FullPath, newAsset);
 
+		//Asset Load Event
+		AssetEvent event;
+		event.m_Asset = newAsset;
+		event.m_EventType = AssetEventType::ASSETLOAD;
+		GetEventDispatcher().Dispatch(event);
+
 		return newAsset;
 	}
 
@@ -163,6 +178,11 @@ public:
 		return m_DiscoveredAssets[BaseDir];
 	}
 
+	EventDispatcher& GetEventDispatcher()
+	{
+		return m_AssetEventDispatcher;
+	}
+
 	//appends all asset handles from all mounted directories into 1 set (ASSETS WITH THE SAME ASSET ID WILL BE IGNORED AND NOT INCLUDED HERE)
 	std::set<AssetHandle> GetAllDiscorveredAssets();
 	std::vector<std::string>& GetMountedDirectories();
@@ -179,5 +199,8 @@ private:
 
 	//stores asset types in a factory (key is the class name)
 	AssetRegistry m_AssetTypeRegistry;
+
+	//sends AssetEvent
+	EventDispatcher m_AssetEventDispatcher;
 };
 

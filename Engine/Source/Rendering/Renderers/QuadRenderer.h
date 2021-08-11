@@ -1,6 +1,12 @@
 #pragma once
 #include "Rendering/RenderCore.h"
 #include "Rendering/Renderers/Renderer.h"
+#include "Utils/Task.h"
+
+static const uint MaxQuads = 100000;
+static const uint MaxVerts = MaxQuads * 4;
+static const uint MaxTextures = 32;
+static const uint MaxDrawCalls = 2;
 
 struct DENGINE_API Vertex
 {
@@ -9,6 +15,26 @@ struct DENGINE_API Vertex
 	float TextureSlot;
 	glm::vec4 color;
 	glm::mat4 trans;
+};
+
+struct DENGINE_API QuadRendererDrawCall
+{
+	QuadRendererDrawCall(Ref<Texture> blankTexture = nullptr)
+	{
+		vertexArray = MakeRef<VertexArray>();
+		indexBuffer = MakeRef<IndexBuffer>();
+		vertexBuffer = MakeRef<VertexBuffer>();
+
+		if(blankTexture)
+			TextureBindings.push_back(blankTexture->m_RendererID);
+	}
+
+	Ref<VertexBuffer> vertexBuffer;
+	Ref<VertexArray> vertexArray;
+	Ref<IndexBuffer> indexBuffer;
+	std::vector<uint> TextureBindings;
+
+	std::vector<Vertex> Verticies;
 };
 
 struct DENGINE_API Quad2D
@@ -30,24 +56,17 @@ public:
 	void ClearFrame() override;
 
 	void DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4& color);
-	void DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color, Ref<Texture> texture = nullptr);
+	void DrawQuad3D(const vec2d& size, const Transform& trans, const color4& color, Ref<Texture> texture = nullptr);
 	void DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Texture> texture = nullptr);
 
 public:
 	Ref<Shader> m_QuadShader;
+	Ref<Texture> m_BlankTexture;
+
+	std::vector<QuadRendererDrawCall> m_DrawCalls;
+	int m_CurrentDrawCallIndex = -1;
 
 	const std::vector<uint> m_QuadIndecies = { 0, 1, 2, 2, 3, 0 };
-
-	std::vector<Vertex> m_Verticies;
-
-	uint m_TextureBindings[32];
-	uint m_CurrentTextureBinding = 0;
-
-	Ref<VertexBuffer> m_VertexBuffer;
 	Ref<VertexBufferLayout> m_VertexBufferLayout;
-	Ref<VertexArray> m_VertexArray;
-	Ref<IndexBuffer> m_IndexBuffer;
-
-	glm::mat4 m_ViewProjectionMatrix = glm::mat4(1.0f);
 };
 

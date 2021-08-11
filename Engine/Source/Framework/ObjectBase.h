@@ -22,6 +22,12 @@ enum ContructFlags
 	NOPROPS = BIT(3)
 };
 
+enum ObjectFlags
+{
+	//the object is a prefab
+	PREFAB = BIT(0)
+};
+
 
 //contains initializer values for an object
 class ObjectBase;
@@ -243,6 +249,18 @@ public:
 		return m_Initialized;
 	}
 
+	//misc flags
+	const ObjectFlags& GetObjectFlags() const
+	{
+		return m_ObjectFlags;
+	}
+
+	//misc flags
+	ObjectFlags& GetObjectFlagsMutable()
+	{
+		return m_ObjectFlags;
+	}
+
 protected:
 
 	//array of properties (used for serialization and reflection)
@@ -252,6 +270,9 @@ private:
 
 	//used for invalidating objects for events and such
 	bool m_IsValid = true;
+
+	//Misc flags
+	ObjectFlags m_ObjectFlags;
 
 	//flag used for deleting this object next tick or something
 	bool m_MarkDelete = false;

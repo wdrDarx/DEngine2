@@ -12,6 +12,7 @@ public:
 		OBJECT_PROPS_BEGIN()
 			QuadTransform.pos = {0,0, -200.f};
 			PROPDEF(QuadTransform, EditAnywhere)
+			PROPDEF(QuadAmount, EditAnywhere)
 			PROPDEF(QuadSize, EditAnywhere)
 			PROPDEF(QuadColor, EditAnywhere)
 			PROPDEF(QuadTexture, EditAnywhere)
@@ -24,6 +25,7 @@ public:
 public:
 	Transform QuadTransform;
 	vec2d QuadSize = {100,100};
+	int QuadAmount = 1;
 	color4 QuadColor = { 1,1,1,1 };
 	AssetRef<TextureAsset> QuadTexture;
 	Array<Transform> m_Test;

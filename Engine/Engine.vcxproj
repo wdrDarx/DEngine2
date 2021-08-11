@@ -97,6 +97,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Event\AssetEvent.h" />
+    <ClInclude Include="Source\Utils\SceneUtils.h" />
     <ClInclude Include="Source\Assets\Asset.h" />
     <ClInclude Include="Source\Assets\AssetHandle.h" />
     <ClInclude Include="Source\Assets\AssetManager.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="Source\Utils\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Utils\SceneUtils.cpp" />
     <ClCompile Include="Source\Assets\Asset.cpp" />
     <ClCompile Include="Source\Assets\AssetHandle.cpp" />
     <ClCompile Include="Source\Assets\AssetManager.cpp" />

@@ -13,7 +13,7 @@ void SceneObject::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
 
-	//update scene objects
+	//update components
 	for (uint i = 0; i < GetComponents().size(); i++)
 	{
 		auto obj = GetComponents()[i];
@@ -43,7 +43,22 @@ void SceneObject::OnConstruct()
 		}
 	});
 
-	m_Scene->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
+	GetScene()->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
+
+	//auto load prefab on change
+	m_AssetCallback.Assign([&](AssetEvent* event)
+	{
+		if (IsPrefab() && event->GetEventType() == AssetEventType::ASSETSAVE)
+		{
+			Ref<PrefabAsset> prefabAsset = Cast<PrefabAsset>(event->GetAsset());
+			if (prefabAsset && event->GetAsset()->GetID() == GetPrefabAssetRef()->GetID())
+			{
+				prefabAsset->LoadPrefab(this, false);
+			}
+		}
+	});
+
+	GetScene()->GetApplication()->GetAssetManager().GetEventDispatcher().Bind(m_AssetCallback);
 }
 
 uint SceneObject::Serialize(Buffer& buffer) const

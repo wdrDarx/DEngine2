@@ -6,11 +6,15 @@ void QuadRenderer::OnConstruct()
 	Super::OnConstruct();
 
 	m_QuadShader = MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader.shader");
-	m_VertexArray = MakeRef<VertexArray>();
-	m_IndexBuffer = MakeRef<IndexBuffer>();
-	m_VertexBuffer = MakeRef<VertexBuffer>();
-	m_VertexBufferLayout = MakeRef<VertexBufferLayout>();
+	m_BlankTexture = MakeRef<Texture>();
 
+	m_DrawCalls.reserve(MaxDrawCalls);
+	for (uint i = 0; i < MaxDrawCalls; i++)
+	{
+		m_DrawCalls.push_back(QuadRendererDrawCall(m_BlankTexture));
+	}
+	m_CurrentDrawCallIndex = -100;
+	m_VertexBufferLayout = MakeRef<VertexBufferLayout>();
 
 	m_VertexBufferLayout->Push<float>(3); //position
 	m_VertexBufferLayout->Push<float>(2); //texture coords
@@ -21,67 +25,78 @@ void QuadRenderer::OnConstruct()
 	m_VertexBufferLayout->Push<float>(4);
 	m_VertexBufferLayout->Push<float>(4);
 	m_VertexBufferLayout->Push<float>(4);
-
-	m_VertexArray->Addbuffer(*m_VertexBuffer, *m_VertexBufferLayout);
 }
 
 void QuadRenderer::RenderFrame(Ref<Camera> camera)
 {
 	Super::RenderFrame(camera);
 
+	if(m_CurrentDrawCallIndex < 0) return;
+
 	glEnable(GL_DEPTH_TEST);
-
-	if (m_Verticies.size() == 0) return;
-
 	m_QuadShader->Bind();
-
-	for (uint i = 0; i < m_CurrentTextureBinding; i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, m_TextureBindings[i]);
-		m_QuadShader->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
-	}
-
 	m_QuadShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
-	GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *m_VertexArray, *m_IndexBuffer);
 
+	//draw each draw call
+	for (int i = 0; i <= m_CurrentDrawCallIndex; i++)
+	{
+		auto& call = m_DrawCalls[i];
+
+		for (uint i = 0; i < call.TextureBindings.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, call.TextureBindings[i]);
+			m_QuadShader->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
+		}
+
+		GetScene()->GetRenderAPI()->DrawIndexed(*m_QuadShader, *call.vertexArray, *call.indexBuffer);
+	}
 	glDisable(GL_DEPTH_TEST);
 }
 
 void QuadRenderer::PrepareFrame()
 {
 	Super::PrepareFrame();
+	if(m_CurrentDrawCallIndex < 0) return;
 
-	if (m_Verticies.size() == 0) return;
-	vec2d size = GetScene()->GetRenderAPI()->GetViewportSize();
-	m_VertexBuffer->SetNewData(m_Verticies.data(), sizeof(Vertex) * m_Verticies.size());
-	std::vector<uint> indexbuffer;
-	uint quadCount = m_Verticies.size() / 4;
-	for (uint i = 0; i < quadCount; i++)
+	for(int i = 0; i <= m_CurrentDrawCallIndex; i++)
 	{
-		//indexbuffer.insert(indexbuffer.end(), m_QuadIndecies.begin(), m_QuadIndecies.end());
-		for (uint j = 0; j < m_QuadIndecies.size(); j++)
-		{
-			uint ogIndex = m_QuadIndecies[j];
+		auto& call = m_DrawCalls[i];
 
-			indexbuffer.push_back(ogIndex + i * 4);
+		//copy over vertex data
+		call.vertexBuffer->SetNewData(call.Verticies.data(), sizeof(Vertex) * call.Verticies.size());
+
+		//generate index buffer
+		std::vector<uint> indexbuffer;
+		uint quadCount = call.Verticies.size() / 4;
+		for (uint i = 0; i < quadCount; i++)
+		{
+			for (uint j = 0; j < m_QuadIndecies.size(); j++)
+			{
+				uint ogIndex = m_QuadIndecies[j];
+
+				indexbuffer.push_back(ogIndex + i * 4);
+			}
 		}
+
+		//set index buffer
+		call.indexBuffer->SetData(indexbuffer.data(), indexbuffer.size());
+
+		//set vertex array
+		call.vertexArray->Addbuffer(*call.vertexBuffer, *m_VertexBufferLayout);
 	}
-	m_IndexBuffer->SetData(indexbuffer.data(), indexbuffer.size());
 }
 
 void QuadRenderer::ClearFrame()
 {
 	Super::ClearFrame();
 
-	m_Verticies.clear();
-
-	for (uint i = 0; i < 32; i++)
-	{
-		m_TextureBindings[i] = 0;
+	for(int i = 0; i <= m_CurrentDrawCallIndex; i++)	
+	{ 
+		m_DrawCalls[i].Verticies.clear();
 	}
 
-	m_CurrentTextureBinding = 0;
+	m_CurrentDrawCallIndex = -100;
 }
 
 void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4& color)
@@ -89,13 +104,13 @@ void QuadRenderer::DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4
 	glm::mat4 Transform = glm::translate(glm::mat4(1.0f), { pos.x, pos.y, 0.f }) * glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.f });
 
 	DrawQuad(Transform, color);
-
 }
 
-void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const color4& color, Ref<Texture> texture)
+void QuadRenderer::DrawQuad3D(const vec2d& size, const Transform& trans, const color4& color, Ref<Texture> texture)
 {
 	Transform final = trans;
-	final.scale *= size;
+	final.scale.x *= size.x;
+	final.scale.y *= size.y;
 
 	glm::mat4 Transform = World::MakeMatrix(final);
 
@@ -104,12 +119,39 @@ void QuadRenderer::DrawQuad3D(const vec3d& size, const Transform& trans, const c
 
 void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Texture> texture)
 {
+	if(!GetScene()->GetRenderAPI()) return;
+
+	if(m_CurrentDrawCallIndex < 0)
+		m_CurrentDrawCallIndex = 0;
+
+	QuadRendererDrawCall* CurrentDrawCall = &m_DrawCalls[m_CurrentDrawCallIndex];
+
+	//do we need to create a new draw call?
+	if (CurrentDrawCall->Verticies.size() >= MaxVerts || CurrentDrawCall->TextureBindings.size() >= MaxTextures)
+	{
+		m_CurrentDrawCallIndex++;
+		CurrentDrawCall = &m_DrawCalls[m_CurrentDrawCallIndex];
+	}
+
 	float TextureID = 0.f;
 	if (texture)
 	{
-		m_TextureBindings[m_CurrentTextureBinding] = texture->m_RendererID;
-		TextureID = m_CurrentTextureBinding;
-		m_CurrentTextureBinding++;
+		bool found = false;
+		for (int i = 0; i < CurrentDrawCall->TextureBindings.size(); i++)
+		{
+			if(texture->m_RendererID == CurrentDrawCall->TextureBindings[i])
+			{
+				TextureID = i;
+				found = true;
+				break;
+			}
+		}
+
+		if(!found)
+		{ 
+			CurrentDrawCall->TextureBindings.push_back(texture->m_RendererID);
+			TextureID = CurrentDrawCall->TextureBindings.size() - 1;
+		}
 	}
 
 	Vertex v1
@@ -148,8 +190,8 @@ void QuadRenderer::DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Te
 		matrix
 	};
 
-	m_Verticies.push_back(v1);
-	m_Verticies.push_back(v2);
-	m_Verticies.push_back(v3);
-	m_Verticies.push_back(v4);
+	CurrentDrawCall->Verticies.push_back(v1);
+	CurrentDrawCall->Verticies.push_back(v2);
+	CurrentDrawCall->Verticies.push_back(v3);
+	CurrentDrawCall->Verticies.push_back(v4);
 }

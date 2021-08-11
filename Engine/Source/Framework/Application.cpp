@@ -16,6 +16,17 @@ Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initial
 	GetAssetManager().MountContentDirectory(Paths::GetContentDirectory());
 }
 
+void Application::OnUpdate(const Tick& tick)
+{
+	for (uint i = 0; i < m_AppObjects.size(); i++)
+	{
+		auto obj = m_AppObjects[i];
+
+		if (obj)
+			obj->OnUpdate(tick);
+	}
+}
+
 void Application::MakeWindow(const std::string& name, int width, int height, bool vsync)
 {
 	m_Window = MakeRef<Window>(name, width, height);
@@ -47,18 +58,10 @@ void Application::CoreUpdate(float DeltaTime)
 
 	OnUpdate(tick);
 
-	for (uint i = 0; i < m_AppObjects.size(); i++)
-	{
-		auto obj = m_AppObjects[i];
-
-		if(obj)
-			obj->OnUpdate(tick);
-	}
-
 	//dispatch on end object update event (slow, but clean solution with events)
 	ApplicationEvent updateEndEvent;
 	updateEndEvent.m_EventType = ApplicationEventType::OBJECTFINSIHUPDATE;
-	GetEventDispatcher().Dispatch(updateEndEvent);
+	//GetEventDispatcher().Dispatch(updateEndEvent);
 }
 
 void Application::RegisterBaseClasses()

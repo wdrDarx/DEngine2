@@ -9,8 +9,6 @@ struct DENGINE_API RenderStats
 	uint DrawCalls;
 };
 
-
-
 struct VertexArray;
 struct IndexBuffer;
 struct Shader;

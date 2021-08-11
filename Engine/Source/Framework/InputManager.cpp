@@ -37,7 +37,9 @@ void InputManager::ForwardTo(InputManager& other)
 void InputManager::StopForwarding(InputManager& other)
 {
 	if (GetInternalDispatcher().IsBound(other.m_InternalKeyEvent))
+	{ 
 		GetInternalDispatcher().Unbind(other.m_InternalKeyEvent);
+	}
 }
 
 void InputManager::BindOnKeyDown(Callback<KeyEvent>& callback)
@@ -53,6 +55,11 @@ void InputManager::BindOnKeyUp(Callback<KeyEvent>& callback)
 bool InputManager::IsKeyDown(int KeyCode)
 {
 	return std::find(m_HeldKeys.begin(), m_HeldKeys.end(), KeyCode) != m_HeldKeys.end();
+}
+
+void InputManager::ClearInput()
+{
+	m_HeldKeys.clear();
 }
 
 void InputManager::GlfwKey(GLFWwindow* window, int key, int scancode, int action, int mods)

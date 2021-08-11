@@ -3,12 +3,12 @@
 #include "Framework/ObjectBase.h"
 #include "Framework/Property.h"
 #include "Framework/Registry.h"
-#include "Framework/Scene.h"
 #include "Framework/SceneObject.h"
-#include "Framework/SceneObject.h"
-#include "Assets/Classes/PrefabAsset.h"
 #include "Framework/Array.h"
 
+/*
+	Uitily class for Objects, Structs and properties
+*/
 class ObjectUtils
 {
 	public:
@@ -17,12 +17,25 @@ class ObjectUtils
 			requires object to be registered
 		*/
 		static void ResetObjectProps(ObjectBase* object, ObjectRegistry& registry);
-		static void ResetObjectProp(ObjectBase* object, const std::string& propName, ObjectRegistry& registry);
-		static void AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, StructRegistry& registry);
 
+		/*
+			Resets an object property based on its name
+		*/
+		static void ResetObjectProp(ObjectBase* object, const std::string& propName, ObjectRegistry& registry);
+
+		/*
+			Resets a structs property based on its name
+		*/
 		static void ResetStructProp(StructBase* Struct, const std::string& propName, StructRegistry& registry);
 
-		static Ref<SceneObject> SpawnPrefabInScene(Ref<PrefabAsset> prefabAset, Ref<Scene> scene, const Transform& transform);
 
+		/*
+			Appends a new empty element to an array
+		*/
+		static void AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, StructRegistry& registry);
+
+		/*
+			Returns the ObjectClassType from a polymorphic pointer to an object
+		*/
 		static ObjectClassType GetObjectClassType(Ref<ObjectBase> obj);
 };

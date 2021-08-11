@@ -27,6 +27,8 @@ class DENGINE_API InputManager
 
 	bool IsKeyDown(int KeyCode);
 
+	void ClearInput();
+
 	EventDispatcher& GetInternalDispatcher()
 	{
 		return m_InternalDispatcher;

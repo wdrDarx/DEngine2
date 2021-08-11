@@ -9,6 +9,9 @@ enum class ProjectionType
 	PERSPECTIVE
 };
 
+/*
+	Camera class housing a transform in world space and the view and projection matrix of the camera
+*/
 class DENGINE_API Camera
 {
 public:

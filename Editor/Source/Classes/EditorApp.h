@@ -12,6 +12,7 @@ class EditorApp : public Application
 {
 public:
 	EditorApp();
+	using Super = Application;
 
 	void OnUpdate(const Tick& tick) override;
 	void RenderImGui(const Tick& tick);

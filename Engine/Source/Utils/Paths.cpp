@@ -29,6 +29,11 @@ std::string Paths::GetContentDirectory()
 	return GetBaseDirectory() + "\\Content\\";
 }
 
+std::string Paths::GetModuleContentDirectory(const std::string& ModuleName)
+{
+	return GetModulesDirectory() + ModuleName + "\\Content\\";
+}
+
 std::string Paths::MakeRelativeTo(const std::string& Base, const std::string& Path)
 {
 	std::filesystem::path base(Base);

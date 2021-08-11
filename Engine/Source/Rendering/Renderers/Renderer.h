@@ -6,6 +6,7 @@
 
 class Scene;
 class Camera;
+
 /*
 * inheritable custom class for modules to implement custom rendering (auto destroyed when a module unloads)
 * exists in the scope of a scene

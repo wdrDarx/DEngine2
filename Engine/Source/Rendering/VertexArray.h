@@ -11,6 +11,7 @@ public:
 	VertexArray();
 	~VertexArray();
 
+	//can also be used to replace the current vertex buffer
 	void Addbuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 
 	const VertexBuffer& GetVertexBuffer() const
