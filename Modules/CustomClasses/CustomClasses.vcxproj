@@ -80,7 +80,7 @@ IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>

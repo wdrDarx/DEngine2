@@ -83,7 +83,7 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Debug-win
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Engine\Source;Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -106,29 +106,29 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Classes\AssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
     <ClInclude Include="Source\Classes\ContentBrowser.h" />
     <ClInclude Include="Source\Classes\EditorApp.h" />
     <ClInclude Include="Source\Classes\MenuBar.h" />
     <ClInclude Include="Source\Classes\PropertyWindow.h" />
     <ClInclude Include="Source\Classes\SceneObjectPannel.h" />
-    <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h" />
     <ClInclude Include="Source\Classes\Viewport.h" />
     <ClInclude Include="Source\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_glfw.h" />
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h" />
-    <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\ContentBrowser.cpp" />
     <ClCompile Include="Source\Classes\EditorApp.cpp" />
     <ClCompile Include="Source\Classes\MenuBar.cpp" />
     <ClCompile Include="Source\Classes\SceneObjectPannel.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp" />
     <ClCompile Include="Source\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Source\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.vcxproj">

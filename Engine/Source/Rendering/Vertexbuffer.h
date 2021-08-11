@@ -4,7 +4,7 @@
 struct DENGINE_API VertexBuffer
 {
 private :
-	uint m_RendererID;
+	uint m_RendererID = 0;
 public:
 	VertexBuffer();
 	VertexBuffer(const void* Data, uint size);

@@ -4,11 +4,26 @@
     <Filter Include="Classes">
       <UniqueIdentifier>{F3F6462C-5FD6-C5C7-68EE-509ED44C2C29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\AssetEditors">
+      <UniqueIdentifier>{9C5650D0-88E5-D999-3104-EE941D72EA3F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ImGui">
       <UniqueIdentifier>{C0FF640D-2C14-8DBE-F595-301E616989EF}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\AssetEditor.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Classes\ContentBrowser.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\EditorApp.h">
       <Filter>Classes</Filter>
     </ClInclude>
@@ -33,12 +48,17 @@
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\ContentBrowser.h" />
-    <ClInclude Include="Source\Classes\AssetEditor.h" />
-    <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
-    <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\ContentBrowser.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Classes\EditorApp.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -58,8 +78,5 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\ContentBrowser.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp" />
   </ItemGroup>
 </Project>

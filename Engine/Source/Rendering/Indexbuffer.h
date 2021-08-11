@@ -4,8 +4,8 @@
 struct DENGINE_API IndexBuffer
 {
 private:
-	uint m_RendererID;
-	uint m_Count;
+	uint m_RendererID = 0;
+	uint m_Count = 0;
 public:
 	IndexBuffer(const uint* Data, uint count);
 	IndexBuffer();

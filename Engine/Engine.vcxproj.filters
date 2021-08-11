@@ -4,6 +4,9 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{3824E0A7-24C6-0A7E-0D81-1ED2F9C191CE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets\Classes">
+      <UniqueIdentifier>{154B9A0B-0119-8E11-EAAC-FE37D6196A76}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
@@ -39,6 +42,12 @@
     <ClInclude Include="Source\Assets\AssetRef.h">
       <Filter>Assets</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\PrefabAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\TextureAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Core\Allocator.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -58,6 +67,9 @@
     <ClInclude Include="Source\Event\ApplicationEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Event\AssetEvent.h">
+      <Filter>Event</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Event\Callback.h">
       <Filter>Event</Filter>
     </ClInclude>
@@ -68,6 +80,9 @@
       <Filter>Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\EventDispatcher.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\KeyEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\ModuleEvent.h">
@@ -95,6 +110,9 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\FrameworkMacros.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\InputManager.h">
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Method.h">
@@ -145,6 +163,12 @@
     <ClInclude Include="Source\Rendering\RenderAPI.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\RenderCore.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h">
+      <Filter>Rendering\Renderers</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Rendering\Renderers\Renderer.h">
       <Filter>Rendering\Renderers</Filter>
     </ClInclude>
@@ -187,6 +211,9 @@
     <ClInclude Include="Source\Utils\Rand.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\SceneUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Utils\Task.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -196,14 +223,6 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Assets\Classes\TextureAsset.h" />
-    <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h" />
-    <ClInclude Include="Source\Rendering\RenderCore.h" />
-    <ClInclude Include="Source\Framework\InputManager.h" />
-    <ClInclude Include="Source\Event\KeyEvent.h" />
-    <ClInclude Include="Source\Assets\Classes\PrefabAsset.h" />
-    <ClInclude Include="Source\Utils\SceneUtils.h" />
-    <ClInclude Include="Source\Event\AssetEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -228,6 +247,9 @@
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Engine.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\InputManager.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\ModuleManager.cpp">
@@ -266,6 +288,9 @@
     <ClCompile Include="Source\Rendering\RenderAPI.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp">
+      <Filter>Rendering\Renderers</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\Renderers\Renderer.cpp">
       <Filter>Rendering\Renderers</Filter>
     </ClCompile>
@@ -299,14 +324,14 @@
     <ClCompile Include="Source\Utils\Rand.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utils\SceneUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Utils\Task.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp" />
-    <ClCompile Include="Source\Framework\InputManager.cpp" />
-    <ClCompile Include="Source\Utils\SceneUtils.cpp" />
   </ItemGroup>
 </Project>

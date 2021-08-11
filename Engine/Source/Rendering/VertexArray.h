@@ -6,7 +6,7 @@ struct VertexBuffer;
 struct DENGINE_API VertexArray
 {
 private:
-	uint m_RendererID;
+	uint m_RendererID = 0;
 public:
 	VertexArray();
 	~VertexArray();
@@ -23,6 +23,6 @@ public:
 	void Bind() const;
 	void Unbind() const;
 
-	const VertexBuffer* m_VertexBuffer;
+	const VertexBuffer* m_VertexBuffer = nullptr;
 };
 

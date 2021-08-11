@@ -6,18 +6,18 @@
 static const uint MaxQuads = 100000;
 static const uint MaxVerts = MaxQuads * 4;
 static const uint MaxTextures = 32;
-static const uint MaxDrawCalls = 2;
+static const uint MaxDrawCalls = 100;
 
-struct DENGINE_API Vertex
+struct Vertex
 {
-	glm::vec3 position;
-	glm::vec2 TexCoord;
+	vec3d position;
+	vec2d TexCoord;
 	float TextureSlot;
-	glm::vec4 color;
+	color4 color;
 	glm::mat4 trans;
 };
 
-struct DENGINE_API QuadRendererDrawCall
+struct QuadRendererDrawCall
 {
 	QuadRendererDrawCall(Ref<Texture> blankTexture = nullptr)
 	{
@@ -37,11 +37,11 @@ struct DENGINE_API QuadRendererDrawCall
 	std::vector<Vertex> Verticies;
 };
 
-struct DENGINE_API Quad2D
+struct Quad
 {
-	vec2d pos;
-	vec2d scale;
+	Transform trans;
 	color4 color;
+	Ref<Texture> texture;
 };
 
 class DENGINE_API QuadRenderer : public Renderer
@@ -57,10 +57,14 @@ public:
 
 	void DrawQuad2D(const vec2d& pos, const vec2d& scale, const color4& color);
 	void DrawQuad3D(const vec2d& size, const Transform& trans, const color4& color, Ref<Texture> texture = nullptr);
-	void DrawQuad(const glm::mat4& matrix, const color4& color, Ref<Texture> texture = nullptr);
+	void DrawQuad(const Transform& trans, const color4& color, Ref<Texture> texture = nullptr);
+
+	void ProcessQuads();
 
 public:
+	JobPool m_JobPool;
 	Ref<Texture> m_BlankTexture;
+	std::vector<Quad> m_QuadBuffer;
 
 	std::vector<QuadRendererDrawCall> m_DrawCalls;
 	int m_CurrentDrawCallIndex = -1;

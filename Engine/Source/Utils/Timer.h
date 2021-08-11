@@ -43,3 +43,29 @@ public:
 };
 #endif
 
+#include "Core/Core.h"
+
+//simple class to see how long code takes
+struct Timer
+{
+	public:
+		Timer()
+		{
+			Start();
+		}
+
+		void Start()
+		{
+			m_LastTime = std::chrono::high_resolution_clock::now();
+		}
+
+		float GetSecondsElapsed()
+		{
+			auto now = std::chrono::high_resolution_clock::now();
+			return std::chrono::duration<float, std::chrono::seconds::period>(now - m_LastTime).count();
+		}
+
+private:
+		std::chrono::time_point<std::chrono::steady_clock> m_LastTime;
+};
+

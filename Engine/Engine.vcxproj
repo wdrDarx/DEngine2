@@ -78,7 +78,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -97,8 +97,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Event\AssetEvent.h" />
-    <ClInclude Include="Source\Utils\SceneUtils.h" />
     <ClInclude Include="Source\Assets\Asset.h" />
     <ClInclude Include="Source\Assets\AssetHandle.h" />
     <ClInclude Include="Source\Assets\AssetManager.h" />
@@ -112,6 +110,7 @@
     <ClInclude Include="Source\Core\Types.h" />
     <ClInclude Include="Source\DEngine.h" />
     <ClInclude Include="Source\Event\ApplicationEvent.h" />
+    <ClInclude Include="Source\Event\AssetEvent.h" />
     <ClInclude Include="Source\Event\Callback.h" />
     <ClInclude Include="Source\Event\EditorCallback.h" />
     <ClInclude Include="Source\Event\Event.h" />
@@ -159,12 +158,12 @@
     <ClInclude Include="Source\Utils\ObjectUtils.h" />
     <ClInclude Include="Source\Utils\Paths.h" />
     <ClInclude Include="Source\Utils\Rand.h" />
+    <ClInclude Include="Source\Utils\SceneUtils.h" />
     <ClInclude Include="Source\Utils\Task.h" />
     <ClInclude Include="Source\Utils\Timer.h" />
     <ClInclude Include="Source\Utils\World.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Utils\SceneUtils.cpp" />
     <ClCompile Include="Source\Assets\Asset.cpp" />
     <ClCompile Include="Source\Assets\AssetHandle.cpp" />
     <ClCompile Include="Source\Assets\AssetManager.cpp" />
@@ -198,6 +197,7 @@
     <ClCompile Include="Source\Utils\ObjectUtils.cpp" />
     <ClCompile Include="Source\Utils\Paths.cpp" />
     <ClCompile Include="Source\Utils\Rand.cpp" />
+    <ClCompile Include="Source\Utils\SceneUtils.cpp" />
     <ClCompile Include="Source\Utils\Task.cpp" />
     <ClCompile Include="Source\Utils\World.cpp" />
   </ItemGroup>

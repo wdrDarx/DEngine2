@@ -72,7 +72,7 @@ project "Engine"
       symbols "On"
 
 	filter "configurations:Release"
-      optimize "On"
+      optimize "Speed"
 
 project "Editor"
 	location "Editor"
@@ -123,7 +123,7 @@ project "Editor"
       symbols "On"
 
 	filter "configurations:Release"
-      optimize "On"
+      optimize "Speed"
 
 
 group "Modules"
@@ -170,6 +170,6 @@ project "CustomClasses"
       symbols "On"
 
 	filter "configurations:Release"
-      optimize "On"
+      optimize "Speed"
 
 group "" --Modules
