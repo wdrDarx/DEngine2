@@ -31,8 +31,11 @@ public:
 
 	void Destroy()
 	{
-		delete m_PlaceholderEvent;
-		m_PlaceholderEvent = nullptr;
+		if(m_PlaceholderEvent)
+		{ 
+			delete m_PlaceholderEvent;
+			m_PlaceholderEvent = nullptr;
+		}
 
 		if (m_EventDispatcher)
 		{

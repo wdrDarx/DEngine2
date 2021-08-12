@@ -30,9 +30,9 @@ public:
 
 	bool isContextBound();
 
-	int GetWidth() const;
+	uint GetWidth() const;
 
-	int GetHeight() const;
+	uint GetHeight() const;
 
 	GLFWwindow* GetGlfwWindow() const
 	{
@@ -54,7 +54,21 @@ public:
 		return m_RenderAPI;
 	}
 
+	//this gives the cursor pos in window space which might not be accurate
+	const vec2d& GetLastCursorPos() const
+	{
+		return m_LastCursorPos;
+	}
+
+	void SetLastCursorPos(const vec2d& pos)
+	{
+		m_LastCursorPos = pos;
+	}
+
 private:
+
+	//used to get the mouse move delta vector
+	vec2d m_LastCursorPos;
 
 	//calls window events
 	EventDispatcher m_EventDispatcher;

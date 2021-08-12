@@ -6,9 +6,15 @@
 #include "Rendering/Shader.h"
 
 
-struct DENGINE_API RenderStats
+struct RenderStats
 {
 	uint DrawCalls;
+};
+
+enum class InputMode
+{
+	UI = 0,
+	GAME
 };
 
 struct VertexArray;
@@ -42,6 +48,14 @@ class DENGINE_API RenderAPI
 			return m_LastViewportSize;
 		}
 
+		const vec2d& GetWindowSize() const
+		{
+			ASSERT(GetCurrentContext());
+			int width, height;
+			glfwGetWindowSize(GetCurrentContext(), &width, &height);
+			return {width, height};
+		}
+
 		bool IsContextBound() const
 		{
 			return m_ContextBound;
@@ -62,6 +76,24 @@ class DENGINE_API RenderAPI
 			ASSERT(m_Camera);
 			return m_Camera;
 		}
+
+		void SetShowCursor(bool show);
+
+		void SetCursorPos(const vec2d& pos);
+
+		void SetInputMode(const InputMode& mode)
+		{
+			m_InputMode = mode;
+			//SetUseRawMouseInput(mode == InputMode::GAME);
+			//SetShowCursor(mode == InputMode::UI);
+		}
+
+		const InputMode& GetInputMode() const
+		{
+			return m_InputMode;
+		}
+
+		void SetUseRawMouseInput(bool use);
 
 		void SetActiveFramebuffer(Ref<FrameBuffer> framebuffer)
 		{
@@ -103,6 +135,9 @@ class DENGINE_API RenderAPI
 
 		//optional
 		Ref<FrameBuffer> m_ActiveFrameBuffer;
+
+		//used to mouse raw input stuff
+		InputMode m_InputMode = InputMode::UI;
 
 		//Shader cache
 		std::unordered_map<std::string, Ref<Shader>> m_ShaderCache;

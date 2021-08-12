@@ -20,6 +20,18 @@ class Viewport
 				m_Camera = camera;
 			else
 				m_Camera = MakeRef<Camera>(m_RenderAPI);
+
+
+			//mouse callback
+			m_MouseCallback.Assign([&](MouseEvent* event)
+			{
+				if (event->GetEventType() == MouseEventType::MOVED)
+				{
+					m_LastMouseVector = event->GetMoveVector();
+				}
+			});
+
+			m_InputManager.BindOnMouseMove(m_MouseCallback);
 		}
 
 		~Viewport()
@@ -73,7 +85,7 @@ class Viewport
  			uint64_t textureID = m_Framebuffer->GetColorAttachement();
  			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_LastViewportSize.x, m_LastViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-			bool isFocused = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();
+			bool isFocused = ImGui::IsWindowFocused();
 
 			//clear input on unfocus
 			if (!isFocused && m_FocusedOnviewport)
@@ -81,7 +93,7 @@ class Viewport
 				m_InputManager.ClearInput();
 			}
 
- 			m_FocusedOnviewport = isFocused;
+			m_FocusedOnviewport = isFocused;
 
 			if (DrawImGui)
 			{
@@ -123,8 +135,9 @@ class Viewport
 
 		void HandleCameraMovement(bool overrideFocus = false)
 		{
-			if (m_Scene && (m_FocusedOnviewport || overrideFocus))
+			if (m_Scene && (m_FocusedOnviewport || overrideFocus) && m_InputManager.IsKeyDown(GLFW_MOUSE_BUTTON_RIGHT))
 			{
+				m_RenderAPI->SetInputMode(InputMode::GAME);
 				auto trans = m_Camera->GetTransform();
 
 				//movement
@@ -163,7 +176,15 @@ class Viewport
 					trans.rot.y -= m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
 				}
 
+				trans.rot.y += -m_LastMouseVector.x * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				trans.rot.x += m_LastMouseVector.y * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+
 				m_Camera->SetTransform(trans);
+				m_LastMouseVector = {0,0};
+			}
+ 			else
+			{ 
+				m_RenderAPI->SetInputMode(InputMode::UI);
 			}
 		}
 		
@@ -171,7 +192,9 @@ class Viewport
 		std::string m_ViewportName;
 		vec2d m_LastViewportSize = {1,1};
 		vec2d m_ViewportPos;
-		bool m_FocusedOnviewport;
+		bool m_FocusedOnviewport = false;
+		bool m_WasFocusedOnviewport = false;
+		bool m_RecieveInput = false;
 		Ref<FrameBuffer> m_Framebuffer;
 		Ref<Scene> m_Scene;
 		Ref<RenderAPI> m_RenderAPI;
@@ -179,9 +202,11 @@ class Viewport
 		Ref<Camera> m_Camera;
 
 		float m_CameraMovementSpeed = 100.f;
-		float m_CameraRotationSpeed = 90.f;
+		float m_CameraRotationSpeed = 180.f;
 
 		InputManager m_InputManager;
+		Callback<MouseEvent> m_MouseCallback;
+		vec2d m_LastMouseVector = {0,0};
 };
 
 

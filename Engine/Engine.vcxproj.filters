@@ -166,12 +166,6 @@
     <ClInclude Include="Source\Rendering\RenderCore.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h">
-      <Filter>Rendering\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Rendering\Renderers\Renderer.h">
-      <Filter>Rendering\Renderers</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Rendering\Shader.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -223,6 +217,13 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\Renderer.h">
+      <Filter>Rendering\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h">
+      <Filter>Rendering\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\MouseEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -288,12 +289,6 @@
     <ClCompile Include="Source\Rendering\RenderAPI.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp">
-      <Filter>Rendering\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Rendering\Renderers\Renderer.cpp">
-      <Filter>Rendering\Renderers</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Rendering\Shader.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -332,6 +327,12 @@
     </ClCompile>
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Renderer.cpp">
+      <Filter>Rendering\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp">
+      <Filter>Rendering\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,8 @@
 #include "QuadRenderer.h"
 #include "DEngine.h"
 
+using namespace QR;
+
 void QuadRenderer::OnConstruct()
 {
 	Super::OnConstruct();
@@ -56,16 +58,14 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 
 void QuadRenderer::PrepareFrame()
 {
-	
-
 	Super::PrepareFrame();
 
 	if(!GetScene()->GetRenderAPI()->IsShaderInCache("QuadShader"))
 		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader.shader"), "QuadShader");
 
-	Timer PrepareFrametimer;
+	//Timer PrepareFrametimer;
 	ProcessQuads();
-	LogTemp("Seconds to prepare quads : " + STRING(PrepareFrametimer.GetSecondsElapsed()));
+	//LogTemp("Seconds to prepare quads : " + STRING(PrepareFrametimer.GetSecondsElapsed()));
 
 	if(m_CurrentDrawCallIndex < 0) return;
 
@@ -94,9 +94,7 @@ void QuadRenderer::PrepareFrame()
 
 		//set vertex array
 		call.vertexArray->Addbuffer(*call.vertexBuffer, *m_VertexBufferLayout);
-	}
-
-	
+	}	
 }
 
 void QuadRenderer::ClearFrame()
@@ -137,9 +135,9 @@ void QuadRenderer::ProcessQuads()
 	if (m_CurrentDrawCallIndex < 0)
 		m_CurrentDrawCallIndex = 0;
 
-	m_DrawCalls[0].Verticies.reserve(m_QuadBuffer.size() * 4);
-
+#if 0
 	uint threads = m_JobPool.numThreads;
+	threads = 20;
 	uint QuadsPerThread = ceil((float)m_QuadBuffer.size() / (float)threads);
 
 	std::mutex mu;
@@ -254,7 +252,48 @@ void QuadRenderer::ProcessQuads()
 	}
 
 	m_JobPool.Wait();
-#if 0
+#else
+	std::vector<glm::mat4> T_Matricies;
+	T_Matricies.resize(m_QuadBuffer.size());
+
+	uint Threads = m_JobPool.numThreads;
+	Threads = 10;
+	uint T_CurrentThread = 0;
+	uint QuadsPerThread = ceil((float)m_QuadBuffer.size() / (float)Threads);
+
+	std::mutex mu;
+	for (uint i = 0; i < Threads; i++)
+	{
+		m_JobPool.Execute([&]()
+		{
+			mu.lock();
+			uint MyThreadIndex = T_CurrentThread;
+			T_CurrentThread++;
+			mu.unlock();
+
+			uint StartIndex = MyThreadIndex * QuadsPerThread;
+			uint EndIndex = MIN(StartIndex + QuadsPerThread, m_QuadBuffer.size() - 1);
+			if (StartIndex >= m_QuadBuffer.size()) return;
+
+			uint matrixCount = (EndIndex - StartIndex) + 1;
+
+			std::vector<glm::mat4> MyMatricies;
+			MyMatricies.resize(matrixCount);
+
+			for (uint index = StartIndex; index <= EndIndex; index++)
+			{
+				MyMatricies[index - StartIndex] = World::MakeMatrix(m_QuadBuffer[index].trans);
+			}
+
+			mu.lock();
+			uptr target = (uptr)T_Matricies.data() + (StartIndex * sizeof(glm::mat4));
+			memcpy((void*)target, MyMatricies.data(), MyMatricies.size() * sizeof(glm::mat4));
+			mu.unlock();
+		});
+	}
+
+	m_JobPool.Wait();
+	
 	for (uint i = 0; i < m_QuadBuffer.size(); i++)
 	{
 		Quad& currentQuad = m_QuadBuffer[i];
@@ -288,7 +327,7 @@ void QuadRenderer::ProcessQuads()
 			}
 		}
 
-		glm::mat4 matrix = World::MakeMatrix(currentQuad.trans);
+		const glm::mat4& matrix = T_Matricies[i];
 		const color4& color = currentQuad.color;
 
 		Vertex v1

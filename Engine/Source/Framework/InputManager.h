@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Event/EventDispatcher.h"
 #include "Event/KeyEvent.h"
+#include "Event/MouseEvent.h"
 #include "Event/Callback.h"
 
 
@@ -25,6 +26,11 @@ class DENGINE_API InputManager
 	void BindOnKeyDown(Callback<KeyEvent>& callback);
 	void BindOnKeyUp(Callback<KeyEvent>& callback);
 
+	void BindOnMouseMove(Callback<MouseEvent>& callback);
+	void BindOnMouseScroll(Callback<MouseEvent>& callback);
+	void BindOnMouseDown(Callback<MouseEvent>& callback);
+	void BindOnMouseUp(Callback<MouseEvent>& callback);
+
 	bool IsKeyDown(int KeyCode);
 
 	void ClearInput();
@@ -36,12 +42,23 @@ class DENGINE_API InputManager
 
 	public:
 		void GlfwKey(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void GlfwMouseKey(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void GlfwMouseMove(GLFWwindow* window, const vec2d& vector);
+		void GlfwMouseScroll(GLFWwindow* window, const ScrollDir& dir);
 
 		std::vector<int> m_HeldKeys;
 
 		EventDispatcher m_InternalDispatcher;
+
 		Callback<KeyEvent> m_InternalKeyEvent;
+		Callback<MouseEvent> m_InternalMouseEvent;
 
 		EventDispatcher m_KeyDownDispatchcer;
 		EventDispatcher m_KeyUpDispatchcer;
+
+		EventDispatcher m_MouseMoveDispatcher;
+		EventDispatcher m_MouseScrollDispatcher;
+		EventDispatcher m_MouseDownDispatcher;
+		EventDispatcher m_MouseUpDispatcher;
+
 };

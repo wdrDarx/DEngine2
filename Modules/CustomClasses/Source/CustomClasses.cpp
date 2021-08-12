@@ -1,6 +1,7 @@
 #include "CustomClasses.h"
 
 #include "Classes/CustomAppObject.h"
+#include "Classes/SonicGaming.h"
 #include "Classes/CustomSceneObject.h"
 #include "Classes/ChildSceneObject.h"
 #include "Classes/QuadComponent.h"
@@ -40,6 +41,7 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 
 // 	//custom renderer
@@ -87,6 +89,7 @@ void CustomClasses::OnUnload()
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 
 	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);

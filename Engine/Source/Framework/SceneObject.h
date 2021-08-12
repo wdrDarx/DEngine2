@@ -75,8 +75,8 @@ public:
 		return ptr;
 	}
 
-	//remove object from Component array
-	void DestroyComponent(Ref<ObjectComponent> comp);
+	//remove object from Component array (return is the itterator at where the component was erased from the array)
+	std::vector<Ref<ObjectComponent>>::iterator DestroyComponent(Ref<ObjectComponent> comp);
 
 	//remove object from Component array
 	void DestroyComponent(ObjectComponent* comp);

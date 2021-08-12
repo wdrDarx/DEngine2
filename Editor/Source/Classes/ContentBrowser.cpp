@@ -100,17 +100,43 @@ void ContentBrowser::Render(EditorApp* m_App)
 			}
 		}
 
-		if ( ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		if ( ImGui::IsItemHovered())
 		{
-			if (directory.is_directory())
-			{
-				m_CurrentPath /= path.filename();
+			if(ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			{ 
+				if (directory.is_directory())
+				{
+					m_CurrentPath /= path.filename();
+				}
+				else
+				{
+					Ref<AssetHandle> assetHandle = MakeRef<AssetHandle>(directory.path().string());
+					m_App->AddAssetEditor(assetHandle);
+				}
 			}
-			else
+		}
+
+		//Asset creation menu
+		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("New");
+		}
+
+		if (ImGui::BeginPopup("New"))
+		{
+			for (auto& key : m_App->GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
 			{
-				Ref<AssetHandle> assetHandle = MakeRef<AssetHandle>(directory.path().string());
-				m_App->AddAssetEditor(assetHandle);
+				std::string ItemText = "New " + key.name;
+				if (ImGui::MenuItem(ItemText.c_str()))
+				{
+					Ref<Asset> newAsset = ToRef<Asset>(m_App->GetAssetManager().GetAssetTypeRegistry().Make(key));
+					m_App->GetAssetManager().SaveAsset(newAsset, m_CurrentPath.string() + "\\Asset_" + STRING(newAsset->GetID().ID) + "." + key.name);
+					m_FlagRediscover = true;
+					ImGui::CloseCurrentPopup();
+				}
 			}
+
+			ImGui::EndPopup();
 		}
 
 		ImGui::TextWrapped(filenameString.c_str());
@@ -124,27 +150,5 @@ void ContentBrowser::Render(EditorApp* m_App)
 
 	ImGui::Columns(1);
 
-	//Asset creation menu
-	if(ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-	{
-		ImGui::OpenPopup("New");	
-	}
-
-	if (ImGui::BeginPopup("New"))
-	{
-		for (auto& key : m_App->GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
-		{
-			std::string ItemText = "New " + key.name;
-			if (ImGui::MenuItem(ItemText.c_str()))
-			{				
-				Ref<Asset> newAsset = ToRef<Asset>(m_App->GetAssetManager().GetAssetTypeRegistry().Make(key));
-				m_App->GetAssetManager().SaveAsset(newAsset, m_CurrentPath.string() + "\\Asset_" + STRING(newAsset->GetID().ID) + "." + key.name);
-				m_FlagRediscover = true;
-				ImGui::CloseCurrentPopup();
-			}
-		}
-
-		ImGui::EndPopup();
-	}
 	ImGui::End();
 }

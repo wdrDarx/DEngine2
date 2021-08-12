@@ -101,6 +101,7 @@ IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\SonicGaming.h" />
     <ClInclude Include="Source\Classes\ChildSceneObject.h" />
     <ClInclude Include="Source\Classes\CustomAppObject.h" />
     <ClInclude Include="Source\Classes\CustomSceneObject.h" />
@@ -110,6 +111,7 @@ IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\SonicGaming.cpp" />
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />
     <ClCompile Include="Source\Classes\CustomAppObject.cpp" />
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp" />

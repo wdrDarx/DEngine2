@@ -4,7 +4,7 @@
 #include "Event/Callback.h"
 #include "Event/SceneEvent.h"
 #include "Event/EventDispatcher.h"
-#include "Rendering/Renderers/Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Framework/InputManager.h"
 
 /*

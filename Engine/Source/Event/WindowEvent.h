@@ -5,7 +5,9 @@
 enum class WindowEventType
 {
 	CLOSED = 0,
-	RESIZED
+	RESIZED,
+	CURSORENTER,
+	CURSORLEAVE
 };
 
 //inheritable class to represent an event

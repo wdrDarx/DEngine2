@@ -28,6 +28,54 @@ Window::Window(const std::string& name, int width, int height)
 	{
 		StaticCast<Window>(glfwGetWindowUserPointer(window))->GetInputManager().GlfwKey(window, key, scancode, action, mods);
 	});	
+
+	//bind on cursor enter / leave
+	glfwSetCursorEnterCallback(GetRenderAPI()->GetCurrentContext(), [](GLFWwindow* window, int entered)
+	{
+		WindowEvent event;
+		event.m_EventType = entered ? WindowEventType::CURSORENTER : WindowEventType::CURSORLEAVE;
+		StaticCast<Window>(glfwGetWindowUserPointer(window))->GetEventDispatcher().Dispatch(event);
+	});
+
+	//bind on mouse button
+	glfwSetMouseButtonCallback(GetRenderAPI()->GetCurrentContext(), [](GLFWwindow * window, int button, int action, int mods)
+	{
+		StaticCast<Window>(glfwGetWindowUserPointer(window))->GetInputManager().GlfwMouseKey(window, button, 0, action, mods);
+	});
+
+	//bind on mouse scroll
+	glfwSetScrollCallback(GetRenderAPI()->GetCurrentContext(), [](GLFWwindow * window, double xoffset, double yoffset)
+	{
+		StaticCast<Window>(glfwGetWindowUserPointer(window))->GetInputManager().GlfwMouseScroll(window,  yoffset > 0.f ? ScrollDir::UP : ScrollDir::DOWN);
+	});
+
+	//bind on cursor move
+	glfwSetCursorPosCallback(GetRenderAPI()->GetCurrentContext(), [](GLFWwindow* window, double xpos, double ypos)
+	{
+		auto This = StaticCast<Window>(glfwGetWindowUserPointer(window));
+		vec2d newPos = { xpos, This->GetHeight() - ypos }; //flip y axis
+		vec2d LastPos = This->GetLastCursorPos();
+		//if(newPos == LastPos) return;
+
+		vec2d DeltaPos = (newPos - LastPos);
+
+		//keep cursor in the middle if input mode is game
+		if (This->GetRenderAPI()->GetInputMode() == InputMode::GAME)
+		{
+			vec2d ForcedPos = This->GetRenderAPI()->GetWindowSize();
+			ForcedPos.x /= 2.f;
+			ForcedPos.y /= 2.f;
+
+			This->GetRenderAPI()->SetCursorPos(ForcedPos);
+			This->SetLastCursorPos(ForcedPos);
+		}
+		else
+		{ 
+			This->SetLastCursorPos(newPos);
+		}
+
+		StaticCast<Window>(glfwGetWindowUserPointer(window))->GetInputManager().GlfwMouseMove(window, DeltaPos);		
+	});
 }
 
 void Window::StartFrame()
@@ -83,12 +131,12 @@ bool Window::isContextBound()
 	return GetRenderAPI()->IsContextBound();
 }
 
-int Window::GetWidth() const
+uint Window::GetWidth() const
 {
-	return (int)GetRenderAPI()->GetViewportSize().x;
+	return GetRenderAPI()->GetWindowSize().x;
 }
 
-int Window::GetHeight() const
+uint Window::GetHeight() const
 {
-	return (int)GetRenderAPI()->GetViewportSize().y;
+	return GetRenderAPI()->GetWindowSize().y;
 }

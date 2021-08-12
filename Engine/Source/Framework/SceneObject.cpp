@@ -3,9 +3,10 @@
 
 SceneObject::~SceneObject()
 {
-	for (auto& comp : GetComponents())
+	const auto& comps = GetComponents();
+	for (auto& it = comps.begin(); it != comps.end();)
 	{
-		DestroyComponent(comp);
+		it = DestroyComponent(*it);
 	}
 }
 
@@ -135,7 +136,7 @@ uint SceneObject::Deserialize(const Buffer& buffer)
 	STOPREAD();
 }
 
-void SceneObject::DestroyComponent(Ref<ObjectComponent> comp)
+std::vector<Ref<ObjectComponent>>::iterator SceneObject::DestroyComponent(Ref<ObjectComponent> comp)
 {
 	//call pre delete event
 	SceneEvent PreDeleteEvent;
@@ -146,7 +147,7 @@ void SceneObject::DestroyComponent(Ref<ObjectComponent> comp)
 
 	//prevent component from deleting itself twice
 	comp->m_ModuleCallback.Destroy();
-	m_Components.erase(std::find(m_Components.begin(), m_Components.end(), comp));
+	return m_Components.erase(std::find(m_Components.begin(), m_Components.end(), comp));
 }
 
 void SceneObject::DestroyComponent(ObjectComponent* comp)

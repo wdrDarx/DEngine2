@@ -224,6 +224,10 @@ void EditorApp::RenderImGui(const Tick& tick)
 		}
 		ImGui::TreePop();
 	}
+	if (ImGui::Button("Unload All"))
+	{
+		GetAssetManager().UnloadAll();
+	}
 
 	if (ImGui::Button("Discover Assets"))
 	{

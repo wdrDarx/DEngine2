@@ -18,6 +18,7 @@
 #include "Event/ApplicationEvent.h"
 #include "Event/AssetEvent.h"
 #include "Event/KeyEvent.h"
+#include "Event/MouseEvent.h"
 
 //Framework
 #include "Framework/Tick.h"
@@ -52,7 +53,7 @@
 
 //Rendering 
 #include "Rendering/RenderCore.h"
-#include "Rendering/Renderers/QuadRenderer.h"
+#include "Rendering/Classes/Renderers/QuadRenderer.h"
 
 //Serialization
 #include "Serialization/Buffer.h"

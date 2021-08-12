@@ -117,6 +117,7 @@
     <ClInclude Include="Source\Event\EventDispatcher.h" />
     <ClInclude Include="Source\Event\KeyEvent.h" />
     <ClInclude Include="Source\Event\ModuleEvent.h" />
+    <ClInclude Include="Source\Event\MouseEvent.h" />
     <ClInclude Include="Source\Event\SceneEvent.h" />
     <ClInclude Include="Source\Event\WindowEvent.h" />
     <ClInclude Include="Source\Framework\AppObject.h" />
@@ -143,8 +144,8 @@
     <ClInclude Include="Source\Rendering\Indexbuffer.h" />
     <ClInclude Include="Source\Rendering\RenderAPI.h" />
     <ClInclude Include="Source\Rendering\RenderCore.h" />
-    <ClInclude Include="Source\Rendering\Renderers\QuadRenderer.h" />
-    <ClInclude Include="Source\Rendering\Renderers\Renderer.h" />
+    <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
+    <ClInclude Include="Source\Rendering\Renderer.h" />
     <ClInclude Include="Source\Rendering\Shader.h" />
     <ClInclude Include="Source\Rendering\Texture.h" />
     <ClInclude Include="Source\Rendering\VertexArray.h" />
@@ -185,8 +186,8 @@
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Indexbuffer.cpp" />
     <ClCompile Include="Source\Rendering\RenderAPI.cpp" />
-    <ClCompile Include="Source\Rendering\Renderers\QuadRenderer.cpp" />
-    <ClCompile Include="Source\Rendering\Renderers\Renderer.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
+    <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Rendering\Shader.cpp" />
     <ClCompile Include="Source\Rendering\Texture.cpp" />
     <ClCompile Include="Source\Rendering\VertexArray.cpp" />

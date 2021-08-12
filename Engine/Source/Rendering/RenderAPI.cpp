@@ -86,6 +86,22 @@ void RenderAPI::DrawIndexed(Shader& shader, VertexArray& vertexArray, IndexBuffe
 	m_Stats.DrawCalls++;
 }
 
+void RenderAPI::SetShowCursor(bool show)
+{
+	glfwSetInputMode(GetCurrentContext(), GLFW_CURSOR, show ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+}
+
+void RenderAPI::SetCursorPos(const vec2d& pos)
+{
+	//invert for glfw
+	glfwSetCursorPos(GetCurrentContext(), pos.x , GetWindowSize().y - pos.y);
+}
+
+void RenderAPI::SetUseRawMouseInput(bool use)
+{
+	glfwSetInputMode(GetCurrentContext(), GLFW_RAW_MOUSE_MOTION, use);
+}
+
 void RenderAPI::AddShaderToCache(Ref<Shader> shader, const std::string& shaderName)
 {
 	m_ShaderCache[shaderName] = shader;
