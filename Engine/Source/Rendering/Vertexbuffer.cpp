@@ -5,15 +5,13 @@
 VertexBuffer::VertexBuffer(const void* Data, uint size)
 {
 	glGenBuffers(1, &m_RendererID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-	glBufferData(GL_ARRAY_BUFFER, size, Data, GL_DYNAMIC_DRAW);
+	SetData(Data, size);
 }
 
 VertexBuffer::VertexBuffer(uint size)
 {
 	glGenBuffers(1, &m_RendererID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-	glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	SetData(nullptr, size);
 }
 
 VertexBuffer::VertexBuffer()
@@ -29,13 +27,13 @@ VertexBuffer::~VertexBuffer()
 void VertexBuffer::SetData(const void* Data, uint size)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, Data);
-}
 
-void VertexBuffer::SetNewData(const void* Data, uint size)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-	glBufferData(GL_ARRAY_BUFFER, size, Data, GL_DYNAMIC_DRAW);
+	if(size == m_CurrentSize) //no need to reallocate if the size is the same
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, Data); //this reuses allocated memory 
+	else
+		glBufferData(GL_ARRAY_BUFFER, size, Data, GL_DYNAMIC_DRAW); //this allocates a new block and uses that
+
+	m_CurrentSize = size;
 }
 
 void VertexBuffer::Bind() const

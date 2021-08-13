@@ -147,6 +147,7 @@
     <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
     <ClInclude Include="Source\Rendering\Renderer.h" />
     <ClInclude Include="Source\Rendering\Shader.h" />
+    <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
     <ClInclude Include="Source\Rendering\Texture.h" />
     <ClInclude Include="Source\Rendering\VertexArray.h" />
     <ClInclude Include="Source\Rendering\VertexBufferLayout.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Rendering\Shader.cpp" />
+    <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Texture.cpp" />
     <ClCompile Include="Source\Rendering\VertexArray.cpp" />
     <ClCompile Include="Source\Rendering\Vertexbuffer.cpp" />

@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "glm/glm.hpp"
 
-struct DENGINE_API ShaderProgramSource
+struct ShaderProgramSource
 {
 	std::string VertexShader;
 	std::string FragmentShader;

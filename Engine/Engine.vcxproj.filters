@@ -224,6 +224,7 @@
       <Filter>Rendering\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -334,5 +335,6 @@
     <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp">
       <Filter>Rendering\Renderers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
   </ItemGroup>
 </Project>

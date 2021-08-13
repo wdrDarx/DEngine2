@@ -16,7 +16,12 @@ namespace QR
 		vec2d TexCoord;
 		float TextureSlot;
 		color4 color;
-		glm::mat4 trans;
+		float Matrixindex;
+	};
+
+	struct QuadStorageBuffer
+	{
+		color4 Color;
 	};
 
 	struct QuadRendererDrawCall
@@ -35,6 +40,7 @@ namespace QR
 		Ref<VertexArray> vertexArray;
 		Ref<IndexBuffer> indexBuffer;
 		std::vector<uint> TextureBindings;
+		std::vector<glm::mat4> Matricies;
 
 		std::vector<Vertex> Verticies;
 	};
@@ -73,6 +79,9 @@ public:
 
 	std::vector<QR::QuadRendererDrawCall> m_DrawCalls;
 	int m_CurrentDrawCallIndex = -1;
+
+	//storage buffer is shared
+	Ref<ShaderStorageBuffer> m_StorageBuffer;
 
 	const std::vector<uint> m_QuadIndecies = { 0, 1, 2, 2, 3, 0 };
 	Ref<VertexBufferLayout> m_VertexBufferLayout;
