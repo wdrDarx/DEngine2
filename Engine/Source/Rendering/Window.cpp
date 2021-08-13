@@ -55,7 +55,6 @@ Window::Window(const std::string& name, int width, int height)
 		auto This = StaticCast<Window>(glfwGetWindowUserPointer(window));
 		vec2d newPos = { xpos, This->GetHeight() - ypos }; //flip y axis
 		vec2d LastPos = This->GetLastCursorPos();
-		//if(newPos == LastPos) return;
 
 		vec2d DeltaPos = (newPos - LastPos);
 

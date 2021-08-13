@@ -225,6 +225,7 @@
     </ClInclude>
     <ClInclude Include="Source\Event\MouseEvent.h" />
     <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
+    <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -336,5 +337,6 @@
       <Filter>Rendering\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
+    <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
   </ItemGroup>
 </Project>

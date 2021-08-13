@@ -47,8 +47,7 @@ class Viewport
 			m_RenderAPI->SetCamera(m_Camera);
 			m_RenderAPI->SetActiveFramebuffer(m_Framebuffer);
 			m_RenderAPI->SetClearColor({0,0,0,1});
-			m_RenderAPI->Clear();		
-
+			m_RenderAPI->Clear();	
 			HandleCameraMovement(overrideFocus);
 		}
 		void EndFrame(bool DrawImGui = true)
@@ -86,14 +85,14 @@ class Viewport
  			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_LastViewportSize.x, m_LastViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 			bool isFocused = ImGui::IsWindowFocused();
+			m_WasFocusedOnviewport = m_FocusedOnviewport;
+			m_FocusedOnviewport = isFocused;
 
 			//clear input on unfocus
-			if (!isFocused && m_FocusedOnviewport)
+			if (!m_FocusedOnviewport && m_WasFocusedOnviewport)
 			{
-				m_InputManager.ClearInput();
+				ExitFocus();
 			}
-
-			m_FocusedOnviewport = isFocused;
 
 			if (DrawImGui)
 			{
@@ -137,7 +136,8 @@ class Viewport
 		{
 			if (m_Scene && (m_FocusedOnviewport || overrideFocus) && m_InputManager.IsKeyDown(GLFW_MOUSE_BUTTON_RIGHT))
 			{
-				m_RenderAPI->SetInputMode(InputMode::GAME);
+				EnterFocus();
+
 				auto trans = m_Camera->GetTransform();
 
 				//movement
@@ -182,11 +182,26 @@ class Viewport
 				m_Camera->SetTransform(trans);
 				m_LastMouseVector = {0,0};
 			}
- 			else
-			{ 
-				m_RenderAPI->SetInputMode(InputMode::UI);
+			else
+			{
+				if (m_WasFocusedOnviewport)
+				{
+					ExitFocus();
+				}
 			}
 		}
+
+		void EnterFocus()
+		{
+			m_RenderAPI->SetInputMode(InputMode::GAME);
+		}
+
+		void ExitFocus()
+		{
+			m_RenderAPI->SetInputMode(InputMode::UI);
+			m_InputManager.ClearInput();
+		}
+
 		
 	public:
 		std::string m_ViewportName;
@@ -201,8 +216,8 @@ class Viewport
 		Ref<RenderAPI> m_ParentWindowContext;
 		Ref<Camera> m_Camera;
 
-		float m_CameraMovementSpeed = 100.f;
-		float m_CameraRotationSpeed = 180.f;
+		float m_CameraMovementSpeed = 200.f;
+		float m_CameraRotationSpeed = 100.f;
 
 		InputManager m_InputManager;
 		Callback<MouseEvent> m_MouseCallback;

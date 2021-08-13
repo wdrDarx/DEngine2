@@ -12,3 +12,4 @@
 #include "Rendering/Camera.h"
 #include "Rendering/Renderer.h"
 #include "Rendering/ShaderStorageBuffer.h"
+#include "Rendering/UniformStorageBuffer.h"

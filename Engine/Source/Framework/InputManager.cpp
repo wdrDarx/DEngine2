@@ -173,6 +173,7 @@ void InputManager::GlfwMouseMove(GLFWwindow* window, const vec2d& vector)
 	MouseEvent event;
 	event.m_EventType = MouseEventType::MOVED;
 	event.m_MoveVector = vector;
+	LogTemp("Mouse Delta : " + Log::string(vector));
 
 	GetInternalDispatcher().Dispatch(event);
 }

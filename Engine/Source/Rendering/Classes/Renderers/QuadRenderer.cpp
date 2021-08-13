@@ -15,9 +15,9 @@ void QuadRenderer::OnConstruct()
 	{
 		m_DrawCalls.push_back(QuadRendererDrawCall(m_BlankTexture));
 	}
-	m_CurrentDrawCallIndex = -100;
+	m_CurrentDrawCallIndex = -1;
 	m_VertexBufferLayout = MakeRef<VertexBufferLayout>();
-	m_StorageBuffer = MakeRef<ShaderStorageBuffer>(2); //layout = 2
+	m_StorageBuffer = MakeRef<ShaderStorageBuffer>(0); //layout = 0
 
 	m_VertexBufferLayout->Push<float>(3); //position
 	m_VertexBufferLayout->Push<float>(2); //texture coords
@@ -63,9 +63,9 @@ void QuadRenderer::PrepareFrame()
 	if(!GetScene()->GetRenderAPI()->IsShaderInCache("QuadShader"))
 		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShaderTest.shader"), "QuadShader");
 
-	Timer PrepareFrametimer;
+	//Timer PrepareFrametimer;
 	ProcessQuads();
-	LogTemp("Seconds to prepare quads : " + STRING(PrepareFrametimer.GetSecondsElapsed()));
+	//LogTemp("Seconds to prepare quads : " + STRING(PrepareFrametimer.GetSecondsElapsed()));
 
 	if(m_CurrentDrawCallIndex < 0) return;
 
@@ -107,7 +107,7 @@ void QuadRenderer::ClearFrame()
 		m_DrawCalls[i].Matricies.clear();
 	}
 
-	m_CurrentDrawCallIndex = -100;
+	m_CurrentDrawCallIndex = -1;
 	m_QuadBuffer.clear();
 }
 

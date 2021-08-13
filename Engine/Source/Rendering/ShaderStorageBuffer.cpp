@@ -28,7 +28,7 @@ void ShaderStorageBuffer::SetData(const void* Data, uint size)
 	if(size == m_LastSize)
 		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, size, Data);
 	else
-		glBufferData(GL_SHADER_STORAGE_BUFFER, size, Data, GL_DYNAMIC_COPY);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, Data, GL_DYNAMIC_DRAW);
 
 	m_LastSize = size;
 }

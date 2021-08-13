@@ -84,8 +84,8 @@ class DENGINE_API RenderAPI
 		void SetInputMode(const InputMode& mode)
 		{
 			m_InputMode = mode;
-			//SetUseRawMouseInput(mode == InputMode::GAME);
-			//SetShowCursor(mode == InputMode::UI);
+			SetUseRawMouseInput(mode == InputMode::GAME);
+			SetShowCursor(mode == InputMode::UI);
 		}
 
 		const InputMode& GetInputMode() const

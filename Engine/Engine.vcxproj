@@ -154,6 +154,7 @@
     <ClInclude Include="Source\Rendering\Vertexbuffer.h" />
     <ClInclude Include="Source\Rendering\Window.h" />
     <ClInclude Include="Source\Serialization\Buffer.h" />
+    <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
     <ClInclude Include="Source\Utils\DataCache.h" />
     <ClInclude Include="Source\Utils\FileSystem.h" />
     <ClInclude Include="Source\Utils\ImageLoader.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Source\Rendering\VertexArray.cpp" />
     <ClCompile Include="Source\Rendering\Vertexbuffer.cpp" />
     <ClCompile Include="Source\Rendering\Window.cpp" />
+    <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
     <ClCompile Include="Source\Utils\FileSystem.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />
     <ClCompile Include="Source\Utils\ObjectUtils.cpp" />
