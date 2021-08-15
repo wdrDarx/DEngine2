@@ -101,7 +101,10 @@
     <ClInclude Include="Source\Assets\AssetHandle.h" />
     <ClInclude Include="Source\Assets\AssetManager.h" />
     <ClInclude Include="Source\Assets\AssetRef.h" />
+    <ClInclude Include="Source\Assets\Classes\MaterialAsset.h" />
+    <ClInclude Include="Source\Assets\Classes\ObjectAsset.h" />
     <ClInclude Include="Source\Assets\Classes\PrefabAsset.h" />
+    <ClInclude Include="Source\Assets\Classes\SceneAsset.h" />
     <ClInclude Include="Source\Assets\Classes\TextureAsset.h" />
     <ClInclude Include="Source\Core\Allocator.h" />
     <ClInclude Include="Source\Core\Core.h" />
@@ -142,6 +145,7 @@
     <ClInclude Include="Source\Rendering\Camera.h" />
     <ClInclude Include="Source\Rendering\FrameBuffer.h" />
     <ClInclude Include="Source\Rendering\Indexbuffer.h" />
+    <ClInclude Include="Source\Rendering\Material.h" />
     <ClInclude Include="Source\Rendering\RenderAPI.h" />
     <ClInclude Include="Source\Rendering\RenderCore.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
@@ -176,6 +180,7 @@
     <ClCompile Include="Source\Framework\Application.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
     <ClCompile Include="Source\Framework\InputManager.cpp" />
+    <ClCompile Include="Source\Framework\Module.cpp" />
     <ClCompile Include="Source\Framework\ModuleManager.cpp" />
     <ClCompile Include="Source\Framework\ObjectBase.cpp" />
     <ClCompile Include="Source\Framework\ObjectComponent.cpp" />

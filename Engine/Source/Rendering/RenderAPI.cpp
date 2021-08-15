@@ -72,13 +72,30 @@ void RenderAPI::SetViewport(const vec2d& Size)
 void RenderAPI::DrawIndexed(Shader& shader, VertexArray& vertexArray, IndexBuffer& indexBuffer, uint32_t indexCount /*= 0*/)
 {
 	uint32_t count = indexCount ? indexCount : indexBuffer.GetCount();
-//	shader.Bind();
+	shader.Bind();
 	vertexArray.Bind();
 	indexBuffer.Bind();
 
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 
-//	shader.Unbind();
+	shader.Unbind();
+	vertexArray.Unbind();
+	indexBuffer.Unbind();
+
+	//record draw calls
+	m_Stats.DrawCalls++;
+}
+
+void RenderAPI::DrawInstanced(Shader& shader, VertexArray& vertexArray, IndexBuffer& indexBuffer, uint InstanceCount /*= 0*/, uint32_t indexCount /*= 0*/)
+{
+	uint32_t count = indexCount ? indexCount : indexBuffer.GetCount();
+	shader.Bind();
+	vertexArray.Bind();
+	indexBuffer.Bind();
+
+	glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr, InstanceCount);
+
+	shader.Unbind();
 	vertexArray.Unbind();
 	indexBuffer.Unbind();
 

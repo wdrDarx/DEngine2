@@ -105,6 +105,8 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\AssetEditors\ObjectAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\SceneAssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
@@ -119,6 +121,8 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\AssetEditors\ObjectAssetEditor.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\SceneAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\ContentBrowser.cpp" />

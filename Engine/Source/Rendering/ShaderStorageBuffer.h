@@ -16,6 +16,12 @@ public:
 
 	void SetData(const void* Data, uint size);
 
+	//make sure the data is allocated before calling
+	void SetDataOffset(uint offset, const void* Data, uint size);
+
+	//will allocate if not already the right size only
+	void Allocate(uint size);
+
 	void Bind() const;
 	void Unbind() const;
 };

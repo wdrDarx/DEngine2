@@ -14,35 +14,24 @@ namespace QR
 	{
 		vec3d position;
 		vec2d TexCoord;
-		float TextureSlot;
-		color4 color;
-		float Matrixindex;
 	};
 
-	struct QuadStorageBuffer
+	struct Instance
 	{
-		color4 Color;
+		glm::mat4 Matrix;
+		color4 color;
+		color4 TextureIndex; //Actually just the index in X
 	};
 
 	struct QuadRendererDrawCall
 	{
-		QuadRendererDrawCall(Ref<Texture> blankTexture = nullptr)
+		QuadRendererDrawCall(Ref<Texture> blankTexture)
 		{
-			vertexArray = MakeRef<VertexArray>();
-			indexBuffer = MakeRef<IndexBuffer>();
-			vertexBuffer = MakeRef<VertexBuffer>();
-
 			if (blankTexture)
 				TextureBindings.push_back(blankTexture->m_RendererID);
 		}
-
-		Ref<VertexBuffer> vertexBuffer;
-		Ref<VertexArray> vertexArray;
-		Ref<IndexBuffer> indexBuffer;
 		std::vector<uint> TextureBindings;
-		std::vector<glm::mat4> Matricies;
-
-		std::vector<Vertex> Verticies;
+		std::vector<Instance> Instances;
 	};
 
 	struct Quad
@@ -51,7 +40,7 @@ namespace QR
 		color4 color;
 		Ref<Texture> texture;
 	};
-}
+};
 
 
 
@@ -83,7 +72,21 @@ public:
 	//storage buffer is shared
 	Ref<ShaderStorageBuffer> m_StorageBuffer;
 
-	const std::vector<uint> m_QuadIndecies = { 0, 1, 2, 2, 3, 0 };
+	//shared constant data of quad positions and texture coords
+	Ref<VertexBuffer> m_QuadCommonBuffer;
+	Ref<VertexArray> m_QuadCommonArray;
+	Ref<IndexBuffer> m_QuadCommonIndexBuffer;
+
+	//per vertex layout
 	Ref<VertexBufferLayout> m_VertexBufferLayout;
+
+	//per isntance layout (remember to set a layout offset at the start)
+	Ref<VertexBufferLayout> m_InstanceBufferLayout;
+
+	//consts per quad
+	const std::vector<uint> m_QuadIndecies = { 0, 1, 2, 2, 3, 0 };
+	const std::vector<vec2d> m_QuadTexCoords = { {0,0}, {0,1}, {1,1}, {1,0} };
+	const std::vector<vec3d> m_QuadPositions = { vec3d{-0.5f, -0.5f, 0.f}, vec3d{-0.5f, 0.5f, 0.f}, vec3d{0.5f, 0.5f, 0.f}, vec3d{0.5f, -0.5f, 0.f} };
+	
 };
 

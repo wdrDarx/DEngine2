@@ -3,6 +3,8 @@
 #include "Framework/Scene.h"
 #include "Framework/SceneObject.h"
 #include "Assets/Classes/PrefabAsset.h"
+#include "Assets/Classes/SceneAsset.h"
+
 
 /*
 	Util class for scene actions
@@ -15,5 +17,10 @@ public:
 		Loads a prefab from an asset and spawns it in the specified scene at the speciefied transform
 	*/
 	static Ref<SceneObject> SpawnPrefabInScene(Ref<PrefabAsset> prefabAset, Ref<Scene> scene, const Transform& transform);
+
+	/*
+		Wipes a scene fully before loading in all the data from the asset
+	*/
+	static void LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene);
 
 };

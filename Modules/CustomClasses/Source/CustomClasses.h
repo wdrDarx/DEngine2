@@ -17,7 +17,9 @@ public:
 
 	void OnLoad() override;
 	void OnUnload() override;
+	void OnUpdate(float DeltaTime) override;
 
 	Callback<SceneEvent> m_SceneEvent;
+
 };
 

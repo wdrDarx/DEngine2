@@ -226,6 +226,10 @@
     <ClInclude Include="Source\Event\MouseEvent.h" />
     <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
     <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
+    <ClInclude Include="Source\Assets\Classes\SceneAsset.h" />
+    <ClInclude Include="Source\Rendering\Material.h" />
+    <ClInclude Include="Source\Assets\Classes\ObjectAsset.h" />
+    <ClInclude Include="Source\Assets\Classes\MaterialAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -338,5 +342,6 @@
     </ClCompile>
     <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
     <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
+    <ClCompile Include="Source\Framework\Module.cpp" />
   </ItemGroup>
 </Project>

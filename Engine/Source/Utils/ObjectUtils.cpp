@@ -164,3 +164,28 @@ ObjectClassType ObjectUtils::GetObjectClassType(Ref<ObjectBase> obj)
 	return out;
 }
 
+Buffer ObjectUtils::GenerateStaticPropsBuffer(const std::vector<StaticProperty>& StaticProps)
+{
+	ArrayBuffer PropBuffer;
+	for (auto& prop : StaticProps)
+	{
+		PropBuffer.AddPiece(prop.MakeBuffer());
+	}
+	return PropBuffer.MakeBuffer();
+}
+
+std::vector<StaticProperty> ObjectUtils::GenerateStaticPropsFromBuffer(const Buffer& buffer, StructRegistry& structRegistry)
+{
+	std::vector<StaticProperty> outProps;
+	ArrayBuffer PropBuffer;
+	PropBuffer.FromBuffer(buffer);
+	for (auto& piece : PropBuffer.GetDataPieces())
+	{
+		StaticProperty prop;
+		prop.FromStaticBuffer(piece, structRegistry);
+		outProps.push_back(prop);
+	}
+
+	return outProps;
+}
+

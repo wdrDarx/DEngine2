@@ -173,8 +173,10 @@ void InputManager::GlfwMouseMove(GLFWwindow* window, const vec2d& vector)
 	MouseEvent event;
 	event.m_EventType = MouseEventType::MOVED;
 	event.m_MoveVector = vector;
-	LogTemp("Mouse Delta : " + Log::string(vector));
-
+	
+	//assign the last move delta
+	m_MouseDelta = vector;
+	//LogTemp("Mouse Delta : " + Log::string(m_MouseDelta));
 	GetInternalDispatcher().Dispatch(event);
 }
 

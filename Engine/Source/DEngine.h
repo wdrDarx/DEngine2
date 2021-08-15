@@ -46,10 +46,14 @@
 #include "Assets/AssetHandle.h"
 #include "Assets/AssetManager.h"
 #include "Assets/AssetRef.h"
+#include "Assets/Classes/SceneAsset.h"
 
 //Asset Classes
 #include "Assets/Classes/TextureAsset.h"
 #include "Assets/Classes/PrefabAsset.h"
+#include "Assets/Classes/SceneAsset.h"
+#include "Assets/Classes/ObjectAsset.h"
+#include "Assets/Classes/MaterialAsset.h"
 
 //Rendering 
 #include "Rendering/RenderCore.h"

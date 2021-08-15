@@ -7,7 +7,7 @@ struct DENGINE_API _ArrayInternal : public StructBase
 	STRUCT_CLASS_DEF(_ArrayInternal, StructBase)
 
 	virtual Buffer MakeBuffer() const = 0;
-	virtual void FromBuffer(const Buffer& buffer) = 0;
+	virtual void FromBuffer(const Buffer& buffer, StructRegistry* structRegistry = nullptr) = 0;
 };
 
 template<typename _Type>
@@ -58,9 +58,12 @@ struct Array : public _ArrayInternal
 		return finalBuffer;
 	}
 
-	//clears the current elements and creates new ones from this buffer, required the struct registry
-	void FromBuffer(const Buffer& buffer) override
+	//clears the current elements and creates new ones from this buffer, requires the struct registry
+	void FromBuffer(const Buffer& buffer, StructRegistry* structRegistry = nullptr) override
 	{
+		StructRegistry* UsedRegistrty = structRegistry ? structRegistry : m_StructRegistry;
+		ASSERT(UsedRegistrty); //MUST HAVE A VALID REGISTRY FOR THIS TO WORK
+
 		STARTREAD(buffer, 0);
 		READ(&m_ElementType, sizeof(PropType));
 		READSTRING(m_ElementClassName);
@@ -79,7 +82,7 @@ struct Array : public _ArrayInternal
 			m_InternalArray.push_back(prop);
 
 			//get that copied static property and make it load the data
-			m_InternalArray[m_InternalArray.size() - 1].FromStaticBuffer(piece, *m_StructRegistry);
+			m_InternalArray[m_InternalArray.size() - 1].FromStaticBuffer(piece, *UsedRegistrty);
 		}
 	}
 

@@ -50,9 +50,6 @@ typedef unsigned char byte;
 #define MIN(x,y) ((x) < (y)) ? (x) : (y)
 #define MAX(x,y) ((x) > (y)) ? (x) : (y)
 
-// template<typename T>
-// using Cast = dynamic_cast<T>;
-
 template<typename T>
 using Scope = std::unique_ptr<T>;
 template<typename T, typename ... Args>

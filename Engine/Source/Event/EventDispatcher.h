@@ -68,5 +68,11 @@ public:
 			m_BoundCallbacks.erase(it);
 	}
 
+	void UnbindAll()
+	{
+		m_BoundCallbacks.clear();
+	}
+
+protected:
 	std::vector<Callback<Event>*> m_BoundCallbacks;
 };

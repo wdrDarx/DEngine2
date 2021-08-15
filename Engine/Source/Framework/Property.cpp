@@ -104,7 +104,7 @@ void Property::FromBuffer(const Buffer& buffer)
 		Buffer arrayBuffer;
 		READBUFFER(arrayBuffer);
 		Array<bool>* arrayRef = (Array<bool>*)(m_Value);
-		arrayRef->FromBuffer(arrayBuffer);
+		arrayRef->FromBuffer(arrayBuffer); //no need to pass in a struct registry because this array already exists as a property and has a reigstry
 		break;
 	}
 
@@ -177,9 +177,9 @@ void StaticProperty::FromStaticBuffer(const Buffer& buffer, StructRegistry& stru
 		READBUFFER(arrayBuffer);
 
 		//construct array
-		m_Value = new Array<bool>();
+		m_Value = new Array<bool>(); //the template doesnt matter so just make it bool
 		Array<bool>* arrayRef = (Array<bool>*)(m_Value);
-		arrayRef->FromBuffer(arrayBuffer);
+		arrayRef->FromBuffer(arrayBuffer, &structRegistry);
 		break;
 	}
 

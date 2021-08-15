@@ -4,11 +4,13 @@
 //asset editors
 #include "Classes/AssetEditors/TextureAssetEditor.h"
 #include "Classes/AssetEditors/PrefabAssetEditor.h"
+#include "Classes/AssetEditors/SceneAssetEditor.h"
+#include "Classes/AssetEditors/ObjectAssetEditor.h"
 
 EditorApp::EditorApp() : Application()
 {
 	MakeWindow("DEditor", 1280, 720, false);
-	GetWindow()->SetVsync(false);
+	GetWindow()->SetVsync(true);
 
 	//close event for window
 	m_WindowEvent.Assign([&](WindowEvent* event)
@@ -93,6 +95,9 @@ EditorApp::EditorApp() : Application()
 	//bind key event to input manager
 	m_OnKeyDownCallback.Assign(std::bind(&EditorApp::OnKeyDown, this, std::placeholders::_1));
 	GetWindow()->GetInputManager().BindOnKeyDown(m_OnKeyDownCallback);
+
+	//create the hot reload scene asset
+	m_HotReloadSceneAsset = MakeRef<SceneAsset>();
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
@@ -249,10 +254,13 @@ void EditorApp::RenderImGui(const Tick& tick)
 
 	ImGui::Begin("Modules");
 
-	if (ImGui::Button("Reload All"))
+	if (ImGui::Button("Unload All"))
 	{
-		GetModuleManager().UnloadAllModules();
-		GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
+		UnloadAll();
+	}
+	if (ImGui::Button("Load All"))
+	{
+		LoadAll();
 	}
 
 	for (const auto& mod : GetModuleManager().GetLoadedModules())
@@ -344,9 +352,20 @@ void EditorApp::EndFrame()
 
 void EditorApp::HotReload()
 {
-// 	Buffer sceneBuffer;
-// 	m_EditorScene->Serialize()
-// 	GetModuleManager()->UnloadAllModules();
+
+
+}
+
+void EditorApp::UnloadAll()
+{
+	m_HotReloadSceneAsset->SaveScene(m_EditorScene);
+	GetModuleManager().UnloadAllModules();
+}
+
+void EditorApp::LoadAll()
+{
+	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
+	m_HotReloadSceneAsset->LoadScene(m_EditorScene);
 }
 
 Ref<Viewport> EditorApp::CreateViewport(Ref<Scene> scene)
@@ -375,12 +394,25 @@ void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)
 	if(assetType == "TextureAsset")
 	{
 		NewEditor = MakeRef<TextureAssetEditor>();
-	}
-
+	} 
+	else
 	if (assetType == "PrefabAsset")
 	{
 		NewEditor = MakeRef<PrefabAssetEditor>();
+	} 
+	else
+	if (assetType == "SceneAsset")
+	{
+		NewEditor = MakeRef<SceneAssetEditor>();
+	} 
+
+	//test if its an ObjectAsset
+	Asset* testAsset = GetAssetManager().GetAssetTypeRegistry().Make({assetType});
+	if (Cast<ObjectAsset>(testAsset))
+	{
+		NewEditor = MakeRef<ObjectAssetEditor>();
 	}
+
 
 	if(!NewEditor) return;
 	NewEditor->m_TargetAsset = TargetAssetHandle;

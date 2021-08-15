@@ -21,7 +21,7 @@
     <ClInclude Include="Source\Classes\QuadRenderer.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\TestAsset.h">
+    <ClInclude Include="Source\Classes\MyObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />

@@ -34,6 +34,22 @@ void ShaderStorageBuffer::SetData(const void* Data, uint size)
 }
 
 
+void ShaderStorageBuffer::SetDataOffset(uint offset, const void* Data, uint size)
+{
+	Bind();
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, size, Data);
+}
+
+void ShaderStorageBuffer::Allocate(uint size)
+{
+	Bind();
+	if (size != m_LastSize)
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+		//ENOUGH_MEMORY_FOR_ALL_CASES is a size to use later
+
+	m_LastSize = size;
+}
+
 void ShaderStorageBuffer::Bind() const
 {
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, m_Bindingindex, m_RendererID);

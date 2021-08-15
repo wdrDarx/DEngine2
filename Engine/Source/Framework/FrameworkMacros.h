@@ -70,8 +70,8 @@ if(std::is_base_of<StructBase, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back
 
 #define PROPDEF_ARRAY(x, StructRegistryRef, flags) { int _flags = flags; \
 if (std::is_base_of<_ArrayInternal, decltype(x)>::value) { \
-if(IsInitialized()) { ((Array<bool>*)&x)->m_StructRegistry = &StructRegistryRef; } \
-_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::ARRAY, &x, sizeof(x), _flags)); } \
+((Array<bool>*)&x)->m_StructRegistry = &StructRegistryRef; } \
+_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::ARRAY, &x, sizeof(x), _flags)); \
 }
 
 //TODO give all "DStructs" a function that returns their serializable size based on their properties

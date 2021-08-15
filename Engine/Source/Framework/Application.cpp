@@ -18,6 +18,10 @@ Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initial
 
 void Application::OnUpdate(const Tick& tick)
 {
+	//update all the modules
+	GetModuleManager().Update(tick.DeltaTime);
+
+	//update all the app objects
 	for (uint i = 0; i < m_AppObjects.size(); i++)
 	{
 		auto obj = m_AppObjects[i];
@@ -48,7 +52,6 @@ void Application::MakeWindow(const std::string& name, int width, int height, boo
 
 	//bind the relay callback to the window event dispatcher
 	m_Window->GetEventDispatcher().Bind(m_WindowEventCallback);
-
 }
 
 void Application::CoreUpdate(float DeltaTime)
@@ -76,6 +79,8 @@ void Application::RegisterBaseAssetTypes()
 {
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), PrefabAsset);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), SceneAsset);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), ObjectAsset);
 }
 
 void Application::Shutdown()

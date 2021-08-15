@@ -17,3 +17,13 @@ Ref<SceneObject> SceneUitls::SpawnPrefabInScene(Ref<PrefabAsset> prefabAset, Ref
 
 	return sceneObject;
 }
+
+void SceneUitls::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene)
+{
+	if (!scene) return;
+	scene->DestroyAllSceneObjects();
+	scene->GetInputManager().ClearInput();
+	scene->GetSceneEventDipatcher().UnbindAll();
+
+	sceneAsset->LoadScene(scene);
+}

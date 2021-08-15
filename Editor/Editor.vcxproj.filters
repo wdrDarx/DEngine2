@@ -48,6 +48,8 @@
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\AssetEditors\SceneAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\ObjectAssetEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp">
@@ -78,5 +80,7 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Source.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\SceneAssetEditor.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\ObjectAssetEditor.cpp" />
   </ItemGroup>
 </Project>

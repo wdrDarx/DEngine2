@@ -11,6 +11,7 @@ struct DENGINE_API VertexBufferElement
 {
 	uint type;
 	uint count;
+	uint instanceCounter = 0;
 	byte normalized;
 
 	static uint GetSizeOfType(unsigned int type)
@@ -52,37 +53,37 @@ struct DENGINE_API VertexBufferLayout
 private:
 	std::vector<VertexBufferElement> m_Elements;
 	uint m_Stride = 0;
-
 public:
-	VertexBufferLayout()
+	uint m_InitialLayoutOffset = 0;
+	VertexBufferLayout(const uint& InitialLayoutOffset = 0)
 	{
-	
+		m_InitialLayoutOffset = InitialLayoutOffset;
 	}
 
 	template<typename T>
-	void Push(uint Count)
+	void Push(uint Count, uint instanceIndex = 0)
 	{
 		ASSERT(false) //dont push undefined types
 	}
 
 	template<>
-	void Push<float>(uint count)
+	void Push<float>(uint count, uint instanceIndex)
 	{
-		m_Elements.push_back({ GL_FLOAT, count, GL_FALSE });
+		m_Elements.push_back({ GL_FLOAT, count, instanceIndex, GL_FALSE });
 		m_Stride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
 	}
 
 	template<>
-	void Push<uint>(uint count)
+	void Push<uint>(uint count, uint instanceIndex)
 	{
-		m_Elements.push_back({ GL_UNSIGNED_INT, count, GL_FALSE });
+		m_Elements.push_back({ GL_UNSIGNED_INT, count, instanceIndex, GL_FALSE });
 		m_Stride += count * VertexBufferElement::GetSizeOfType(GL_UNSIGNED_INT);
 	}
 
 	template<>
-	void Push<byte>(uint count)
+	void Push<byte>(uint count, uint instanceIndex)
 	{
-		m_Elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
+		m_Elements.push_back({ GL_UNSIGNED_BYTE, count, instanceIndex, GL_TRUE });
 		m_Stride += count * VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE);
 	}
 

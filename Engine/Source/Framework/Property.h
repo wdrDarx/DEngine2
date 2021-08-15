@@ -45,6 +45,7 @@ enum class PropType
 		 string - dynamic bytes[ValueSize(stringLength)] construct a std::string object
 		 assetRef - staticBytes[ValueSize] construct a AssetRef<Asset>
 		 struct - dynamic bytes[ValueSize], (string)structClassName, construct struct from structClassName using the registry 
+		 array - dynamic bytes[ValueSize] construct an array by passing it a structRegistry if the element type is a struct
 */
 struct DENGINE_API Property
 {

@@ -7,23 +7,44 @@ void QuadRenderer::OnConstruct()
 {
 	Super::OnConstruct();
 
+	//common vertex buffer (each quad uses this)
+	m_QuadCommonBuffer = MakeRef<VertexBuffer>();
+	std::vector<Vertex> ConstVerts;
+	ConstVerts.push_back({m_QuadPositions[0], m_QuadTexCoords[0]});
+	ConstVerts.push_back({m_QuadPositions[1], m_QuadTexCoords[1]});
+	ConstVerts.push_back({m_QuadPositions[2], m_QuadTexCoords[2]});
+	ConstVerts.push_back({m_QuadPositions[3], m_QuadTexCoords[3]});
+	m_QuadCommonBuffer->SetData(ConstVerts.data(), ConstVerts.size() * sizeof(Vertex));
+
+	//common index buffer per quad
+	m_QuadCommonIndexBuffer = MakeRef<IndexBuffer>();
+	m_QuadCommonIndexBuffer->SetData(m_QuadIndecies.data(), m_QuadIndecies.size());
+
+	//per vertex layout 
+	m_VertexBufferLayout = MakeRef<VertexBufferLayout>();
+	m_VertexBufferLayout->Push<float>(3); //position
+	m_VertexBufferLayout->Push<float>(2); //texture coords
+
+	//common vertex array (contains common vertex buffer and common vertex buffer layout)
+	m_QuadCommonArray = MakeRef<VertexArray>();
+	m_QuadCommonArray->Addbuffer(*m_QuadCommonBuffer, *m_VertexBufferLayout);
+
+	//matrix storage buffer per draw call
+	m_StorageBuffer = MakeRef<ShaderStorageBuffer>(0); //layout = 0
+
+	//blank texture (White 1x1)
 	m_BlankTexture = MakeRef<Texture>();
+
+	//init threads
 	m_JobPool.Initialize();
 
+	//gen a const amount of draw calls
 	m_DrawCalls.reserve(MaxDrawCalls);
 	for (uint i = 0; i < MaxDrawCalls; i++)
 	{
 		m_DrawCalls.push_back(QuadRendererDrawCall(m_BlankTexture));
 	}
 	m_CurrentDrawCallIndex = -1;
-	m_VertexBufferLayout = MakeRef<VertexBufferLayout>();
-	m_StorageBuffer = MakeRef<ShaderStorageBuffer>(0); //layout = 0
-
-	m_VertexBufferLayout->Push<float>(3); //position
-	m_VertexBufferLayout->Push<float>(2); //texture coords
-	m_VertexBufferLayout->Push<float>(1); //texture index
-	m_VertexBufferLayout->Push<float>(4); //color
-	m_VertexBufferLayout->Push<float>(1); //matrix index
 }
 
 void QuadRenderer::RenderFrame(Ref<Camera> camera)
@@ -35,7 +56,6 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 	glEnable(GL_DEPTH_TEST);
 	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->Bind();
 	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
-	m_StorageBuffer->Bind();
 
 	//draw each draw call
 	for (int i = 0; i <= m_CurrentDrawCallIndex; i++)
@@ -49,9 +69,10 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 			GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
 		}
 
-		//set the matrix storage buffer
-		m_StorageBuffer->SetData(call.Matricies.data(), sizeof(glm::mat4) * call.Matricies.size());
-		GetScene()->GetRenderAPI()->DrawIndexed(*GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader"), *call.vertexArray, *call.indexBuffer);
+		//set the storage buffer data
+		m_StorageBuffer->SetData(call.Instances.data(), sizeof(Instance) * call.Instances.size());
+		//draw instanced (call.Instances.size() is the instance count)
+		GetScene()->GetRenderAPI()->DrawInstanced(*GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader"), *m_QuadCommonArray, *m_QuadCommonIndexBuffer, call.Instances.size());
 	}
 	glDisable(GL_DEPTH_TEST);
 }
@@ -61,40 +82,11 @@ void QuadRenderer::PrepareFrame()
 	Super::PrepareFrame();
 
 	if(!GetScene()->GetRenderAPI()->IsShaderInCache("QuadShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShaderTest.shader"), "QuadShader");
+		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader_Instanced.shader"), "QuadShader");
 
 	//Timer PrepareFrametimer;
 	ProcessQuads();
 	//LogTemp("Seconds to prepare quads : " + STRING(PrepareFrametimer.GetSecondsElapsed()));
-
-	if(m_CurrentDrawCallIndex < 0) return;
-
-	for(int i = 0; i <= m_CurrentDrawCallIndex; i++)
-	{
-		QuadRendererDrawCall& call = m_DrawCalls[i];
-
-		//generate index buffer
-		std::vector<uint> indexbuffer;
-		uint quadCount = (uint)call.Verticies.size() / 4;
-		for (uint i = 0; i < quadCount; i++)
-		{
-			for (uint j = 0; j < m_QuadIndecies.size(); j++)
-			{
-				uint ogIndex = m_QuadIndecies[j];
-
-				indexbuffer.push_back(ogIndex + i * 4);
-			}
-		}
-
-		//set index buffer
-		call.indexBuffer->SetData(indexbuffer.data(), (uint)indexbuffer.size());
-
-		//copy over vertex data
-		call.vertexBuffer->SetData(call.Verticies.data(), (uint)sizeof(Vertex) * (uint)call.Verticies.size());
-
-		//set vertex array
-		call.vertexArray->Addbuffer(*call.vertexBuffer, *m_VertexBufferLayout);
-	}	
 }
 
 void QuadRenderer::ClearFrame()
@@ -103,8 +95,7 @@ void QuadRenderer::ClearFrame()
 
 	for(int i = 0; i <= m_CurrentDrawCallIndex; i++)	
 	{ 
-		m_DrawCalls[i].Verticies.clear();
-		m_DrawCalls[i].Matricies.clear();
+		m_DrawCalls[i].Instances.clear();
 	}
 
 	m_CurrentDrawCallIndex = -1;
@@ -142,7 +133,7 @@ void QuadRenderer::ProcessQuads()
 		QuadRendererDrawCall* CurrentDrawCall = &m_DrawCalls[m_CurrentDrawCallIndex];
 
 		//do we need to create a new draw call?
-		if (CurrentDrawCall->Verticies.size() >= MaxVerts || CurrentDrawCall->TextureBindings.size() >= MaxTextures)
+		if (CurrentDrawCall->Instances.size() >= MaxQuads || CurrentDrawCall->TextureBindings.size() >= MaxTextures)
 		{
 			m_CurrentDrawCallIndex++;
 			CurrentDrawCall = &m_DrawCalls[m_CurrentDrawCallIndex];
@@ -168,51 +159,10 @@ void QuadRenderer::ProcessQuads()
 				TextureID = (float)CurrentDrawCall->TextureBindings.size() - 1.f;
 			}
 		}
-
-		CurrentDrawCall->Matricies.push_back(World::MakeMatrix(currentQuad.trans));
-		float CurrentMatricIndex = (float)(CurrentDrawCall->Matricies.size() - 1);
 		const color4& color = currentQuad.color;
 
-		Vertex v1
-		{
-			{-0.5f, -0.5f, 0.f},
-			{0,0},
-			TextureID,
-			color,
-			CurrentMatricIndex
-		};
-
-		Vertex v2
-		{
-			{-0.5f, 0.5f, 0.f},
-			{0,1},
-			TextureID,
-			color,
-			CurrentMatricIndex
-		};
-
-		Vertex v3
-		{
-			{0.5f, 0.5f, 0.f},
-			{1,1},
-			TextureID,
-			color,
-			CurrentMatricIndex
-		};
-
-		Vertex v4
-		{
-			{0.5f, -0.5f, 0.f},
-			{1,0},
-			TextureID,
-			color,
-			CurrentMatricIndex
-		};
-
-		CurrentDrawCall->Verticies.push_back(v1);
-		CurrentDrawCall->Verticies.push_back(v2);
-		CurrentDrawCall->Verticies.push_back(v3);
-		CurrentDrawCall->Verticies.push_back(v4);
+		//push back the instance data
+		CurrentDrawCall->Instances.push_back({ World::MakeMatrix(currentQuad.trans), color, color4(TextureID)});
 	}
 }
 

@@ -28,6 +28,58 @@ void Scene::OnConstruct()
 	GetApplication()->GetEventDispatcher().Dispatch(constructEvent);
 }
 
+uint Scene::Serialize(Buffer& buffer) const
+{
+	STARTWRITE(buffer, Super::Serialize(buffer));
+	ArrayBuffer SceneObjectBuffer;
+	for (auto& obj : GetSceneObjects())
+	{
+		//the object doesnt serialize its class type, which we need to know to create an instance of it on deserialization
+		[&]()
+		{
+			Buffer FinalObjBuffer;
+			STARTWRITE(FinalObjBuffer, 0);
+			std::string ObjClassName = obj->GetClassType().Name;
+			WRITESTRING(ObjClassName);
+			Buffer ObjDataBuffer;
+			obj->Serialize(ObjDataBuffer);
+			WRITEBUFFER(ObjDataBuffer);
+
+			SceneObjectBuffer.AddPiece(FinalObjBuffer);
+		}();
+	}
+	WRITEBUFFER(SceneObjectBuffer.MakeBuffer());
+	STOPWRITE();
+}
+
+uint Scene::Deserialize(const Buffer& buffer)
+{
+	STARTREAD(buffer, Super::Deserialize(buffer));
+	Buffer SceneObjectBuffer;
+	READBUFFER(SceneObjectBuffer);
+	ArrayBuffer SceneObjectBufferArray;
+	SceneObjectBufferArray.FromBuffer(SceneObjectBuffer);
+
+	for (uint i = 0; i < SceneObjectBufferArray.GetDataPieces().size(); i++)
+	{
+		[&]()
+		{
+			const Buffer& piece = SceneObjectBufferArray.GetDataPieces()[i];
+			STARTREAD(piece, 0);
+			std::string ObjClassName;
+			READSTRING(ObjClassName);
+			ObjectBase* test = GetApplication()->GetObjectRegistry().MakeObjectFromClassName(ObjClassName);
+			auto sceneObject = ToRef<SceneObject>(Cast<SceneObject>(test));
+			ASSERT(sceneObject); //either class is not registered (check if the associated module is loaded maybe) or the class name is invalid
+			Buffer ObjBuffer;
+			READBUFFER(ObjBuffer);
+			AddSceneObject(sceneObject);
+			sceneObject->Deserialize(ObjBuffer);
+		}();
+	}
+	STOPREAD();
+}
+
 void Scene::PrepareFrame()
 {
 	if(!GetRenderAPI()) return; //cant render with no context

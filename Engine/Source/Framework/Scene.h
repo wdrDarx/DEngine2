@@ -21,6 +21,9 @@ public:
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 
+	uint Serialize(Buffer& buffer) const override;
+	uint Deserialize(const Buffer& buffer) override;
+
 	//once per tick after everything is updated
 	void PrepareFrame();
 
@@ -36,7 +39,8 @@ public:
 		return m_SceneObjects;
 	}
 
-	/*  Creates an SceneObject with an assigned pointer to this scene and a random id, then adds it to scene object list here
+	/* 
+		Creates an SceneObject with an assigned pointer to this scene and a random id, then adds it to scene object list here
 		WARNING : does not work when called from a module, the created app object must also be associated with a module before being created
 	*/
 	template<class T>
@@ -106,7 +110,18 @@ public:
 		return m_RenderApi;
 	}
 
+	//adds all the default renderer classes the engine has
 	void CreateDefaultRenderers();
+
+	void DestroyAllSceneObjects()
+	{
+		m_SceneObjects.clear();
+	}
+
+	void DestroyAllRenderers()
+	{
+		m_Renderers.clear();
+	}
 
 	//remove object from Scene Object array
 	void DestroySceneObject(Ref<SceneObject> obj);

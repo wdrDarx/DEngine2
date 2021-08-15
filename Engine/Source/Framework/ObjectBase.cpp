@@ -3,7 +3,7 @@
 
 ObjectBase::~ObjectBase()
 {
-	LogWarning("Object Destroyed"); 
+
 }
 
 void ObjectBase::Initialize(const ObjectInitializer& initializer)

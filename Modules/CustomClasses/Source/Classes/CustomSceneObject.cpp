@@ -1,6 +1,5 @@
 #include "CustomSceneObject.h"
 #include "CustomAppObject.h"
-#include "TestAsset.h"
 
 void CustomSceneObject::OnConstruct()
 {

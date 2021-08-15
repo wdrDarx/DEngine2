@@ -151,14 +151,13 @@ glm::mat4 World::MakeMatrix(const Transform& trans)
 // 	if (copy.scale.z == 0)
 // 		copy.scale.z = 0.00000001f;
 
-	glm::vec3 rot = glm::vec3(copy.rot.x * DegToRad, copy.rot.y * DegToRad, copy.rot.z * DegToRad);
+	glm::vec3 rot = glm::radians(copy.rot);
 	glm::mat4 rotation = glm::toMat4(glm::quat(rot));
 	
 	glm::mat4 transform =
 		glm::translate(glm::mat4(1.0f), glm::vec3(copy.pos.x, copy.pos.y, copy.pos.z)) *
 		rotation *
-		glm::scale(glm::mat4(1.0f), glm::vec3(copy.scale.x, copy.scale.y, copy.scale.z)) *
-		glm::mat4(1.0f);
+		glm::scale(glm::mat4(1.0f), glm::vec3(copy.scale.x, copy.scale.y, copy.scale.z));
 
 	return transform;
 }

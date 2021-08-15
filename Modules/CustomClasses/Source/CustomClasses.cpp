@@ -7,10 +7,11 @@
 #include "Classes/QuadComponent.h"
 
 #include "Classes/QuadRenderer.h"
-#include "Classes/TestAsset.h"
+#include "Classes/MyObject.h"
 
 #include "tlhelp32.h"
 #include <comdef.h> 
+
 
 void GetModuleMemory(DWORD dwProcID, char* szModuleName, uptr& memPtr, uint64& memSize)
 {
@@ -38,12 +39,17 @@ void GetModuleMemory(DWORD dwProcID, char* szModuleName, uptr& memPtr, uint64& m
 
 void CustomClasses::OnLoad()
 {
+	//assign App
+	Module::AssignApplication(GetApplication());
+
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MyObject, CustomClasses);
 
+	
 // 	//custom renderer
 // 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 // 
@@ -78,8 +84,6 @@ void CustomClasses::OnLoad()
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
 
-	REGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TestAsset);
-
 	GetApplication()->GetAssetManager().MountContentDirectory(Paths::GetModulesDirectory());
 }
 
@@ -91,12 +95,17 @@ void CustomClasses::OnUnload()
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MyObject, CustomClasses);
 
 	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
 	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
-	UNREGISTER_ASSETCLASS(GetApplication()->GetAssetManager().GetAssetTypeRegistry(), TestAsset);
 
 	GetApplication()->GetAssetManager().UnmountContentDirectory(Paths::GetModulesDirectory());
+}
+
+void CustomClasses::OnUpdate(float DeltaTime)
+{
+	
 }

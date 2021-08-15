@@ -35,6 +35,11 @@ class DENGINE_API InputManager
 
 	void ClearInput();
 
+	const vec2d& GetMouseDelta() const
+	{
+		return m_MouseDelta;
+	}
+
 	EventDispatcher& GetInternalDispatcher()
 	{
 		return m_InternalDispatcher;
@@ -47,6 +52,7 @@ class DENGINE_API InputManager
 		void GlfwMouseScroll(GLFWwindow* window, const ScrollDir& dir);
 
 		std::vector<int> m_HeldKeys;
+		vec2d m_MouseDelta = {0,0};
 
 		EventDispatcher m_InternalDispatcher;
 

@@ -107,7 +107,7 @@ IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClInclude Include="Source\Classes\CustomSceneObject.h" />
     <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
-    <ClInclude Include="Source\Classes\TestAsset.h" />
+    <ClInclude Include="Source\Classes\MyObject.h" />
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>

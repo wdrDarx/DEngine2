@@ -42,6 +42,7 @@ class DENGINE_API RenderAPI
 		void SetViewport(const vec2d& Size);
 
 		void DrawIndexed(Shader& shader, VertexArray& vertexArray, IndexBuffer& indexBuffer, uint32_t indexCount = 0);
+		void DrawInstanced(Shader& shader, VertexArray& vertexArray, IndexBuffer& indexBuffer, uint InstanceCount = 0, uint32_t indexCount = 0);
 
 		const vec2d& GetViewportSize() const
 		{

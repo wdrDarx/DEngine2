@@ -98,12 +98,14 @@ class Viewport
 			{
 				if (ImGui::BeginDragDropTarget())
 				{
-					std::string assetTag = "Asset_PrefabAsset";
-					const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(assetTag.c_str());
+					std::string PrefabassetTag = "Asset_PrefabAsset";
+					std::string SceneassetTag = "Asset_SceneAsset";
+					const ImGuiPayload* Prefabpayload = ImGui::AcceptDragDropPayload(PrefabassetTag.c_str());
+					const ImGuiPayload* SceneAssetpayload = ImGui::AcceptDragDropPayload(SceneassetTag.c_str());
 
-					if (payload)
+					if (Prefabpayload)
 					{
-						std::string assetPath((char*)payload->Data);
+						std::string assetPath((char*)Prefabpayload->Data);
 
 						if (File::DoesFileExist(assetPath))
 						{
@@ -117,6 +119,22 @@ class Viewport
 								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 300.f;
 
 								SceneUitls::SpawnPrefabInScene(prefabAsset, m_Scene, trans);
+							}
+						}
+					}
+
+					if (SceneAssetpayload)
+					{
+						std::string assetPath((char*)SceneAssetpayload->Data);
+
+						if (File::DoesFileExist(assetPath))
+						{
+							Ref<AssetHandle> handle = MakeRef<AssetHandle>(assetPath);
+
+							if (m_Scene)
+							{
+								Ref<SceneAsset> prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset<SceneAsset>(handle);
+								SceneUitls::LoadSceneFromAsset(prefabAsset, m_Scene);
 							}
 						}
 					}
@@ -176,11 +194,14 @@ class Viewport
 					trans.rot.y -= m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
 				}
 
-				trans.rot.y += -m_LastMouseVector.x * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
 				trans.rot.x += m_LastMouseVector.y * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				trans.rot.y += -m_LastMouseVector.x * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				
 
+				//trans.rot.y += m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				//trans.rot.x += m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				m_LastMouseVector  = {0,0};
 				m_Camera->SetTransform(trans);
-				m_LastMouseVector = {0,0};
 			}
 			else
 			{

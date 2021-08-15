@@ -74,20 +74,21 @@ struct ClassType
 	static std::string GetFriendlyTypeName(const std::type_index& index)
 	{
 		std::string base = index.name();
+		//remove all spaces
+		base.erase(std::remove_if(base.begin(), base.end(), isspace), base.end());
+
 		auto endpos = std::min<size_t>(base.find("const"), base.find("*"));
 
 		if(endpos == std::string::npos)
 			endpos = base.length(); //for non pointer types
-		else
-			endpos--; //account for empty space
 
 		if (auto classpos = base.find("class") != std::string::npos)
 		{
-			return Substring(base, classpos + std::string("class").length(), endpos);
+			return Substring(base, classpos + std::string("class").length() - 1, endpos);
 		} else
 		if (auto structpos = base.find("struct") != std::string::npos)
 		{
-			return Substring(base, structpos + std::string("struct").length(), endpos);
+			return Substring(base, structpos + std::string("struct").length() - 1, endpos);
 		}
 		return "";
 	}
@@ -117,11 +118,10 @@ struct Transform
 
 	}
 
-	Transform(const Transform& other) = default;
-	Transform(Transform&& other) = default;
-
 	Transform(const vec3d& p, const vec3d& r, const vec3d& s) : pos(p), rot(r), scale(s)
-	{}
+	{
+	
+	}
 
 	Transform operator+(const Transform& rhs) const
 	{
@@ -136,13 +136,6 @@ struct Transform
 	bool operator==(const Transform& rhs) const
 	{
 		return this->pos == rhs.pos && this->rot == rhs.rot && this->scale == rhs.scale;
-	}
-
-	void operator=(const Transform& rhs)
-	{
-		this->pos = rhs.pos;
-		this->rot = rhs.rot;
-		this->scale = rhs.scale;
 	}
 };
 

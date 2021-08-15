@@ -45,4 +45,14 @@ class ObjectUtils
 			Returns the ObjectClassType from a polymorphic pointer to an object
 		*/
 		static ObjectClassType GetObjectClassType(Ref<ObjectBase> obj);
+
+		/*
+			Creates a buffer from static properties
+		*/
+		static Buffer GenerateStaticPropsBuffer(const std::vector<StaticProperty>& StaticProps);
+
+		/*
+			Creates an array of static properties from a buffer (Needs a struct registry)
+		*/
+		static std::vector<StaticProperty> GenerateStaticPropsFromBuffer(const Buffer& buffer, StructRegistry& structRegistry);
 };

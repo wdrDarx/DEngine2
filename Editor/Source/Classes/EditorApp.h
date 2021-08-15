@@ -21,6 +21,9 @@ public:
 
 	void HotReload();
 
+	void UnloadAll();
+	void LoadAll();
+
 	Ref<Viewport> CreateViewport(Ref<Scene> scene);
 	void DestroyViewport(Ref<Viewport> viewport);
 
@@ -40,6 +43,8 @@ public:
 	MenuBar m_MenuBar;
 	SceneObjectPannel m_SceneObjectPannel;
 	ContentBrowser m_ContentBrowser;
+
+	Ref<SceneAsset> m_HotReloadSceneAsset;
 
 	Callback<KeyEvent> m_OnKeyDownCallback;
 
