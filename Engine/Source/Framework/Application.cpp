@@ -73,6 +73,8 @@ void Application::RegisterBaseClasses()
  	REGISTER_OBJECT(GetObjectRegistry(), AppObject, Engine);
  	REGISTER_OBJECT(GetObjectRegistry(), Scene, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), SceneObject, Engine);
+
+	REGISTER_OBJECT(GetObjectRegistry(), Material, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()
@@ -81,6 +83,7 @@ void Application::RegisterBaseAssetTypes()
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), PrefabAsset);
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), SceneAsset);
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), ObjectAsset);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MaterialAsset);
 }
 
 void Application::Shutdown()

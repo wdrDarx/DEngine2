@@ -31,7 +31,6 @@ public:
 		
 	}
 
-
 	//get static class - use STRUCT_STATIC_CLASS()
 	template<class T>
 	static StaticClass _GetStaticClass()

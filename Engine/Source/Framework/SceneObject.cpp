@@ -52,7 +52,7 @@ void SceneObject::OnConstruct()
 		if (IsPrefab() && event->GetEventType() == AssetEventType::ASSETSAVE)
 		{
 			Ref<PrefabAsset> prefabAsset = Cast<PrefabAsset>(event->GetAsset());
-			if (prefabAsset && event->GetAsset()->GetID() == GetPrefabAssetRef()->GetID())
+			if (prefabAsset && event->GetAsset()->GetID() == GetPrefabAssetRefMutable().GetAssetHandle()->GetAssetID())
 			{
 				Buffer MyBuffer; //save myself then load later after the prefab loaded
 				Serialize(MyBuffer);
@@ -70,6 +70,12 @@ void SceneObject::OnConstruct()
 uint SceneObject::Serialize(Buffer& buffer) const
 {
 	STARTWRITE(buffer, Super::Serialize(buffer))
+
+	//prefab asset ref (still need to serialize an empty buffer even if we arent a prefab)
+	Buffer PrefabFileBuffer;
+	if(IsPrefab())
+		GetPrefabAssetRef().Serialize(PrefabFileBuffer);
+	WRITEBUFFER(PrefabFileBuffer);
 	
 	ArrayBuffer ComponentsData;
 	for (auto& comp : GetComponents())
@@ -103,6 +109,12 @@ uint SceneObject::Deserialize(const Buffer& buffer)
 {
 	STARTREAD(buffer, Super::Deserialize(buffer))
 
+	//prefab asset ref (still need to serialize an empty buffer even if we arent a prefab)
+	Buffer PrefabFileBuffer;
+	READBUFFER(PrefabFileBuffer);
+	if (IsPrefab())
+		GetPrefabAssetRefMutable().Deserialize(PrefabFileBuffer);
+	
 	Buffer rawComponentsData;
 	READBUFFER(rawComponentsData);
 

@@ -47,7 +47,7 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
-	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MyObject, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
 
 	
 // 	//custom renderer
@@ -95,7 +95,7 @@ void CustomClasses::OnUnload()
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MyObject, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
 
 	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 

@@ -81,7 +81,8 @@ class PropertyWindow
 			if (sceneObj && sceneObj->IsPrefab())
 			{
 				//reset prop from prefab asset defaults
-				ObjectUtils::ResetObjectProp(sceneObj, propName, sceneObj->GetPrefabAssetRef());
+				Ref<PrefabAsset> prefabAsset = m_App->GetAssetManager().LoadAsset(sceneObj->GetPrefabAssetRefMutable());
+				ObjectUtils::ResetObjectProp(sceneObj, propName, prefabAsset);
 			}
 			else
 			{
@@ -149,7 +150,7 @@ class PropertyWindow
 			}
 		}
 
-		void DrawAssetRef(AssetRef<Asset>* assetRef)
+		void DrawAssetRef(const std::string& PropName, AssetRef<Asset>* assetRef)
 		{
 			Ref<AssetHandle> handle = assetRef->GetAssetHandle();
 			std::string buttonText = handle->IsValid() ? "(" + handle->GetAssetType() + ") " + handle->GetAssetName() : "None";
@@ -175,6 +176,9 @@ class PropertyWindow
 
 				ImGui::EndDragDropTarget();
 			}
+
+			ImGui::SameLine();
+			ImGui::Text(PropName.c_str());
 
 			if (ImGui::BeginPopup("Select Asset"))
 			{
@@ -202,13 +206,10 @@ class PropertyWindow
 
 			if (prop.m_Type == PropType::ARRAY)
 			{
-				Array<bool>* arrayToDraw = (Array<bool>*)prop.m_Value;				
-				ImGui::Text(prop.m_name.c_str());
-				ImGui::PushItemWidth(-1);
-				ImGui::SameLine();
-
+				Array<bool>* arrayToDraw = (Array<bool>*)prop.m_Value;	
+				
 				ImGui::PushItemWidth(ImGui::CalcItemWidth());
-				bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap, "Array");
+				bool expanded = ImGui::TreeNodeEx((void*)(prop.m_Value), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap, prop.m_name.c_str());
 				ImGui::PopItemWidth();
 
 				ImGui::SameLine();
@@ -229,7 +230,6 @@ class PropertyWindow
 					ListProperties(*(std::vector<Property>*)&arrayToDraw->m_InternalArray, nullptr, true, false);
 					ImGui::TreePop();
 				}
-				ImGui::PopItemWidth();
 			}
 			else
 			if (prop.m_Type == PropType::STRUCT)
@@ -246,7 +246,7 @@ class PropertyWindow
 				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 				ImVec2 buttonSize = { lineHeight, lineHeight };
 
-				if (owner && ImGui::Button("<", buttonSize))
+				if (owner && ImGui::Button("<"))
 				{
 					ResetProperty(owner.get(), prop.m_name, m_App->GetObjectRegistry());
 				}
@@ -262,12 +262,6 @@ class PropertyWindow
 			}
 			else
 			{
-				ImGui::Text(DisplayName.c_str());
-				ImGui::SameLine(0, 2);
-
-				ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth() - 30);
-
-				DisplayName = "";
 				StructBase* structToDraw = nullptr;
 				switch (prop.m_Type)
 				{
@@ -342,20 +336,17 @@ class PropertyWindow
 
 					case PropType::ASSETREF:
 					{
-						DrawAssetRef((AssetRef<Asset>*)prop.m_Value);
+						DrawAssetRef(DisplayName, (AssetRef<Asset>*)prop.m_Value);
 						break;
 					}
 					
-				}
-				ImGui::PopItemWidth();
-
-				
+				}			
 				ImGui::PushItemWidth(-1.f);
 				float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 				ImVec2 buttonSize = { lineHeight, lineHeight };
 				ImGui::SameLine(ImGui::GetContentRegionAvailWidth() + 10);
 				
-				if (owner && prop.m_Type != PropType::STRUCT && ImGui::Button("<", buttonSize))
+				if (owner && prop.m_Type != PropType::STRUCT && ImGui::Button("<"))
 				{
 					ResetProperty(owner.get(), prop.m_name, m_App->GetObjectRegistry());
 				}
@@ -370,7 +361,7 @@ class PropertyWindow
 		}
 
 
-		static void DrawVec3Control(void* ID, float* value, float ResetValue = 0.f, const float& Speed = 1.0f, float columnWidth = 100.f)
+		static void DrawVec3Control(void* ID, float* value, float ResetValue = 0.f, const float& Speed = 1.0f, float columnWidth = 50.f)
 		{
 			auto BoldFont = ImGui::GetIO().Fonts->Fonts[0];
 
@@ -427,7 +418,6 @@ class PropertyWindow
 			ImGui::PopItemWidth();
 
 			ImGui::PopStyleVar();
-
 			ImGui::PopID();
 		}
 public:

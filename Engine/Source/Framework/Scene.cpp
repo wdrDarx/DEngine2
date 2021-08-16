@@ -1,6 +1,5 @@
 #include "Scene.h"
-#include "Framework/Application.h"
-#include "Rendering/Classes/Renderers/QuadRenderer.h"
+#include "DEngine.h"
 
 void Scene::OnUpdate(const Tick& tick)
 {

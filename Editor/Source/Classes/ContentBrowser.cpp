@@ -52,6 +52,30 @@ void ContentBrowser::Render(EditorApp* m_App)
 
 	uint AssetIndex = 0;
 
+	//Asset creation menu
+	if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGui::IsPopupOpen("FileOptions"))
+	{
+		ImGui::OpenPopup("New");
+	}
+
+	if (ImGui::BeginPopup("New"))
+	{
+		for (auto& key : m_App->GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
+		{
+			std::string ItemText = "New " + key.name;
+			if (ImGui::MenuItem(ItemText.c_str()))
+			{
+				Ref<Asset> newAsset = ToRef<Asset>(m_App->GetAssetManager().GetAssetTypeRegistry().Make(key));
+				m_App->GetAssetManager().SaveAsset(newAsset, m_CurrentPath.string() + "\\Asset_" + STRING(newAsset->GetID().ID) + "." + key.name);
+				m_FlagRediscover = true;
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+
 	for (auto& directory : std::filesystem::directory_iterator(m_CurrentPath))
 	{
 		//if its a file, check if the asset type is registered, otherwise skip it
@@ -116,30 +140,45 @@ void ContentBrowser::Render(EditorApp* m_App)
 			}
 		}
 
-		//Asset creation menu
-		if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+		if (ImGui::BeginPopup("FileOptions"))
 		{
-			ImGui::OpenPopup("New");
-		}
-
-		if (ImGui::BeginPopup("New"))
-		{
-			for (auto& key : m_App->GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
+			if (ImGui::MenuItem("Delete Asset"))
 			{
-				std::string ItemText = "New " + key.name;
-				if (ImGui::MenuItem(ItemText.c_str()))
-				{
-					Ref<Asset> newAsset = ToRef<Asset>(m_App->GetAssetManager().GetAssetTypeRegistry().Make(key));
-					m_App->GetAssetManager().SaveAsset(newAsset, m_CurrentPath.string() + "\\Asset_" + STRING(newAsset->GetID().ID) + "." + key.name);
-					m_FlagRediscover = true;
-					ImGui::CloseCurrentPopup();
-				}
+				std::filesystem::remove(path);
+				m_FlagRediscover = true;
+				ImGui::CloseCurrentPopup();
 			}
 
 			ImGui::EndPopup();
 		}
 
-		ImGui::TextWrapped(filenameString.c_str());
+		if (directory.is_regular_file() && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+		{
+			ImGui::OpenPopup("FileOptions");
+		}
+
+		std::string RenameString;
+		//is the file selected, is F2 pressed and is no other file being renamed right now?
+		if (directory.is_regular_file() && ImGui::IsItemHovered() && m_App->GetWindow()->GetInputManager().IsKeyDown(GLFW_KEY_F2) && m_RenamingPath.empty())
+		{
+			//set the renaming path to the currently selected file
+			m_RenamingPath = path.string();
+			RenameString = File::GetFileNameFromPath(path.string());
+		}
+		if (m_RenamingPath == path.string()) //is this file being renamed
+		{
+			ImGui::InputText("##rename", &RenameString);
+			if (m_App->GetWindow()->GetInputManager().IsKeyDown(GLFW_KEY_ENTER))
+			{ 
+				//complete renaming
+				m_RenamingPath.clear();
+				std::string renamePath = path.parent_path().string() + "\\" + RenameString + path.extension().string();
+				std::filesystem::rename(path, std::filesystem::path(renamePath));
+			}
+		}
+
+		if(m_RenamingPath != path.string())
+			ImGui::TextWrapped(filenameString.c_str());
 
 		ImGui::PopID(); //AssetID
 
@@ -149,6 +188,7 @@ void ContentBrowser::Render(EditorApp* m_App)
 	m_IsDragging = false;
 
 	ImGui::Columns(1);
+
 
 	ImGui::End();
 }

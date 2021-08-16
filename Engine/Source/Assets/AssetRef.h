@@ -18,7 +18,7 @@ struct AssetRef
 			m_AssetType = ThisClassType.Name;
 		}
 
-		AssetRef<T>(const std::string& FullPathNoExtension) : m_FullPathNoExtension(FullPathNoExtension)
+		AssetRef<T>(const std::string& FullPathNoExtension) : m_FullPathNoExtension(File::RemoveFileExtensionFromPath(FullPathNoExtension))
 		{
 			//construct asset handle with the path
 			GetAssetHandle();
@@ -46,15 +46,22 @@ struct AssetRef
 			return m_AssetHandle;
 		}
 
+		const Ref<AssetHandle> GetAssetHandleConst() const
+		{
+			const Ref<AssetHandle> ref = m_AssetHandle;
+			return ref;
+		}
+
 		//sets asset handle by copy
 		void SetAssetHandle(const AssetHandle& handle)
 		{
 			m_AssetHandle = MakeRef<AssetHandle>(handle);
 		}
 
-		uint Serialize(Buffer& buffer) 
+		uint Serialize(Buffer& buffer) const
 		{
-			if (auto& handle = GetAssetHandle())
+			const Ref<AssetHandle> handle = GetAssetHandleConst();
+			//if(handle)
 			{
 				return handle->Serialize(buffer);
 			}

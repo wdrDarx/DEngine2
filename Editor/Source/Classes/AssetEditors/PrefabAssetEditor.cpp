@@ -73,6 +73,7 @@ void PrefabAssetEditor::Render()
 
 	if (ImGui::Button("Save"))
 	{
+		m_SceneObject->MarkPrefab(AssetRef<PrefabAsset>(m_TargetAsset->GetAssetPath()));
 		m_PrefabAsset->SavePrefab(m_SceneObject);
 		m_App->GetAssetManager().SaveAsset(m_PrefabAsset, m_TargetAsset);
 	}

@@ -51,6 +51,7 @@ uint ObjectBase::Serialize(Buffer& buffer) const
 
 	WRITE(&m_ID, sizeof(UID));
 	WRITESTRING(m_Name);
+	WRITE(&m_ObjectFlags, sizeof(ObjectFlags));
 
 	WRITEBUFFER(GeneratePropBuffer());
 	STOPWRITE()
@@ -62,6 +63,7 @@ uint ObjectBase::Deserialize(const Buffer& buffer)
 
 	READ(&m_ID, sizeof(UID));
 	READSTRING(m_Name);
+	READ(&m_ObjectFlags, sizeof(ObjectFlags));
 
 	Buffer PropBuffer;
 	READBUFFER(PropBuffer);

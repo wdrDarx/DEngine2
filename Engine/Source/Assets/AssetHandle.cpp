@@ -53,8 +53,15 @@ std::string AssetHandle::GetAssetPath()
 
 void AssetHandle::Update(const std::string& FullPath)
 {
-	if (UPDATE_MYSELF && !FullPath.empty())
+	if (UPDATE_MYSELF && (!FullPath.empty() || CLEAR_IF_FILE_NOT_FOUND))
 	{
+		//clear everything if the file is not found
+		if (FullPath.empty())
+		{
+			Clear();
+			return;
+		}
+
 		m_LastKnownPath = FullPath;
 		m_AssetType = File::GetFileExtenstionFromPath(FullPath);
 		m_AssetName = File::GetFileNameFromPath(FullPath);
@@ -65,7 +72,7 @@ void AssetHandle::Update(const std::string& FullPath)
 
 		UID readId;
 		STARTREAD(assetBuffer, 0)
-			READ(&readId, sizeof(UID));
+		READ(&readId, sizeof(UID));
 
 		if (readId != m_AssetID)
 		{
@@ -129,4 +136,12 @@ uint AssetHandle::Deserialize(const Buffer& buffer)
 	READSTRING(m_AssetName);
 	READSTRING(m_LastKnownPath);
 	STOPREAD();
+}
+
+void AssetHandle::Clear()
+{
+	m_LastKnownPath = "";
+	m_AssetID.ID = 0;
+	m_AssetType = "";
+	m_AssetName = "";
 }

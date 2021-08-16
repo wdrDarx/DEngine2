@@ -5,6 +5,7 @@
 #include "Event/ModuleEvent.h"
 #include "Event/AssetEvent.h"
 #include "Event/EventDispatcher.h"
+#include "Assets/AssetRef.h"
 
 class PrefabAsset;
 class Scene;
@@ -89,13 +90,19 @@ public:
 		return (GetObjectFlags() & ObjectFlags::PREFAB);
 	}
 
-	void MarkPrefab(Ref<PrefabAsset> prefab)
+	void MarkPrefab(const AssetRef<PrefabAsset>& prefab)
 	{
 		GetObjectFlagsMutable() = (ObjectFlags)(GetObjectFlags() | ObjectFlags::PREFAB);
 		m_PrefabAssetReference = prefab;
 	}
 
-	Ref<PrefabAsset> GetPrefabAssetRef()
+	const AssetRef<PrefabAsset>& GetPrefabAssetRef() const
+	{
+		ASSERT(IsPrefab()) //must be a prefab
+		return m_PrefabAssetReference;
+	}
+
+	AssetRef<PrefabAsset>& GetPrefabAssetRefMutable() 
 	{
 		ASSERT(IsPrefab()) //must be a prefab
 		return m_PrefabAssetReference;
@@ -114,5 +121,5 @@ private:
 	std::vector<Ref<ObjectComponent>> m_Components;
 
 	//valid when we are a prefab
-	Ref<PrefabAsset> m_PrefabAssetReference;
+	AssetRef<PrefabAsset> m_PrefabAssetReference;
 };

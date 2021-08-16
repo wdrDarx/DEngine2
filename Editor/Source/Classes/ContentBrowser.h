@@ -16,4 +16,6 @@ public:
 	Ref<Texture> m_FileIcon;
 	bool m_FlagRediscover = false;
 	bool m_IsDragging = false;
+	std::string m_RenamingPath;
+	std::string m_FileOptionsPath;
 };

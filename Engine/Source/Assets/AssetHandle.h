@@ -12,6 +12,9 @@
 //whether to set m_AssetType based on the new found asset after a recursive search by ID or a path
 #define UPDATE_MYSELF 1
 
+//whether to clear all data if a file trully doesnt exist in the directory
+#define CLEAR_IF_FILE_NOT_FOUND 1
+
 //class for retrieving an asset in a file system
 struct DENGINE_API AssetHandle
 {
@@ -73,6 +76,9 @@ struct DENGINE_API AssetHandle
 	{
 		return m_AssetID;
 	}
+
+	//clear all file data from this handle
+	void Clear();
 
 	//check to see if the asset being pointed to is valid
 	bool IsValid() const

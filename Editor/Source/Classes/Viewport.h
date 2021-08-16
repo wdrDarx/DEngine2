@@ -109,16 +109,14 @@ class Viewport
 
 						if (File::DoesFileExist(assetPath))
 						{
-							Ref<AssetHandle> handle = MakeRef<AssetHandle>(assetPath);
-
+							AssetRef<PrefabAsset> assetRef(assetPath);
 							if (m_Scene)
 							{
-								Ref<PrefabAsset> prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset<PrefabAsset>(handle);
 								Transform trans;
 								trans = m_Camera->GetTransform();
 								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 300.f;
 
-								SceneUitls::SpawnPrefabInScene(prefabAsset, m_Scene, trans);
+								SceneUitls::SpawnPrefabInScene(assetRef, m_Scene, trans);
 							}
 						}
 					}
