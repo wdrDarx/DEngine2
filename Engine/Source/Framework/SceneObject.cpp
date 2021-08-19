@@ -1,8 +1,11 @@
 #include "SceneObject.h"
 #include "DEngine.h"
 
-SceneObject::~SceneObject()
+
+void SceneObject::OnDestroy()
 {
+	Super::OnDestroy();
+
 	const auto& comps = GetComponents();
 	for (auto& it = comps.begin(); it != comps.end();)
 	{
@@ -66,6 +69,15 @@ void SceneObject::OnConstruct()
 
 	GetScene()->GetApplication()->GetAssetManager().GetEventDispatcher().Bind(m_AssetCallback);
 }
+
+void SceneObject::OnPostConstruct()
+{
+	//call on post construct for all components
+	for (auto& comp : GetComponents())
+	{
+		comp->OnPostConstruct();
+	}
+}	
 
 uint SceneObject::Serialize(Buffer& buffer) const
 {
@@ -141,7 +153,9 @@ uint SceneObject::Deserialize(const Buffer& buffer)
 		for (auto& comp : GetComponents())
 		{
 			if(comp->GetName() == compName && comp->GetClassType().Name == compClassName)	
+			{ 
 				comp->Deserialize(compData);
+			}
 		}
 	}
 
@@ -159,6 +173,9 @@ std::vector<Ref<ObjectComponent>>::iterator SceneObject::DestroyComponent(Ref<Ob
 
 	//prevent component from deleting itself twice
 	comp->m_ModuleCallback.Destroy();
+
+	//call on destroy
+	comp->OnDestroy();
 	return m_Components.erase(std::find(m_Components.begin(), m_Components.end(), comp));
 }
 
@@ -185,6 +202,11 @@ void SceneObject::DestroyComponent(ObjectComponent* comp)
 
 		//prevent component from deleting itself twice
 		(*remove)->m_ModuleCallback.Destroy();
+
+		//call on destory for the component
+		(*remove)->OnDestroy();
+
+		//finally erase
 		m_Components.erase(remove);
 	}
 }
@@ -199,5 +221,5 @@ void SceneObject::AddComponent(ObjectComponent* comp)
 	m_Components.push_back(compref);
 
 	//Must call
-	comp->Initialize(ObjectInitializer(ContructFlags::RANDOMID));
+	comp->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));
 }

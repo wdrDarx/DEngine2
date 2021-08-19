@@ -86,6 +86,14 @@ void RenderAPI::DrawIndexed(Shader& shader, VertexArray& vertexArray, IndexBuffe
 	m_Stats.DrawCalls++;
 }
 
+void RenderAPI::DrawIndexed(IndexBuffer& indexBuffer)
+{
+	indexBuffer.Bind();
+	glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);
+	//record draw calls
+	m_Stats.DrawCalls++;
+}
+
 void RenderAPI::DrawInstanced(Shader& shader, VertexArray& vertexArray, IndexBuffer& indexBuffer, uint InstanceCount /*= 0*/, uint32_t indexCount /*= 0*/)
 {
 	uint32_t count = indexCount ? indexCount : indexBuffer.GetCount();
@@ -98,6 +106,15 @@ void RenderAPI::DrawInstanced(Shader& shader, VertexArray& vertexArray, IndexBuf
 	shader.Unbind();
 	vertexArray.Unbind();
 	indexBuffer.Unbind();
+
+	//record draw calls
+	m_Stats.DrawCalls++;
+}
+
+void RenderAPI::DrawInstanced(IndexBuffer& indexBuffer, uint InstanceCount)
+{
+	indexBuffer.Bind();
+	glDrawElementsInstanced(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr, InstanceCount);
 
 	//record draw calls
 	m_Stats.DrawCalls++;

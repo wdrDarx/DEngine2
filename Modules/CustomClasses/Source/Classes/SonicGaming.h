@@ -1,6 +1,6 @@
 #pragma once
 #include "CustomClasses.h"
-#include "QuadComponent.h"
+#include "MeshComponent.h"
 #include "DEngine.h"
 
 class SonicGaming : public SceneObject
@@ -15,7 +15,6 @@ public:
 	void OnConstruct() override;
 
 public:
-	Ref<QuadComponent> m_SonicQuad;
-	Ref<QuadComponent> m_GamingQuad;
+	Ref<MeshComponent> m_MeshComponent;
 	float Speed = 100.f;
 };

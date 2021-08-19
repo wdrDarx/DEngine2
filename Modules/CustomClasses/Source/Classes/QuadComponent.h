@@ -28,7 +28,7 @@ public:
 	int QuadAmount = 1;
 	color4 QuadColor = { 1,1,1,1 };
 	AssetRef<TextureAsset> QuadTexture;
-	Array<Transform> m_Test;
+	Array<TestStruct2> m_Test;
 	float RotationSpeed = 0.f;
 };
 

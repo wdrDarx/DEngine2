@@ -52,12 +52,13 @@ void ObjectUtils::ResetObjectProp(SceneObject* object, const std::string& propNa
 		std::string name;
 		READ(&id, sizeof(UID));
 		READSTRING(name);
+		ObjectFlags objectFlags;
+		READ(&objectFlags, sizeof(ObjectFlags));
 
 		Buffer PropBuffer;
 		READBUFFER(PropBuffer);
 		propArrayBuffer.FromBuffer(PropBuffer);
 	}
-
 
 	for (auto& prop : object->GetPropertiesMutable())
 	{
@@ -93,11 +94,13 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 	else
 		if (arrayProperty->m_ElementType == PropType::STRUCT)
 		{
-			//create struct with the correct class 
+			//create struct with the correct class
 			StructBase* struc = registry.Make({ arrayProperty->m_ElementClassName });
-			newElem.Assign(struc, sizeof(*struc));
-
-			//delete struc; //beacuse assign copies the pointer
+			struc->GetPropertiesMutable().clear();
+ 			newElem.Assign(struc, arrayProperty->m_ElementSize);
+			
+			//delete as bytes to not call destructor
+			delete[] (byte*)struc;			
 		}
 		else
 			if (arrayProperty->m_ElementType == PropType::ASSETREF)
@@ -110,7 +113,8 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 				//allocate the value bytes
 				void* mem = new byte[arrayProperty->m_ElementSize];
 				memset(mem, 0, arrayProperty->m_ElementSize);
-				newElem.Assign(mem, arrayProperty->m_ElementSize);
+				newElem.m_Value = mem;
+				newElem.m_ValueSize = arrayProperty->m_ElementSize;
 			}
 
 	//add the array element
@@ -119,6 +123,7 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 
 void ObjectUtils::ResetStructProp(StructBase* Struct, const std::string& propName, StructRegistry& registry)
 {
+	//create a base class copy
 	Ref<StructBase> str = ToRef<StructBase>(registry.Make({Struct->GetClassType().Name}));
 
 	for (auto& prop : Struct->GetPropertiesMutable())

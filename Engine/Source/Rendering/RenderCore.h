@@ -14,3 +14,4 @@
 #include "Rendering/ShaderStorageBuffer.h"
 #include "Rendering/UniformStorageBuffer.h"
 #include "Rendering/Material.h"
+#include "Rendering/Mesh.h"

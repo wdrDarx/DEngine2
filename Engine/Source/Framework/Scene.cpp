@@ -27,6 +27,17 @@ void Scene::OnConstruct()
 	GetApplication()->GetEventDispatcher().Dispatch(constructEvent);
 }
 
+void Scene::OnDestroy()
+{
+	Super::OnDestroy();
+
+	//call on destroy for all scene objects
+	for (auto& obj : GetSceneObjects())
+	{
+		obj->OnDestroy();
+	}
+}
+
 uint Scene::Serialize(Buffer& buffer) const
 {
 	STARTWRITE(buffer, Super::Serialize(buffer));
@@ -72,8 +83,9 @@ uint Scene::Deserialize(const Buffer& buffer)
 			ASSERT(sceneObject); //either class is not registered (check if the associated module is loaded maybe) or the class name is invalid
 			Buffer ObjBuffer;
 			READBUFFER(ObjBuffer);
-			AddSceneObject(sceneObject);
+			AddSceneObject(sceneObject, ObjectInitializer(ConstructFlags::NOPOSTCONSTRUCT | ConstructFlags::RANDOMID)); //dont call on post construct yet
 			sceneObject->Deserialize(ObjBuffer);
+			sceneObject->OnPostConstruct(); //now after deserializing call on post construct
 		}();
 	}
 	STOPREAD();
@@ -111,7 +123,9 @@ void Scene::ClearFrame()
 
 void Scene::CreateDefaultRenderers()
 {
+	CreateRenderer<CubemapRenderer>(ObjectInitializer());
 	CreateRenderer<QuadRenderer>(ObjectInitializer());
+	CreateRenderer<MeshRenderer>(ObjectInitializer());
 }
 
 void Scene::DestroySceneObject(SceneObject* obj)
@@ -135,6 +149,9 @@ void Scene::DestroySceneObject(SceneObject* obj)
 
 		//Dispatch PRE_DELETE event
 		GetSceneEventDipatcher().Dispatch(event);
+
+		//call on destroy
+		(*remove)->OnDestroy();
 		m_SceneObjects.erase(remove);
 
 		//Dispatch POST_DELETE event
@@ -153,6 +170,10 @@ void Scene::DestroySceneObject(Ref<SceneObject> obj)
 	//Dispatch PRE_DELETE event
 	GetSceneEventDipatcher().Dispatch(event);
 
+	//call on destroy
+	obj->OnDestroy();
+
+	//finally erase
 	m_SceneObjects.erase(std::find(m_SceneObjects.begin(), m_SceneObjects.end(), obj));
 
 	//Dispatch POST_DELETE event
@@ -173,7 +194,9 @@ void Scene::DestroyRenderer(Renderer* renderer)
 	}
 
 	if (remove != m_Renderers.end())
-	{
+	{	
+		//call on destroy
+		(*remove)->OnDestroy();
 		m_Renderers.erase(remove);
 	}
 }

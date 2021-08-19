@@ -15,7 +15,13 @@
     <ClInclude Include="Source\Classes\AssetEditor.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\AssetEditors\ObjectAssetEditor.h">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Classes\AssetEditors\SceneAssetEditor.h">
       <Filter>Classes\AssetEditors</Filter>
     </ClInclude>
     <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h">
@@ -48,11 +54,16 @@
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\AssetEditors\SceneAssetEditor.h" />
-    <ClInclude Include="Source\Classes\AssetEditors\ObjectAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\MeshAssetEditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\AssetEditors\ObjectAssetEditor.cpp">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp">
+      <Filter>Classes\AssetEditors</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\AssetEditors\SceneAssetEditor.cpp">
       <Filter>Classes\AssetEditors</Filter>
     </ClCompile>
     <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp">
@@ -80,7 +91,6 @@
       <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\SceneAssetEditor.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\ObjectAssetEditor.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\MeshAssetEditor.cpp" />
   </ItemGroup>
 </Project>

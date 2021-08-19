@@ -10,8 +10,7 @@
 */
 struct DENGINE_API StructBase
 {
-
-protected:
+public:
 	//exists to prevent property redefinition by inheritance since this class doesnt have a seperate "Initialize" method
 	StructBase(bool DefProps)
 	{
@@ -24,11 +23,22 @@ protected:
 
 	}
 
+	//sets the size through a v-table to the last class
+	virtual void CalculateMySize()
+	{
+		
+	}
+
 public:
 
 	StructBase()
 	{
 		
+	}
+
+	~StructBase()
+	{
+	
 	}
 
 	//get static class - use STRUCT_STATIC_CLASS()
@@ -61,6 +71,14 @@ public:
 	//only call after DefineProperties()
 	void LoadProps(const ArrayBuffer& buffer);
 
+	const size_t& GetSize() const
+	{
+		return m_MySize;
+	}
+
 protected:
 	std::vector<Property> m_Properties;
+
+	//set by the struct_class_def macro, used for property stuff
+	size_t m_MySize = 0;
 };

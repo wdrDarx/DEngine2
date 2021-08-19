@@ -33,7 +33,7 @@ void QuadRenderer::OnConstruct()
 	m_StorageBuffer = MakeRef<ShaderStorageBuffer>(0); //layout = 0
 
 	//blank texture (White 1x1)
-	m_BlankTexture = MakeRef<Texture>();
+	m_BlankTexture = MakeRef<Texture>(TextureSpec());
 
 	//init threads
 	m_JobPool.Initialize();
@@ -57,6 +57,7 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->Bind();
 	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 
+	m_StorageBuffer->Bind();
 	//draw each draw call
 	for (int i = 0; i <= m_CurrentDrawCallIndex; i++)
 	{
@@ -74,6 +75,8 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 		//draw instanced (call.Instances.size() is the instance count)
 		GetScene()->GetRenderAPI()->DrawInstanced(*GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader"), *m_QuadCommonArray, *m_QuadCommonIndexBuffer, call.Instances.size());
 	}
+
+	m_StorageBuffer->Unbind();
 	glDisable(GL_DEPTH_TEST);
 }
 

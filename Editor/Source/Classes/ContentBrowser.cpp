@@ -6,16 +6,16 @@ void ContentBrowser::Init()
 	//folder icon
 	std::string FoldericonPath = Paths::GetEngineDirectory() + "Resources\\folder.png";
 	if (File::DoesFileExist(FoldericonPath))
-		m_FolderIcon = MakeRef<Texture>(FoldericonPath);
+		m_FolderIcon = MakeRef<Texture>(Image(FoldericonPath));
  	else
-		m_FolderIcon = MakeRef<Texture>();
+		m_FolderIcon = MakeRef<Texture>(TextureSpec());
 
 	//file icon
 	std::string FileIconPath = Paths::GetEngineDirectory() + "Resources\\file.png";
 	if (File::DoesFileExist(FileIconPath))
-		m_FileIcon = MakeRef<Texture>(FileIconPath);
+		m_FileIcon = MakeRef<Texture>(Image(FileIconPath));
  	else
- 		m_FileIcon = MakeRef<Texture>();
+ 		m_FileIcon = MakeRef<Texture>(TextureSpec());
 }
 
 void ContentBrowser::Render(EditorApp* m_App)

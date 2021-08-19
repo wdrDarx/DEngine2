@@ -75,6 +75,7 @@ void Application::RegisterBaseClasses()
 	REGISTER_OBJECT(GetObjectRegistry(), SceneObject, Engine);
 
 	REGISTER_OBJECT(GetObjectRegistry(), Material, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), DefaultMaterial, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()
@@ -84,6 +85,7 @@ void Application::RegisterBaseAssetTypes()
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), SceneAsset);
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), ObjectAsset);
 	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MaterialAsset);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MeshAsset);
 }
 
 void Application::Shutdown()

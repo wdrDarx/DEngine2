@@ -203,3 +203,70 @@ void StaticProperty::FromStaticBuffer(const Buffer& buffer, StructRegistry& stru
 	}
 	}
 }
+
+StaticProperty& StaticProperty::operator=(const StaticProperty& other)
+{
+	m_name = other.m_name;
+	m_category = other.m_category;
+	m_Type = other.m_Type;
+	m_Flags = other.m_Flags;
+
+	m_Value = new byte[other.m_ValueSize];
+	memcpy(m_Value, other.m_Value, other.m_ValueSize);
+
+	m_ValueSize = other.m_ValueSize;
+
+	//clear and define properties again for a struct 
+	if (m_Type == PropType::STRUCT)
+	{
+		StructBase* str = (StructBase*)m_Value;
+		str->GetPropertiesMutable().clear();
+		str->DefineProperties();
+	}
+	return *this;
+}
+
+StaticProperty::StaticProperty(const StaticProperty& other)
+{
+	m_name = other.m_name;
+	m_category = other.m_category;
+	m_Type = other.m_Type;
+	m_Flags = other.m_Flags;
+
+	m_Value = new byte[other.m_ValueSize];
+	memcpy(m_Value, other.m_Value, other.m_ValueSize);
+
+	m_ValueSize = other.m_ValueSize;
+
+	//clear and define properties again for a struct 
+	if (m_Type == PropType::STRUCT)
+	{
+		StructBase* str = (StructBase*)m_Value;
+		str->GetPropertiesMutable().clear();
+		str->DefineProperties();
+	}
+}
+
+StaticProperty::StaticProperty(StaticProperty&& other) noexcept
+{
+	m_name = other.m_name;
+	m_category = other.m_category;
+	m_Type = other.m_Type;
+	m_Flags = other.m_Flags;
+
+	m_Value = new byte[other.m_ValueSize];
+	memmove(m_Value, other.m_Value, other.m_ValueSize);
+
+	m_ValueSize = other.m_ValueSize;
+
+	//clear and define properties again for a struct 
+	if (m_Type == PropType::STRUCT)
+	{
+		StructBase* str = (StructBase*)m_Value;
+		str->GetPropertiesMutable().clear();
+		str->DefineProperties();
+	}
+
+	//disable the other
+	other.m_Value = nullptr;
+}

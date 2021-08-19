@@ -15,17 +15,20 @@
     <ClInclude Include="Source\Classes\CustomSceneObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\MyObject.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\QuadComponent.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Classes\QuadRenderer.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\MyObject.h">
+    <ClInclude Include="Source\Classes\SonicGaming.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />
-    <ClInclude Include="Source\Classes\SonicGaming.h" />
+    <ClInclude Include="Source\Classes\MeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp">
@@ -43,8 +46,11 @@
     <ClCompile Include="Source\Classes\QuadRenderer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Classes\SonicGaming.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\SonicGaming.cpp" />
+    <ClCompile Include="Source\Classes\MeshComponent.cpp" />
   </ItemGroup>
 </Project>

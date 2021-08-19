@@ -146,6 +146,18 @@ struct Bound
 };
 #endif
 
+enum class TextureType
+{
+	RGBA = 0,
+	HDR = 1
+};
+
+//describes a texture format
+struct TextureSpec
+{
+	TextureType Type = TextureType::RGBA;
+};
+
 #if 0
 struct vec2d
 {

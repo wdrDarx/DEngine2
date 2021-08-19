@@ -8,13 +8,17 @@ Ref<SceneObject> SceneUitls::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsse
 	//ASSERT(sceneObject); //object class invalid or not registered
 	if (!sceneObject) return nullptr;
 
-	scene->AddSceneObject(sceneObject);
+	//initialize the object calling DefineProperties and OnConstruct so all the props and components are there 
+	scene->AddSceneObject(sceneObject, ObjectInitializer(ConstructFlags::NOPOSTCONSTRUCT | ConstructFlags::RANDOMID));
 
 	//load the prefab data
 	loadedPrefab->LoadPrefab(sceneObject, false);
 
 	//mark a prefab
 	sceneObject->MarkPrefab(prefabAsset);
+
+	//and now after being deserialized call on post construct 
+	sceneObject->OnPostConstruct();
 
 	return sceneObject;
 }

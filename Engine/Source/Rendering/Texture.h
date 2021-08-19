@@ -1,5 +1,6 @@
 #pragma once
 #include "RenderAPI.h"
+#include "Utils/ImageLoader.h"
 
 struct DENGINE_API Texture
 {
@@ -7,9 +8,9 @@ private:
 	int m_Width, m_Height, m_BPP;
 public:
 	uint m_RendererID;
-	Texture(const std::string& path);
-	Texture();
-	Texture(const uint& width, const uint& height, unsigned char* pixeldata);
+	Texture(const Image& image);
+	Texture(const TextureSpec& spec);
+	Texture(const TextureSpec& spec, const uint& width, const uint& height, byte* pixeldata);
 	~Texture();
 
 	bool operator==(const Texture& other) const
@@ -24,6 +25,6 @@ public:
 	inline int GetHeight() const { return m_Height; };
 
 private:
-	void Construct(const uint& width, const uint& height, byte* pixeldata);
+	void Construct(const TextureSpec& spec, const uint& width, const uint& height, byte* pixeldata);
 };
 

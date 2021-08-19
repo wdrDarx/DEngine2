@@ -1,11 +1,6 @@
 #include "ObjectBase.h"
 #include "Utils/Rand.h"
 
-ObjectBase::~ObjectBase()
-{
-
-}
-
 void ObjectBase::Initialize(const ObjectInitializer& initializer)
 {
 	//assign the member initializer for later use
@@ -25,24 +20,28 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 		SetAssociatedModuleName(initializer.AssociatedModuleName);
 
 	//assign random ID
-	if (initializer.Flags & ContructFlags::RANDOMID)
+	if (initializer.Flags & ConstructFlags::RANDOMID)
 	{
 		m_ID = { Rand::Int64() };
 	}
 
 	//start invalid
-	if (initializer.Flags & ContructFlags::INVALIDATE)
+	if (initializer.Flags & ConstructFlags::INVALIDATE)
 	{
 		m_IsValid = false;
 	}
 
 	//Define Properties
-	if ((initializer.Flags & ContructFlags::NOPROPS) == 0) //if the flag is not set
+	if ((initializer.Flags & ConstructFlags::NOPROPS) == 0) //if the flag is not set
 		DefineProperties();
 
 	//call the virtual constructor
-	if((initializer.Flags & ContructFlags::NOCONSTRUCT) == 0) //if the flag is not set
+	if((initializer.Flags & ConstructFlags::NOCONSTRUCT) == 0) //if the flag is not set
 		OnConstruct();
+
+	//call the virtual post construct by default (this will usually disabled and called manually after deserialzation)
+	if ((initializer.Flags & ConstructFlags::NOPOSTCONSTRUCT) == 0) //if the flag is not set
+		OnPostConstruct();
 }
 
 uint ObjectBase::Serialize(Buffer& buffer) const

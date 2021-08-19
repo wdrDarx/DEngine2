@@ -32,6 +32,11 @@ void IndexBuffer::Unbind() const
 void IndexBuffer::SetData(const uint* Data, uint count)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint), Data, GL_DYNAMIC_DRAW);
+
+	if(count == m_Count)
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, count * sizeof(uint), Data);
+	else
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint), Data, GL_DYNAMIC_DRAW);
+
 	m_Count = count;
 }

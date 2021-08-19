@@ -131,7 +131,6 @@ public:
 		else
 		{
 			LogWarning("Class isnt registered");
-			//
 		}
 
 	}

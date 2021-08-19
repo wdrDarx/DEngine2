@@ -23,6 +23,5 @@ void SonicGaming::OnConstruct()
 {
 	Super::OnConstruct();
 
-	m_SonicQuad = CreateComponent<QuadComponent>(ObjectInitializer::Module(this), "SonicQuad");
-	m_GamingQuad = CreateComponent<QuadComponent>(ObjectInitializer::Module(this), "GamingQuad");
+	m_MeshComponent = CreateComponent<MeshComponent>(ObjectInitializer::Module(this), "SonicMesh");
 }

@@ -56,10 +56,13 @@ void PrefabAssetEditor::UpdatePrefabClass()
 	}
 
 	m_SceneObject = ToRef<SceneObject>(Cast<SceneObject>(obj));
-	m_Scene->AddSceneObject(m_SceneObject);
+	m_Scene->AddSceneObject(m_SceneObject, ObjectInitializer(ConstructFlags::RANDOMID | ConstructFlags::NOPOSTCONSTRUCT));
 
 	//load the prefab data
 	m_PrefabAsset->LoadPrefab(m_SceneObject, false);
+
+	//call post construct
+	m_SceneObject->OnPostConstruct();
 }
 
 void PrefabAssetEditor::Render()
@@ -69,7 +72,7 @@ void PrefabAssetEditor::Render()
 
 	title = m_TargetAsset->GetAssetName() + " Prefab Editor";
 	bool isOpen = true;
-	ImGui::Begin(title.c_str(), &isOpen);
+	ImGui::Begin(title.c_str(), &isOpen, ImGuiWindowFlags_NoDocking);
 
 	if (ImGui::Button("Save"))
 	{

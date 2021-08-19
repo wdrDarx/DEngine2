@@ -30,6 +30,7 @@ typedef unsigned char byte;
 #include <unordered_map>
 #include <typeindex>
 #include <memory>
+#include <optional>
 #include <map>
 #include <cstdint>
 #include <queue>

@@ -73,7 +73,7 @@ public:
 		m_AppObjects.push_back(obj);
 
 		//Must call this
-		initializer.Flags |= ContructFlags::RANDOMID;
+		initializer.Flags |= ConstructFlags::RANDOMID;
 		ptr->Initialize(initializer);
 		
 		return ptr;
@@ -98,6 +98,8 @@ public:
 	//removed object from appobject array
 	void DestroyAppObject(Ref<AppObject> obj)
 	{
+		//call on destroy
+		obj->OnDestroy();
 		m_AppObjects.erase(std::find(m_AppObjects.begin(), m_AppObjects.end(), obj));
 	}
 
@@ -114,7 +116,11 @@ public:
 		}
 
 		if (remove != m_AppObjects.end())
+		{ 
+			//call on destroy
+			(*remove)->OnDestroy();
 			m_AppObjects.erase(remove);
+		}
 	}
 
 	//Will call initialize to an already existing object 
@@ -128,7 +134,7 @@ public:
 		m_AppObjects.push_back(objref);
 
 		//Must call
-		obj->Initialize(ObjectInitializer(ContructFlags::RANDOMID));	
+		obj->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));	
 	}
 
 	const std::vector<Ref<AppObject>> GetAppObjects() const

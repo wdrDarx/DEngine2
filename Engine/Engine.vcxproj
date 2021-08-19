@@ -56,7 +56,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -77,7 +77,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -101,7 +101,9 @@
     <ClInclude Include="Source\Assets\AssetHandle.h" />
     <ClInclude Include="Source\Assets\AssetManager.h" />
     <ClInclude Include="Source\Assets\AssetRef.h" />
+    <ClInclude Include="Source\Assets\Classes\CubemapAsset.h" />
     <ClInclude Include="Source\Assets\Classes\MaterialAsset.h" />
+    <ClInclude Include="Source\Assets\Classes\MeshAsset.h" />
     <ClInclude Include="Source\Assets\Classes\ObjectAsset.h" />
     <ClInclude Include="Source\Assets\Classes\PrefabAsset.h" />
     <ClInclude Include="Source\Assets\Classes\SceneAsset.h" />
@@ -143,28 +145,34 @@
     <ClInclude Include="Source\Framework\StructBase.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Camera.h" />
+    <ClInclude Include="Source\Rendering\Classes\Materials\DefaultMaterial.h" />
+    <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h" />
+    <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
+    <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
     <ClInclude Include="Source\Rendering\FrameBuffer.h" />
     <ClInclude Include="Source\Rendering\Indexbuffer.h" />
     <ClInclude Include="Source\Rendering\Material.h" />
+    <ClInclude Include="Source\Rendering\Mesh.h" />
     <ClInclude Include="Source\Rendering\RenderAPI.h" />
     <ClInclude Include="Source\Rendering\RenderCore.h" />
-    <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
     <ClInclude Include="Source\Rendering\Renderer.h" />
     <ClInclude Include="Source\Rendering\Shader.h" />
     <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
     <ClInclude Include="Source\Rendering\Texture.h" />
+    <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
     <ClInclude Include="Source\Rendering\VertexArray.h" />
     <ClInclude Include="Source\Rendering\VertexBufferLayout.h" />
     <ClInclude Include="Source\Rendering\Vertexbuffer.h" />
     <ClInclude Include="Source\Rendering\Window.h" />
     <ClInclude Include="Source\Serialization\Buffer.h" />
-    <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
     <ClInclude Include="Source\Utils\DataCache.h" />
     <ClInclude Include="Source\Utils\FileSystem.h" />
     <ClInclude Include="Source\Utils\ImageLoader.h" />
+    <ClInclude Include="Source\Utils\ModelLoader.h" />
     <ClInclude Include="Source\Utils\ObjectUtils.h" />
     <ClInclude Include="Source\Utils\Paths.h" />
     <ClInclude Include="Source\Utils\Rand.h" />
+    <ClInclude Include="Source\Utils\RenderUtils.h" />
     <ClInclude Include="Source\Utils\SceneUtils.h" />
     <ClInclude Include="Source\Utils\Task.h" />
     <ClInclude Include="Source\Utils\Timer.h" />
@@ -190,23 +198,29 @@
     <ClCompile Include="Source\Framework\StaticClass.cpp" />
     <ClCompile Include="Source\Framework\StructBase.cpp" />
     <ClCompile Include="Source\Rendering\Camera.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Materials\DefaultMaterial.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Indexbuffer.cpp" />
+    <ClCompile Include="Source\Rendering\Mesh.cpp" />
     <ClCompile Include="Source\Rendering\RenderAPI.cpp" />
-    <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Rendering\Shader.cpp" />
     <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Texture.cpp" />
+    <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
     <ClCompile Include="Source\Rendering\VertexArray.cpp" />
     <ClCompile Include="Source\Rendering\Vertexbuffer.cpp" />
     <ClCompile Include="Source\Rendering\Window.cpp" />
-    <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
     <ClCompile Include="Source\Utils\FileSystem.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />
+    <ClCompile Include="Source\Utils\ModelLoader.cpp" />
     <ClCompile Include="Source\Utils\ObjectUtils.cpp" />
     <ClCompile Include="Source\Utils\Paths.cpp" />
     <ClCompile Include="Source\Utils\Rand.cpp" />
+    <ClCompile Include="Source\Utils\RenderUtils.cpp" />
     <ClCompile Include="Source\Utils\SceneUtils.cpp" />
     <ClCompile Include="Source\Utils\Task.cpp" />
     <ClCompile Include="Source\Utils\World.cpp" />

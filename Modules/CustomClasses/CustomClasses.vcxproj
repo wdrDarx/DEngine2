@@ -57,7 +57,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;..\..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -79,7 +79,7 @@ IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy 
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;..\..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -101,22 +101,24 @@ IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Classes\SonicGaming.h" />
     <ClInclude Include="Source\Classes\ChildSceneObject.h" />
     <ClInclude Include="Source\Classes\CustomAppObject.h" />
     <ClInclude Include="Source\Classes\CustomSceneObject.h" />
+    <ClInclude Include="Source\Classes\MeshComponent.h" />
+    <ClInclude Include="Source\Classes\MyObject.h" />
     <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
-    <ClInclude Include="Source\Classes\MyObject.h" />
+    <ClInclude Include="Source\Classes\SonicGaming.h" />
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Classes\SonicGaming.cpp" />
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />
     <ClCompile Include="Source\Classes\CustomAppObject.cpp" />
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp" />
+    <ClCompile Include="Source\Classes\MeshComponent.cpp" />
     <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\QuadRenderer.cpp" />
+    <ClCompile Include="Source\Classes\SonicGaming.cpp" />
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>

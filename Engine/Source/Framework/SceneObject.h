@@ -27,10 +27,12 @@ public:
 	}
 
 	//need explicit destructor to call pre_delete events for all components
-	~SceneObject();
+	void OnDestroy() override;
 
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
+	void OnPostConstruct() override;
+	
 
 
 	//serializes properties and all current component data like component properties, etc
@@ -68,8 +70,12 @@ public:
 		Ref<ObjectComponent> comp = Cast<ObjectComponent>(ptr);
 		m_Components.push_back(comp);
 
-		//Must call this
-		initializer.Flags |= ContructFlags::RANDOMID;
+		//Must have this
+		initializer.Flags |= ConstructFlags::RANDOMID;
+
+		// OnPostConstruct for components is called in the scene object's OnPostConstruct
+		initializer.Flags |= ConstructFlags::NOPOSTCONSTRUCT;
+
 		initializer.Name = ComponentName;
 		ptr->Initialize(initializer);
 

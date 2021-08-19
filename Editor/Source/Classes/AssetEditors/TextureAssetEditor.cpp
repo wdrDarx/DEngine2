@@ -49,7 +49,7 @@ void TextureAssetEditor::Render()
 	//properties
 	if (ImGui::Button("Load From file"))
 	{
-		Image loadedimg(FileDialog::OpenFile(".png"));
+		Image loadedimg(FileDialog::OpenFile(""));
 		m_TextureAsset = MakeRef<TextureAsset>(loadedimg);
 		m_App->GetAssetManager().SaveAsset(m_TextureAsset, m_TargetAsset);
 	}

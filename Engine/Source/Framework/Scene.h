@@ -20,6 +20,7 @@ public:
 
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
+	void OnDestroy() override;
 
 	uint Serialize(Buffer& buffer) const override;
 	uint Deserialize(const Buffer& buffer) override;
@@ -55,7 +56,7 @@ public:
 		m_SceneObjects.push_back(obj);
 
 		//Must call this
-		initializer.Flags |= ContructFlags::RANDOMID;
+		initializer.Flags |= ConstructFlags::RANDOMID;
 		ptr->Initialize(initializer);
 
 		return ptr;
@@ -74,7 +75,7 @@ public:
 		m_Renderers.push_back(obj);
 
 		//Must call this
-		initializer.Flags |= ContructFlags::RANDOMID;
+		initializer.Flags |= ConstructFlags::RANDOMID;
 		ptr->Initialize(initializer);
 
 		return ptr;
@@ -115,11 +116,23 @@ public:
 
 	void DestroyAllSceneObjects()
 	{
+		//call destroy on all scene objects
+		for (auto& obj : GetSceneObjects())
+		{
+			obj->OnDestroy();
+		}
+
 		m_SceneObjects.clear();
 	}
 
 	void DestroyAllRenderers()
 	{
+		//call destroy on all renderers
+		for (auto& renderer : m_Renderers)
+		{
+			renderer->OnDestroy();
+		}
+
 		m_Renderers.clear();
 	}
 
@@ -134,11 +147,11 @@ public:
 
 	//Will call initialize to an already existing scene object 
 	//overridable object initializer (default flags are RANDOMID)
-	void AddSceneObject(SceneObject* obj, const ObjectInitializer& Initializer = ObjectInitializer(ContructFlags::RANDOMID));
+	void AddSceneObject(SceneObject* obj, const ObjectInitializer& Initializer = ObjectInitializer(ConstructFlags::RANDOMID));
 
 	//Will call initialize to an already existing scene object 
 	//overridable object initializer (default flags are RANDOMID)
-	void AddSceneObject(Ref<SceneObject> obj, const ObjectInitializer& Initializer = ObjectInitializer(ContructFlags::RANDOMID));
+	void AddSceneObject(Ref<SceneObject> obj, const ObjectInitializer& Initializer = ObjectInitializer(ConstructFlags::RANDOMID));
 
 	EventDispatcher& GetSceneEventDipatcher() 
 	{

@@ -20,6 +20,7 @@ IncludeDir["GLFW"] = "Vendor/GLFW/include"
 IncludeDir["GLAD"] = "Vendor/GLAD/include"
 IncludeDir["ImGui"] = "Vendor/ImGui"
 IncludeDir["GLM"] = "Vendor/GLM"
+IncludeDir["Objloader"] = "Vendor/ObjLoader"
 IncludeDir["STB_IMAGE"] = "Vendor/stb_image"
 
 group "Dependecies"
@@ -51,7 +52,8 @@ project "Engine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}"
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.Objloader}"
 	}
 
 	links
@@ -98,7 +100,8 @@ project "Editor"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}"
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.Objloader}"
 	}
 
 	defines
@@ -158,7 +161,8 @@ project "CustomClasses"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}"
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.Objloader}"
 	}
 
 	links

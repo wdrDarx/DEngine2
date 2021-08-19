@@ -58,7 +58,8 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 			if (ImGui::MenuItem("Reload Prefab"))
 			{
 				auto prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset(object->GetPrefabAssetRefMutable());
-				prefabAsset->LoadPrefab(object, false);
+				if(prefabAsset)
+					prefabAsset->LoadPrefab(object, false);
 			}
 		}
 

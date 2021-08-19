@@ -58,7 +58,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Engine\Source;Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Engine\Source;Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -82,7 +82,7 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Debug-win
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Engine\Source;Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Engine\Source;Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -105,10 +105,11 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Classes\AssetEditors\ObjectAssetEditor.h" />
-    <ClInclude Include="Source\Classes\AssetEditors\SceneAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\MeshAssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\ObjectAssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditors\PrefabAssetEditor.h" />
+    <ClInclude Include="Source\Classes\AssetEditors\SceneAssetEditor.h" />
     <ClInclude Include="Source\Classes\AssetEditors\TextureAssetEditor.h" />
     <ClInclude Include="Source\Classes\ContentBrowser.h" />
     <ClInclude Include="Source\Classes\EditorApp.h" />
@@ -121,9 +122,10 @@ IF EXIST ..\EngineContent\ (xcopy /Q /E /Y /I ..\EngineContent  ..\bin\Release-w
     <ClInclude Include="Source\ImGui\imgui_impl_opengl3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\AssetEditors\MeshAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\AssetEditors\ObjectAssetEditor.cpp" />
-    <ClCompile Include="Source\Classes\AssetEditors\SceneAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\AssetEditors\PrefabAssetEditor.cpp" />
+    <ClCompile Include="Source\Classes\AssetEditors\SceneAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\AssetEditors\TextureAssetEditor.cpp" />
     <ClCompile Include="Source\Classes\ContentBrowser.cpp" />
     <ClCompile Include="Source\Classes\EditorApp.cpp" />

@@ -13,12 +13,12 @@ void AppObject::OnConstruct()
 {
 	Super::OnConstruct();
 
+	//auto delete when the parent module is unloaded
 	m_ModuleCallback.Assign([&](ModuleEvent* event)
 	{
 		if(event->GetEventType() == ModuleEventType::UNLOADED && event->m_ModuleName == GetAssociatedModuleName())
 		{ 
 			GetApplication()->DestroyAppObject(this);
-		
 		}
 	});
 

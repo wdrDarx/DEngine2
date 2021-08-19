@@ -106,20 +106,9 @@ struct DENGINE_API StaticProperty : public Property
 	using Property::Property;
 	
 	//need a copy constructor to explicitly copy the value of this property
-	StaticProperty(const StaticProperty& other)
-	{
-		m_name = other.m_name;
-		m_category = other.m_category;
-		m_Type = other.m_Type;
-		m_Flags = other.m_Flags;
+	StaticProperty(const StaticProperty& other);
 
-		m_Value = new byte[other.m_ValueSize];
-		memcpy(m_Value, other.m_Value, other.m_ValueSize);
-
-		m_ValueSize = other.m_ValueSize;
-	}
-
-	//copy constructor from a static value
+	//copies in the value ptr with the size
 	StaticProperty(void* StaticValue, size_t ValueSize)
 	{
 		m_Value = new byte[ValueSize];
@@ -133,36 +122,8 @@ struct DENGINE_API StaticProperty : public Property
 	*/
 	void FromStaticBuffer(const Buffer& buffer, StructRegistry& structRegistry);
 
-	StaticProperty& operator=(const StaticProperty& other)
-	{
-		m_name = other.m_name;
-		m_category = other.m_category;
-		m_Type = other.m_Type;
-		m_Flags = other.m_Flags;
-
-		m_Value = new byte[other.m_ValueSize];
-		memcpy(m_Value, other.m_Value, other.m_ValueSize);
-
-		m_ValueSize = other.m_ValueSize;
-
-		return *this;
-	}
-
-	StaticProperty(StaticProperty&& other) noexcept
-	{
-		m_name = other.m_name;
-		m_category = other.m_category;
-		m_Type = other.m_Type;
-		m_Flags = other.m_Flags;
-
-		m_Value = new byte[other.m_ValueSize];
-		memmove(m_Value, other.m_Value, other.m_ValueSize);
-
-		m_ValueSize = other.m_ValueSize;
-
-		//disable the other
-		other.m_Value = nullptr;
-	}
+	StaticProperty& operator=(const StaticProperty& other);
+	StaticProperty(StaticProperty&& other) noexcept;
 
 	//copy constructor from a static value (COPIES THE POINTER DATA WITH THE VALUE SIZE PASSED IN)
 	void Assign(void* StaticValue, size_t ValueSize)

@@ -54,10 +54,17 @@
 #include "Assets/Classes/SceneAsset.h"
 #include "Assets/Classes/ObjectAsset.h"
 #include "Assets/Classes/MaterialAsset.h"
+#include "Assets/Classes/CubemapAsset.h"
+#include "Assets/Classes/MeshAsset.h"
 
 //Rendering 
 #include "Rendering/RenderCore.h"
 #include "Rendering/Classes/Renderers/QuadRenderer.h"
+#include "Rendering/Classes/Renderers/CubemapRenderer.h"
+#include "Rendering/Classes/Renderers/MeshRenderer.h"
+
+//Default Materials
+#include "Rendering/Classes/Materials/DefaultMaterial.h"
 
 //Serialization
 #include "Serialization/Buffer.h"
@@ -73,3 +80,5 @@
 #include "Utils/World.h"
 #include "Utils/ObjectUtils.h"
 #include "Utils/SceneUtils.h"
+#include "Utils/RenderUtils.h"
+#include "Utils/ModelLoader.h"

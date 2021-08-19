@@ -19,8 +19,14 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{E3AE1F7C-4F19-D4F2-9857-85980401B247}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\Renderers">
-      <UniqueIdentifier>{7C9F39FB-E800-1709-716E-5DBBDDCE4DC8}</UniqueIdentifier>
+    <Filter Include="Rendering\Classes">
+      <UniqueIdentifier>{C050E392-2C67-E128-75DE-6C4AE133B2B0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Classes\Materials">
+      <UniqueIdentifier>{914366EA-FD50-94D0-8637-90BBF2436087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Classes\Renderers">
+      <UniqueIdentifier>{99F9C210-0507-F1F6-8EED-ECE1FAF9BCAD}</UniqueIdentifier>
     </Filter>
     <Filter Include="Serialization">
       <UniqueIdentifier>{2319AF09-8FD9-2A40-5814-74BDC4936F1C}</UniqueIdentifier>
@@ -42,7 +48,19 @@
     <ClInclude Include="Source\Assets\AssetRef.h">
       <Filter>Assets</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\CubemapAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\MaterialAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\ObjectAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Assets\Classes\PrefabAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\SceneAsset.h">
       <Filter>Assets\Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Assets\Classes\TextureAsset.h">
@@ -86,6 +104,9 @@
       <Filter>Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\ModuleEvent.h">
+      <Filter>Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Event\MouseEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
     <ClInclude Include="Source\Event\SceneEvent.h">
@@ -154,10 +175,25 @@
     <ClInclude Include="Source\Rendering\Camera.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\Classes\Materials\DefaultMaterial.h">
+      <Filter>Rendering\Classes\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Rendering\FrameBuffer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Indexbuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Material.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Mesh.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\RenderAPI.h">
@@ -166,10 +202,19 @@
     <ClInclude Include="Source\Rendering\RenderCore.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Rendering\Shader.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Rendering\Texture.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\UniformStorageBuffer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\VertexArray.h">
@@ -205,6 +250,9 @@
     <ClInclude Include="Source\Utils\Rand.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\RenderUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Utils\SceneUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -217,19 +265,9 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Rendering\Renderer.h">
-      <Filter>Rendering\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h">
-      <Filter>Rendering\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Event\MouseEvent.h" />
-    <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
-    <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
-    <ClInclude Include="Source\Assets\Classes\SceneAsset.h" />
-    <ClInclude Include="Source\Rendering\Material.h" />
-    <ClInclude Include="Source\Assets\Classes\ObjectAsset.h" />
-    <ClInclude Include="Source\Assets\Classes\MaterialAsset.h" />
+    <ClInclude Include="Source\Assets\Classes\MeshAsset.h" />
+    <ClInclude Include="Source\Utils\ModelLoader.h" />
+    <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -259,6 +297,9 @@
     <ClCompile Include="Source\Framework\InputManager.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\Module.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Framework\ModuleManager.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
@@ -286,19 +327,40 @@
     <ClCompile Include="Source\Rendering\Camera.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\Classes\Materials\DefaultMaterial.cpp">
+      <Filter>Rendering\Classes\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Indexbuffer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\Mesh.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\RenderAPI.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Renderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Shader.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\Texture.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\VertexArray.cpp">
@@ -325,6 +387,9 @@
     <ClCompile Include="Source\Utils\Rand.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utils\RenderUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Utils\SceneUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -334,14 +399,7 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\Renderer.cpp">
-      <Filter>Rendering\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp">
-      <Filter>Rendering\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
-    <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
-    <ClCompile Include="Source\Framework\Module.cpp" />
+    <ClCompile Include="Source\Utils\ModelLoader.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp" />
   </ItemGroup>
 </Project>

@@ -6,11 +6,12 @@
 #include "Classes/AssetEditors/PrefabAssetEditor.h"
 #include "Classes/AssetEditors/SceneAssetEditor.h"
 #include "Classes/AssetEditors/ObjectAssetEditor.h"
+#include "Classes/AssetEditors/MeshAssetEditor.h"
 
 EditorApp::EditorApp() : Application()
 {
 	MakeWindow("DEditor", 1280, 720, false);
-	GetWindow()->SetVsync(true);
+	GetWindow()->SetVsync(false);
 
 	//close event for window
 	m_WindowEvent.Assign([&](WindowEvent* event)
@@ -404,15 +405,19 @@ void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)
 	if (assetType == "SceneAsset")
 	{
 		NewEditor = MakeRef<SceneAssetEditor>();
-	} 
+	}
+	else
+	if (assetType == "MeshAsset")
+	{
+		NewEditor = MakeRef<MeshAssetEditor>();
+	}
 
 	//test if its an ObjectAsset
-	Asset* testAsset = GetAssetManager().GetAssetTypeRegistry().Make({assetType});
+	Ref<Asset> testAsset = ToRef<Asset>(GetAssetManager().GetAssetTypeRegistry().Make({assetType}));
 	if (Cast<ObjectAsset>(testAsset))
 	{
 		NewEditor = MakeRef<ObjectAssetEditor>();
 	}
-
 
 	if(!NewEditor) return;
 	NewEditor->m_TargetAsset = TargetAssetHandle;

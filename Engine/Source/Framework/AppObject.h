@@ -5,10 +5,9 @@
 #include "Event/EventDispatcher.h"
 
 class Application;
-/*An Object existant in the scope of an app with a reference to it
-* Must call Initialize(const ObjectInitializer& initializer) mannually after constructing
-* 
-* 
+/*
+  An Object existant in the scope of an app with a reference to it
+  Must call Initialize(const ObjectInitializer& initializer) mannually after constructing
 */
 class DENGINE_API AppObject : public ObjectBase
 {

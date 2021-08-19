@@ -7,7 +7,7 @@
 #include "Framework/StaticClass.h"
 #include "Framework/FrameworkMacros.h"
 
-enum ContructFlags
+enum ConstructFlags
 {
 	//assign a random ID on construct
 	RANDOMID = BIT(0),
@@ -15,11 +15,14 @@ enum ContructFlags
 	//start invalid
 	INVALIDATE = BIT(1),
 
-	//dont call OnContruct()
+	//dont call OnConstruct()
 	NOCONSTRUCT = BIT(2),
 
+	//dont call OnPostConstruct()
+	NOPOSTCONSTRUCT = BIT(3),
+
 	//dont define properties
-	NOPROPS = BIT(3)
+	NOPROPS = BIT(4)
 };
 
 enum ObjectFlags
@@ -27,7 +30,6 @@ enum ObjectFlags
 	//the object is a prefab
 	PREFAB = BIT(0)
 };
-
 
 //contains initializer values for an object
 class ObjectBase;
@@ -51,7 +53,7 @@ struct ObjectInitializer
 	//create an instance with an associated module name
 	static ObjectInitializer Module(const std::string& AssociatedModuleName);
 
-	ObjectInitializer(const std::string& name, ContructFlags flags) : Name(name), Flags(flags)
+	ObjectInitializer(const std::string& name, ConstructFlags flags) : Name(name), Flags(flags)
 	{
 
 	}
@@ -61,7 +63,12 @@ struct ObjectInitializer
 
 	}
 
-	ObjectInitializer(ContructFlags flags) : Flags(flags)
+	ObjectInitializer(ConstructFlags flags) : Flags(flags)
+	{
+
+	}
+
+	ObjectInitializer(int flags) : Flags(flags)
 	{
 
 	}
@@ -92,7 +99,7 @@ protected:
 	Simple class that has a property system, serialization interface,
 	a unique assignable id and an Event interface.
 
-	has an empty contrutor and an explicit initializer construtor
+	has an empty constructor and an explicit initializer constructor
 	that needs to be called manually - Initialize(const ObjectInitializer& initializer)
 
 	also has a constructor that will call initializer - ObjectBase(const ObjectInitializer& initializer)
@@ -109,7 +116,10 @@ public:
 	
 	}
 
-	~ObjectBase();
+	virtual ~ObjectBase()
+	{
+
+	}
 
 	//basically the actual constructor
 	void Initialize(const ObjectInitializer& initializer);
@@ -129,7 +139,19 @@ public:
 		return out;
 	}
 
+	/*
+		used to create the object itself (components, etc)
+		Called before Deserialization so properties wont have their values - Use OnPostConstruct()
+	*/
 	virtual void OnConstruct()
+	{
+
+	}
+
+	/*
+		called after any data has been deserialized and the object is complete 
+	*/
+	virtual void OnPostConstruct()
 	{
 
 	}
@@ -139,7 +161,18 @@ public:
 
 	}
 
+	/*
+		called per frame
+	*/
 	virtual void OnUpdate(const Tick& tick)
+	{
+
+	}
+
+	/*
+		Called manually by parent containers of this object, and only when this object is a real real object not just a temporary
+	*/
+	virtual void OnDestroy()
 	{
 
 	}
