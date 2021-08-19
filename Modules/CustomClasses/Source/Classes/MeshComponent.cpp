@@ -12,6 +12,7 @@ void MeshComponent::OnUpdate(const Tick& tick)
 	if (mat && m_LastMaterialAssetID != mat->GetID())
 	{
 		m_Material = ToRef<Material>(Cast<Material>(GetOwner()->GetScene()->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(mat->GetObjectClassName())));
+		m_Material->SetSceneContext(GetOwner()->GetScene());
 		m_Material->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));
 		m_Mesh->SetMaterial(m_Material);
 
@@ -44,5 +45,4 @@ void MeshComponent::OnDestroy()
 	Super::OnDestroy();
 
 	GetOwner()->GetScene()->GetRenderer<MeshRenderer>()->RemoveMesh(m_Mesh);
-	LogTemp("mesh component destroyed");
 }

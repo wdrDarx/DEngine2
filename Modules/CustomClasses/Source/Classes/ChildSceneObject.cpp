@@ -20,7 +20,7 @@ void ChildSceneObject::OnPostConstruct()
 	auto cubemap = GetScene()->GetApplication()->GetAssetManager().LoadAsset(CubemapAssetTest);
 	if (cubemap)
 	{
-		//GetScene()->GetRenderer<CubemapRenderer>()->SetActiveCubemap(GetScene()->GetRenderer<CubemapRenderer>()->CreateCubemapFromAsset(cubemap));
+		GetScene()->GetRenderer<CubemapRenderer>()->SetActiveCubemap(GetScene()->GetRenderer<CubemapRenderer>()->CreateCubemapFromAsset(cubemap));
 	}
 
 }
@@ -29,5 +29,5 @@ void ChildSceneObject::OnDestroy()
 {
 	Super::OnDestroy();
 
-	//GetScene()->GetRenderer<CubemapRenderer>()->ClearActiveCubemap();
+	GetScene()->GetRenderer<CubemapRenderer>()->ClearActiveCubemap();
 }

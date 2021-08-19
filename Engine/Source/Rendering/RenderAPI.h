@@ -69,6 +69,12 @@ class DENGINE_API RenderAPI
 			return m_Stats;
 		}
 
+		//needs to be called manually 
+		void ResetRenderStats()
+		{
+			m_Stats = RenderStats();
+		}
+
 		void SetCamera(Ref<Camera> camera)
 		{
 			m_Camera = camera;

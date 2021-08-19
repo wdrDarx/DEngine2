@@ -55,7 +55,6 @@ void RenderAPI::ClearCurrentContext()
 void RenderAPI::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	m_Stats = RenderStats();
 }
 
 void RenderAPI::SetClearColor(const color4& color)

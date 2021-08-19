@@ -22,6 +22,10 @@ void MeshRenderer::PrepareFrame()
 
 void MeshRenderer::RenderFrame(Ref<Camera> camera)
 {
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	m_MeshDataBuffer->Bind();
 	m_MeshDataBuffer->SetData(m_MeshDataArray.data(), m_MeshDataArray.size() * sizeof(MeshData));
 	for (uint i = 0; i < m_MeshBuffer.size(); i++)
@@ -35,6 +39,9 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 		GetScene()->GetRenderAPI()->DrawIndexed(*mesh.mesh->GetIndexBuffer());
 	}
 	m_MeshDataBuffer->Unbind();
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 }
 
 void MeshRenderer::ClearFrame()
@@ -63,6 +70,5 @@ void MeshRenderer::RemoveMesh(Ref<Mesh> mesh)
 	if (remove != m_MeshBuffer.end())
 	{
 		m_MeshBuffer.erase(remove);
-		LogTemp("Removed Mesh");
 	}
 }
