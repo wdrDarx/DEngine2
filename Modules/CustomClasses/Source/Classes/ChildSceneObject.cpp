@@ -27,17 +27,20 @@ void ChildSceneObject::OnPostConstruct()
 	{
 		if (event->GetKeyCode() == GLFW_KEY_SPACE)
 		{
-			Transform RandomTransform;
-			RandomTransform.pos.x = Rand::Float() * RandomSpawnRange;
-			RandomTransform.pos.y = Rand::Float() * RandomSpawnRange;
-			RandomTransform.pos.z = Rand::Float() * RandomSpawnRange;
+			for(uint i = 0l; i < 1000; i++)
+			{ 
+				Transform RandomTransform;
+				RandomTransform.pos.x = Rand::Float() * RandomSpawnRange;
+				RandomTransform.pos.y = Rand::Float() * RandomSpawnRange;
+				RandomTransform.pos.z = Rand::Float() * RandomSpawnRange;
 
-			RandomTransform.rot.x = Rand::Float() * RandomSpawnRange;
-			RandomTransform.rot.y = Rand::Float() * RandomSpawnRange;
-			RandomTransform.rot.z = Rand::Float() * RandomSpawnRange;
+				RandomTransform.rot.x = Rand::Float() * RandomSpawnRange;
+				RandomTransform.rot.y = Rand::Float() * RandomSpawnRange;
+				RandomTransform.rot.z = Rand::Float() * RandomSpawnRange;
 
-			Ref<SonicGaming> spawned = Cast<SonicGaming>(SceneUitls::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this)));
-			spawned->m_MeshComponent->MeshTransform = RandomTransform;
+				Ref<SonicGaming> spawned = Cast<SonicGaming>(SceneUitls::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this)));
+				spawned->m_MeshComponent->MeshTransform = RandomTransform;
+			}
 		}
 	});
 

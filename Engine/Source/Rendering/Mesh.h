@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "RenderAPI.h"
 #include "Vertexbuffer.h"
+#include "VertexArray.h"
 #include "VertexBufferLayout.h"
 #include "Indexbuffer.h"
 #include "Material.h"
@@ -87,6 +88,11 @@ public:
 	void SetMaterial(Ref<Material> material)
 	{
 		m_Material = material;
+	}
+
+	bool IsValidForDraw()
+	{
+		return GetMaterial() && m_VertexArray->m_VertexBuffer;
 	}
 
 private:

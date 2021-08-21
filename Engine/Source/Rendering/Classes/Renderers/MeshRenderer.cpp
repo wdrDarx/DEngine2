@@ -115,6 +115,8 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 	for(uint i = 0; i < m_DrawCalls.size() ; i++)
 	{
 		auto& call = m_DrawCalls[i];
+		if(!call.CommonMesh->IsValidForDraw()) continue;
+
 		call.CommonMesh->Bind(GetScene()->GetRenderAPI()); //binds mesh vertex array and material
 		if(!call.CommonMaterial->GetShader()) continue; //shader not valid
 
