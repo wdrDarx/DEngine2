@@ -22,6 +22,14 @@ IncludeDir["ImGui"] = "Vendor/ImGui"
 IncludeDir["GLM"] = "Vendor/GLM"
 IncludeDir["Objloader"] = "Vendor/ObjLoader"
 IncludeDir["STB_IMAGE"] = "Vendor/stb_image"
+IncludeDir["ASSIMP"] = "Vendor/Assimp/include"
+
+--assimp stuff
+AssimpLibs = {}
+AssimpLibs["ASSIMP_RELEASE"] = "Vendor/Assimp/lib/assimp-Release.lib"
+AssimpLibs["ASSIMP_DEBUG"] = "Vendor/Assimp/lib/assimp-Debug.lib"
+AssimpLibs["ZLIB"] = "Vendor/zlib/lib/zlibstatic.lib"
+AssimpLibs["IRRXLM"] = "Vendor/irrXML/lib/IrrXML.lib" 		
 
 group "Dependecies"
 include "Vendor/GLFW"
@@ -53,16 +61,32 @@ project "Engine"
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}"
+		"%{IncludeDir.Objloader}",
+		"%{IncludeDir.ASSIMP}"
 	}
 
 	links
-	{
+	{			
+		AssimpLibs["ZLIB"],
+		AssimpLibs["IRRXLM"],
+
 		"opengl32.lib",
 		"imGui",
 		"GLFW",
 		"GLAD"
 	}
+
+	filter "configurations:Release"
+		links 
+		{
+			AssimpLibs["ASSIMP_RELEASE"]
+		}
+
+	filter "configurations:Debug"
+		links 
+		{
+			AssimpLibs["ASSIMP_DEBUG"]
+		}
 
 	defines
 	{
@@ -101,7 +125,8 @@ project "Editor"
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}"
+		"%{IncludeDir.Objloader}",
+		"%{IncludeDir.ASSIMP}"
 	}
 
 	defines
@@ -162,7 +187,8 @@ project "CustomClasses"
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.GLM}",
 		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}"
+		"%{IncludeDir.Objloader}",
+		"%{IncludeDir.ASSIMP}"
 	}
 
 	links

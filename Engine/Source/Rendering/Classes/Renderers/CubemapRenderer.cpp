@@ -50,9 +50,9 @@ void CubemapRenderer::ClearFrame()
 
 }
 
-Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
+Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 {
-	Cubemap outCubemap;
+	Ref<Cubemap> outCubemap = MakeRef<Cubemap>();
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -60,10 +60,10 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 
 	//load the hdr map
 	float* data = (float*)asset->m_Pixels.data();
-	if (data)
+	if (asset)
 	{
-		glGenTextures(1, &outCubemap.m_hdrTextureSlot);
-		glBindTexture(GL_TEXTURE_2D, outCubemap.m_hdrTextureSlot);
+		glGenTextures(1, &outCubemap->m_hdrTextureSlot);
+		glBindTexture(GL_TEXTURE_2D, outCubemap->m_hdrTextureSlot);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, asset->m_width, asset->m_height, 0, GL_RGB, GL_FLOAT, data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -88,20 +88,20 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-	glGenTextures(1, &outCubemap.m_CubeMapSlot);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap.m_CubeMapSlot);
-	for (uint i = 0; i < 6; ++i)
+	// pbr: setup cubemap to render to and attach to framebuffer
+	glGenTextures(1, &outCubemap->m_CubeMapSlot);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap->m_CubeMapSlot);
+	for (unsigned int i = 0; i < 6; ++i)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F,
-			512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
 	}
-
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // enable pre-filter mipmap sampling (combatting visible dots artifact)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	//views
 	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 	glm::mat4 captureViews[] =
 	{
@@ -118,7 +118,7 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	CubeMapProjector->SetUniform1i("u_CubeMap", 0);
 	CubeMapProjector->SetUniformMat4f("u_Projection", captureProjection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, outCubemap.m_hdrTextureSlot);
+	glBindTexture(GL_TEXTURE_2D, outCubemap->m_hdrTextureSlot);
 
 	glViewport(0, 0, 512, 512); // don't forget to configure the viewport to the capture dimensions.
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
@@ -126,18 +126,18 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	{
 		CubeMapProjector->SetUniformMat4f("u_View", captureViews[i]);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outCubemap.m_CubeMapSlot, 0);
+		GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outCubemap->m_CubeMapSlot, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		RenderUtils::RenderCube();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// then let OpenGL generate mipmaps from first mip face (combatting visible dots artifact)
-	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap.m_CubeMapSlot);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap->m_CubeMapSlot);
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	glGenTextures(1, &outCubemap.m_IrradianceMap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap.m_IrradianceMap);
+	glGenTextures(1, &outCubemap->m_IrradianceMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap->m_IrradianceMap);
 	for (uint i = 0; i < 6; ++i)
 	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
@@ -146,34 +146,37 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
+	// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
+	// -----------------------------------------------------------------------------
 	Ref<Shader> IrradianceShader = GetScene()->GetRenderAPI()->GetShaderFromCache("IrradianceShader");
 	IrradianceShader->Bind();
 	IrradianceShader->SetUniform1i("u_CubeMap", 0);
 	IrradianceShader->SetUniformMat4f("u_Projection", captureProjection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap.m_CubeMapSlot);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap->m_CubeMapSlot);
 
 	glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		IrradianceShader->SetUniformMat4f("u_View", captureViews[i]);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outCubemap.m_IrradianceMap, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outCubemap->m_IrradianceMap, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		RenderUtils::RenderCube();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glGenTextures(1, &outCubemap.m_PreFilterMap);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap.m_PreFilterMap);
+	//crate pre filter map
+	glGenTextures(1, &outCubemap->m_PreFilterMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap->m_PreFilterMap);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
@@ -191,7 +194,7 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	PreFilterShader->SetUniform1i("u_CubeMap", 0);
 	PreFilterShader->SetUniformMat4f("u_Projection", captureProjection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap.m_CubeMapSlot);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, outCubemap->m_CubeMapSlot);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 	unsigned int maxMipLevels = 5;
@@ -209,7 +212,7 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 		for (unsigned int i = 0; i < 6; ++i)
 		{
 			PreFilterShader->SetUniformMat4f("u_View", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outCubemap.m_PreFilterMap, mip);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outCubemap->m_PreFilterMap, mip);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			RenderUtils::RenderCube();
@@ -217,10 +220,10 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glGenTextures(1, &outCubemap.m_brdfMap);
+	glGenTextures(1, &outCubemap->m_brdfMap);
 
 	// pre-allocate enough memory for the LUT texture.
-	glBindTexture(GL_TEXTURE_2D, outCubemap.m_brdfMap);
+	glBindTexture(GL_TEXTURE_2D, outCubemap->m_brdfMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 512, 512, 0, GL_RGBA, GL_FLOAT, 0);
 	// be sure to set wrapping mode to GL_CLAMP_TO_EDGE
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -232,7 +235,7 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outCubemap.m_brdfMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outCubemap->m_brdfMap, 0);
 
 	Ref<Shader> BrdfShader = GetScene()->GetRenderAPI()->GetShaderFromCache("BrdfShader");
 	glViewport(0, 0, 512, 512);
@@ -250,13 +253,13 @@ Cubemap CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	return outCubemap;
 }
 
-void CubemapRenderer::SetActiveCubemap(const Cubemap& ActiveCubemap)
+void CubemapRenderer::SetActiveCubemap(Ref<Cubemap> ActiveCubemap)
 {
 	m_ActiveCubemap = ActiveCubemap;
 }
 
 void CubemapRenderer::ClearActiveCubemap()
 {
-	m_ActiveCubemap = {};
+	m_ActiveCubemap = nullptr;
 }
 

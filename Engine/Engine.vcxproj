@@ -56,7 +56,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -69,15 +69,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;..\Vendor\Assimp\lib\assimp-Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -93,7 +92,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;..\Vendor\Assimp\lib\assimp-Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -146,6 +145,7 @@
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Camera.h" />
     <ClInclude Include="Source\Rendering\Classes\Materials\DefaultMaterial.h" />
+    <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
@@ -158,6 +158,7 @@
     <ClInclude Include="Source\Rendering\Renderer.h" />
     <ClInclude Include="Source\Rendering\Shader.h" />
     <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h" />
+    <ClInclude Include="Source\Rendering\StaticMesh.h" />
     <ClInclude Include="Source\Rendering\Texture.h" />
     <ClInclude Include="Source\Rendering\UniformStorageBuffer.h" />
     <ClInclude Include="Source\Rendering\VertexArray.h" />
@@ -198,7 +199,7 @@
     <ClCompile Include="Source\Framework\StaticClass.cpp" />
     <ClCompile Include="Source\Framework\StructBase.cpp" />
     <ClCompile Include="Source\Rendering\Camera.cpp" />
-    <ClCompile Include="Source\Rendering\Classes\Materials\DefaultMaterial.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Materials\PBR_Material.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Rendering\Shader.cpp" />
     <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp" />
+    <ClCompile Include="Source\Rendering\StaticMesh.cpp" />
     <ClCompile Include="Source\Rendering\Texture.cpp" />
     <ClCompile Include="Source\Rendering\UniformStorageBuffer.cpp" />
     <ClCompile Include="Source\Rendering\VertexArray.cpp" />

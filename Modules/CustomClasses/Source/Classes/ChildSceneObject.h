@@ -10,6 +10,8 @@ public:
 		OBJECT_PROPS_BEGIN()
 			PROPDEF(test, EditAnywhere);
 			PROPDEF(CubemapAssetTest, EditAnywhere);
+			PROPDEF(PrefabToSpawn, EditAnywhere);
+			PROPDEF(RandomSpawnRange, EditAnywhere);
 			PROPDEF(Speed, EditAnywhere);
 		OBJECT_PROPS_END()
 
@@ -21,8 +23,11 @@ public:
 public:
 	Ref<QuadComponent> m_QuadComponent;
 	AssetRef<TextureAsset> CubemapAssetTest;
+	AssetRef<PrefabAsset> PrefabToSpawn;
+	Callback<KeyEvent> m_KeyDownEvent;
 
 	float test = 12.f;
 	float Speed = 30.f;
+	float RandomSpawnRange = 1000.f;
 };
 

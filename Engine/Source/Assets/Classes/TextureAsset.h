@@ -23,6 +23,8 @@ public:
 			m_Pixels = Buffer(image.pixels, image.pixels + image.Width * image.Height * 4);
 		if (m_Spec.Type == TextureType::HDR)
 			m_Pixels = Buffer(image.pixels, image.pixels + image.Width * image.Height * 3 * 4); //3 channels, 4 bytes per channel
+
+	
 	}
 
 	TextureAsset(const uint& width, const uint& height, const Buffer& pixels) : m_width(width), m_height(height), m_Pixels(pixels)
@@ -55,6 +57,13 @@ public:
 		if (!m_LoadedTexture)
 		{
 			m_LoadedTexture = MakeRef<Texture>(m_Spec, m_width, m_height, m_Pixels.data());
+
+			if (!GetAssetIcon())
+			{
+				m_AssetIcon = MakeRef<AssetIcon>();
+				m_AssetIcon->m_Texture = m_LoadedTexture;
+			}
+
 			return m_LoadedTexture;
 		}
 		else

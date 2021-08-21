@@ -75,7 +75,7 @@ void Application::RegisterBaseClasses()
 	REGISTER_OBJECT(GetObjectRegistry(), SceneObject, Engine);
 
 	REGISTER_OBJECT(GetObjectRegistry(), Material, Engine);
-	REGISTER_OBJECT(GetObjectRegistry(), DefaultMaterial, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), PBR_Material, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()

@@ -1,5 +1,5 @@
 #include "ChildSceneObject.h"
-
+#include "SonicGaming.h"
 
 void ChildSceneObject::OnUpdate(const Tick& tick)
 {
@@ -22,6 +22,26 @@ void ChildSceneObject::OnPostConstruct()
 	{
 		GetScene()->GetRenderer<CubemapRenderer>()->SetActiveCubemap(GetScene()->GetRenderer<CubemapRenderer>()->CreateCubemapFromAsset(cubemap));
 	}
+
+	m_KeyDownEvent.Assign([&](KeyEvent* event)
+	{
+		if (event->GetKeyCode() == GLFW_KEY_SPACE)
+		{
+			Transform RandomTransform;
+			RandomTransform.pos.x = Rand::Float() * RandomSpawnRange;
+			RandomTransform.pos.y = Rand::Float() * RandomSpawnRange;
+			RandomTransform.pos.z = Rand::Float() * RandomSpawnRange;
+
+			RandomTransform.rot.x = Rand::Float() * RandomSpawnRange;
+			RandomTransform.rot.y = Rand::Float() * RandomSpawnRange;
+			RandomTransform.rot.z = Rand::Float() * RandomSpawnRange;
+
+			Ref<SonicGaming> spawned = Cast<SonicGaming>(SceneUitls::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this)));
+			spawned->m_MeshComponent->MeshTransform = RandomTransform;
+		}
+	});
+
+	GetScene()->GetInputManager().BindOnKeyDown(m_KeyDownEvent);
 
 }
 

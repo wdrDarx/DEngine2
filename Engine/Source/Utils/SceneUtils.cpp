@@ -1,7 +1,7 @@
 #include "SceneUtils.h"
 #include "DEngine.h"
 
-Ref<SceneObject> SceneUitls::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsset, Ref<Scene> scene, const Transform& transform)
+Ref<SceneObject> SceneUitls::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsset, Scene* scene, const Transform& transform, ObjectInitializer initializer)
 {
 	auto loadedPrefab = scene->GetApplication()->GetAssetManager().LoadAsset(prefabAsset);
 	auto sceneObject = ToRef<SceneObject>(Cast<SceneObject>(scene->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(loadedPrefab->GetPrefabBaseClassName())));
@@ -9,7 +9,10 @@ Ref<SceneObject> SceneUitls::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsse
 	if (!sceneObject) return nullptr;
 
 	//initialize the object calling DefineProperties and OnConstruct so all the props and components are there 
-	scene->AddSceneObject(sceneObject, ObjectInitializer(ConstructFlags::NOPOSTCONSTRUCT | ConstructFlags::RANDOMID));
+
+	initializer.Flags |= ConstructFlags::NOPOSTCONSTRUCT;
+	initializer.Flags |= ConstructFlags::RANDOMID;
+	scene->AddSceneObject(sceneObject, initializer);
 
 	//load the prefab data
 	loadedPrefab->LoadPrefab(sceneObject, false);

@@ -6,5 +6,5 @@ class ModelLoader
 {
 public:
 	static void LoadOBJ(const std::string& fullpath, Mesh* mesh);
-	//static void LoadFBX(const std::string& fullpath, StaticMesh* mesh);
+	static void LoadFBX(const std::string& fullpath, Mesh* mesh);
 };

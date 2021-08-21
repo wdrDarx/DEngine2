@@ -10,11 +10,17 @@ struct DENGINE_API MeshVertex
 {
 	vec3d Pos;
 	vec3d Norm;
+	vec3d Tangent;
+	vec3d Bitangent;
 	vec2d TexCoord;
 
 	bool operator==(const MeshVertex& other) const
 	{
-		return Pos == other.Pos && Norm == other.Norm && TexCoord == other.TexCoord;
+		return Pos == other.Pos && 
+		Norm == other.Norm  &&
+		Tangent == other.Tangent && 
+		Bitangent == other.Bitangent &&
+		TexCoord == other.TexCoord;
 	}
 };
 

@@ -7,15 +7,14 @@ private:
 	uint m_RendererID = 0;
 	uint m_LastSize = 0;
 	uint m_Bindingindex = 0;
+	std::string m_UniformName = "";
 public:
-	UniformStorageBuffer(uint Bindingindex);
-	UniformStorageBuffer(uint Bindingindex, const void* Data, uint size);
-	UniformStorageBuffer(uint Bindingindex, uint size);
+	UniformStorageBuffer(uint Bindingindex, const std::string& UniformName);
 
 	~UniformStorageBuffer();
 
-	void SetData(const void* Data, uint size);
+	void SetData(Shader& TargetShader, const void* Data, uint size);
 
-	void Bind() const;
+	void Bind(Shader& TargetShader) const;
 	void Unbind() const;
 };

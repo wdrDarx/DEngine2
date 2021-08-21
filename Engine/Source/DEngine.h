@@ -64,7 +64,7 @@
 #include "Rendering/Classes/Renderers/MeshRenderer.h"
 
 //Default Materials
-#include "Rendering/Classes/Materials/DefaultMaterial.h"
+#include "Rendering/Classes/Materials/PBR_Material.h"
 
 //Serialization
 #include "Serialization/Buffer.h"

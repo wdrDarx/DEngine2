@@ -23,6 +23,16 @@ struct DENGINE_API AssetHandle
 		return m_AssetID.ID < other.m_AssetID.ID;
 	}
 
+	bool operator==(const AssetHandle& other) const
+	{
+		return m_AssetID == other.m_AssetID;
+	}
+
+	bool operator!=(const AssetHandle& other) const
+	{
+		return m_AssetID != other.m_AssetID;
+	}
+
 	AssetHandle()
 	{
 

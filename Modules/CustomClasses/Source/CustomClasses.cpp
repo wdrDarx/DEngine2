@@ -6,6 +6,7 @@
 #include "Classes/ChildSceneObject.h"
 #include "Classes/QuadComponent.h"
 #include "Classes/MeshComponent.h"
+#include "Classes/StaticMeshComponent.h"
 
 #include "Classes/QuadRenderer.h"
 #include "Classes/MyObject.h"
@@ -49,6 +50,7 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MeshComponent, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
 
 	
@@ -98,6 +100,7 @@ void CustomClasses::OnUnload()
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MeshComponent, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshComponent, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
 
 	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);

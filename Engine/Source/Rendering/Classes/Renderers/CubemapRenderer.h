@@ -6,6 +6,16 @@
 
 struct Cubemap
 {
+	~Cubemap()
+	{
+		glDeleteTextures(1, &m_CubeMapSlot);
+		glDeleteTextures(1, &m_PreFilterMap);
+		glDeleteTextures(1, &m_hdrTextureSlot);
+		glDeleteTextures(1, &m_brdfMap);
+		glDeleteTextures(1, &m_hdrFrameBufferSlot);
+		glDeleteTextures(1, &m_IrradianceMap);
+	}
+
 	int m_Width;
 	int m_Height;
 	int m_BPP;
@@ -28,12 +38,17 @@ public:
 	void RenderFrame(Ref<Camera> camera) override;
 	void ClearFrame() override;
 
-	Cubemap CreateCubemapFromAsset(Ref<TextureAsset> asset);
+	Ref<Cubemap> CreateCubemapFromAsset(Ref<TextureAsset> asset);
 
-	void SetActiveCubemap(const Cubemap& ActiveCubemap);
+	void SetActiveCubemap(Ref<Cubemap> ActiveCubemap);
 	void ClearActiveCubemap();
 
+	Ref<Cubemap> GetActiveCubemap() const
+	{
+		return m_ActiveCubemap;
+	}
+
 private:
-	std::optional<Cubemap> m_ActiveCubemap;
+	Ref<Cubemap> m_ActiveCubemap;
 };
 

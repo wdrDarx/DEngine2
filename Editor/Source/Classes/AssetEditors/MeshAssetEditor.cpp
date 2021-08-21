@@ -24,7 +24,13 @@ void MeshAssetEditor::Render()
 	{
 		std::string meshPath = FileDialog::OpenFile("");
 		Ref<Mesh> TempMesh = MakeRef<Mesh>();
-		ModelLoader::LoadOBJ(meshPath, TempMesh.get());
+
+		if(File::GetFileExtenstionFromPath(meshPath) == "obj")
+			ModelLoader::LoadOBJ(meshPath, TempMesh.get());
+
+		if (File::GetFileExtenstionFromPath(meshPath) == "fbx")
+			ModelLoader::LoadFBX(meshPath, TempMesh.get());
+			
 
 		m_MeshAsset->m_Verticies = TempMesh->GetVerticies();
 		m_MeshAsset->m_Indicies = TempMesh->GetIndicies();

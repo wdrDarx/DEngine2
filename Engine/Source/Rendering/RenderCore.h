@@ -15,3 +15,4 @@
 #include "Rendering/UniformStorageBuffer.h"
 #include "Rendering/Material.h"
 #include "Rendering/Mesh.h"
+#include "Rendering/StaticMesh.h"

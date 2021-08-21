@@ -116,7 +116,7 @@ class Viewport
 								trans = m_Camera->GetTransform();
 								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 300.f;
 
-								SceneUitls::SpawnPrefabInScene(assetRef, m_Scene, trans);
+								SceneUitls::SpawnPrefabInScene(assetRef, m_Scene.get(), trans, ObjectInitializer());
 							}
 						}
 					}

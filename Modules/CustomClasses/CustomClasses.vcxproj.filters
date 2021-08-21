@@ -15,6 +15,9 @@
     <ClInclude Include="Source\Classes\CustomSceneObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\MeshComponent.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\MyObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
@@ -28,7 +31,7 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />
-    <ClInclude Include="Source\Classes\MeshComponent.h" />
+    <ClInclude Include="Source\Classes\StaticMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp">
@@ -38,6 +41,9 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\MeshComponent.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Classes\QuadComponent.cpp">
@@ -51,6 +57,6 @@
     </ClCompile>
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\MeshComponent.cpp" />
+    <ClCompile Include="Source\Classes\StaticMeshComponent.cpp" />
   </ItemGroup>
 </Project>

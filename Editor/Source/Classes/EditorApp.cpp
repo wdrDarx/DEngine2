@@ -284,6 +284,7 @@ void EditorApp::RenderImGui(const Tick& tick)
 	ImGui::Text("Shader Cache");
 	for (const auto& shader : GetWindow()->GetRenderAPI()->GetAllShadersInCache())
 	{
+		ImGui::PushID(shader.first.c_str());
 		ImGui::Columns(2);
 		ImGui::Text(shader.first.c_str());
 		ImGui::NextColumn();
@@ -291,8 +292,10 @@ void EditorApp::RenderImGui(const Tick& tick)
 		if (ImGui::Button("Reload"))
 		{
 			GetWindow()->GetRenderAPI()->ReloadShader(shader.first);
+			LogTemp("Reloaded Shader : " + shader.first);
 		}
 		ImGui::Columns(1);
+		ImGui::PopID();
 	}
 	ImGui::End();
 }

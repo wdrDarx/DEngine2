@@ -54,6 +54,9 @@
     <ClInclude Include="Source\Assets\Classes\MaterialAsset.h">
       <Filter>Assets\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Assets\Classes\MeshAsset.h">
+      <Filter>Assets\Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Assets\Classes\ObjectAsset.h">
       <Filter>Assets\Classes</Filter>
     </ClInclude>
@@ -181,6 +184,9 @@
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h">
       <Filter>Rendering\Classes\Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h">
       <Filter>Rendering\Classes\Renderers</Filter>
     </ClInclude>
@@ -241,6 +247,9 @@
     <ClInclude Include="Source\Utils\ImageLoader.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\ModelLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Utils\ObjectUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -265,9 +274,8 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Assets\Classes\MeshAsset.h" />
-    <ClInclude Include="Source\Utils\ModelLoader.h" />
-    <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
+    <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h" />
+    <ClInclude Include="Source\Rendering\StaticMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -327,10 +335,13 @@
     <ClCompile Include="Source\Rendering\Camera.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\Classes\Materials\DefaultMaterial.cpp">
+    <ClCompile Include="Source\Rendering\Classes\Materials\PBR_Material.cpp">
       <Filter>Rendering\Classes\Materials</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp">
       <Filter>Rendering\Classes\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp">
@@ -378,6 +389,9 @@
     <ClCompile Include="Source\Utils\ImageLoader.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Utils\ModelLoader.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Utils\ObjectUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -399,7 +413,6 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utils\ModelLoader.cpp" />
-    <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp" />
+    <ClCompile Include="Source\Rendering\StaticMesh.cpp" />
   </ItemGroup>
 </Project>
