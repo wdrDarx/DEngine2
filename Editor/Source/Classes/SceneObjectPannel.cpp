@@ -68,9 +68,19 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 
 	if (expanded)
 	{
+		if(auto& root = object->GetRootComponent())
+			DrawComponentNode(root);
+
 		for (auto& comp : object->GetComponents())
 		{
-			DrawComponentNode(comp);
+			//draw all unattached transform components or just normal components
+			if (!Cast<TransformComponent>(comp))
+			{
+				DrawComponentNode(comp);
+			}
+			else
+				if(!Cast<TransformComponent>(comp)->GetParent() && !Cast<TransformComponent>(comp)->IsRootComponent())
+					DrawComponentNode(comp);
 		}
 		ImGui::TreePop();
 	}
@@ -111,13 +121,14 @@ void SceneObjectPannel::DrawComponentNode(Ref<ObjectComponent> comp)
 
 	if (expanded)
 	{
-// 		if (tcomp)
-// 		{
-// 			for (auto& attached : tcomp->GetChildren())
-// 			{
-// 				DrawObjectComponentNode(attached);
-// 			}
-// 		}
+		Ref<TransformComponent> tcomp = Cast<TransformComponent>(comp);
+		if (tcomp)
+		{
+			for (auto& attached : tcomp->GetChildren())
+			{
+				DrawComponentNode(attached);
+			}
+		}
 		ImGui::TreePop();
 	}
 

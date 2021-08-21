@@ -38,8 +38,12 @@ void ChildSceneObject::OnPostConstruct()
 				RandomTransform.rot.y = Rand::Float() * RandomSpawnRange;
 				RandomTransform.rot.z = Rand::Float() * RandomSpawnRange;
 
-				Ref<SonicGaming> spawned = Cast<SonicGaming>(SceneUitls::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this)));
-				spawned->m_MeshComponent->MeshTransform = RandomTransform;
+				Ref<SceneObject> spawned = SceneUitls::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this));
+
+				if(auto& root = spawned->GetRootComponent())
+				{
+					root->SetWorldTransform(RandomTransform);
+				}
 			}
 		}
 	});

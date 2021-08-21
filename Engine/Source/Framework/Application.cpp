@@ -69,13 +69,18 @@ void Application::CoreUpdate(float DeltaTime)
 
 void Application::RegisterBaseClasses()
 {
+	//Base
  	REGISTER_OBJECT(GetObjectRegistry(), ObjectBase, Engine);
  	REGISTER_OBJECT(GetObjectRegistry(), AppObject, Engine);
  	REGISTER_OBJECT(GetObjectRegistry(), Scene, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), SceneObject, Engine);
 
+	//Material
 	REGISTER_OBJECT(GetObjectRegistry(), Material, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), PBR_Material, Engine);
+
+	//Classes
+	REGISTER_OBJECT(GetObjectRegistry(), TransformComponent, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()

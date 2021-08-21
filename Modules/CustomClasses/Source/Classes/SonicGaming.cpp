@@ -23,5 +23,8 @@ void SonicGaming::OnConstruct()
 {
 	Super::OnConstruct();
 
-	m_MeshComponent = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "SonicMesh");
+	m_RootMesh = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "RootMesh");
+	m_SubMesh = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "SubMesh");
+	m_SubMesh->AttachTo(m_RootMesh);
+	SetRootComponent(m_RootMesh);
 }

@@ -109,8 +109,8 @@ IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
     <ClInclude Include="Source\Classes\SonicGaming.h" />
-    <ClInclude Include="Source\CustomClasses.h" />
     <ClInclude Include="Source\Classes\StaticMeshComponent.h" />
+    <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />
@@ -120,9 +120,9 @@ IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\QuadRenderer.cpp" />
     <ClCompile Include="Source\Classes\SonicGaming.cpp" />
+    <ClCompile Include="Source\Classes\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
-    <ClCompile Include="Source\Classes\StaticMeshComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Engine.vcxproj">

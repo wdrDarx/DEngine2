@@ -4,7 +4,7 @@ void StaticMeshComponent::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
 
-	m_StaticMesh->SetTransform(MeshTransform);
+	m_StaticMesh->SetTransform(GetWorldTransform());
 	m_StaticMesh->SetStaticMaterial(m_MaterialAsset);
 	m_StaticMesh->SetStaticMesh(m_MeshAsset);
 }

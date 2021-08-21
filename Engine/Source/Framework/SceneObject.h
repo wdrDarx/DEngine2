@@ -5,6 +5,7 @@
 #include "Event/ModuleEvent.h"
 #include "Event/AssetEvent.h"
 #include "Event/EventDispatcher.h"
+#include "Framework/Classes/Components/TransformComponent.h"
 #include "Assets/AssetRef.h"
 
 class PrefabAsset;
@@ -114,6 +115,16 @@ public:
 		return m_PrefabAssetReference;
 	}
 
+	Ref<TransformComponent> GetRootComponent() const
+	{
+		return m_RootComponent;
+	}
+
+	void SetRootComponent(Ref<TransformComponent> NewRoot)
+	{
+		m_RootComponent = NewRoot;
+	}
+
 private:
 	Scene* m_Scene = nullptr;
 
@@ -128,4 +139,7 @@ private:
 
 	//valid when we are a prefab
 	AssetRef<PrefabAsset> m_PrefabAssetReference;
+
+	//ref to root component, could be null
+	Ref<TransformComponent> m_RootComponent;
 };

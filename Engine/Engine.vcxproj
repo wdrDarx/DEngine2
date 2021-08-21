@@ -127,6 +127,7 @@
     <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Application.h" />
     <ClInclude Include="Source\Framework\Array.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
     <ClInclude Include="Source\Framework\EnumBase.h" />
     <ClInclude Include="Source\Framework\FrameworkMacros.h" />
@@ -144,7 +145,6 @@
     <ClInclude Include="Source\Framework\StructBase.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Camera.h" />
-    <ClInclude Include="Source\Rendering\Classes\Materials\DefaultMaterial.h" />
     <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
@@ -187,6 +187,7 @@
     <ClCompile Include="Source\Core\Log.cpp" />
     <ClCompile Include="Source\Framework\AppObject.cpp" />
     <ClCompile Include="Source\Framework\Application.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
     <ClCompile Include="Source\Framework\InputManager.cpp" />
     <ClCompile Include="Source\Framework\Module.cpp" />

@@ -1,5 +1,6 @@
 #pragma once
 #include "DEngine.h"
+#include "ImGuizmo.h"
 
 class Viewport
 {
@@ -93,6 +94,10 @@ class Viewport
 			{
 				ExitFocus();
 			}
+
+			//draw gizmo
+			if(!DrawImGui || m_FocusedOnviewport)
+				RenderGizmo();
 
 			if (DrawImGui)
 			{
@@ -221,6 +226,53 @@ class Viewport
 			m_InputManager.ClearInput();
 		}
 
+		void RenderGizmo()
+		{
+			if (m_SelectedComponent)
+			{
+				TransformComponent* selectedTransform = Cast<TransformComponent>(m_SelectedComponent);
+				if (selectedTransform)
+				{
+					ImGuizmo::SetOrthographic(m_Camera->GetProjectionType() == ProjectionType::ORTHO);
+					ImGuizmo::SetDrawlist();
+					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, (float)ImGui::GetWindowWidth(), (float)ImGui::GetWindowHeight());
+					const glm::mat4& proj = m_Camera->GetProjectionMatrix();
+					const glm::mat4& view = m_Camera->GetViewMatrix();
+
+					glm::mat4 transform = selectedTransform->GetWorldMatrix();
+					glm::mat4 Delta = glm::mat4(1.0);
+					float snapValues[3] = { 0.5f, 0.5f, 0.5f };
+					ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(proj), m_TransformMode, ImGuizmo::LOCAL, glm::value_ptr(transform), glm::value_ptr(Delta));
+					if (ImGuizmo::IsUsing())
+					{
+						if (selectedTransform->GetParent())
+						{
+							glm::mat4 WorldTrans = selectedTransform->GetWorldMatrix();
+							transform = selectedTransform->GetMatrix() * glm::inverse(WorldTrans) * transform;
+
+							Transform LocalTransform = selectedTransform->GetLocalTransform();
+							Transform Result = World::MakeTransform(transform);
+							vec3d deltaRotation = Result.rot - LocalTransform.rot;
+							LocalTransform.pos = Result.pos;
+							LocalTransform.rot += deltaRotation;
+							LocalTransform.scale = Result.scale;
+							selectedTransform->SetLocalTransform(LocalTransform);
+						}
+						else
+						{
+							Transform LocalTransform = selectedTransform->GetLocalTransform();
+							Transform Result = World::MakeTransform(transform);
+							vec3d deltaRotation = Result.rot - LocalTransform.rot;
+							LocalTransform.pos = Result.pos;
+							LocalTransform.rot += deltaRotation;
+							LocalTransform.scale = Result.scale;
+							selectedTransform->SetLocalTransform(LocalTransform);
+						}
+					}
+				}
+			}
+		}
+
 		
 	public:
 		std::string m_ViewportName;
@@ -241,6 +293,11 @@ class Viewport
 		InputManager m_InputManager;
 		Callback<MouseEvent> m_MouseCallback;
 		vec2d m_LastMouseVector = {0,0};
+
+		//gizmo stuff
+		bool m_DrawGizmo = true;
+		ObjectComponent* m_SelectedComponent = nullptr;
+		ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
 };
 
 

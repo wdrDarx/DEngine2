@@ -7,6 +7,7 @@
 #include "SceneObjectPannel.h"
 #include "ContentBrowser.h"
 #include "AssetEditor.h"
+#include "ImGuizmo.h"
 
 class EditorApp : public Application
 {
@@ -47,7 +48,7 @@ public:
 	Ref<SceneAsset> m_HotReloadSceneAsset;
 
 	Callback<KeyEvent> m_OnKeyDownCallback;
-
+	ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
 	std::vector<Ref<AssetEditor>> m_ActiveAssetEditors;
 };
 

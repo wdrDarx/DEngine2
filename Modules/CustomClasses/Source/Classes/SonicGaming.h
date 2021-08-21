@@ -15,6 +15,7 @@ public:
 	void OnConstruct() override;
 
 public:
-	Ref<StaticMeshComponent> m_MeshComponent;
+	Ref<StaticMeshComponent> m_RootMesh;
+	Ref<StaticMeshComponent> m_SubMesh;
 	float Speed = 100.f;
 };

@@ -331,6 +331,9 @@ void EditorApp::BeginFrame()
 			}
 		}
 
+		//set transform mode
+		viewport->m_TransformMode = m_TransformMode;
+
 		//begin frame for viewport
 		viewport->BeginFrame();		
 	}
@@ -344,6 +347,7 @@ void EditorApp::EndFrame()
 	//end frame for all viewports (calls end frame on the scene)
 	for (auto& viewport : m_Viewports)
 	{
+		viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent.get();
 		viewport->EndFrame();
 	}
 
@@ -391,7 +395,19 @@ void EditorApp::DestroyViewport(Ref<Viewport> viewport)
 
 void EditorApp::OnKeyDown(KeyEvent* event)
 {
-
+	//gizmo
+	if (event->GetKeyCode() == GLFW_KEY_1)
+	{
+		m_TransformMode = ImGuizmo::TRANSLATE;
+	}
+	if (event->GetKeyCode() == GLFW_KEY_2)
+	{
+		m_TransformMode = ImGuizmo::ROTATE;
+	}
+	if (event->GetKeyCode() == GLFW_KEY_3)
+	{
+		m_TransformMode = ImGuizmo::SCALE;
+	}
 }
 
 void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)

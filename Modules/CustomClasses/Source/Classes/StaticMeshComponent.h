@@ -3,12 +3,11 @@
 #include "CustomSceneObject.h"
 #include "DEngine.h"
 
-class CUSTOMCLASSES StaticMeshComponent : public ObjectComponent
+class CUSTOMCLASSES StaticMeshComponent : public TransformComponent
 {
 public:
-	OBJECT_CLASS_DEF(StaticMeshComponent, ObjectComponent)
+	OBJECT_CLASS_DEF(StaticMeshComponent, TransformComponent)
 		OBJECT_PROPS_BEGIN()
-		PROPDEF(MeshTransform, EditAnywhere)
 		PROPDEF(m_MeshAsset, EditAnywhere)
 		PROPDEF(m_MaterialAsset, EditAnywhere)
 		OBJECT_PROPS_END()
@@ -18,7 +17,6 @@ public:
 	void OnDestroy() override;
 
 public:
-	Transform MeshTransform;
 	AssetRef<MeshAsset> m_MeshAsset;
 	AssetRef<MaterialAsset> m_MaterialAsset;
 

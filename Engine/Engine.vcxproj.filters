@@ -16,6 +16,12 @@
     <Filter Include="Framework">
       <UniqueIdentifier>{1362EE31-7FCC-A2A8-C80A-544E34B480FD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Framework\Classes">
+      <UniqueIdentifier>{F0330A11-5C4A-08A7-A5C1-93C81117D92E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Classes\Components">
+      <UniqueIdentifier>{05C3B8D3-F17D-A87F-9A35-21CA86CFF20F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Rendering">
       <UniqueIdentifier>{E3AE1F7C-4F19-D4F2-9857-85980401B247}</UniqueIdentifier>
     </Filter>
@@ -127,6 +133,9 @@
     <ClInclude Include="Source\Framework\Array.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Engine.h">
       <Filter>Framework</Filter>
     </ClInclude>
@@ -178,7 +187,7 @@
     <ClInclude Include="Source\Rendering\Camera.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Rendering\Classes\Materials\DefaultMaterial.h">
+    <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h">
       <Filter>Rendering\Classes\Materials</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h">
@@ -215,6 +224,9 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\ShaderStorageBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\StaticMesh.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Texture.h">
@@ -274,8 +286,6 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h" />
-    <ClInclude Include="Source\Rendering\StaticMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -298,6 +308,9 @@
     </ClCompile>
     <ClCompile Include="Source\Framework\Application.cpp">
       <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp">
+      <Filter>Framework\Classes\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Engine.cpp">
       <Filter>Framework</Filter>
@@ -368,6 +381,9 @@
     <ClCompile Include="Source\Rendering\ShaderStorageBuffer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\StaticMesh.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\Texture.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -413,6 +429,5 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Rendering\StaticMesh.cpp" />
   </ItemGroup>
 </Project>

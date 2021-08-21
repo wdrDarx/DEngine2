@@ -41,6 +41,9 @@
 #include "Framework/Array.h"
 #include "Framework/EnumBase.h"
 
+//Framework Classes
+#include "Framework/Classes/Components/TransformComponent.h"
+
 //Assets
 #include "Assets/Asset.h"
 #include "Assets/AssetHandle.h"
