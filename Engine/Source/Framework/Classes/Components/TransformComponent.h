@@ -50,6 +50,9 @@ public:
 	//used to load the parent component if this is after being deserialized
 	void OnPostConstruct() override;
 
+	//used to detect changes in transform to clear cache
+	void OnUpdate(const Tick& tick) override;
+
 	const Transform& GetLocalTransform() const
 	{
 		return m_Transform;
@@ -57,19 +60,35 @@ public:
 
 	void SetLocalTransform(const Transform& LocalTrans)
 	{
-		m_Transform = LocalTrans;
+		if(LocalTrans != m_Transform)
+		{ 
+			m_Transform = LocalTrans;
+
+			//clear caches
+			ClearCache();
+		}
 	}
 
 	//recursively gets world matrix by combining transforms of all the parents on the hierarchy
-	glm::mat4 GetWorldMatrix() const;
+	const glm::mat4& GetWorldMatrix();
 
-	Transform GetWorldTransform() const
+	Transform GetWorldTransform()
 	{
-		return World::MakeTransform(GetWorldMatrix());
+		if (!m_WorldTransformCache)
+		{
+			m_WorldTransformCache = World::MakeTransform(GetWorldMatrix());
+		}
+
+		return m_WorldTransformCache.value();
 	}
 
 	void SetWorldTransform(const Transform& WorldTrans)
 	{
+		if (m_WorldTransformCache)
+		{
+			if(m_WorldTransformCache == WorldTrans) return;
+		}
+
 		SetWorldMatrix(World::MakeMatrix(WorldTrans));
 	}
 
@@ -79,18 +98,27 @@ public:
 		SetMatrix(glm::inverse(GetWorldMatrix()) * matrix);
 	}
 
-	glm::mat4 GetMatrix() const
+	const glm::mat4& GetMatrix()
 	{
-		return World::MakeMatrix(m_Transform);
+		if(!m_LocalMatrixCache)
+			m_LocalMatrixCache = World::MakeMatrix(m_Transform);
+
+		return m_LocalMatrixCache.value();
 	}
 
 	void SetMatrix(const glm::mat4& mat)
 	{
-		m_Transform = World::MakeTransform(mat);
+		if (m_LocalMatrixCache)
+		{
+			if (m_LocalMatrixCache == mat) return;
+		}
+		m_LocalMatrixCache = mat;
+
+		SetLocalTransform(World::MakeTransform(mat));
 	}
 
 	//Position
-	vec3d GetWorldPostition() const
+	vec3d GetWorldPostition()
 	{
 		return GetWorldTransform().pos;
 	}
@@ -108,7 +136,7 @@ public:
 	}
 
 	//rotation
-	const vec3d& GetWorldRotation() const
+	const vec3d& GetWorldRotation()
 	{
 		return GetWorldTransform().rot;
 	}
@@ -168,12 +196,34 @@ public:
 	{
 		ASSERT(NewParent); //cant be nullptr, use Detach to clear parent
 		if(NewParent.get() != this)
+		{ 
 			m_Parent = NewParent;
+
+			//clear caches
+			ClearCache();
+		}
 	}
 
 	void Detach()
 	{
 		m_Parent = nullptr;
+
+		//clear caches
+		ClearCache();
+	}
+
+
+	void ClearCache()
+	{
+		//clear mine
+		m_LocalMatrixCache = {};
+		m_WorldTransformCache = {};
+
+		//clear for all childred
+		for (auto& child : GetChildren())
+		{
+			child->ClearCache();
+		}
 	}
 
 	bool IsRootComponent() const;
@@ -190,6 +240,9 @@ public:
 private:
 	//represents the local space transform
 	Transform m_Transform;
+
+	//used to detect transform changed to clear cache
+	Transform m_LastTransform;
 	
 	//ref to the parent, could be null 
 	//auto set on deserialize if there was a parent
@@ -197,4 +250,11 @@ private:
 
 	//for serialization of the parent component
 	LocalComponentRef m_ParentRef;
+
+	//local matrix, updates when local transform is changed
+	std::optional<glm::mat4> m_LocalMatrixCache;
+
+	//world space transform, updated when the parent's world matrix is changed or parent is switched
+	std::optional<Transform> m_WorldTransformCache;
+
 };

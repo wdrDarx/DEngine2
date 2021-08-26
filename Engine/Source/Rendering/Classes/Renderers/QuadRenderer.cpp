@@ -54,8 +54,8 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 	if(m_CurrentDrawCallIndex < 0) return;
 
 	glEnable(GL_DEPTH_TEST);
-	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->Bind();
-	GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	GetPipeline()->GetRenderAPI()->GetShaderFromCache("QuadShader")->Bind();
+	GetPipeline()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 
 	m_StorageBuffer->Bind();
 	//draw each draw call
@@ -67,13 +67,13 @@ void QuadRenderer::RenderFrame(Ref<Camera> camera)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, call.TextureBindings[i]);
-			GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
+			GetPipeline()->GetRenderAPI()->GetShaderFromCache("QuadShader")->SetUniform1i("u_Textures[" + STRING(i) + "]", i);
 		}
 
 		//set the storage buffer data
 		m_StorageBuffer->SetData(call.Instances.data(), sizeof(Instance) * call.Instances.size());
 		//draw instanced (call.Instances.size() is the instance count)
-		GetScene()->GetRenderAPI()->DrawInstanced(*GetScene()->GetRenderAPI()->GetShaderFromCache("QuadShader"), *m_QuadCommonArray, *m_QuadCommonIndexBuffer, call.Instances.size());
+		GetPipeline()->GetRenderAPI()->DrawInstanced(*GetPipeline()->GetRenderAPI()->GetShaderFromCache("QuadShader"), *m_QuadCommonArray, *m_QuadCommonIndexBuffer, call.Instances.size());
 	}
 
 	m_StorageBuffer->Unbind();
@@ -84,8 +84,8 @@ void QuadRenderer::PrepareFrame()
 {
 	Super::PrepareFrame();
 
-	if(!GetScene()->GetRenderAPI()->IsShaderInCache("QuadShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader_Instanced.shader"), "QuadShader");
+	if(!GetPipeline()->GetRenderAPI()->IsShaderInCache("QuadShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\QuadShader_Instanced.shader"), "QuadShader");
 
 	//Timer PrepareFrametimer;
 	ProcessQuads();
@@ -124,7 +124,7 @@ void QuadRenderer::DrawQuad3D(const vec2d& size, const Transform& trans, const c
 
 void QuadRenderer::ProcessQuads()
 {
-	if (!GetScene()->GetRenderAPI()) return;
+	if (!GetPipeline()->GetRenderAPI()) return;
 	if(m_QuadBuffer.size() < 1) return;
 
 	if (m_CurrentDrawCallIndex < 0)
@@ -148,7 +148,7 @@ void QuadRenderer::ProcessQuads()
 			bool found = false;
 			for (int i = 0; i < CurrentDrawCall->TextureBindings.size(); i++)
 			{
-				if (currentQuad.texture->m_RendererID == CurrentDrawCall->TextureBindings[i])
+				if (currentQuad.texture->GetBinding() == CurrentDrawCall->TextureBindings[i])
 				{
 					TextureID = (float)i;
 					found = true;
@@ -158,7 +158,7 @@ void QuadRenderer::ProcessQuads()
 
 			if (!found)
 			{
-				CurrentDrawCall->TextureBindings.push_back(currentQuad.texture->m_RendererID);
+				CurrentDrawCall->TextureBindings.push_back(currentQuad.texture->GetBinding());
 				TextureID = (float)CurrentDrawCall->TextureBindings.size() - 1.f;
 			}
 		}

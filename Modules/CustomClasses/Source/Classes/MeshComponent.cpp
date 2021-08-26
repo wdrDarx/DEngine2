@@ -37,12 +37,12 @@ void MeshComponent::OnConstruct()
 	Super::OnConstruct();
 
 	m_Mesh = MakeRef<Mesh>();
-	GetOwner()->GetScene()->GetRenderer<MeshRenderer>()->SubmitMesh(m_Mesh);
+	GetOwner()->GetScene()->GetPipeline()->GetRenderer<MeshRenderer>()->SubmitMesh(m_Mesh);
 }
 
 void MeshComponent::OnDestroy()
 {
 	Super::OnDestroy();
 
-	GetOwner()->GetScene()->GetRenderer<MeshRenderer>()->RemoveMesh(m_Mesh);
+	GetOwner()->GetScene()->GetPipeline()->GetRenderer<MeshRenderer>()->RemoveMesh(m_Mesh);
 }

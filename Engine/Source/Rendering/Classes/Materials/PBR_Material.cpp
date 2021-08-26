@@ -16,7 +16,6 @@ void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 	m_Shader = RenderApi->GetShaderFromCache("PBR_Instanced");
 	m_Shader->Bind();
 
-	GetShader()->SetUniformMat4f("u_ViewProjectionMatrix", RenderApi->GetCamera()->GetViewProjectionMatrix());
 	GetShader()->SetUniform4f("u_Color", Albedo.r, Albedo.g, Albedo.b, Albedo.a);
 
 	//blank texture 

@@ -146,6 +146,7 @@
     <ClInclude Include="Source\Framework\Tick.h" />
     <ClInclude Include="Source\Rendering\Camera.h" />
     <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h" />
+    <ClInclude Include="Source\Rendering\Classes\Pipelines\DefaultPipeline.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Source\Rendering\Indexbuffer.h" />
     <ClInclude Include="Source\Rendering\Material.h" />
     <ClInclude Include="Source\Rendering\Mesh.h" />
+    <ClInclude Include="Source\Rendering\Pipeline.h" />
     <ClInclude Include="Source\Rendering\RenderAPI.h" />
     <ClInclude Include="Source\Rendering\RenderCore.h" />
     <ClInclude Include="Source\Rendering\Renderer.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="Source\Utils\DataCache.h" />
     <ClInclude Include="Source\Utils\FileSystem.h" />
     <ClInclude Include="Source\Utils\ImageLoader.h" />
+    <ClInclude Include="Source\Utils\InputUtils.h" />
     <ClInclude Include="Source\Utils\ModelLoader.h" />
     <ClInclude Include="Source\Utils\ObjectUtils.h" />
     <ClInclude Include="Source\Utils\Paths.h" />
@@ -201,12 +204,14 @@
     <ClCompile Include="Source\Framework\StructBase.cpp" />
     <ClCompile Include="Source\Rendering\Camera.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Materials\PBR_Material.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Pipelines\DefaultPipeline.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp" />
     <ClCompile Include="Source\Rendering\Indexbuffer.cpp" />
     <ClCompile Include="Source\Rendering\Mesh.cpp" />
+    <ClCompile Include="Source\Rendering\Pipeline.cpp" />
     <ClCompile Include="Source\Rendering\RenderAPI.cpp" />
     <ClCompile Include="Source\Rendering\Renderer.cpp" />
     <ClCompile Include="Source\Rendering\Shader.cpp" />
@@ -219,6 +224,7 @@
     <ClCompile Include="Source\Rendering\Window.cpp" />
     <ClCompile Include="Source\Utils\FileSystem.cpp" />
     <ClCompile Include="Source\Utils\ImageLoader.cpp" />
+    <ClCompile Include="Source\Utils\InputUtils.cpp" />
     <ClCompile Include="Source\Utils\ModelLoader.cpp" />
     <ClCompile Include="Source\Utils\ObjectUtils.cpp" />
     <ClCompile Include="Source\Utils\Paths.cpp" />

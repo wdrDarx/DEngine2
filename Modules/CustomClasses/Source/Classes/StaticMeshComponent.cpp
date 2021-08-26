@@ -14,12 +14,12 @@ void StaticMeshComponent::OnConstruct()
 	Super::OnConstruct();
 
 	m_StaticMesh = MakeRef<StaticMesh>();
-	GetOwner()->GetScene()->GetRenderer<MeshRenderer>()->SubmitStaticMesh(m_StaticMesh);
+	GetOwner()->GetScene()->GetPipeline()->GetRenderer<MeshRenderer>()->SubmitStaticMesh(m_StaticMesh);
 }
 
 void StaticMeshComponent::OnDestroy()
 {
 	Super::OnDestroy();
 
-	GetOwner()->GetScene()->GetRenderer<MeshRenderer>()->RemoveStaticMesh(m_StaticMesh);
+	GetOwner()->GetScene()->GetPipeline()->GetRenderer<MeshRenderer>()->RemoveStaticMesh(m_StaticMesh);
 }

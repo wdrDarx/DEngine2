@@ -65,6 +65,7 @@
 #include "Rendering/Classes/Renderers/QuadRenderer.h"
 #include "Rendering/Classes/Renderers/CubemapRenderer.h"
 #include "Rendering/Classes/Renderers/MeshRenderer.h"
+#include "Rendering/Classes/Pipelines/DefaultPipeline.h"
 
 //Default Materials
 #include "Rendering/Classes/Materials/PBR_Material.h"
@@ -85,3 +86,4 @@
 #include "Utils/SceneUtils.h"
 #include "Utils/RenderUtils.h"
 #include "Utils/ModelLoader.h"
+#include "Utils/InputUtils.h"

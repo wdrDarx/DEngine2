@@ -4,7 +4,7 @@
 #include "Event/Callback.h"
 #include "Event/ModuleEvent.h"
 
-class Scene;
+class Pipeline;
 class Camera;
 
 /*
@@ -17,14 +17,14 @@ class DENGINE_API Renderer : public ObjectBase
 		OBJECT_CLASS_DEF(Renderer, ObjectBase)
 
 		//override constructor receiving a reference to the scene
-		Renderer(Scene* scene) : ObjectBase(), m_Scene(scene)
+		Renderer(Pipeline* pipeline) : ObjectBase(), m_Pipeline(pipeline)
 		{
 
 		}
 
-		Scene* GetScene()
+		Pipeline* GetPipeline()
 		{
-			return m_Scene;
+			return m_Pipeline;
 		}
 
 		void OnConstruct() override;
@@ -39,6 +39,6 @@ class DENGINE_API Renderer : public ObjectBase
 		virtual void ClearFrame();
 
 	private:
-		Scene* m_Scene = nullptr;
+		Pipeline* m_Pipeline = nullptr;
 		Callback<ModuleEvent> m_ModuleCallback;
 };

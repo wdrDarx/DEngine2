@@ -21,6 +21,12 @@ public:
 		
 	}
 
+	//begin play event
+	virtual void OnBeginPlay()
+	{
+
+	}
+
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 

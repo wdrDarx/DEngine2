@@ -65,10 +65,31 @@ public:
 		m_LastCursorPos = pos;
 	}
 
+	void SetShowCursor(bool show);
+
+	void SetCursorPos(const vec2d& pos);
+
+	void SetUseRawMouseInput(bool use);
+
+	void SetInputMode(const InputMode& mode)
+	{
+		m_InputMode = mode;
+		SetUseRawMouseInput(mode == InputMode::GAME);
+		SetShowCursor(mode == InputMode::UI);
+	}
+
+	const InputMode& GetInputMode() const
+	{
+		return m_InputMode;
+	}
+
 private:
 
 	//used to get the mouse move delta vector
 	vec2d m_LastCursorPos;
+
+	//used to mouse raw input stuff
+	InputMode m_InputMode = InputMode::UI;
 
 	//calls window events
 	EventDispatcher m_EventDispatcher;

@@ -2,6 +2,14 @@
 #include "DEngine.h"
 
 
+void SceneObject::OnBeginPlay()
+{
+	for (auto& comp : GetComponents())
+	{
+		comp->OnBeginPlay();
+	}
+}
+
 void SceneObject::OnDestroy()
 {
 	Super::OnDestroy();

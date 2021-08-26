@@ -21,12 +21,15 @@ public:
 	void EndFrame();
 
 	void HotReload();
+	
+	void BeginPlay();
+	void EndPlay();
 
 	void UnloadAll();
 	void LoadAll();
 
 	Ref<Viewport> CreateViewport(Ref<Scene> scene);
-	void DestroyViewport(Ref<Viewport> viewport);
+	void DestroyViewport(Viewport* viewport);
 
 	void OnKeyDown(KeyEvent* event);
 
@@ -46,6 +49,7 @@ public:
 	ContentBrowser m_ContentBrowser;
 
 	Ref<SceneAsset> m_HotReloadSceneAsset;
+	Ref<SceneAsset> m_BeginPlaySceneAsset;
 
 	Callback<KeyEvent> m_OnKeyDownCallback;
 	ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;

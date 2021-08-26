@@ -35,8 +35,7 @@ void Application::MakeWindow(const std::string& name, int width, int height, boo
 {
 	m_Window = MakeRef<Window>(name, width, height);
 
-	if(vsync)
-		m_Window->SetVsync(true);
+	m_Window->SetVsync(vsync);
 
 	//assign an onClose event
 	m_WindowEventCallback.Assign([&](WindowEvent* event)

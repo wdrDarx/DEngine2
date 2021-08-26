@@ -75,45 +75,6 @@ class DENGINE_API RenderAPI
 			m_Stats = RenderStats();
 		}
 
-		void SetCamera(Ref<Camera> camera)
-		{
-			m_Camera = camera;
-		}
-
-		Ref<Camera> GetCamera()
-		{
-			ASSERT(m_Camera);
-			return m_Camera;
-		}
-
-		void SetShowCursor(bool show);
-
-		void SetCursorPos(const vec2d& pos);
-
-		void SetInputMode(const InputMode& mode)
-		{
-			m_InputMode = mode;
-			SetUseRawMouseInput(mode == InputMode::GAME);
-			SetShowCursor(mode == InputMode::UI);
-		}
-
-		const InputMode& GetInputMode() const
-		{
-			return m_InputMode;
-		}
-
-		void SetUseRawMouseInput(bool use);
-
-		void SetActiveFramebuffer(Ref<FrameBuffer> framebuffer)
-		{
-			m_ActiveFrameBuffer = framebuffer;
-		}
-
-		Ref<FrameBuffer> GetActiveFrameBuffer()
-		{
-			return m_ActiveFrameBuffer;
-		}
-
 		void AddShaderToCache(Ref<Shader> shader, const std::string& shaderName);
 
 		Ref<Shader> GetShaderFromCache(const std::string& shaderName)
@@ -138,15 +99,6 @@ class DENGINE_API RenderAPI
 	private:
 		RenderStats m_Stats;
 		vec2d m_LastViewportSize;
-
-		//optional
-		Ref<Camera> m_Camera;
-
-		//optional
-		Ref<FrameBuffer> m_ActiveFrameBuffer;
-
-		//used to mouse raw input stuff
-		InputMode m_InputMode = InputMode::UI;
 
 		//Shader cache
 		std::unordered_map<std::string, Ref<Shader>> m_ShaderCache;

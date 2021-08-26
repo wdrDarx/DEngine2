@@ -36,27 +36,40 @@ public:
 		loads in all saved object data (including properties) from this assets buffer
 	 	Object must have initialized properties
 	*/
-	void LoadPrefab(Ref<SceneObject> prefab, bool LoadID = true) const
+	void LoadPrefab(Ref<SceneObject> prefab, bool LoadID = true, bool KeepRootTransform = true) const
 	{
-		LoadPrefab(prefab.get(), LoadID);
+		LoadPrefab(prefab.get(), LoadID, KeepRootTransform);
 	}
 
 	/*
 		loads in all saved object data (including properties) from this assets buffer
 		Object must have initialized properties
 	*/
-	void LoadPrefab(SceneObject* prefab, bool LoadID = true) const
+	void LoadPrefab(SceneObject* prefab, bool LoadID = true, bool KeepRootTransform = true) const
 	{
 		if (m_SceneObjectBuffer.size() < 1) return;
+
+		UID tempid;
+		Transform temptransform;
+		if(auto& root = prefab->GetRootComponent())
+		{
+			if(KeepRootTransform) //preserve root transform
+				temptransform = root->GetLocalTransform();
+		}
 
 		if (LoadID)
 			prefab->Deserialize(m_SceneObjectBuffer);
 		else //preserve the object id
-		{
-			UID tempid = prefab->GetID();
-			prefab->Deserialize(m_SceneObjectBuffer);
+			tempid = prefab->GetID();
+
+		//actually deserialize
+		prefab->Deserialize(m_SceneObjectBuffer);
+
+		if(!LoadID)
 			prefab->SetID(tempid);
-		}
+
+		if(KeepRootTransform)
+			prefab->GetRootComponent()->SetLocalTransform(temptransform);
 	}
 
 	void SavePrefab(Ref<SceneObject> prefab)

@@ -5,13 +5,8 @@
 class Viewport
 {
 	public:
-		Viewport(Ref<Scene> scene, Ref<RenderAPI> ParentWindowContext, Ref<Camera> camera, const std::string& viewportName ) : m_Scene(scene), m_RenderAPI(ParentWindowContext), m_ViewportName(viewportName)
+		Viewport(Ref<Scene> scene, Ref<Window> WindowContext, Ref<Camera> camera, const std::string& viewportName ) : m_Scene(scene), m_Window(WindowContext), m_ViewportName(viewportName)
 		{
-			if(m_Scene)
-			{ 
-				m_Scene->SetRenderAPI(m_RenderAPI);
-			}
-
 			FrameBuferSpec spec;
 			spec.Width = 1;
 			spec.Height = 1;
@@ -20,7 +15,7 @@ class Viewport
 			if(camera)
 				m_Camera = camera;
 			else
-				m_Camera = MakeRef<Camera>(m_RenderAPI);
+				m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
 
 
 			//mouse callback
@@ -44,28 +39,28 @@ class Viewport
 		void BeginFrame(bool overrideFocus = false)
 		{
 			m_Framebuffer->Bind();
-			m_RenderAPI->SetViewport(m_LastViewportSize);
-			m_RenderAPI->SetCamera(m_Camera);
-			m_RenderAPI->SetActiveFramebuffer(m_Framebuffer);
-			m_RenderAPI->SetClearColor({0,0,0,1});
-			m_RenderAPI->Clear();	
+			m_Window->GetRenderAPI()->SetViewport(m_LastViewportSize);
+			m_Window->GetRenderAPI()->SetClearColor({0,0,0,1});
+			m_Window->GetRenderAPI()->Clear();
 			HandleCameraMovement(overrideFocus);
 		}
 		void EndFrame(bool DrawImGui = true)
 		{
 			m_Framebuffer->Bind();
-			m_RenderAPI->SetCamera(m_Camera);
 
-			if(m_Scene)
-				m_Scene->RenderFrame(m_Camera);
+			if(m_Scene && m_Scene->GetPipeline())
+				m_Scene->GetPipeline()->RenderFrame(m_Camera);
 
 			m_Framebuffer->Unbind();
-			m_RenderAPI->SetActiveFramebuffer(nullptr);
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0,0 });
-
+			bool open = true;
 			if(DrawImGui)
-				ImGui::Begin(m_ViewportName.c_str());
+			{ 
+				ImGui::Begin(m_ViewportName.c_str(), &open);
+				if (!open)
+					m_Close = true;
+			}
 
  			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
  			ImVec2 viewportPanelPos = ImGui::GetWindowPos();
@@ -77,7 +72,7 @@ class Viewport
  			{
 				m_LastViewportSize = ViewportSize;
  				m_Framebuffer->Resize(ViewportSize.x, ViewportSize.y);
-				m_RenderAPI->SetViewport(m_LastViewportSize);
+				m_Window->GetRenderAPI()->SetViewport(m_LastViewportSize);
 				m_Camera->RecalculateViewMatrix();		
  			}
  			m_ViewportPos = vec2d(viewportPanelPos.x, viewportPanelPos.y);
@@ -118,10 +113,10 @@ class Viewport
 							if (m_Scene)
 							{
 								Transform trans;
-								trans = m_Camera->GetTransform();
-								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 300.f;
+								trans.pos += m_Camera->GetTransform().pos;
+								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 10.f;
 
-								SceneUitls::SpawnPrefabInScene(assetRef, m_Scene.get(), trans, ObjectInitializer());
+								SceneUtils::SpawnPrefabInScene(assetRef, m_Scene.get(), trans, ObjectInitializer());
 							}
 						}
 					}
@@ -137,7 +132,7 @@ class Viewport
 							if (m_Scene)
 							{
 								Ref<SceneAsset> prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset<SceneAsset>(handle);
-								SceneUitls::LoadSceneFromAsset(prefabAsset, m_Scene);
+								SceneUtils::LoadSceneFromAsset(prefabAsset, m_Scene);
 							}
 						}
 					}
@@ -146,9 +141,12 @@ class Viewport
 				}
 			}
 
+			DrawMenu();
 
 			if (DrawImGui)
+			{ 
 				ImGui::End();
+			}
 
 			ImGui::PopStyleVar();
 		}
@@ -217,17 +215,23 @@ class Viewport
 
 		void EnterFocus()
 		{
-			m_RenderAPI->SetInputMode(InputMode::GAME);
+			m_Window->SetInputMode(InputMode::GAME);
 		}
 
 		void ExitFocus()
 		{
-			m_RenderAPI->SetInputMode(InputMode::UI);
+			m_Window->SetInputMode(InputMode::UI);
 			m_InputManager.ClearInput();
 		}
 
 		void RenderGizmo()
 		{
+			if (m_SelectedComponent == nullptr && m_SelectedObject)
+			{
+				if(auto root = m_SelectedObject->GetRootComponent())
+					m_SelectedComponent = root.get();
+			}
+
 			if (m_SelectedComponent)
 			{
 				TransformComponent* selectedTransform = Cast<TransformComponent>(m_SelectedComponent);
@@ -273,6 +277,18 @@ class Viewport
 			}
 		}
 
+
+		void DrawMenu()
+		{
+			ImGui::SetCursorPos({ m_MenuOffset.x, m_MenuOffset.y });
+			std::string modeStr = "Mode : " + std::string(m_ViewportMode == AppState::GAME ? "Game" : "Editor");
+
+			if (ImGui::Button(modeStr.c_str()))
+			{
+				m_ViewportMode = m_ViewportMode == AppState::GAME ? AppState::EDITOR : AppState::GAME;
+			}
+		}
+
 		
 	public:
 		std::string m_ViewportName;
@@ -283,20 +299,27 @@ class Viewport
 		bool m_RecieveInput = false;
 		Ref<FrameBuffer> m_Framebuffer;
 		Ref<Scene> m_Scene;
-		Ref<RenderAPI> m_RenderAPI;
-		Ref<RenderAPI> m_ParentWindowContext;
+		Ref<Window> m_Window;
 		Ref<Camera> m_Camera;
 
 		float m_CameraMovementSpeed = 200.f;
 		float m_CameraRotationSpeed = 100.f;
 
+		bool m_Close = false;
+
 		InputManager m_InputManager;
 		Callback<MouseEvent> m_MouseCallback;
 		vec2d m_LastMouseVector = {0,0};
 
+		//menu offset
+		vec2d m_MenuOffset = {10.f, 30.f};
+
+		AppState m_ViewportMode;
+
 		//gizmo stuff
 		bool m_DrawGizmo = true;
 		ObjectComponent* m_SelectedComponent = nullptr;
+		SceneObject* m_SelectedObject = nullptr;
 		ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
 };
 

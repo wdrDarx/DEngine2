@@ -10,25 +10,25 @@ void Renderer::OnConstruct()
 	{
 		if (event->GetEventType() == ModuleEventType::UNLOADED && event->m_ModuleName == GetAssociatedModuleName())
 		{
-			m_Scene->DestroyRenderer(this);
+			GetPipeline()->DestroyRenderer(this);
 		}
 	});
 
-	m_Scene->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
+	GetPipeline()->GetScene()->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
 }
 
 void Renderer::PrepareFrame()
 {
-	if(!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
+	if(!GetPipeline()->GetRenderAPI()) return; //no scene render api context to actually render to
 }
 
 void Renderer::RenderFrame(Ref<Camera> camera)
 {
-	if (!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
+	if (!GetPipeline()->GetRenderAPI()) return; //no scene render api context to actually render to
 }
 
 void Renderer::ClearFrame()
 {
-	if (!m_Scene->GetRenderAPI()) return; //no scene render api context to actually render to
+	if (!GetPipeline()->GetRenderAPI()) return; //no scene render api context to actually render to
 }
 

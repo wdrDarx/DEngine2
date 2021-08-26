@@ -153,6 +153,50 @@ project "Editor"
 	filter "configurations:Release"
       optimize "Speed"
 
+project "Runtime"
+	location "Runtime"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp"
+	}
+
+	includedirs
+	{
+		"Engine/Source",
+		"%{prj.name}/Source",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.Objloader}",
+		"%{IncludeDir.ASSIMP}"
+	}
+
+	defines
+	{
+		"STB_IMAGE_IMPLEMENTATION"
+	}
+
+	links
+	{
+		"Engine"
+	}
+
+	filter "configurations:Debug"
+      symbols "On"
+
+	filter "configurations:Release"
+      optimize "Speed"
 
 group "Modules"
 

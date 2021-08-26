@@ -35,11 +35,6 @@ public:
 
 	Application();
 
-	virtual void OnBeginPlay()
-	{
-
-	}
-
 	virtual void OnUpdate(const Tick& tick);
 
 	const AppState& GetAppState() const

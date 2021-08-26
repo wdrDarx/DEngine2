@@ -1,6 +1,16 @@
 #include "Scene.h"
 #include "DEngine.h"
 
+void Scene::OnBeginPlay()
+{
+	Super::OnBeginPlay();
+
+	for (auto& obj : GetSceneObjects())
+	{
+		obj->OnBeginPlay();
+	}
+}
+
 void Scene::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
@@ -18,7 +28,7 @@ void Scene::OnUpdate(const Tick& tick)
 void Scene::OnConstruct()
 {
 	Super::OnConstruct();
-	CreateDefaultRenderers();
+	//CreateDefaultRenderers();
 
 	SceneEvent constructEvent;
 	constructEvent.m_Scene = this;
@@ -91,43 +101,6 @@ uint Scene::Deserialize(const Buffer& buffer)
 	STOPREAD();
 }
 
-void Scene::PrepareFrame()
-{
-	if(!GetRenderAPI()) return; //cant render with no context
-
-	for (uint i = 0; i < m_Renderers.size(); i++)
-	{
-		m_Renderers[i]->PrepareFrame();
-	}
-}
-
-void Scene::RenderFrame(Ref<Camera> camera)
-{
-	if (!GetRenderAPI()) return; //cant render with no context
-
-	for (uint i = 0; i < m_Renderers.size(); i++)
-	{
-		m_Renderers[i]->RenderFrame(camera);
-	}
-}
-
-void Scene::ClearFrame()
-{
-	if (!GetRenderAPI()) return; //cant render with no context
-
-	for (uint i = 0; i < m_Renderers.size(); i++)
-	{
-		m_Renderers[i]->ClearFrame();
-	}
-}
-
-void Scene::CreateDefaultRenderers()
-{
-	CreateRenderer<CubemapRenderer>(ObjectInitializer());
-	CreateRenderer<QuadRenderer>(ObjectInitializer());
-	CreateRenderer<MeshRenderer>(ObjectInitializer());
-}
-
 void Scene::DestroySceneObject(SceneObject* obj)
 {
 	auto remove = m_SceneObjects.end();
@@ -179,26 +152,6 @@ void Scene::DestroySceneObject(Ref<SceneObject> obj)
 	//Dispatch POST_DELETE event
 	event.m_EventType = SceneEventType::OBJECT_POST_DELETE;
 	GetSceneEventDipatcher().Dispatch(event);
-}
-
-void Scene::DestroyRenderer(Renderer* renderer)
-{
-	auto remove = m_Renderers.end();
-	for (auto it = m_Renderers.begin(); it != m_Renderers.end(); it++)
-	{
-		if (renderer == (*it).get())
-		{
-			remove = it;
-			break;
-		}
-	}
-
-	if (remove != m_Renderers.end())
-	{	
-		//call on destroy
-		(*remove)->OnDestroy();
-		m_Renderers.erase(remove);
-	}
 }
 
 void Scene::AddSceneObject(SceneObject* obj, const ObjectInitializer& Initializer)

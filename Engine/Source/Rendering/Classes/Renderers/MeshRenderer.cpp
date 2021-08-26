@@ -34,7 +34,7 @@ void MeshRenderer::GenDrawCalls()
 	{
 		bool needsReload = false;
 		Ref<StaticMesh> CommonMesh;
-		std::vector<MeshData> data; //coresponding indicies with meshes vector
+		std::vector<MeshData> data;
 	};
 
 	//static meshes get grouped into draw calls if they have the same material and mesh
@@ -79,7 +79,7 @@ void MeshRenderer::GenDrawCalls()
 	{	
 		//reload if any of the meshes in the group want a reload, only care about mesh[0] because they are all legit the same
 		if(group.needsReload)
-			group.CommonMesh->ReloadFromAssets(GetScene());
+			group.CommonMesh->ReloadFromAssets(GetPipeline()->GetScene());
 
 		//vertex array wasnt assigned yet
 		if(!group.CommonMesh->GetVertexArray()->m_VertexBuffer)
@@ -96,11 +96,15 @@ void MeshRenderer::GenDrawCalls()
 
 void MeshRenderer::PrepareFrame()
 {
+	Super::PrepareFrame();
+
 	GenDrawCalls();
 }
 
 void MeshRenderer::RenderFrame(Ref<Camera> camera)
 {
+	Super::RenderFrame(camera);
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -115,9 +119,9 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 	for(uint i = 0; i < m_DrawCalls.size() ; i++)
 	{
 		auto& call = m_DrawCalls[i];
-		if(!call.CommonMesh->IsValidForDraw()) continue;
+		if(!call.CommonMesh->IsValidForDraw()) continue; //invalid for draw
 
-		call.CommonMesh->Bind(GetScene()->GetRenderAPI()); //binds mesh vertex array and material
+		call.CommonMesh->Bind(GetPipeline()->GetRenderAPI()); //binds mesh vertex array and material
 		if(!call.CommonMaterial->GetShader()) continue; //shader not valid
 
 		//mesh data
@@ -126,12 +130,15 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 		//camera pos uniform
 		vec3d cameraPos = camera->GetTransform().pos;
 		call.CommonMaterial->GetShader()->SetUniform3f("u_CameraPos", cameraPos.x, cameraPos.y, cameraPos.z);
+		
+		//view projection matrix
+		call.CommonMaterial->GetShader()->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
 
 		//directional light amount
 		call.CommonMaterial->GetShader()->SetUniform1i("u_DirLightsCount", m_DirectionalLights.size());
 
 		//cubemap stuff
-		if (auto cubemapRenderer = GetScene()->GetRenderer<CubemapRenderer>())
+		if (auto cubemapRenderer = GetPipeline()->GetRenderer<CubemapRenderer>())
 		{
 			if (auto skybox = cubemapRenderer->GetActiveCubemap())
 			{
@@ -147,11 +154,10 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 				glBindTexture(GL_TEXTURE_2D, skybox->m_brdfMap);
 				call.CommonMaterial->GetShader()->SetUniform1i("u_BRDF", 30);
 			}
-
 		}
 
 		//draw call
-		GetScene()->GetRenderAPI()->DrawInstanced(*call.CommonMesh->GetIndexBuffer(), call.MeshDataArray.size());
+		GetPipeline()->GetRenderAPI()->DrawInstanced(*call.CommonMesh->GetIndexBuffer(), call.MeshDataArray.size());
 	}
 	
 	glDisable(GL_DEPTH_TEST);
@@ -162,6 +168,8 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 
 void MeshRenderer::ClearFrame()
 {
+	Super::ClearFrame();
+
 	m_DrawCalls.clear();
 }
 

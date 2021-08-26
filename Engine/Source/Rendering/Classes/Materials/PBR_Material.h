@@ -10,7 +10,6 @@ class DENGINE_API PBR_Material : public Material
 		OBJECT_PROPS_BEGIN()
 			PROPS_CATEGORY(Material);
 				PROPDEF(Albedo, EditAnywhere);
-				PROPDEF(Albedo, EditAnywhere);
 				PROPDEF(AlbedoTexture, EditAnywhere);
 				PROPDEF(NormalTexture, EditAnywhere);
 				PROPDEF(Roughness, EditAnywhere);

@@ -59,7 +59,7 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 			{
 				auto prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset(object->GetPrefabAssetRefMutable());
 				if(prefabAsset)
-					prefabAsset->LoadPrefab(object, false);
+					prefabAsset->LoadPrefab(object, false, true);
 			}
 		}
 

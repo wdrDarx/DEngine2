@@ -6,7 +6,7 @@
 
 class Application;
 /*
-  An Object existant in the scope of an app with a reference to it
+  An Object existent in the scope of an app with a reference to it
   Must call Initialize(const ObjectInitializer& initializer) mannually after constructing
 */
 class DENGINE_API AppObject : public ObjectBase
@@ -20,6 +20,12 @@ public:
 	AppObject(Application* app) : ObjectBase(), m_Application(app)
 	{
 		
+	}
+
+	//begin play event
+	virtual void OnBeginPlay()
+	{
+
 	}
 
 	void OnUpdate(const Tick& tick) override;

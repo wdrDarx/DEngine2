@@ -10,7 +10,7 @@
 /*
 	Util class for scene actions
 */
-class SceneUitls
+class SceneUtils
 {
 public:
 
@@ -23,5 +23,11 @@ public:
 		Wipes a scene fully before loading in all the data from the asset
 	*/
 	static void LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene);
+
+	/*
+		clones a scene object data to a new object
+		returns the new cloned object
+	*/
+	static Ref<SceneObject> CloneSceneObject(Ref<SceneObject> obj, Ref<Scene> TargetScene);
 
 };

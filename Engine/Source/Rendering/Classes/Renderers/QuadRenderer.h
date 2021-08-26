@@ -28,7 +28,7 @@ namespace QR
 		QuadRendererDrawCall(Ref<Texture> blankTexture)
 		{
 			if (blankTexture)
-				TextureBindings.push_back(blankTexture->m_RendererID);
+				TextureBindings.push_back(blankTexture->GetBinding());
 		}
 		std::vector<uint> TextureBindings;
 		std::vector<Instance> Instances;

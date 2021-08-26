@@ -6,6 +6,7 @@
 #include "Event/EventDispatcher.h"
 #include "Rendering/Renderer.h"
 #include "Framework/InputManager.h"
+#include "Rendering/Pipeline.h"
 
 /*
 * An AppObject that contains scoped SceneObjects and relays functions to them
@@ -18,22 +19,15 @@ class DENGINE_API Scene : public AppObject
 public:
 	OBJECT_CLASS_DEF(Scene, AppObject)
 
+	//calls begin play for all scene objects
+	void OnBeginPlay() override;
+
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 	void OnDestroy() override;
 
 	uint Serialize(Buffer& buffer) const override;
 	uint Deserialize(const Buffer& buffer) override;
-
-	//once per tick after everything is updated
-	void PrepareFrame();
-
-	//call for each render target (e.g a viewport)
-	void RenderFrame(Ref<Camera> camera);
-
-	// call once after finished rendering to all render targets 
-	// (used to clear renderer data)
-	void ClearFrame();
 
 	const std::vector<Ref<SceneObject>>& GetSceneObjects() const
 	{
@@ -42,7 +36,7 @@ public:
 
 	/* 
 		Creates an SceneObject with an assigned pointer to this scene and a random id, then adds it to scene object list here
-		WARNING : does not work when called from a module, the created app object must also be associated with a module before being created
+		WARNING : does not work when called from a module, use ObjectInitializer::Module(this) or  ObjectInitializer::Module("ModuleName")
 	*/
 	template<class T>
 	Ref<T> CreateSceneObject(ObjectInitializer& initializer = ObjectInitializer())
@@ -62,58 +56,6 @@ public:
 		return ptr;
 	}
 
-	//create a renderer from a custom class
-	template<class T>
-	Ref<T> CreateRenderer(ObjectInitializer& initializer = ObjectInitializer())
-	{
-		bool valid = std::is_base_of<Renderer, T>::value;
-		ASSERT(valid);
-
-		Ref<T> ptr = MakeRef<T>(this);
-
-		Ref<Renderer> obj = Cast<Renderer>(ptr);
-		m_Renderers.push_back(obj);
-
-		//Must call this
-		initializer.Flags |= ConstructFlags::RANDOMID;
-		ptr->Initialize(initializer);
-
-		return ptr;
-	}
-
-	//try get renderer by class if it exists in this scene
-	template<class T>
-	Ref<T> GetRenderer()
-	{
-		bool valid = std::is_base_of<Renderer, T>::value;
-		ASSERT(valid);
-
-		for (auto& renderer : m_Renderers)
-		{
-			if (auto out = Cast<T>(renderer))
-			{
-				return out;
-			}
-		}
-
-		ASSERT(false) //renderer not found in this scene;
-		return nullptr;
-	}
-
-	//set the render api reference (usually from the application)
-	void SetRenderAPI(Ref<RenderAPI> api)
-	{
-		m_RenderApi = api;
-	}
-
-	Ref<RenderAPI> GetRenderAPI()
-	{
-		return m_RenderApi;
-	}
-
-	//adds all the default renderer classes the engine has
-	void CreateDefaultRenderers();
-
 	void DestroyAllSceneObjects()
 	{
 		//call destroy on all scene objects
@@ -125,25 +67,11 @@ public:
 		m_SceneObjects.clear();
 	}
 
-	void DestroyAllRenderers()
-	{
-		//call destroy on all renderers
-		for (auto& renderer : m_Renderers)
-		{
-			renderer->OnDestroy();
-		}
-
-		m_Renderers.clear();
-	}
-
 	//remove object from Scene Object array
 	void DestroySceneObject(Ref<SceneObject> obj);
 
 	//remove object from Scene Object array
 	void DestroySceneObject(SceneObject* obj);
-
-	//remove renderer from Scene Object array
-	void DestroyRenderer(Renderer* renderer);
 
 	//Will call initialize to an already existing scene object 
 	//overridable object initializer (default flags are RANDOMID)
@@ -163,6 +91,39 @@ public:
 		return m_InputManager;
 	}
 
+	Ref<Pipeline> GetPipeline()
+	{
+		return m_Pipeline;
+	}
+
+	void DestroyPipeline()
+	{
+		if(m_Pipeline)
+		{ 
+			m_Pipeline->OnDestroy();
+			m_Pipeline = nullptr;
+		}
+	}
+
+	//create a pipeline from a custom class, passing in a ref to this scene and a render API
+	template<class T>
+	Ref<T> SetPipeline(Ref<RenderAPI> renderApi, ObjectInitializer& initializer = ObjectInitializer())
+	{
+		bool valid = std::is_base_of<Pipeline, T>::value;
+		ASSERT(valid);
+
+		Ref<T> ptr = MakeRef<T>(this, renderApi);
+
+		Ref<Pipeline> obj = Cast<Pipeline>(ptr);
+		m_Pipeline = obj;
+
+		//Must call this
+		initializer.Flags |= ConstructFlags::RANDOMID;
+		ptr->Initialize(initializer);
+
+		return ptr;
+	}
+
 private:
 
 	//for scene events
@@ -174,9 +135,9 @@ private:
 	//array of scene objects
 	std::vector<Ref<SceneObject>> m_SceneObjects;
 
-	//array of renderers
-	std::vector<Ref<Renderer>> m_Renderers;
+	//optional setting, used during play mode 
+	Ref<Camera> m_MainCamera;
 
-	//reference to whatever render api (needed for the renderer array)
-	Ref<RenderAPI> m_RenderApi;
+	//used for rendering
+	Ref<Pipeline> m_Pipeline;
 };

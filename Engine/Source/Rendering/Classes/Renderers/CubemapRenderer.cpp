@@ -8,28 +8,30 @@ void CubemapRenderer::OnConstruct()
 
 void CubemapRenderer::PrepareFrame()
 {
-	if (!GetScene()->GetRenderAPI()->IsShaderInCache("BasicShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
-	if (!GetScene()->GetRenderAPI()->IsShaderInCache("CubemapProjector"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\CubeMapProjector.shader"), "CubemapProjector");
-	if (!GetScene()->GetRenderAPI()->IsShaderInCache("IrradianceShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\IrradianceShader.shader"), "IrradianceShader");
-	if (!GetScene()->GetRenderAPI()->IsShaderInCache("PreFilterShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\PreFilterShader.shader"), "PreFilterShader");
-	if (!GetScene()->GetRenderAPI()->IsShaderInCache("BrdfShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BrdfShader.shader"), "BrdfShader");
-	if (!GetScene()->GetRenderAPI()->IsShaderInCache("SkyBoxShader"))
-		GetScene()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\SkyBoxShader.shader"), "SkyBoxShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BasicShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("CubemapProjector"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\CubeMapProjector.shader"), "CubemapProjector");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("IrradianceShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\IrradianceShader.shader"), "IrradianceShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("PreFilterShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\PreFilterShader.shader"), "PreFilterShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BrdfShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BrdfShader.shader"), "BrdfShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("SkyBoxShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\SkyBoxShader.shader"), "SkyBoxShader");
 }
 
 void CubemapRenderer::RenderFrame(Ref<Camera> camera)
 {
+	Super::RenderFrame(camera);
+
 	if(m_ActiveCubemap)
 	{ 
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_FALSE);
 
-		Ref<Shader> SkyboxShader = GetScene()->GetRenderAPI()->GetShaderFromCache("SkyBoxShader");
+		Ref<Shader> SkyboxShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("SkyBoxShader");
 		SkyboxShader->Bind();
 		SkyboxShader->SetUniform1i("u_CubeMap", 0);
 		SkyboxShader->SetUniformMat4f("u_View", camera->GetViewMatrix());
@@ -113,7 +115,7 @@ Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 	};
 
-	Ref<Shader> CubeMapProjector = GetScene()->GetRenderAPI()->GetShaderFromCache("CubemapProjector");
+	Ref<Shader> CubeMapProjector = GetPipeline()->GetRenderAPI()->GetShaderFromCache("CubemapProjector");
 	CubeMapProjector->Bind();
 	CubeMapProjector->SetUniform1i("u_CubeMap", 0);
 	CubeMapProjector->SetUniformMat4f("u_Projection", captureProjection);
@@ -155,7 +157,7 @@ Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 
 	// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
 	// -----------------------------------------------------------------------------
-	Ref<Shader> IrradianceShader = GetScene()->GetRenderAPI()->GetShaderFromCache("IrradianceShader");
+	Ref<Shader> IrradianceShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("IrradianceShader");
 	IrradianceShader->Bind();
 	IrradianceShader->SetUniform1i("u_CubeMap", 0);
 	IrradianceShader->SetUniformMat4f("u_Projection", captureProjection);
@@ -189,7 +191,7 @@ Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	// generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	Ref<Shader> PreFilterShader = GetScene()->GetRenderAPI()->GetShaderFromCache("PreFilterShader");
+	Ref<Shader> PreFilterShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("PreFilterShader");
 	PreFilterShader->Bind();
 	PreFilterShader->SetUniform1i("u_CubeMap", 0);
 	PreFilterShader->SetUniformMat4f("u_Projection", captureProjection);
@@ -237,7 +239,7 @@ Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outCubemap->m_brdfMap, 0);
 
-	Ref<Shader> BrdfShader = GetScene()->GetRenderAPI()->GetShaderFromCache("BrdfShader");
+	Ref<Shader> BrdfShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("BrdfShader");
 	glViewport(0, 0, 512, 512);
 	BrdfShader->Bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

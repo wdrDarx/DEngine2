@@ -137,6 +137,11 @@ struct Transform
 	{
 		return this->pos == rhs.pos && this->rot == rhs.rot && this->scale == rhs.scale;
 	}
+
+	bool operator!=(const Transform& rhs) const
+	{
+		return !(this->pos == rhs.pos && this->rot == rhs.rot && this->scale == rhs.scale);
+	}
 };
 
 struct Bound

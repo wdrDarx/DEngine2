@@ -156,11 +156,6 @@ public:
 
 	}
 
-	virtual void OnBeginPlay()
-	{
-
-	}
-
 	/*
 		called per frame
 	*/

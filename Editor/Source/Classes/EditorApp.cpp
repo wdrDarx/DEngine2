@@ -81,6 +81,9 @@ EditorApp::EditorApp() : Application()
 	//Make the scene
 	m_EditorScene = CreateAppObject<Scene>();
 
+	//create default pipeline
+	m_EditorScene->SetPipeline<DefaultPipeline>(GetWindow()->GetRenderAPI());
+
 	//bind scene events
 	m_EditorScene->GetSceneEventDipatcher().Bind(m_SceneEvent);
 
@@ -89,6 +92,9 @@ EditorApp::EditorApp() : Application()
 
 	//content browser
 	m_ContentBrowser.Init();
+
+	//menu bar
+	m_MenuBar.Init();
 
 	//main viewport
 	CreateViewport(m_EditorScene);
@@ -99,6 +105,9 @@ EditorApp::EditorApp() : Application()
 
 	//create the hot reload scene asset
 	m_HotReloadSceneAsset = MakeRef<SceneAsset>();
+
+	//create the begin play scene asset
+	m_BeginPlaySceneAsset = MakeRef<SceneAsset>();
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
@@ -278,8 +287,8 @@ void EditorApp::RenderImGui(const Tick& tick)
 
 	ImGui::Begin("Renderer");
 	ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
-	ImGui::Text(std::string("Draw Calls : " + STRING(m_EditorScene->GetRenderAPI()->GetRenderStats().DrawCalls)).c_str());
-	m_EditorScene->GetRenderAPI()->ResetRenderStats();
+	ImGui::Text(std::string("Draw Calls : " + STRING(m_EditorScene->GetPipeline()->GetRenderAPI()->GetRenderStats().DrawCalls)).c_str());
+	m_EditorScene->GetPipeline()->GetRenderAPI()->ResetRenderStats();
 
 	ImGui::Text("Shader Cache");
 	for (const auto& shader : GetWindow()->GetRenderAPI()->GetAllShadersInCache())
@@ -342,14 +351,25 @@ void EditorApp::BeginFrame()
 void EditorApp::EndFrame()
 {
 	if (!m_ImGuiLayer.IsValid()) return;
-	m_EditorScene->PrepareFrame();
+	m_EditorScene->GetPipeline()->PrepareFrame();
 
 	//end frame for all viewports (calls end frame on the scene)
 	for (auto& viewport : m_Viewports)
 	{
 		viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent.get();
+		viewport->m_SelectedObject = m_SceneObjectPannel.m_SelectedObject.get();
 		viewport->EndFrame();
 	}
+
+	//remove viewports that were closed
+	Viewport* destroy = nullptr;
+	for (auto& viewport : m_Viewports)
+	{
+		if(viewport->m_Close)
+			destroy = viewport.get();
+	}
+	if(destroy)
+		DestroyViewport(destroy);
 
 	//render for each active asset editor
 	for (uint i = 0; i < m_ActiveAssetEditors.size(); i++)
@@ -357,7 +377,7 @@ void EditorApp::EndFrame()
 		m_ActiveAssetEditors[i]->Render();
 	}
 	
-	m_EditorScene->ClearFrame();
+	m_EditorScene->GetPipeline()->ClearFrame();
 	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
 }
@@ -366,6 +386,22 @@ void EditorApp::HotReload()
 {
 
 
+}
+
+void EditorApp::BeginPlay()
+{
+	if (m_EditorScene)
+	{
+		SetAppState(AppState::GAME);
+		m_BeginPlaySceneAsset->SaveScene(m_EditorScene);
+		m_EditorScene->OnBeginPlay();
+	}
+}
+
+void EditorApp::EndPlay()
+{
+	SetAppState(AppState::EDITOR);
+	SceneUtils::LoadSceneFromAsset(m_BeginPlaySceneAsset, m_EditorScene);
 }
 
 void EditorApp::UnloadAll()
@@ -377,19 +413,30 @@ void EditorApp::UnloadAll()
 void EditorApp::LoadAll()
 {
 	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
-	m_HotReloadSceneAsset->LoadScene(m_EditorScene);
+	SceneUtils::LoadSceneFromAsset(m_HotReloadSceneAsset, m_EditorScene);
 }
 
 Ref<Viewport> EditorApp::CreateViewport(Ref<Scene> scene)
 {
-	Ref<Viewport> viewport = MakeRef<Viewport>(scene, GetWindow()->GetRenderAPI(), nullptr, std::string("Viewport " + STRING(m_Viewports.size())));
+	Ref<Viewport> viewport = MakeRef<Viewport>(scene, GetWindow(), nullptr, std::string("Viewport " + STRING(m_Viewports.size())));
 	m_Viewports.push_back(viewport);
 	return viewport;
 }
 
-void EditorApp::DestroyViewport(Ref<Viewport> viewport)
+void EditorApp::DestroyViewport(Viewport* viewport)
 {
-	m_Viewports.erase(std::find(m_Viewports.begin(), m_Viewports.end(), viewport));
+	auto remove = m_Viewports.end();
+	for (auto it = m_Viewports.begin(); it != m_Viewports.end(); it++)
+	{
+		if (viewport == (*it).get())
+		{
+			remove = it;
+			break;
+		}
+	}
+
+	if (remove != m_Viewports.end())
+		m_Viewports.erase(remove);
 }
 
 
@@ -407,6 +454,14 @@ void EditorApp::OnKeyDown(KeyEvent* event)
 	if (event->GetKeyCode() == GLFW_KEY_3)
 	{
 		m_TransformMode = ImGuizmo::SCALE;
+	}
+
+	if (event->GetKeyCode() == GLFW_KEY_LEFT_ALT)
+	{
+		if (m_SceneObjectPannel.m_SelectedObject)
+		{
+			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(m_SceneObjectPannel.m_SelectedObject, m_EditorScene);
+		}
 	}
 }
 

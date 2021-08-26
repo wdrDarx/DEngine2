@@ -286,6 +286,9 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Rendering\Pipeline.h" />
+    <ClInclude Include="Source\Rendering\Classes\Pipelines\DefaultPipeline.h" />
+    <ClInclude Include="Source\Utils\InputUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -429,5 +432,8 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Rendering\Pipeline.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Pipelines\DefaultPipeline.cpp" />
+    <ClCompile Include="Source\Utils\InputUtils.cpp" />
   </ItemGroup>
 </Project>

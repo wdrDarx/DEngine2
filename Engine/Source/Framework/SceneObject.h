@@ -27,6 +27,9 @@ public:
 
 	}
 
+	//begin play event
+	virtual void OnBeginPlay();
+
 	//need explicit destructor to call pre_delete events for all components
 	void OnDestroy() override;
 

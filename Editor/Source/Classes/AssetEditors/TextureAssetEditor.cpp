@@ -7,9 +7,9 @@ TextureAssetEditor::TextureAssetEditor() : AssetEditor("TextureAsset")
 
 void TextureAssetEditor::Init()
 {
-	m_QuadRenderer = MakeRef<QuadRenderer>(m_App->m_EditorScene.get());
+	m_QuadRenderer = MakeRef<QuadRenderer>(m_App->m_EditorScene->GetPipeline().get());
 	m_QuadRenderer->Initialize(ObjectInitializer());
-	m_Viewport = MakeRef<Viewport>(nullptr, m_App->GetWindow()->GetRenderAPI(), nullptr, "Texture View");
+	m_Viewport = MakeRef<Viewport>(nullptr, m_App->GetWindow(), nullptr, "Texture View");
 }
 
 void TextureAssetEditor::Render()

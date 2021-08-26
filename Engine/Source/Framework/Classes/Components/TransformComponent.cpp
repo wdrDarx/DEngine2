@@ -17,7 +17,18 @@ void TransformComponent::OnPostConstruct()
 	}
 }
 
-glm::mat4 TransformComponent::GetWorldMatrix() const
+void TransformComponent::OnUpdate(const Tick& tick)
+{
+	Super::OnUpdate(tick);
+
+	if (m_LastTransform != m_Transform)
+	{
+		ClearCache();
+		m_LastTransform = m_Transform;
+	}
+}
+
+const glm::mat4& TransformComponent::GetWorldMatrix()
 {
 	if (m_Parent)
 		return m_Parent->GetWorldMatrix() * GetMatrix();

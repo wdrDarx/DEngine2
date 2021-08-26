@@ -17,8 +17,8 @@ void PrefabAssetEditor::Init()
 	if (!m_PrefabAsset) return;
 
 	m_Scene = m_App->CreateAppObject<Scene>();
-	m_Scene->SetRenderAPI(m_App->GetWindow()->GetRenderAPI());
-	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow()->GetRenderAPI(), nullptr, "Prefab View");
+	m_Scene->SetPipeline<DefaultPipeline>(m_App->GetWindow()->GetRenderAPI());
+	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow(), nullptr, "Prefab View");
 
 	m_PropertyWindow.Init(m_App);
 
@@ -104,9 +104,9 @@ void PrefabAssetEditor::Render()
 	m_App->GetWindow()->GetInputManager().ForwardTo(m_Viewport->m_InputManager);
 	m_Viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent.get();
 	m_Viewport->BeginFrame();
-	m_Scene->PrepareFrame();
+	m_Scene->GetPipeline()->PrepareFrame();
 	m_Viewport->EndFrame(false);
-	m_Scene->ClearFrame();
+	m_Scene->GetPipeline()->ClearFrame();
 	ImGui::NextColumn();
 
 	//defaults

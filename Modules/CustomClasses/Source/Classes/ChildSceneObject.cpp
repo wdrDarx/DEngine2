@@ -20,7 +20,7 @@ void ChildSceneObject::OnPostConstruct()
 	auto cubemap = GetScene()->GetApplication()->GetAssetManager().LoadAsset(CubemapAssetTest);
 	if (cubemap)
 	{
-		GetScene()->GetRenderer<CubemapRenderer>()->SetActiveCubemap(GetScene()->GetRenderer<CubemapRenderer>()->CreateCubemapFromAsset(cubemap));
+		GetScene()->GetPipeline()->GetRenderer<CubemapRenderer>()->SetActiveCubemap(GetScene()->GetPipeline()->GetRenderer<CubemapRenderer>()->CreateCubemapFromAsset(cubemap));
 	}
 
 	m_KeyDownEvent.Assign([&](KeyEvent* event)
@@ -38,7 +38,7 @@ void ChildSceneObject::OnPostConstruct()
 				RandomTransform.rot.y = Rand::Float() * RandomSpawnRange;
 				RandomTransform.rot.z = Rand::Float() * RandomSpawnRange;
 
-				Ref<SceneObject> spawned = SceneUitls::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this));
+				Ref<SceneObject> spawned = SceneUtils::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this));
 
 				if(auto& root = spawned->GetRootComponent())
 				{
@@ -56,5 +56,5 @@ void ChildSceneObject::OnDestroy()
 {
 	Super::OnDestroy();
 
-	GetScene()->GetRenderer<CubemapRenderer>()->ClearActiveCubemap();
+	GetScene()->GetPipeline()->GetRenderer<CubemapRenderer>()->ClearActiveCubemap();
 }

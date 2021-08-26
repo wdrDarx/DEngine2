@@ -11,6 +11,7 @@
 #include "Rendering/VertexBufferLayout.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Renderer.h"
+#include "Rendering/Pipeline.h"
 #include "Rendering/ShaderStorageBuffer.h"
 #include "Rendering/UniformStorageBuffer.h"
 #include "Rendering/Material.h"

@@ -6,8 +6,8 @@ struct DENGINE_API Texture
 {
 private:
 	int m_Width, m_Height, m_BPP;
-public:
 	uint m_RendererID;
+public:
 	Texture(const Image& image);
 	Texture(const TextureSpec& spec);
 	Texture(const TextureSpec& spec, const uint& width, const uint& height, byte* pixeldata);
@@ -16,6 +16,11 @@ public:
 	bool operator==(const Texture& other) const
 	{
 		return m_RendererID == other.m_RendererID;
+	}
+
+	uint GetBinding() const
+	{
+		return m_RendererID;
 	}
 
 	void Bind(uint slot = 0) const;

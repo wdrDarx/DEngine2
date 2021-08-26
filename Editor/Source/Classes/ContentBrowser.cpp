@@ -104,7 +104,7 @@ void ContentBrowser::Render(EditorApp* m_App)
 
 		Ref<Texture> icon = directory.is_directory() ? m_FolderIcon : m_FileIcon;
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{0,0,0,0});
-		ImGui::ImageButton((ImTextureID)icon->m_RendererID, { m_ThumbnailSize,m_ThumbnailSize }, {0,1}, {1,0});
+		ImGui::ImageButton((ImTextureID)icon->GetBinding(), { m_ThumbnailSize,m_ThumbnailSize }, {0,1}, {1,0});
 		ImGui::PopStyleColor();
 
 		if (!directory.is_directory() && !m_IsDragging)

@@ -29,9 +29,9 @@ void SceneAssetEditor::Render()
 	//viewport
 	m_App->GetWindow()->GetInputManager().ForwardTo(m_Viewport->m_InputManager);
 	m_Viewport->BeginFrame();
-	m_Scene->PrepareFrame();
+	m_Scene->GetPipeline()->PrepareFrame();
 	m_Viewport->EndFrame(false);
-	m_Scene->ClearFrame();
+	m_Scene->GetPipeline()->ClearFrame();
 
 	ImGui::End();
 	if (!isOpen)
@@ -43,8 +43,8 @@ void SceneAssetEditor::Render()
 void SceneAssetEditor::Init()
 {
 	m_Scene = m_App->CreateAppObject<Scene>();
-	m_Scene->SetRenderAPI(m_App->GetWindow()->GetRenderAPI());
-	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow()->GetRenderAPI(), nullptr, "Scene View");
+	m_Scene->SetPipeline<DefaultPipeline>(m_App->GetWindow()->GetRenderAPI());
+	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow(), nullptr, "Scene View");
 	m_SceneAsset = m_App->GetAssetManager().LoadAsset<SceneAsset>(m_TargetAsset);
 	if (m_SceneAsset && !m_SceneAsset->m_SceneBuffer.empty())
 	{

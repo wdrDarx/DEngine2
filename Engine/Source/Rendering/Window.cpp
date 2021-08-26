@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Utils/InputUtils.h"
 #include "Event/WindowEvent.h"
 #include "Event/Callback.h"
 
@@ -59,13 +60,13 @@ Window::Window(const std::string& name, int width, int height)
 		vec2d DeltaPos = (newPos - LastPos);
 
 		//keep cursor in the middle if input mode is game
-		if (This->GetRenderAPI()->GetInputMode() == InputMode::GAME)
+		if (This->GetInputMode() == InputMode::GAME)
 		{
 			vec2d ForcedPos = This->GetRenderAPI()->GetWindowSize();
 			ForcedPos.x /= 2.f;
 			ForcedPos.y /= 2.f;
 
-			This->GetRenderAPI()->SetCursorPos(ForcedPos);
+			This->SetCursorPos(ForcedPos);
 			This->SetLastCursorPos(ForcedPos);
 		}
 		else
@@ -138,4 +139,19 @@ uint Window::GetWidth() const
 uint Window::GetHeight() const
 {
 	return GetRenderAPI()->GetWindowSize().y;
+}
+
+void Window::SetShowCursor(bool show)
+{
+	InputUtils::SetShowCursor(GetRenderAPI(), show);
+}
+
+void Window::SetCursorPos(const vec2d& pos)
+{
+	InputUtils::SetCursorPos(GetRenderAPI(), pos);
+}
+
+void Window::SetUseRawMouseInput(bool use)
+{
+	InputUtils::SetUseRawMouseInput(GetRenderAPI(), use);
 }
