@@ -68,7 +68,7 @@ public:
 		if(!LoadID)
 			prefab->SetID(tempid);
 
-		if(KeepRootTransform)
+		if(KeepRootTransform && prefab->GetRootComponent())
 			prefab->GetRootComponent()->SetLocalTransform(temptransform);
 	}
 

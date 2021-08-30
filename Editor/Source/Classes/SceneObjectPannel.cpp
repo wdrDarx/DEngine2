@@ -1,7 +1,7 @@
 #include "SceneObjectPannel.h"
 #include "ImGui/ImGuiLayer.h"
 
-void SceneObjectPannel::Render(Ref<Scene> scene, bool DrawimGui)
+void SceneObjectPannel::Render(Scene* scene, bool DrawimGui)
 {
 	m_Scene = scene;
 
@@ -10,7 +10,7 @@ void SceneObjectPannel::Render(Ref<Scene> scene, bool DrawimGui)
 
 	for (auto& obj : scene->GetSceneObjects())
 	{
-		DrawSceneObjectNode(obj);
+		DrawSceneObjectNode(obj.get());
 	}
 
 	//delete stuff
@@ -30,7 +30,7 @@ void SceneObjectPannel::Render(Ref<Scene> scene, bool DrawimGui)
 		ImGui::End();
 }
 
-void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
+void SceneObjectPannel::DrawSceneObjectNode(SceneObject* object)
 {
 	ImGuiTreeNodeFlags flags = (m_SelectedObject == object ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 	flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -69,18 +69,18 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 	if (expanded)
 	{
 		if(auto& root = object->GetRootComponent())
-			DrawComponentNode(root);
+			DrawComponentNode(root.get());
 
 		for (auto& comp : object->GetComponents())
 		{
 			//draw all unattached transform components or just normal components
 			if (!Cast<TransformComponent>(comp))
 			{
-				DrawComponentNode(comp);
+				DrawComponentNode(comp.get());
 			}
 			else
 				if(!Cast<TransformComponent>(comp)->GetParent() && !Cast<TransformComponent>(comp)->IsRootComponent())
-					DrawComponentNode(comp);
+					DrawComponentNode(comp.get());
 		}
 		ImGui::TreePop();
 	}
@@ -97,7 +97,7 @@ void SceneObjectPannel::DrawSceneObjectNode(Ref<SceneObject> object)
 	}
 }
 
-void SceneObjectPannel::DrawComponentNode(Ref<ObjectComponent> comp)
+void SceneObjectPannel::DrawComponentNode(ObjectComponent* comp)
 {
 	ImGuiTreeNodeFlags flags = (m_SelectedComponent == comp ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 	std::string name = comp->GetName();
@@ -121,12 +121,12 @@ void SceneObjectPannel::DrawComponentNode(Ref<ObjectComponent> comp)
 
 	if (expanded)
 	{
-		Ref<TransformComponent> tcomp = Cast<TransformComponent>(comp);
+		TransformComponent* tcomp = Cast<TransformComponent>(comp);
 		if (tcomp)
 		{
 			for (auto& attached : tcomp->GetChildren())
 			{
-				DrawComponentNode(attached);
+				DrawComponentNode(attached.get());
 			}
 		}
 		ImGui::TreePop();

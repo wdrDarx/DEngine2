@@ -49,8 +49,8 @@ void MeshRenderer::GenDrawCalls()
 			if(!group.CommonMesh) continue;
 
 			//check if we fit into this group
-			if (*mesh->m_MaterialAsset.GetAssetHandle() == *group.CommonMesh->m_MaterialAsset.GetAssetHandle() &&
-				*mesh->m_MeshAsset.GetAssetHandle() == *group.CommonMesh->m_MeshAsset.GetAssetHandle())
+			if (mesh->m_MaterialAsset == group.CommonMesh->m_MaterialAsset &&
+				mesh->m_MeshAsset == group.CommonMesh->m_MeshAsset)
 			{
 				//we fit
 				if(mesh->IsFlaggedChanged())

@@ -45,7 +45,7 @@ void ObjectAssetEditor::Render()
 		bool expanded = ImGui::TreeNodeEx((void*)(m_Object.get()), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen, "Properties");
 		if (expanded)
 		{
-			m_PropertyWindow.ListProperties(m_Object->GetPropertiesMutable(), m_Object);
+			m_PropertyWindow.ListProperties(m_Object->GetPropertiesMutable(), m_Object.get());
 			ImGui::TreePop();
 		}
 	}

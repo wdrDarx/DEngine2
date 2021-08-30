@@ -60,7 +60,7 @@ public:
 
 	void SetLocalTransform(const Transform& LocalTrans)
 	{
-		if(LocalTrans != m_Transform)
+		if (!World::NearlyEqual(LocalTrans, m_Transform))
 		{ 
 			m_Transform = LocalTrans;
 
@@ -76,7 +76,8 @@ public:
 	{
 		if (!m_WorldTransformCache)
 		{
-			m_WorldTransformCache = World::MakeTransform(GetWorldMatrix());
+			glm::mat4 worldMat = GetWorldMatrix();
+			m_WorldTransformCache = World::MakeTransform(worldMat);
 		}
 
 		return m_WorldTransformCache.value();
@@ -86,7 +87,7 @@ public:
 	{
 		if (m_WorldTransformCache)
 		{
-			if(m_WorldTransformCache == WorldTrans) return;
+			if(World::NearlyEqual(WorldTrans, m_WorldTransformCache.value())) return;
 		}
 
 		SetWorldMatrix(World::MakeMatrix(WorldTrans));
@@ -95,7 +96,8 @@ public:
 	//idk if is even correct really
 	void SetWorldMatrix(const glm::mat4& matrix)
 	{
-		SetMatrix(glm::inverse(GetWorldMatrix()) * matrix);
+		glm::mat4 world = GetWorldMatrix();
+		SetMatrix(GetMatrix() * glm::inverse(world) * matrix);
 	}
 
 	const glm::mat4& GetMatrix()
@@ -252,9 +254,9 @@ private:
 	LocalComponentRef m_ParentRef;
 
 	//local matrix, updates when local transform is changed
-	std::optional<glm::mat4> m_LocalMatrixCache;
+	std::optional<glm::mat4> m_LocalMatrixCache = {};
 
 	//world space transform, updated when the parent's world matrix is changed or parent is switched
-	std::optional<Transform> m_WorldTransformCache;
+	std::optional<Transform> m_WorldTransformCache = {};
 
 };

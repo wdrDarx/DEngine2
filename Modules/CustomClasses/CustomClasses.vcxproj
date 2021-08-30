@@ -9,6 +9,10 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Runtime|x64">
+      <Configuration>Runtime</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2EAB0792-9A6B-83C8-63A6-CC45CF25C8A4}</ProjectGuid>
@@ -29,6 +33,12 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Runtime|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -36,6 +46,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Runtime|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -50,6 +63,13 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\bin\Release-windows-x86_64\CustomClasses\</OutDir>
     <IntDir>..\..\bin-int\Release-windows-x86_64\CustomClasses\</IntDir>
+    <TargetName>CustomClasses</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Runtime|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\bin\Runtime-windows-x86_64\CustomClasses\</OutDir>
+    <IntDir>..\..\bin-int\Runtime-windows-x86_64\CustomClasses\</IntDir>
     <TargetName>CustomClasses</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
@@ -80,6 +100,33 @@ IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;..\..\Vendor\ObjLoader;..\..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ImportLibrary>..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) (mkdir ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName))
+IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Runtime|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\..\Engine\Source;Source;..\..\Vendor\ImGui;..\..\Vendor\GLFW\include;..\..\Vendor\GLAD\include;..\..\Vendor\GLM;..\..\Vendor\stb_image;..\..\Vendor\ObjLoader;..\..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -93,34 +140,40 @@ IF EXIST ..\..\bin\Debug-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy 
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ImportLibrary>..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
+      <ImportLibrary>..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF NOT EXIST ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) (mkdir ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName))
-IF EXIST ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Release-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Release-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul)</Command>
+      <Command>IF NOT EXIST ..\..\bin\Runtime-windows-x86_64\Editor\Modules\$(ProjectName) (mkdir ..\..\bin\Runtime-windows-x86_64\Editor\Modules\$(ProjectName))
+IF EXIST ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcopy /Q /E /Y /I ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Runtime-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll ..\..\bin\Runtime-windows-x86_64\Editor\Modules\$(ProjectName) &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\Bullet.h" />
+    <ClInclude Include="Source\Classes\CameraComponent.h" />
     <ClInclude Include="Source\Classes\ChildSceneObject.h" />
     <ClInclude Include="Source\Classes\CustomAppObject.h" />
     <ClInclude Include="Source\Classes\CustomSceneObject.h" />
     <ClInclude Include="Source\Classes\MeshComponent.h" />
     <ClInclude Include="Source\Classes\MyObject.h" />
+    <ClInclude Include="Source\Classes\PlayerController.h" />
     <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
-    <ClInclude Include="Source\Classes\SonicGaming.h" />
     <ClInclude Include="Source\Classes\StaticMeshComponent.h" />
+    <ClInclude Include="Source\Classes\StaticMeshObject.h" />
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\Bullet.cpp" />
+    <ClCompile Include="Source\Classes\CameraComponent.cpp" />
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />
     <ClCompile Include="Source\Classes\CustomAppObject.cpp" />
     <ClCompile Include="Source\Classes\CustomSceneObject.cpp" />
     <ClCompile Include="Source\Classes\MeshComponent.cpp" />
+    <ClCompile Include="Source\Classes\PlayerController.cpp" />
     <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\QuadRenderer.cpp" />
-    <ClCompile Include="Source\Classes\SonicGaming.cpp" />
     <ClCompile Include="Source\Classes\StaticMeshComponent.cpp" />
+    <ClCompile Include="Source\Classes\StaticMeshObject.cpp" />
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>

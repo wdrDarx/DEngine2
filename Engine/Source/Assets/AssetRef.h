@@ -24,6 +24,17 @@ struct AssetRef
 			GetAssetHandle();
 		}
 
+		bool operator==(const AssetRef<T>& other) const
+		{
+			return *m_AssetHandle == *other.m_AssetHandle;
+		}
+
+		bool operator!=(const AssetRef<T>& other) const
+		{
+			return *m_AssetHandle != *other.m_AssetHandle;
+		}
+
+
 		//this asset type must be registered first
 		Ref<AssetHandle> GetAssetHandle()
 		{

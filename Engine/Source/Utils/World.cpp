@@ -40,6 +40,24 @@ bool World::BoxvsPointCollisionCheck2D(const Bound& Box, const vec2d& worldPos)
 }
 
 
+vec3d World::VectorToRotation(const vec3d& VectorDir, const vec3d& WorldSpaceUpVector /*= vec3d(0,1,0)*/)
+{
+	if(IsNearlyZero(VectorDir)) 
+		return vec3d{};
+
+	return QuatToRotationDegrees(MatToQuat(glm::lookAt({0,0,0}, VectorDir, WorldSpaceUpVector)));
+}
+
+glm::quat World::RotationDegreesToQuat(const vec3d& Rotation)
+{
+	return glm::quat(glm::radians(Rotation));
+}
+
+vec3d World::QuatToRotationDegrees(const glm::quat& Rotation)
+{
+	return glm::degrees(glm::eulerAngles(Rotation));
+}
+
 vec3d World::Radians(const vec3d& deg)
 {
 	glm::vec3 degs = *(glm::vec3*) & deg;
@@ -110,6 +128,7 @@ vec2d World::CrossProduct2D(const vec2d& in1)
 
 float World::LookAt2D(const vec2d& start, const vec2d& end)
 {
+
 	return (float)(atan2(end.y - start.y, end.x - start.x) * (180.f / M_PI));
 }
 
@@ -136,21 +155,6 @@ Transform2D World::Make2D(const Transform& trans)
 glm::mat4 World::MakeMatrix(const Transform& trans)
 {
 	const Transform& copy = trans;
-
-// 	if (copy.pos.x == 0)
-// 		copy.pos.x = 0.00000001f;
-// 	if (copy.pos.y == 0)
-// 		copy.pos.y = 0.00000001f;
-// 	if (copy.pos.z == 0)
-// 		copy.pos.z = -0.00000001f;
-// 
-// 	if(copy.scale.x == 0)
-// 		copy.scale.x = 0.00000001f;
-// 	if (copy.scale.y == 0)
-// 		copy.scale.y = 0.00000001f;
-// 	if (copy.scale.z == 0)
-// 		copy.scale.z = 0.00000001f;
-
 	glm::vec3 rot = glm::radians(copy.rot);
 	glm::mat4 rotation = glm::toMat4(glm::quat(rot));
 	
@@ -257,45 +261,166 @@ Transform World::OffsetChildByParent(const Transform& parent, const Transform& c
 Transform World::SubtractTransform(const Transform& A, const Transform& B)
 {
 	Transform out;
-// 	vec3d scaledOffset = (A.pos - B.pos); /// A.scale;
-// 	//scaledOffset = A.pos * B.scale;
-// 	vec3d rotatedOffset = Rotate3D(scaledOffset, A.rot);
-// 	out.pos = A.pos - rotatedOffset;
-// 	out.scale = B.scale / A.scale;
-// 	out.rot = A.rot - B.rot;
 	out.pos = A.pos - B.pos;
 	out.rot = A.rot - B.rot;
 	out.scale = A.scale / B.scale;
 	
-
 	return out;
 }
 
 vec3d World::GetForwardVector(const vec3d& Rot)
 {
-	glm::quat q = glm::quat(glm::vec3(Rot.x * DegToRad, Rot.y * DegToRad, Rot.z * DegToRad));
-	glm::vec3 f = glm::rotate(q, glm::vec3(0.0, 0.0, -1.0));
-
-	return *(vec3d*)&f;
+	return glm::rotate(RotationDegreesToQuat(Rot), glm::vec3(0.0, 0.0, -1.0));
 }
 
 vec3d World::GetRightVector(const vec3d& Rot)
 {
-	glm::quat q = glm::quat(glm::vec3(Rot.x * DegToRad, Rot.y * DegToRad, Rot.z * DegToRad));
-	glm::vec3 f = glm::rotate(q, glm::vec3(1.f, 0.0, 0.f));
-
-	return *(vec3d*)&f;
+	return glm::rotate(RotationDegreesToQuat(Rot), glm::vec3(1.f, 0.0, 0.f));
 }
 
 vec3d World::GetUpVector(const vec3d& Rot)
 {
-	glm::quat q = glm::quat(glm::vec3(Rot.x * DegToRad, Rot.y * DegToRad, Rot.z * DegToRad));
-	glm::vec3 f = glm::rotate(q, glm::vec3(0.f, 1.0f, 0.f));
-
-	return *(vec3d*)&f;
+	return glm::rotate(RotationDegreesToQuat(Rot), glm::vec3(0.f, 1.0f, 0.f));
 }
 
 glm::quat World::MatToQuat(const glm::mat4& mat)
 {
-	return glm::quat();
+	return glm::toQuat(mat);
+}
+
+glm::mat4 World::QuatToMat(const glm::quat& rotation)
+{
+	return glm::toMat4(rotation);
+}
+
+bool World::IsNearlyZero(const vec3d& in)
+{
+	return fabsf(in.x) <= SMALL_NUMBER && 
+	fabsf(in.y) <= SMALL_NUMBER && 
+	fabsf(in.z) <= SMALL_NUMBER;
+}
+
+bool World::NearlyEqual(const vec3d& v1, const vec3d& v2)
+{
+	return fabsf(v1.x - v2.x) <= SMALL_NUMBER && 
+	fabsf(v1.y - v2.y) <= SMALL_NUMBER &&
+	fabsf(v1.z - v2.z) <= SMALL_NUMBER;
+}
+
+bool World::NearlyEqual(const Transform& T1, const Transform& T2)
+{
+	return NearlyEqual(T1.pos, T2.pos) &&
+	NearlyEqual(NormalizeRot(T1.rot), NormalizeRot(T2.rot))&&
+	NearlyEqual(T1.scale, T2.scale);
+}
+
+float World::Fmod(float X, float Y)
+{
+	if (fabsf(Y) <= 1.e-8f)
+	{
+		return 0.f;
+	}
+	const float Div = (X / Y);
+	// All floats where abs(f) >= 2^23 (8388608) are whole numbers so do not need truncation, and avoid overflow in TruncToFloat as they get even larger.
+	const float Quotient = fabsf(Div) < 8388608.f ? float(int(Div)) : Div;
+	float IntPortion = Y * Quotient;
+
+	// Rounding and imprecision could cause IntPortion to exceed X and cause the result to be outside the expected range.
+	// For example Fmod(55.8, 9.3) would result in a very small negative value!
+	if (fabsf(IntPortion) > fabsf(X))
+	{
+		IntPortion = X;
+	}
+
+	const float Result = X - IntPortion;
+	return Result;
+}
+
+float World::ClampAngle(float Angle)
+{
+	// returns Angle in the range (-360,360)
+	Angle = Fmod(Angle, 360.f);
+
+	if (Angle < 0.f)
+	{
+		// shift to [0,360) range
+		Angle += 360.f;
+	}
+
+	return Angle;
+}
+
+float World::NormalizeAngle(float Angle)
+{
+	// returns Angle in the range [0,360)
+	Angle = ClampAngle(Angle);
+
+	if (Angle > 180.f)
+	{
+		// shift to (-180,180]
+		Angle -= 360.f;
+	}
+
+	return Angle;
+}
+
+vec3d World::NormalizeRot(const vec3d& rot)
+{
+	vec3d out;
+	out.x = NormalizeAngle(rot.x);
+	out.y = NormalizeAngle(rot.y);
+	out.z = NormalizeAngle(rot.z);
+	return out;
+}
+
+vec3d World::LerpRot(const vec3d& A, const vec3d& B, float Alpha)
+{
+	vec3d norm = NormalizeRot(B - A);
+	return A + norm * Alpha;
+}
+
+vec3d World::LerpRotLong(const vec3d& A, const vec3d& B, float Alpha)
+{
+	vec3d out = (A * (1.f - Alpha) + B * Alpha);
+	return NormalizeRot(out);
+}
+
+vec3d World::InterpRot(const vec3d& A, const vec3d& B, float DeltaTime, float Speed)
+{
+	// if DeltaTime is 0, do not perform any interpolation (Location was already calculated for that frame)
+	if (DeltaTime == 0.f || A == B)
+	{
+		return A;
+	}
+
+	// If no interp speed, jump to target value
+	if (Speed <= 0.f)
+	{
+		return B;
+	}
+
+	const float DeltaInterpSpeed = Speed * DeltaTime;
+
+	const vec3d Delta = World::NormalizeRot(B - A);
+
+	// If steps are too small, just return Target and assume we have reached our destination.
+	if (IsNearlyZero(Delta));
+	{
+		return B;
+	}
+
+	// Delta Move, Clamp so we do not over shoot.
+	const vec3d DeltaMove = Delta * glm::clamp(DeltaInterpSpeed, 0.f, 1.0f);
+	return World::NormalizeRot(A + DeltaMove);
+}
+
+glm::quat World::VectorDirToQuat(const vec3d& DirVector)
+{
+	if(IsNearlyZero(DirVector)) return glm::quat(1,0,0,0);
+	return MatToQuat(glm::lookAt({ 0,0,0 }, DirVector, {0,1,0}));
+}
+
+glm::quat World::LerpQuat(const glm::quat& A, const glm::quat& B, float Alpha)
+{
+	return glm::slerp(A, B, glm::clamp(Alpha, 0.f, 1.0f));
 }

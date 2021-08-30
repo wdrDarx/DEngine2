@@ -1,5 +1,5 @@
 #include "ChildSceneObject.h"
-#include "SonicGaming.h"
+#include "StaticMeshObject.h"
 
 void ChildSceneObject::OnUpdate(const Tick& tick)
 {

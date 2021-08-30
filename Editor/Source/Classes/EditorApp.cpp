@@ -9,7 +9,10 @@
 #include "Classes/AssetEditors/MeshAssetEditor.h"
 
 EditorApp::EditorApp() : Application()
-{
+{	
+	//set app state to editor
+	SetAppState(AppState::EDITOR);
+
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
@@ -38,27 +41,23 @@ EditorApp::EditorApp() : Application()
 		//Auto unassign selected scene object in property window and scene pannel if that object/component was deleted
 		if (event->GetEventType() == SceneEventType::OBJECT_PRE_DELETE)
 		{
-			if (event->GetSceneObject() && m_PropertyWindow.m_SelectedSceneObject.get() == event->GetSceneObject())
-			{
-				m_PropertyWindow.m_SelectedSceneObject = nullptr;
-			}
-
-			if (event->GetSceneObject() && m_SceneObjectPannel.m_SelectedObject.get() == event->GetSceneObject())
+			if (event->GetSceneObject() && m_SceneObjectPannel.m_SelectedObject == event->GetSceneObject() || m_PropertyWindow.m_SelectedSceneObject == event->GetSceneObject())
 			{
 				m_SceneObjectPannel.m_SelectedObject = nullptr;
+				m_PropertyWindow.m_SelectedSceneObject = nullptr;
+				m_SceneObjectPannel.m_SelectedComponent = nullptr;
+				m_PropertyWindow.m_SelectedComponent = nullptr;
 			}
 		} 
 
 		if (event->GetEventType() == SceneEventType::COMPONENT_PRE_DELETE)
 		{
-			if (m_PropertyWindow.m_SelectedComponent.get() == event->GetComponent())
-			{
-				m_PropertyWindow.m_SelectedComponent = nullptr;
-			}
-
-			if (m_SceneObjectPannel.m_SelectedComponent.get() == event->GetComponent())
+			if (m_SceneObjectPannel.m_SelectedComponent == event->GetComponent() || m_PropertyWindow.m_SelectedComponent == event->GetComponent())
 			{
 				m_SceneObjectPannel.m_SelectedComponent = nullptr;
+				m_PropertyWindow.m_SelectedComponent = nullptr;
+				m_SceneObjectPannel.m_SelectedObject = nullptr;
+				m_PropertyWindow.m_SelectedSceneObject = nullptr;
 			}
 		}
 	});
@@ -131,17 +130,12 @@ void EditorApp::RenderImGui(const Tick& tick)
 	m_MenuBar.Render(this);
 	m_ContentBrowser.Render(this);
 
-	m_SceneObjectPannel.Render(m_EditorScene);
-	if (m_SceneObjectPannel.m_SelectedComponent)
-	{
-		m_PropertyWindow.m_SelectedSceneObject = nullptr;
-		m_PropertyWindow.m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
-	}
-	else if (m_SceneObjectPannel.m_SelectedObject)
+	m_SceneObjectPannel.Render(m_EditorScene.get());
 	{
 		m_PropertyWindow.m_SelectedSceneObject = m_SceneObjectPannel.m_SelectedObject;
-		m_PropertyWindow.m_SelectedComponent = nullptr;
+		m_PropertyWindow.m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
 	}
+
 	m_PropertyWindow.Render();
 
 	ImGui::Begin("Application Objects");
@@ -273,15 +267,23 @@ void EditorApp::RenderImGui(const Tick& tick)
 		LoadAll();
 	}
 
+	//set to unload module name (because cant remove elements while in a loop)
+	std::string ToUnloadName;
 	for (const auto& mod : GetModuleManager().GetLoadedModules())
 	{
+		ImGui::PushID(mod->m_Name.c_str());
 		ImGui::Text(mod->m_Name.c_str());
 		ImGui::SameLine();
 		if (ImGui::Button("Unload"))
 		{
-			GetModuleManager().UnloadModule(mod->m_Name);
+			ToUnloadName = mod->m_Name;
 		}
+		ImGui::PopID();
 	}
+
+	//unload module
+	if(!ToUnloadName.empty())
+		GetModuleManager().UnloadModule(ToUnloadName);
 
 	ImGui::End();
 
@@ -356,8 +358,8 @@ void EditorApp::EndFrame()
 	//end frame for all viewports (calls end frame on the scene)
 	for (auto& viewport : m_Viewports)
 	{
-		viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent.get();
-		viewport->m_SelectedObject = m_SceneObjectPannel.m_SelectedObject.get();
+		viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
+		viewport->m_SelectedObject = m_SceneObjectPannel.m_SelectedObject;
 		viewport->EndFrame();
 	}
 
@@ -400,8 +402,18 @@ void EditorApp::BeginPlay()
 
 void EditorApp::EndPlay()
 {
-	SetAppState(AppState::EDITOR);
-	SceneUtils::LoadSceneFromAsset(m_BeginPlaySceneAsset, m_EditorScene);
+	if (m_EditorScene)
+	{
+		m_EditorScene->OnEndPlay();
+		SetAppState(AppState::EDITOR);
+
+		m_SceneObjectPannel.m_SelectedObject = nullptr;
+		m_PropertyWindow.m_SelectedSceneObject = nullptr;
+		m_SceneObjectPannel.m_SelectedComponent = nullptr;
+		m_PropertyWindow.m_SelectedComponent = nullptr;
+
+		SceneUtils::LoadSceneFromAsset(m_BeginPlaySceneAsset, m_EditorScene);
+	}
 }
 
 void EditorApp::UnloadAll()
@@ -418,7 +430,7 @@ void EditorApp::LoadAll()
 
 Ref<Viewport> EditorApp::CreateViewport(Ref<Scene> scene)
 {
-	Ref<Viewport> viewport = MakeRef<Viewport>(scene, GetWindow(), nullptr, std::string("Viewport " + STRING(m_Viewports.size())));
+	Ref<Viewport> viewport = MakeRef<Viewport>(scene, GetWindow(), std::string("Viewport " + STRING(m_Viewports.size())));
 	m_Viewports.push_back(viewport);
 	return viewport;
 }
@@ -460,7 +472,7 @@ void EditorApp::OnKeyDown(KeyEvent* event)
 	{
 		if (m_SceneObjectPannel.m_SelectedObject)
 		{
-			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(m_SceneObjectPannel.m_SelectedObject, m_EditorScene);
+			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(ToRef<SceneObject>(m_SceneObjectPannel.m_SelectedObject), m_EditorScene).get();
 		}
 	}
 }

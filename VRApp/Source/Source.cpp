@@ -1,10 +1,10 @@
 #include "DEngine.h"
-#include "Source/RuntimeApp.h"
+#include "VRApp.h"
 
 int main()
 {
 	Engine engine;
-	engine.AddApplication(MakeRef<RuntimeApp>());
+	engine.AddApplication(MakeRef<VRApp>());
 	engine.Start();
 	return 0;
 }

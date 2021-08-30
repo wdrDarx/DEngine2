@@ -25,6 +25,7 @@ class DENGINE_API File
 		static std::string GetFileExtenstionFromPath(const std::string& path);
 		static std::string RemoveFileExtensionFromPath(const std::string& path);
 		static std::string GetFileNameFromPath(const std::string& path);
+		static std::wstring StringToWideString(const std::string& str);
 		static void WriteFile(const std::string& path, const Buffer& buffer);
 		static int GetFileSize(const std::string& path);
 		static bool DoesFileExist(const std::string& path);

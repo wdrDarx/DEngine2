@@ -38,7 +38,7 @@ public:
 
 	void LoadScene(Scene* scene) const
 	{
-		if(scene)
+		if(scene && !m_SceneBuffer.empty())
 		{
 			scene->Deserialize(m_SceneBuffer);
 		}

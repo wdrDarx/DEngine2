@@ -6,6 +6,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\Bullet.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Classes\CameraComponent.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\ChildSceneObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
@@ -21,21 +27,30 @@
     <ClInclude Include="Source\Classes\MyObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Classes\PlayerController.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Classes\QuadComponent.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\Classes\QuadRenderer.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\SonicGaming.h">
+    <ClInclude Include="Source\Classes\StaticMeshComponent.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Classes\StaticMeshComponent.h">
+    <ClInclude Include="Source\Classes\StaticMeshObject.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\Bullet.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Classes\CameraComponent.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -48,16 +63,19 @@
     <ClCompile Include="Source\Classes\MeshComponent.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Classes\PlayerController.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Classes\QuadComponent.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\Classes\QuadRenderer.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Classes\SonicGaming.cpp">
+    <ClCompile Include="Source\Classes\StaticMeshComponent.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Classes\StaticMeshComponent.cpp">
+    <ClCompile Include="Source\Classes\StaticMeshObject.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Source\CustomClasses.cpp" />

@@ -1,12 +1,15 @@
 #include "CustomClasses.h"
 
 #include "Classes/CustomAppObject.h"
-#include "Classes/SonicGaming.h"
+#include "Classes/StaticMeshObject.h"
 #include "Classes/CustomSceneObject.h"
 #include "Classes/ChildSceneObject.h"
 #include "Classes/QuadComponent.h"
 #include "Classes/MeshComponent.h"
 #include "Classes/StaticMeshComponent.h"
+#include "Classes/CameraComponent.h"
+#include "Classes/PlayerController.h"
+#include "Classes/Bullet.h"
 
 #include "Classes/QuadRenderer.h"
 #include "Classes/MyObject.h"
@@ -47,11 +50,14 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
-	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MeshComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CameraComponent, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), PlayerController, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), Bullet, CustomClasses);
 
 	
 // 	//custom renderer
@@ -93,15 +99,17 @@ void CustomClasses::OnLoad()
 
 void CustomClasses::OnUnload()
 {
-	m_SceneEvent.Destroy();
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), SonicGaming, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshObject, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MeshComponent, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshComponent, CustomClasses);
 	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CameraComponent, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), PlayerController, CustomClasses);
+	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), Bullet, CustomClasses);
 
 	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
 

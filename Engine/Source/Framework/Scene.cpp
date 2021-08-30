@@ -11,6 +11,16 @@ void Scene::OnBeginPlay()
 	}
 }
 
+void Scene::OnEndPlay()
+{
+	Super::OnEndPlay();
+
+	for (auto& obj : GetSceneObjects())
+	{
+		obj->OnEndPlay();
+	}
+}
+
 void Scene::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
@@ -90,7 +100,14 @@ uint Scene::Deserialize(const Buffer& buffer)
 			READSTRING(ObjClassName);
 			ObjectBase* test = GetApplication()->GetObjectRegistry().MakeObjectFromClassName(ObjClassName);
 			auto sceneObject = ToRef<SceneObject>(Cast<SceneObject>(test));
-			ASSERT(sceneObject); //either class is not registered (check if the associated module is loaded maybe) or the class name is invalid
+		
+			if(!sceneObject) 
+			{
+				//either class is not registered (check if the associated module is loaded maybe) or the class name is invalid
+				LogWarning("Deserialized object class not registered : " + ObjClassName);
+				return;
+			}
+
 			Buffer ObjBuffer;
 			READBUFFER(ObjBuffer);
 			AddSceneObject(sceneObject, ObjectInitializer(ConstructFlags::NOPOSTCONSTRUCT | ConstructFlags::RANDOMID)); //dont call on post construct yet

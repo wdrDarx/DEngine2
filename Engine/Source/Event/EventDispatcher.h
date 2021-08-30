@@ -73,6 +73,11 @@ public:
 		m_BoundCallbacks.clear();
 	}
 
+	const std::vector<Callback<Event>*>& GetBoundCallbacks() const
+	{
+		return m_BoundCallbacks;
+	}
+
 protected:
 	std::vector<Callback<Event>*> m_BoundCallbacks;
 };

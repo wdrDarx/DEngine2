@@ -44,7 +44,7 @@ void SceneAssetEditor::Init()
 {
 	m_Scene = m_App->CreateAppObject<Scene>();
 	m_Scene->SetPipeline<DefaultPipeline>(m_App->GetWindow()->GetRenderAPI());
-	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow(), nullptr, "Scene View");
+	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow(), "Scene View");
 	m_SceneAsset = m_App->GetAssetManager().LoadAsset<SceneAsset>(m_TargetAsset);
 	if (m_SceneAsset && !m_SceneAsset->m_SceneBuffer.empty())
 	{

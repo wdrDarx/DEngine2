@@ -5,14 +5,14 @@ class EditorApp;
 class SceneObjectPannel
 {
 public:
-	void Render(Ref<Scene> scene, bool DrawimGui = true);
+	void Render(Scene* scene, bool DrawimGui = true);
 
-	void DrawSceneObjectNode(Ref<SceneObject> object);
-	void DrawComponentNode(Ref<ObjectComponent> comp);
+	void DrawSceneObjectNode(SceneObject* object);
+	void DrawComponentNode(ObjectComponent* comp);
 
-	Ref<ObjectComponent> m_SelectedComponent;
-	Ref<ObjectComponent> m_ComponentToDelete;
-	Ref<SceneObject> m_ObjectToDelete;
-	Ref<SceneObject> m_SelectedObject;
-	Ref<Scene> m_Scene;
+	ObjectComponent* m_SelectedComponent = nullptr;
+	ObjectComponent* m_ComponentToDelete = nullptr;
+	SceneObject* m_ObjectToDelete = nullptr;
+	SceneObject* m_SelectedObject = nullptr;
+	Scene* m_Scene;
 };

@@ -37,7 +37,7 @@ class PropertyWindow
 				ImGui::End();
 		}
 
-		void DrawSceneObjectProps(Ref<SceneObject> sceneObject)
+		void DrawSceneObjectProps(SceneObject* sceneObject)
 		{		
 			ImGui::Text("Name");
 			ImGui::SameLine();
@@ -52,7 +52,7 @@ class PropertyWindow
 			ListProperties(sceneObject->GetPropertiesMutable(), sceneObject);
 		}
 
-		void DrawComponentProps(Ref<ObjectComponent> Comp)
+		void DrawComponentProps(ObjectComponent* Comp)
 		{
 			if (ImGui::Button("Serialize/Reload"))
 			{
@@ -91,7 +91,7 @@ class PropertyWindow
 			}
 		}
 
-		void ListProperties(std::vector<Property>& props, Ref<ObjectBase> owner = nullptr, bool ForceNewLine = false, bool DrawCategories = true)
+		void ListProperties(std::vector<Property>& props, ObjectBase* owner = nullptr, bool ForceNewLine = false, bool DrawCategories = true)
 		{
 			if(DrawCategories)
 			{ 
@@ -199,7 +199,7 @@ class PropertyWindow
 			}
 		}
 
-		void DrawProperty(Property& prop, Ref<ObjectBase> owner = nullptr, bool ForceNewLine = false)
+		void DrawProperty(Property& prop, ObjectBase* owner = nullptr, bool ForceNewLine = false)
 		{
 			std::string DisplayName = prop.m_name;
 			ImGui::PushID(prop.m_Value);
@@ -248,7 +248,7 @@ class PropertyWindow
 
 				if (owner && ImGui::Button("<"))
 				{
-					ResetProperty(owner.get(), prop.m_name, m_App->GetObjectRegistry());
+					ResetProperty(owner, prop.m_name, m_App->GetObjectRegistry());
 				}
 
 				if (expanded)
@@ -348,7 +348,7 @@ class PropertyWindow
 				
 				if (owner && prop.m_Type != PropType::STRUCT && ImGui::Button("<"))
 				{
-					ResetProperty(owner.get(), prop.m_name, m_App->GetObjectRegistry());
+					ResetProperty(owner, prop.m_name, m_App->GetObjectRegistry());
 				}
 
 				ImGui::PopItemWidth();			
@@ -421,8 +421,8 @@ class PropertyWindow
 			ImGui::PopID();
 		}
 public:
-	Ref<SceneObject> m_SelectedSceneObject;
-	Ref<ObjectComponent> m_SelectedComponent;
-	Application* m_App;
+	SceneObject* m_SelectedSceneObject = nullptr;
+	ObjectComponent* m_SelectedComponent = nullptr;
+	Application* m_App = nullptr;
 	float m_ColumnWidth = 100.f;
 };

@@ -1,12 +1,20 @@
 #include "ModuleManager.h"
 #include "Module.h"
 #include "Framework/Application.h"
+#include "Utils/FileSystem.h"
 #include "Event/ModuleEvent.h"
+
+
 
 void ModuleManager::LoadModule(const std::string& FullPath)
 {
+	//add the module dir (modules/myModule) as a dll path for external libs
+	auto path = std::filesystem::path(FullPath);
+	SetDllDirectoryA(path.parent_path().string().c_str());
+
 	//load the dll
 	auto TempInstance = LoadLibraryA(FullPath.c_str());
+	ASSERT(TempInstance);
 	auto func = (CreateModuleFunc)GetProcAddress(TempInstance, "CreateModule");
 	Module* mod = func(); //get the custom class module instance
 	mod->m_Instance = TempInstance; //assign the module its instance
@@ -42,8 +50,8 @@ void ModuleManager::LoadModule(const std::string& FullPath)
 		m_LoadedModules.push_back(mod); //add to module array
 		mod->m_ModuleManager = this;
 		mod->m_App = m_App;
-		m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));
 		mod->OnLoad();
+		m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));		
 	}
 	else //put on a waiting list
 	{
@@ -130,9 +138,18 @@ void ModuleManager::HotReloadModule(const std::string& ModuleName)
 
 void ModuleManager::LoadAllModules(const std::string& FolderPath)
 {
+	std::vector<std::string> ModuleNames;
+	for (const auto& file : std::filesystem::directory_iterator(FolderPath))
+	{
+		if (file.is_directory())
+		{
+			ModuleNames.push_back(file.path().filename().string());
+		}
+	}
+
 	for (const auto& file : std::filesystem::recursive_directory_iterator(FolderPath))
 	{
-		if (file.is_regular_file() && file.path().extension() == ".dll")
+		if (file.is_regular_file() && file.path().extension().string() == ".dll" && std::count(ModuleNames.begin(), ModuleNames.end(), File::GetFileNameFromPath(file.path().string())) > 0)
 		{
 			LoadModule(file.path().string());
 		}
@@ -143,18 +160,43 @@ void ModuleManager::LoadAllModules(const std::string& FolderPath)
 
 void ModuleManager::UnloadModule(const std::string& ModuleName)
 {
+	Module* ToUnload = nullptr;
+	std::vector<Module*>::iterator  ToUnloadIt;
 	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
 	{
 		Module* mod = *it;
 		if (mod->m_Name == ModuleName)
 		{			
-			m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::UNLOADED, mod->m_Name));
-			mod->OnUnload();
-			delete mod;
-			m_LoadedModules.erase(it);
+			ToUnload = *it;
+			ToUnloadIt = it;
 			break;
 		}
 	}
+	if(!ToUnload) return; //no loaded module matches name
+
+	//serach if other modules had this one as a dependency
+	std::vector<std::string> ToUnloadChildren;
+	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
+	{
+		Module* mod = *it;
+		for (auto& dep : mod->m_Dependencies)
+		{
+			if(dep.ModuleName == ToUnload->GetThisModuleName())
+				ToUnloadChildren.push_back(mod->GetThisModuleName()); //recurisvly unload this module too
+		}
+	}
+
+	//unload all children
+	for (auto& mod : ToUnloadChildren)
+	{
+		UnloadModule(mod);
+	}
+
+	//finally unload the og module 
+	m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::UNLOADED, ToUnload->m_Name));
+	ToUnload->OnUnload();
+	delete ToUnload;
+	m_LoadedModules.erase(ToUnloadIt);
 }
 
 void ModuleManager::UnloadAllModules()

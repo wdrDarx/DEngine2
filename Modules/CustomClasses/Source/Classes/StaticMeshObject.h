@@ -1,21 +1,20 @@
 #pragma once
 #include "CustomClasses.h"
 #include "StaticMeshComponent.h"
+#include "CameraComponent.h"
 #include "DEngine.h"
 
-class SonicGaming : public SceneObject
+class StaticMeshObject : public SceneObject
 {
 public:
-	OBJECT_CLASS_DEF(SonicGaming, SceneObject)
+	OBJECT_CLASS_DEF(StaticMeshObject, SceneObject)
 	OBJECT_PROPS_BEGIN()
-		PROPDEF(Speed, EditAnywhere);
 	OBJECT_PROPS_END()
 
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 
 public:
-	Ref<StaticMeshComponent> m_RootMesh;
-	Ref<StaticMeshComponent> m_SubMesh;
-	float Speed = 100.f;
+	Ref<StaticMeshComponent> m_Mesh;
+	Ref<TransformComponent> m_Root;
 };

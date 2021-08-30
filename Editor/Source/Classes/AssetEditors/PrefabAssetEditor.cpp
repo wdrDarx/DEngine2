@@ -18,7 +18,7 @@ void PrefabAssetEditor::Init()
 
 	m_Scene = m_App->CreateAppObject<Scene>();
 	m_Scene->SetPipeline<DefaultPipeline>(m_App->GetWindow()->GetRenderAPI());
-	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow(), nullptr, "Prefab View");
+	m_Viewport = MakeRef<Viewport>(m_Scene, m_App->GetWindow(), "Prefab View");
 
 	m_PropertyWindow.Init(m_App);
 
@@ -84,13 +84,13 @@ void PrefabAssetEditor::Render()
 	ImGui::Columns(3);
 
 	//Object pannel
-	m_SceneObjectPannel.Render(m_Scene, false);
+	m_SceneObjectPannel.Render(m_Scene.get(), false);
 
 	//properties
 	m_PropertyWindow.m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
 	m_PropertyWindow.m_SelectedSceneObject = m_SceneObjectPannel.m_SelectedObject;
 
-	bool expanded = ImGui::TreeNodeEx((void*)(m_SceneObjectPannel.m_SelectedComponent.get()), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen, "Properties");
+	bool expanded = ImGui::TreeNodeEx((void*)(m_SceneObjectPannel.m_SelectedComponent), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen, "Properties");
 	if(expanded)
 	{ 
 		m_PropertyWindow.Render(false);
@@ -102,7 +102,7 @@ void PrefabAssetEditor::Render()
 
 	//viewport
 	m_App->GetWindow()->GetInputManager().ForwardTo(m_Viewport->m_InputManager);
-	m_Viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent.get();
+	m_Viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
 	m_Viewport->BeginFrame();
 	m_Scene->GetPipeline()->PrepareFrame();
 	m_Viewport->EndFrame(false);

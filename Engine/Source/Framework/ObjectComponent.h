@@ -27,6 +27,11 @@ public:
 
 	}
 
+	virtual void OnEndPlay()
+	{
+
+	}
+
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 

@@ -1,7 +1,7 @@
 #include "FrameBuffer.h"
 #include "RenderAPI.h"
 
-FrameBuffer::FrameBuffer(const FrameBuferSpec& spec) : m_Spec(spec)
+FrameBuffer::FrameBuffer(const FrameBufferSpec& spec) : m_Spec(spec)
 {
 	Invalidate();
 }
@@ -38,7 +38,7 @@ void FrameBuffer::Invalidate()
 
 	glCreateTextures(GL_TEXTURE_2D, 1, &m_ColorAttachement);
 	glBindTexture(GL_TEXTURE_2D, m_ColorAttachement);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Spec.Width, m_Spec.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Spec.Width, m_Spec.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

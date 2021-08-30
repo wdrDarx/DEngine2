@@ -22,6 +22,9 @@ public:
 	//calls begin play for all scene objects
 	void OnBeginPlay() override;
 
+	//calls end play for all scene objects
+	void OnEndPlay() override;
+
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;
 	void OnDestroy() override;
@@ -124,6 +127,17 @@ public:
 		return ptr;
 	}
 
+	//used during play, doesnt represet the actual render target
+	Ref<Camera> GetActiveCamera()
+	{
+		return m_ActiveCamera;
+	}
+
+	void SetActiveCamera(Ref<Camera> camera)
+	{
+		m_ActiveCamera = camera;
+	}
+
 private:
 
 	//for scene events
@@ -136,7 +150,7 @@ private:
 	std::vector<Ref<SceneObject>> m_SceneObjects;
 
 	//optional setting, used during play mode 
-	Ref<Camera> m_MainCamera;
+	Ref<Camera> m_ActiveCamera;
 
 	//used for rendering
 	Ref<Pipeline> m_Pipeline;

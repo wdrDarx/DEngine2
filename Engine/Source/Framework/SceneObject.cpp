@@ -10,6 +10,14 @@ void SceneObject::OnBeginPlay()
 	}
 }
 
+void SceneObject::OnEndPlay()
+{
+	for (auto& comp : GetComponents())
+	{
+		comp->OnEndPlay();
+	}
+}
+
 void SceneObject::OnDestroy()
 {
 	Super::OnDestroy();
@@ -57,6 +65,7 @@ void SceneObject::OnConstruct()
 
 	GetScene()->GetApplication()->GetEventDispatcher().Bind(m_ModuleCallback);
 
+#if 0
 	//auto load prefab on change
 	m_AssetCallback.Assign([&](AssetEvent* event)
 	{
@@ -76,6 +85,7 @@ void SceneObject::OnConstruct()
 	});
 
 	GetScene()->GetApplication()->GetAssetManager().GetEventDispatcher().Bind(m_AssetCallback);
+#endif
 }
 
 void SceneObject::OnPostConstruct()
@@ -184,6 +194,11 @@ std::vector<Ref<ObjectComponent>>::iterator SceneObject::DestroyComponent(Ref<Ob
 
 	//call on destroy
 	comp->OnDestroy();
+
+	//clear root if this was the root
+	if(comp == GetRootComponent())
+		m_RootComponent = nullptr;
+
 	return m_Components.erase(std::find(m_Components.begin(), m_Components.end(), comp));
 }
 

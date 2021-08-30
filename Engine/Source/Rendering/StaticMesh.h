@@ -16,22 +16,24 @@ public:
 
 	void SetStaticMesh(const AssetRef<MeshAsset>& meshAsset)
 	{
-		//derefernce to compare asset ID's
-		if (*meshAsset.GetAssetHandleConst() != *m_MeshAsset.GetAssetHandleConst())
+		//compare asset ID's
+		if (meshAsset != m_MeshAsset)
+		{ 
 			m_FlagChanged = true;
-
-		if (meshAsset.IsValid())
-			m_MeshAsset = meshAsset;	
+			if (meshAsset.IsValid())
+				m_MeshAsset = meshAsset;
+		}
 	}
 
 	void SetStaticMaterial(const AssetRef<MaterialAsset>& materialAsset)
 	{
-		//derefernce to compare asset ID's
-		if (*materialAsset.GetAssetHandleConst() != *m_MaterialAsset.GetAssetHandleConst())
+		//compare asset ID's
+		if (materialAsset != m_MaterialAsset)
+		{ 
 			m_FlagChanged = true;
-
-		if(materialAsset.IsValid())
-			m_MaterialAsset = materialAsset;
+			if (materialAsset.IsValid())
+				m_MaterialAsset = materialAsset;
+		}	
 	}
 
 	/*

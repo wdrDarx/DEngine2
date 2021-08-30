@@ -17,7 +17,7 @@ class DENGINE_API Camera
 public:
 	Camera(Ref<RenderAPI> renderAPI) : m_RenderAPI(renderAPI)
 	{
-
+		m_Transform = Transform();
 	}
 
 	const Transform& GetTransform() const
@@ -27,8 +27,11 @@ public:
 
 	void SetTransform(const Transform& trans)
 	{
-		m_Transform = trans;
-		RecalculateViewMatrix();
+		if(m_Transform != trans)
+		{ 
+			m_Transform = trans;
+			RecalculateViewProjectionMatrix();
+		}
 	}
 
 	void SetPosition(const vec3d& Position)
@@ -62,7 +65,7 @@ public:
 	void SetZoom(const float& zoom)
 	{
 		m_Zoom = MAX(zoom, 0.01f);
-		RecalculateViewMatrix();
+		RecalculateViewProjectionMatrix();
 	}
 
 	Ref<RenderAPI> GetRenderAPI() 
@@ -70,12 +73,12 @@ public:
 		return m_RenderAPI;
 	}
 
-	void RecalculateViewMatrix();
+	void RecalculateViewProjectionMatrix(bool CalcView = true);
 
 	void SetProjectionType(const ProjectionType& proj)
 	{
 		m_ProjectionType = proj;
-		RecalculateViewMatrix();
+		RecalculateViewProjectionMatrix();
 	}
 
 	const ProjectionType& GetProjectionType() const
@@ -85,12 +88,31 @@ public:
 
 	void SetFOV(const float& fov)
 	{
-		m_FOV = fov;
+		if(fov != m_FOV)
+		{ 
+			m_FOV = fov;
+			RecalculateViewProjectionMatrix();
+		}
 	}
 
 	const float& getFOV() const
 	{
 		return m_FOV;
+	}
+
+	void SetViewMatrix(const glm::mat4& viewMat)
+	{
+		m_ViewMatrix = viewMat;
+	}
+
+	void SetProjectionMatrix(const glm::mat4& projMat)
+	{
+		m_ProjectionMatrix = projMat;
+	}
+
+	void SetViewProjectionMatrix(const glm::mat4& ViewProjMat)
+	{
+		m_ViewProjectionMatrix = ViewProjMat;
 	}
 
 private:
@@ -103,5 +125,5 @@ private:
 
 	float m_FOV = 60.f;
 	float m_Zoom = 1.0f;
-	Transform m_Transform;		
+	Transform m_Transform = Transform();
 };

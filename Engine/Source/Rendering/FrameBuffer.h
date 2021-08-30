@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Core.h"
 
-struct DENGINE_API FrameBuferSpec
+struct DENGINE_API FrameBufferSpec
 {
 	uint Width, Height;
 	uint Samples = 1;
@@ -11,9 +11,9 @@ struct DENGINE_API FrameBuferSpec
 struct DENGINE_API FrameBuffer
 {
 public:
-	FrameBuffer(const FrameBuferSpec& spec);
+	FrameBuffer(const FrameBufferSpec& spec);
 	~FrameBuffer();
-	const FrameBuferSpec& GetSpec() const {return m_Spec; };
+	const FrameBufferSpec& GetSpec() const {return m_Spec; };
 	
 	uint GetColorAttachement() const {return m_ColorAttachement;};
 	uint GetDepthAttachement() const {return m_DepthAttachement;};
@@ -25,9 +25,9 @@ public:
 	void Resize(const uint& Width, const uint& Height);
 
 private:
-	uint m_RendererID;
-	uint m_ColorAttachement;
-	uint m_DepthAttachement;
-	FrameBuferSpec m_Spec;
+	uint m_RendererID = 0;
+	uint m_ColorAttachement = 0;
+	uint m_DepthAttachement = 0;
+	FrameBufferSpec m_Spec;
 };
 

@@ -29,6 +29,11 @@ void Application::OnUpdate(const Tick& tick)
 		if (obj)
 			obj->OnUpdate(tick);
 	}
+
+	//dispatch object finish update event
+	ApplicationEvent event;
+	event.m_EventType = ApplicationEventType::OBJECTFINSIHUPDATE;
+	GetEventDispatcher().Dispatch(event);
 }
 
 void Application::MakeWindow(const std::string& name, int width, int height, bool vsync)
@@ -59,11 +64,6 @@ void Application::CoreUpdate(float DeltaTime)
 	Tick tick(GetAppState() == AppState::EDITOR ? TickGroup::EDITOR : TickGroup::GAME, DeltaTime);
 
 	OnUpdate(tick);
-
-	//dispatch on end object update event (slow, but clean solution with events)
-	ApplicationEvent updateEndEvent;
-	updateEndEvent.m_EventType = ApplicationEventType::OBJECTFINSIHUPDATE;
-	//GetEventDispatcher().Dispatch(updateEndEvent);
 }
 
 void Application::RegisterBaseClasses()

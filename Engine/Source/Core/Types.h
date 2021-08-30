@@ -10,6 +10,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #define USE_GLM_TYPES
 
 //# define M_PI  3.14159265358979323846  /* pi */
@@ -22,6 +23,8 @@ typedef uint32_t uint;
 typedef uint64_t uint64;
 typedef uint8_t byte;
 typedef uintptr_t uptr;
+
+
 
 inline std::string Substring(const std::string& source, const size_t& start, const size_t& end)
 {

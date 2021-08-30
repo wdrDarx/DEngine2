@@ -32,10 +32,9 @@ Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsse
 
 void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene)
 {
-	if (!scene) return;
+	if (!scene || !sceneAsset) return;
 	scene->DestroyAllSceneObjects();
 	scene->GetInputManager().ClearInput();
-	scene->GetSceneEventDipatcher().UnbindAll();
 
 	sceneAsset->LoadScene(scene);
 }

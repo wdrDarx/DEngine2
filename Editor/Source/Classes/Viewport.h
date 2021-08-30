@@ -5,17 +5,14 @@
 class Viewport
 {
 	public:
-		Viewport(Ref<Scene> scene, Ref<Window> WindowContext, Ref<Camera> camera, const std::string& viewportName ) : m_Scene(scene), m_Window(WindowContext), m_ViewportName(viewportName)
+		Viewport(Ref<Scene> scene, Ref<Window> WindowContext, const std::string& viewportName ) : m_Scene(scene), m_Window(WindowContext), m_ViewportName(viewportName)
 		{
-			FrameBuferSpec spec;
+			FrameBufferSpec spec;
 			spec.Width = 1;
 			spec.Height = 1;
 			m_Framebuffer = MakeRef<FrameBuffer>(spec);
 
-			if(camera)
-				m_Camera = camera;
-			else
-				m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
+			m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
 
 
 			//mouse callback
@@ -49,7 +46,12 @@ class Viewport
 			m_Framebuffer->Bind();
 
 			if(m_Scene && m_Scene->GetPipeline())
-				m_Scene->GetPipeline()->RenderFrame(m_Camera);
+			{ 
+				if(m_Scene->GetActiveCamera() && m_ViewportMode == AppState::GAME)
+					m_Scene->GetPipeline()->RenderFrame(m_Scene->GetActiveCamera());
+				else
+					m_Scene->GetPipeline()->RenderFrame(m_Camera);
+			}
 
 			m_Framebuffer->Unbind();
 
@@ -73,7 +75,10 @@ class Viewport
 				m_LastViewportSize = ViewportSize;
  				m_Framebuffer->Resize(ViewportSize.x, ViewportSize.y);
 				m_Window->GetRenderAPI()->SetViewport(m_LastViewportSize);
-				m_Camera->RecalculateViewMatrix();		
+				m_Camera->RecalculateViewProjectionMatrix();		
+
+				if(m_Scene->GetActiveCamera())
+					m_Scene->GetActiveCamera()->RecalculateViewProjectionMatrix();
  			}
  			m_ViewportPos = vec2d(viewportPanelPos.x, viewportPanelPos.y);
 
@@ -226,6 +231,8 @@ class Viewport
 
 		void RenderGizmo()
 		{
+			if(m_ViewportMode == AppState::GAME) return;
+
 			if (m_SelectedComponent == nullptr && m_SelectedObject)
 			{
 				if(auto root = m_SelectedObject->GetRootComponent())

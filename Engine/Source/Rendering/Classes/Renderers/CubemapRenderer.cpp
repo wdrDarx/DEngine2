@@ -8,18 +8,7 @@ void CubemapRenderer::OnConstruct()
 
 void CubemapRenderer::PrepareFrame()
 {
-	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BasicShader"))
-		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
-	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("CubemapProjector"))
-		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\CubeMapProjector.shader"), "CubemapProjector");
-	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("IrradianceShader"))
-		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\IrradianceShader.shader"), "IrradianceShader");
-	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("PreFilterShader"))
-		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\PreFilterShader.shader"), "PreFilterShader");
-	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BrdfShader"))
-		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BrdfShader.shader"), "BrdfShader");
-	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("SkyBoxShader"))
-		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\SkyBoxShader.shader"), "SkyBoxShader");
+	
 }
 
 void CubemapRenderer::RenderFrame(Ref<Camera> camera)
@@ -54,6 +43,19 @@ void CubemapRenderer::ClearFrame()
 
 Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 {
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BasicShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("CubemapProjector"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\CubeMapProjector.shader"), "CubemapProjector");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("IrradianceShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\IrradianceShader.shader"), "IrradianceShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("PreFilterShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\PreFilterShader.shader"), "PreFilterShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BrdfShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BrdfShader.shader"), "BrdfShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("SkyBoxShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\SkyBoxShader.shader"), "SkyBoxShader");
+
 	Ref<Cubemap> outCubemap = MakeRef<Cubemap>();
 
 	glEnable(GL_DEPTH_TEST);

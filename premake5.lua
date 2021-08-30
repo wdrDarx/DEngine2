@@ -4,7 +4,8 @@ workspace "DEngine"
 	configurations
 	{
 		"Debug",
-		"Release"
+		"Release",
+		"Runtime"
 	}
 	
 	flags
@@ -23,13 +24,18 @@ IncludeDir["GLM"] = "Vendor/GLM"
 IncludeDir["Objloader"] = "Vendor/ObjLoader"
 IncludeDir["STB_IMAGE"] = "Vendor/stb_image"
 IncludeDir["ASSIMP"] = "Vendor/Assimp/include"
+IncludeDir["OpenVR"] = "Vendor/OpenVR/include"
 
 --assimp stuff
 AssimpLibs = {}
 AssimpLibs["ASSIMP_RELEASE"] = "Vendor/Assimp/lib/assimp-Release.lib"
 AssimpLibs["ASSIMP_DEBUG"] = "Vendor/Assimp/lib/assimp-Debug.lib"
 AssimpLibs["ZLIB"] = "Vendor/zlib/lib/zlibstatic.lib"
-AssimpLibs["IRRXLM"] = "Vendor/irrXML/lib/IrrXML.lib" 		
+AssimpLibs["IRRXLM"] = "Vendor/irrXML/lib/IrrXML.lib" 	
+
+--openvr stuff
+OpenVRLibs = {}
+OpenVRLibs["OpenVR"] = "Vendor/OpenVR/libs/openvr_api.lib"
 
 group "Dependecies"
 include "Vendor/GLFW"
@@ -82,6 +88,12 @@ project "Engine"
 			AssimpLibs["ASSIMP_RELEASE"]
 		}
 
+	filter "configurations:Runtime"
+		links 
+		{
+			AssimpLibs["ASSIMP_RELEASE"]
+		}
+
 	filter "configurations:Debug"
 		links 
 		{
@@ -98,6 +110,10 @@ project "Engine"
       symbols "On"
 
 	filter "configurations:Release"
+      optimize "On"
+	  symbols "On"
+
+	filter "configurations:Runtime"
       optimize "Speed"
 
 project "Editor"
@@ -151,6 +167,10 @@ project "Editor"
       symbols "On"
 
 	filter "configurations:Release"
+      optimize "On"
+	  symbols "On"
+
+	filter "configurations:Runtime"
       optimize "Speed"
 
 project "Runtime"
@@ -196,6 +216,62 @@ project "Runtime"
       symbols "On"
 
 	filter "configurations:Release"
+      optimize "On"
+	  symbols "On"
+
+	filter "configurations:Runtime"
+      optimize "Speed"
+
+
+project "VRApp"
+	location "VRApp"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp"
+	}
+
+	includedirs
+	{
+		"Engine/Source",
+		"%{prj.name}/Source",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.Objloader}",
+		"%{IncludeDir.OpenVR}",
+		"%{IncludeDir.ASSIMP}"
+	}
+
+	defines
+	{
+		"STB_IMAGE_IMPLEMENTATION"
+	}
+
+	links
+	{
+		"Engine",
+		OpenVRLibs["OpenVR"]
+	}
+
+	filter "configurations:Debug"
+      symbols "On"
+
+	filter "configurations:Release"
+      optimize "On"
+	  symbols "On"
+
+	filter "configurations:Runtime"
       optimize "Speed"
 
 group "Modules"
@@ -244,6 +320,64 @@ project "CustomClasses"
       symbols "On"
 
 	filter "configurations:Release"
+      optimize "On"
+	  symbols "On"
+
+	filter "configurations:Runtime"
+      optimize "Speed"
+
+project "VRModule"
+	location "Modules/VRModule"
+	kind "SharedLib"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "off"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"Modules/%{prj.name}/Source/**.h",
+		"Modules/%{prj.name}/Source/**.cpp"
+	}
+
+	postbuildcommands
+	{
+		("{MKDIR} %{cfg.buildtarget.relpath}/../../Editor/Modules/%{prj.name}"),
+		("{COPY} %{cfg.buildtarget.relpath} ../../bin/" .. outputdir .. "/Editor/Modules/%{prj.name}" )		
+	}
+
+	includedirs
+	{
+		"Engine/Source",
+		"Modules/CustomClasses/Source",
+		"Modules/%{prj.name}/Source",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.STB_IMAGE}",
+		"%{IncludeDir.Objloader}",
+		"%{IncludeDir.OpenVR}",
+		"%{IncludeDir.ASSIMP}"
+	}
+
+	links
+	{
+		"Engine",
+		"CustomClasses",
+		OpenVRLibs["OpenVR"]
+	}
+
+	filter "configurations:Debug"
+      symbols "On"
+
+	filter "configurations:Release"
+      optimize "On"
+	  symbols "On"
+
+	filter "configurations:Runtime"
       optimize "Speed"
 
 group "" --Modules
