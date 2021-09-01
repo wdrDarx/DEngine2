@@ -1,10 +1,21 @@
 #pragma once
+#pragma warning (disable: 4251)
+#pragma warning (disable: 26495)
 
-//#define DENGINE_EXPORT
-#ifdef DENGINE_EXPORT
+//to export/import a class you need to define EXPORT_FILE on top of the file (and preferebaly undefine it at the end)
+#ifdef EXPORT_FILE
+#ifdef DENGINE_EXPORT 
 #define DENGINE_API _declspec(dllexport)
+#endif
 #else
-#define DENGINE_API 
+#ifdef EXPORT_FILE
+#define DENGINE_API extern _declspec(dllimport)
+#endif
+#endif
+
+//No dll stuff so just make it empty
+#ifndef DENGINE_API
+#define DENGINE_API
 #endif
 
 typedef unsigned char byte;

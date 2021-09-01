@@ -5,16 +5,16 @@ void TransformComponent::OnPostConstruct()
 {
 	Super::OnPostConstruct();
 
-	if (m_ParentRef)
-	{
-		for (auto& comp : GetOwner()->GetComponents())
-		{
-			if (comp->GetName() == m_ParentRef.ComponentName)
-			{
-				AttachTo(Cast<TransformComponent>(comp));
-			}
-		}	
-	}
+// 	if (m_ParentRef)
+// 	{
+// 		for (auto& comp : GetOwner()->GetComponents())
+// 		{
+// 			if (comp->GetName() == m_ParentRef.ComponentName)
+// 			{
+// 				AttachTo(Cast<TransformComponent>(comp));
+// 			}
+// 		}	
+// 	}
 }
 
 void TransformComponent::OnUpdate(const Tick& tick)

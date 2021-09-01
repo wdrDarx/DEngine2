@@ -7,5 +7,4 @@ class DENGINE_API DefaultPipeline : public Pipeline
 		OBJECT_CLASS_DEF(DefaultPipeline, Pipeline)
 
 		void OnConstruct() override;
-
 };

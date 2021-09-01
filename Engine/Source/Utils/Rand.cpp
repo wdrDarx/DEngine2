@@ -1,29 +1,34 @@
 #include "Rand.h"
 
-void Rand::Init()
+Rand::Rand()
 {
-  s_RandomEngine.seed(std::random_device()());
-  s_IsInit = true;
+	s_RandomEngine.seed(std::random_device()());
+	s_IsInit = true;
+}
+
+Rand& Rand::Get()
+{
+	return m_Instance;
 }
 
 float Rand::Float()
 {
-	if (!s_IsInit) Init();
-	return (float)s_Distribution(s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
+	return (float)Get().s_Distribution(Get().s_RandomEngine) / (float)std::numeric_limits<uint32_t>::max();
 }
 
 uint Rand::Int()
 {
-	if (!s_IsInit) Init();
-	return (uint)s_Distribution(s_RandomEngine);
+	return (uint)Get().s_Distribution(Get().s_RandomEngine);
 }
 
-uint64_t Rand::Int64()
+uint64 Rand::Int64()
 {
-	return (uint64_t)Rand::Int() * (uint64_t)Rand::Int();
+	return (uint64_t)Get().Int() * (uint64_t)Get().Int();
 }
 
 bool Rand::s_IsInit = false;
+
+Rand Rand::m_Instance;
 std::mt19937 Rand::s_RandomEngine;
 std::uniform_int_distribution<std::mt19937::result_type> Rand::s_Distribution;
 

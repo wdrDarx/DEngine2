@@ -11,7 +11,7 @@ struct DENGINE_API _ArrayInternal : public StructBase
 };
 
 template<typename _Type>
-struct Array : public _ArrayInternal
+struct DENGINE_API Array : public _ArrayInternal
 {
 	STRUCT_CLASS_DEF(Array<_Type>, _ArrayInternal)
 

@@ -22,6 +22,9 @@
     <Filter Include="Framework\Classes\Components">
       <UniqueIdentifier>{05C3B8D3-F17D-A87F-9A35-21CA86CFF20F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{888B590D-F46A-D8A8-FD82-637F69E13E0A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Rendering">
       <UniqueIdentifier>{E3AE1F7C-4F19-D4F2-9857-85980401B247}</UniqueIdentifier>
     </Filter>
@@ -136,6 +139,12 @@
     <ClInclude Include="Source\Framework\Array.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Classes\Components\BoxColliderComponent.h">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\Classes\Components\ColliderComponent.h">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h">
       <Filter>Framework\Classes\Components</Filter>
     </ClInclude>
@@ -187,6 +196,42 @@
     <ClInclude Include="Source\Framework\Tick.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Physics\ContactListener.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\CookingFactory.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysXAPI.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysXDebugger.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsActor.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsCore.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsLayer.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsMaterial.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsScene.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsSettings.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsShapes.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Physics\PhysicsWorld.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Rendering\Camera.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -197,6 +242,9 @@
       <Filter>Rendering\Classes\Pipelines</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Rendering\Classes\Renderers\DebugRenderer.h">
       <Filter>Rendering\Classes\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h">
@@ -280,6 +328,9 @@
     <ClInclude Include="Source\Utils\Paths.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Utils\PhysicsUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Utils\Rand.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -321,6 +372,12 @@
     <ClCompile Include="Source\Framework\Application.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\Classes\Components\BoxColliderComponent.cpp">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\Classes\Components\ColliderComponent.cpp">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp">
       <Filter>Framework\Classes\Components</Filter>
     </ClCompile>
@@ -357,6 +414,33 @@
     <ClCompile Include="Source\Framework\StructBase.cpp">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Physics\ContactListener.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\CookingFactory.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysXAPI.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysXDebugger.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsActor.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsLayer.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsScene.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsShapes.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Physics\PhysicsWorld.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Rendering\Camera.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -367,6 +451,9 @@
       <Filter>Rendering\Classes\Pipelines</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp">
+      <Filter>Rendering\Classes\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Rendering\Classes\Renderers\DebugRenderer.cpp">
       <Filter>Rendering\Classes\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp">
@@ -433,6 +520,9 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Paths.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils\PhysicsUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Source\Utils\Rand.cpp">

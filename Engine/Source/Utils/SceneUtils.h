@@ -28,6 +28,6 @@ public:
 		clones a scene object data to a new object
 		returns the new cloned object
 	*/
-	static Ref<SceneObject> CloneSceneObject(Ref<SceneObject> obj, Ref<Scene> TargetScene);
+	static Ref<SceneObject> CloneSceneObject(SceneObject* obj, Ref<Scene> TargetScene);
 
 };

@@ -29,8 +29,8 @@ void VRPawn::OnUpdate(const Tick& tick)
 	vr::TrackedDevicePose_t* PosArray = new vr::TrackedDevicePose_t();
 	m_VRsystem->GetDeviceToAbsoluteTrackingPose(vr::ETrackingUniverseOrigin::TrackingUniverseStanding, fPredictedSecondsFromNow, PosArray, 1);
 	glm::mat4 WorldTrans = VRModule::Mat4From3x4VR(PosArray->mDeviceToAbsoluteTracking);
-	glm::mat4 FinalWorldTrans = m_VRScale * WorldTrans;
-	HMD->SetWorldTransform(World::MakeTransform(FinalWorldTrans));
+	glm::mat4 FinalWorldTrans = m_VRScaleMat * WorldTrans;
+	HMD->SetLocalTransform(World::MakeTransform(FinalWorldTrans));
 
 	//logs
 	//LogTemp("Pos : " + Log::string(m_HeadsetTransform.pos));
@@ -49,8 +49,11 @@ void VRPawn::OnUpdate(const Tick& tick)
 	m_VRsystem->GetControllerStateWithPose(vr::ETrackingUniverseOrigin::TrackingUniverseStanding, LeftHandIndex, &LeftControllerState, sizeof(LeftControllerState), LeftControllerPose);
 	m_VRsystem->GetControllerStateWithPose(vr::ETrackingUniverseOrigin::TrackingUniverseStanding, RightHandIndex, &RightControllerState, sizeof(RightControllerState), RightControllerPose);
 
-	Transform LeftTrans = World::MakeTransform(m_VRScale * VRModule::Mat4From3x4VR(LeftControllerPose->mDeviceToAbsoluteTracking));
-	Transform RightTrans = World::MakeTransform(m_VRScale * VRModule::Mat4From3x4VR(RightControllerPose->mDeviceToAbsoluteTracking));
+	glm::mat4 LeftLocal = m_VRScaleMat * VRModule::Mat4From3x4VR(LeftControllerPose->mDeviceToAbsoluteTracking);
+	glm::mat4 RightLocal = m_VRScaleMat * VRModule::Mat4From3x4VR(RightControllerPose->mDeviceToAbsoluteTracking);
+
+	Transform LeftTrans = World::MakeTransform( root->GetWorldMatrix() * LeftLocal);
+	Transform RightTrans = World::MakeTransform( root->GetWorldMatrix() * RightLocal);
 	LeftTrans.scale = vec3d(1.0f);
 	RightTrans.scale = vec3d(1.0f);
 

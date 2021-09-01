@@ -13,6 +13,9 @@ EditorApp::EditorApp() : Application()
 	//set app state to editor
 	SetAppState(AppState::EDITOR);
 
+	//dev mode
+	SetAppType(AppType::DEVELOPMENT);
+
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
@@ -61,6 +64,9 @@ EditorApp::EditorApp() : Application()
 			}
 		}
 	});
+
+	//create the physics world
+	m_PhysicsWorld = CreateAppObject<PhysicsWorld>();
 
 	//bind the window event callback 
 	GetEventDispatcher().Bind(m_WindowEvent);
@@ -472,7 +478,7 @@ void EditorApp::OnKeyDown(KeyEvent* event)
 	{
 		if (m_SceneObjectPannel.m_SelectedObject)
 		{
-			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(ToRef<SceneObject>(m_SceneObjectPannel.m_SelectedObject), m_EditorScene).get();
+			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(m_SceneObjectPannel.m_SelectedObject, m_EditorScene).get();
 		}
 	}
 }

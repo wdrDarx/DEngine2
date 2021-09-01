@@ -9,9 +9,11 @@ RuntimeApp::RuntimeApp() : Application()
 	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
 
 	m_openScene = CreateAppObject<Scene>();
+	CreateAppObject<PhysicsWorld>();
 	m_openScene->SetPipeline<DefaultPipeline>(GetWindow()->GetRenderAPI());
 
 	SetAppState(AppState::GAME);
+	
 
 	Ref<SceneAsset> scene = GetAssetManager().LoadAsset<SceneAsset>(Paths::GetContentDirectory() + "\\Scenes\\VRTest.SceneAsset");
 	SceneUtils::LoadSceneFromAsset(scene, m_openScene);
@@ -20,6 +22,7 @@ RuntimeApp::RuntimeApp() : Application()
 
 void RuntimeApp::OnUpdate(const Tick& tick)
 {
+	SetAppType(AppType::SHIPPING);
 	GetWindow()->StartFrame();
 	if(!GetWindow()->isContextBound()) return;
 

@@ -5,13 +5,15 @@ void PlayerController::OnConstruct()
 {
 	Super::OnConstruct();
 
+	collider = CreateComponent<BoxColliderComponent>(ObjectInitializer::Module(this), "Collider");
 	root = CreateComponent<TransformComponent>(ObjectInitializer::Module(this), "Root");
 	mesh = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "Mesh");
 	camera = CreateComponent<CameraComponent>(ObjectInitializer::Module(this), "Camera");
 
 	SetRootComponent(root);
-	mesh->AttachTo(root);
-	camera->AttachTo(root);
+	collider->AttachTo(root);
+	mesh->AttachTo(collider);
+	camera->AttachTo(collider);
 }
 
 void PlayerController::OnUpdate(const Tick& tick)
@@ -20,8 +22,6 @@ void PlayerController::OnUpdate(const Tick& tick)
 
 	if(tick.GetTickGroup() != TickGroup::GAME) return;
 
-	Ref<TransformComponent> targetComponent = root;
-	Transform TargetTransform = targetComponent->GetWorldTransform();
 	vec3d MovementVec = {0,0,0};
 	//input
 	if (GetScene()->GetInputManager().IsKeyDown(GLFW_KEY_W))
@@ -53,13 +53,13 @@ void PlayerController::OnUpdate(const Tick& tick)
 	glm::quat TargetRot = World::VectorDirToQuat(TargetRotation);
 	glm::quat lerpQuat = World::LerpQuat(CurrentRot, TargetRot, RoatationLerpSpeed * tick.DeltaTime);
 
-	//vec3d lerpVec = World::InterpRot(mesh->GetWorldRotation(), TargetRotation, tick.DeltaTime, RoatationLerpSpeed);
 	vec3d lerpVec = World::QuatToRotationDegrees(lerpQuat);
 	mesh->SetWorldRotation(lerpVec);
 
 	if (!World::IsNearlyZero(MovementVec))
 	{
-		root->SetWorldPosition(root->GetWorldPostition() + World::GetForwardVector(mesh->GetWorldRotation()) * MovementSpeed * tick.DeltaTime * (FlipForwardVector ? -1.f : 1.f));
+		collider->m_PhysicsActor->AddForce(World::GetForwardVector(mesh->GetWorldRotation()) * MovementSpeed * tick.DeltaTime * (FlipForwardVector ? -1.f : 1.f), ForceMode::Force);
+		//collider->SetWorldPosition(collider->GetWorldPostition() + World::GetForwardVector(mesh->GetWorldRotation()) * MovementSpeed * tick.DeltaTime * (FlipForwardVector ? -1.f : 1.f));
 	}
 }
 
@@ -71,7 +71,10 @@ void PlayerController::OnBeginPlay()
 	{
 		if(event->GetEventType() == MouseEventType::BUTTON && event->GetKeyCode() == GLFW_MOUSE_BUTTON_LEFT)
 		{
-			SceneUtils::SpawnPrefabInScene(BulletPrefab, GetScene(), mesh->GetWorldTransform(), ObjectInitializer::Module(this));
+			Transform spawnTrans = mesh->GetWorldTransform();
+			if(FlipForwardVector) spawnTrans.rot.y += 180.f;
+
+			SceneUtils::SpawnPrefabInScene(BulletPrefab, GetScene(), spawnTrans, ObjectInitializer::Module(this));
 		}		
 	});
 

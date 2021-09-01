@@ -51,6 +51,8 @@ public:
 	Ref<SceneAsset> m_HotReloadSceneAsset;
 	Ref<SceneAsset> m_BeginPlaySceneAsset;
 
+	Ref<PhysicsWorld> m_PhysicsWorld;
+
 	Callback<KeyEvent> m_OnKeyDownCallback;
 	ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
 	std::vector<Ref<AssetEditor>> m_ActiveAssetEditors;

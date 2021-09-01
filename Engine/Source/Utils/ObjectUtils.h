@@ -55,4 +55,25 @@ class ObjectUtils
 			Creates an array of static properties from a buffer (Needs a struct registry)
 		*/
 		static std::vector<StaticProperty> GenerateStaticPropsFromBuffer(const Buffer& buffer, StructRegistry& structRegistry);
+
+		/*
+			returns the erased index
+		*/
+		template<typename T>
+		static uint RemovePointerFromRefVector(T* Object, std::vector<Ref<T>>& vector);
 };
+
+template<typename T>
+uint ObjectUtils::RemovePointerFromRefVector(T* Object, std::vector<Ref<T>>& vector)
+{
+	auto remove = vector.end();
+	for (auto it = vector.begin(); it != vector.end(); it++)
+	{
+		if ((*it).get() == Object)
+			remove = it;
+	}
+	if (remove != vector.end())
+			vector.erase(remove);
+
+	return remove - vector.begin();
+}

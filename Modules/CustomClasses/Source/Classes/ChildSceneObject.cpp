@@ -27,23 +27,18 @@ void ChildSceneObject::OnPostConstruct()
 	{
 		if (event->GetKeyCode() == GLFW_KEY_SPACE)
 		{
-			for(uint i = 0l; i < 1000; i++)
+			for(uint i = 0; i < 1; i++)
 			{ 
 				Transform RandomTransform;
-				RandomTransform.pos.x = Rand::Float() * RandomSpawnRange;
-				RandomTransform.pos.y = Rand::Float() * RandomSpawnRange;
-				RandomTransform.pos.z = Rand::Float() * RandomSpawnRange;
+				RandomTransform.pos.x = Rand().Float() * RandomSpawnRange - RandomSpawnRange * 0.5f;
+				RandomTransform.pos.y = Rand().Float() * RandomSpawnRange - RandomSpawnRange * 0.5f;
+				RandomTransform.pos.z = Rand().Float() * RandomSpawnRange - RandomSpawnRange * 0.5f;
 
-				RandomTransform.rot.x = Rand::Float() * RandomSpawnRange;
-				RandomTransform.rot.y = Rand::Float() * RandomSpawnRange;
-				RandomTransform.rot.z = Rand::Float() * RandomSpawnRange;
+				RandomTransform.rot.x = Rand().Float() * 180.f;
+				RandomTransform.rot.y = Rand().Float() * 180.f;
+				RandomTransform.rot.z = Rand().Float() * 180.f;
 
-				Ref<SceneObject> spawned = SceneUtils::SpawnPrefabInScene(PrefabToSpawn, GetScene(), Transform(), ObjectInitializer::Module(this));
-
-				if(auto& root = spawned->GetRootComponent())
-				{
-					root->SetWorldTransform(RandomTransform);
-				}
+				Ref<SceneObject> spawned = SceneUtils::SpawnPrefabInScene(PrefabToSpawn, GetScene(), RandomTransform, ObjectInitializer::Module(this));
 			}
 		}
 	});

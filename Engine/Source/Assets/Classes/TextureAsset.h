@@ -4,7 +4,7 @@
 #include "Utils/ImageLoader.h"
 #include "Serialization/Buffer.h"
 
-class DENGINE_API TextureAsset : public Asset
+class TextureAsset : public Asset
 {
 public:
 	TextureAsset() : Asset()

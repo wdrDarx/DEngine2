@@ -51,7 +51,7 @@ private:
 
 // stores things like default property values, and object registry type by hosting a scoped instance of the object/struct
 // yes this supports structs too
-class DENGINE_API StaticClass
+class StaticClass
 {
 public:
 	StaticClass()

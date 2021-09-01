@@ -14,6 +14,15 @@ class Viewport
 
 			m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
 
+			//key callback
+			m_KeyEvent.Assign([&](KeyEvent* event)
+			{
+				if (event->GetKeyState() == KeyState::DOWN)
+				{
+
+				}
+			});
+			m_InputManager.BindOnKeyDown(m_KeyEvent);
 
 			//mouse callback
 			m_MouseCallback.Assign([&](MouseEvent* event)
@@ -23,7 +32,6 @@ class Viewport
 					m_LastMouseVector = event->GetMoveVector();
 				}
 			});
-
 			m_InputManager.BindOnMouseMove(m_MouseCallback);
 		}
 
@@ -77,7 +85,7 @@ class Viewport
 				m_Window->GetRenderAPI()->SetViewport(m_LastViewportSize);
 				m_Camera->RecalculateViewProjectionMatrix();		
 
-				if(m_Scene->GetActiveCamera())
+				if(m_Scene && m_Scene->GetActiveCamera())
 					m_Scene->GetActiveCamera()->RecalculateViewProjectionMatrix();
  			}
  			m_ViewportPos = vec2d(viewportPanelPos.x, viewportPanelPos.y);
@@ -96,8 +104,20 @@ class Viewport
 			}
 
 			//draw gizmo
-			if(!DrawImGui || m_FocusedOnviewport)
-				RenderGizmo();
+			if(m_FocusedOnviewport)
+			{ 
+				if(DrawImGui)
+					RenderGizmo();
+				else
+				{
+					Bound bounds;
+					bounds.min.x = ImGui::GetItemRectMin().x;
+					bounds.min.y = ImGui::GetItemRectMin().y;
+					bounds.max.x = ImGui::GetItemRectMax().x;
+					bounds.max.y = ImGui::GetItemRectMax().y;
+					RenderGizmo(bounds);
+				}
+			}
 
 			if (DrawImGui)
 			{
@@ -229,7 +249,7 @@ class Viewport
 			m_InputManager.ClearInput();
 		}
 
-		void RenderGizmo()
+		void RenderGizmo(const Bound& viewportBounds = Bound{})
 		{
 			if(m_ViewportMode == AppState::GAME) return;
 
@@ -246,7 +266,12 @@ class Viewport
 				{
 					ImGuizmo::SetOrthographic(m_Camera->GetProjectionType() == ProjectionType::ORTHO);
 					ImGuizmo::SetDrawlist();
-					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, (float)ImGui::GetWindowWidth(), (float)ImGui::GetWindowHeight());
+					if(viewportBounds.min == Bound{}.min && viewportBounds.max == Bound{}.max)
+						ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, (float)ImGui::GetWindowWidth(), (float)ImGui::GetWindowHeight());
+					else
+					{
+						ImGuizmo::SetRect(viewportBounds.min.x, viewportBounds.min.y, viewportBounds.max.x - viewportBounds.min.x, viewportBounds.max.y - viewportBounds.min.y);
+					}
 					const glm::mat4& proj = m_Camera->GetProjectionMatrix();
 					const glm::mat4& view = m_Camera->GetViewMatrix();
 
@@ -316,6 +341,7 @@ class Viewport
 
 		InputManager m_InputManager;
 		Callback<MouseEvent> m_MouseCallback;
+		Callback<KeyEvent> m_KeyEvent;
 		vec2d m_LastMouseVector = {0,0};
 
 		//menu offset
@@ -323,11 +349,12 @@ class Viewport
 
 		AppState m_ViewportMode;
 
+		ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
+
 		//gizmo stuff
 		bool m_DrawGizmo = true;
 		ObjectComponent* m_SelectedComponent = nullptr;
 		SceneObject* m_SelectedObject = nullptr;
-		ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
 };
 
 

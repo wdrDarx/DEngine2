@@ -8,7 +8,7 @@
 	inheritable Object existant in the scope of a sceneObject
 */
 class SceneObject;
-class ObjectComponent : public ObjectBase
+class DENGINE_API ObjectComponent : public ObjectBase
 {
 public:	
 	friend class SceneObject;

@@ -24,6 +24,7 @@ public:
 	float RoatationLerpSpeed = 0.5f;
 	bool FlipForwardVector = true;
 
+	Ref<BoxColliderComponent> collider;
 	Ref<TransformComponent> root;
 	Ref<CameraComponent> camera;
 	Ref<StaticMeshComponent> mesh;

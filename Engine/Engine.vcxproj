@@ -74,8 +74,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DENGINE_EXPORT;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;PX_PHYSX_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Source;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\ImGui;..\Vendor\GLM;..\Vendor\ObjLoader;..\Vendor\stb_image;..\Vendor\Assimp\include;..\Vendor\PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -88,14 +88,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;..\Vendor\Assimp\lib\assimp-Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\vendor\PhysX\lib\Debug\PhysX_static_64.lib;..\vendor\PhysX\lib\Debug\PhysXCharacterKinematic_static_64.lib;..\vendor\PhysX\lib\Debug\PhysXCommon_static_64.lib;..\vendor\PhysX\lib\Debug\PhysXCooking_static_64.lib;..\vendor\PhysX\lib\Debug\PhysXExtensions_static_64.lib;..\vendor\PhysX\lib\Debug\PhysXFoundation_static_64.lib;..\vendor\PhysX\lib\Debug\PhysXPvdSDK_static_64.lib;..\vendor\Assimp\lib\Debug\assimp.lib;..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DENGINE_EXPORT;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;PX_PHYSX_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Source;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\ImGui;..\Vendor\GLM;..\Vendor\ObjLoader;..\Vendor\stb_image;..\Vendor\Assimp\include;..\Vendor\PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -113,14 +114,15 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;..\Vendor\Assimp\lib\assimp-Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\vendor\PhysX\lib\Release\PhysX_static_64.lib;..\vendor\PhysX\lib\Release\PhysXCharacterKinematic_static_64.lib;..\vendor\PhysX\lib\Release\PhysXCommon_static_64.lib;..\vendor\PhysX\lib\Release\PhysXCooking_static_64.lib;..\vendor\PhysX\lib\Release\PhysXExtensions_static_64.lib;..\vendor\PhysX\lib\Release\PhysXFoundation_static_64.lib;..\vendor\PhysX\lib\Release\PhysXPvdSDK_static_64.lib;..\vendor\Assimp\lib\Release\assimp.lib;..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Runtime|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>Source;..\Vendor\ImGui;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\GLM;..\Vendor\stb_image;..\Vendor\ObjLoader;..\Vendor\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DENGINE_EXPORT;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;PX_PHYSX_STATIC_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Source;..\Vendor\GLFW\include;..\Vendor\GLAD\include;..\Vendor\ImGui;..\Vendor\GLM;..\Vendor\ObjLoader;..\Vendor\stb_image;..\Vendor\Assimp\include;..\Vendor\PhysX\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -136,7 +138,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;..\Vendor\Assimp\lib\assimp-Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\vendor\PhysX\lib\Runtime\PhysX_static_64.lib;..\vendor\PhysX\lib\Runtime\PhysXCharacterKinematic_static_64.lib;..\vendor\PhysX\lib\Runtime\PhysXCommon_static_64.lib;..\vendor\PhysX\lib\Runtime\PhysXCooking_static_64.lib;..\vendor\PhysX\lib\Runtime\PhysXExtensions_static_64.lib;..\vendor\PhysX\lib\Runtime\PhysXFoundation_static_64.lib;..\vendor\PhysX\lib\Runtime\PhysXPvdSDK_static_64.lib;..\vendor\Assimp\lib\Runtime\assimp.lib;..\Vendor\zlib\lib\zlibstatic.lib;..\Vendor\irrXML\lib\IrrXML.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -171,6 +173,8 @@
     <ClInclude Include="Source\Framework\AppObject.h" />
     <ClInclude Include="Source\Framework\Application.h" />
     <ClInclude Include="Source\Framework\Array.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\BoxColliderComponent.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\ColliderComponent.h" />
     <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
     <ClInclude Include="Source\Framework\EnumBase.h" />
@@ -188,10 +192,23 @@
     <ClInclude Include="Source\Framework\StaticClass.h" />
     <ClInclude Include="Source\Framework\StructBase.h" />
     <ClInclude Include="Source\Framework\Tick.h" />
+    <ClInclude Include="Source\Physics\ContactListener.h" />
+    <ClInclude Include="Source\Physics\CookingFactory.h" />
+    <ClInclude Include="Source\Physics\PhysXAPI.h" />
+    <ClInclude Include="Source\Physics\PhysXDebugger.h" />
+    <ClInclude Include="Source\Physics\PhysicsActor.h" />
+    <ClInclude Include="Source\Physics\PhysicsCore.h" />
+    <ClInclude Include="Source\Physics\PhysicsLayer.h" />
+    <ClInclude Include="Source\Physics\PhysicsMaterial.h" />
+    <ClInclude Include="Source\Physics\PhysicsScene.h" />
+    <ClInclude Include="Source\Physics\PhysicsSettings.h" />
+    <ClInclude Include="Source\Physics\PhysicsShapes.h" />
+    <ClInclude Include="Source\Physics\PhysicsWorld.h" />
     <ClInclude Include="Source\Rendering\Camera.h" />
     <ClInclude Include="Source\Rendering\Classes\Materials\PBR_Material.h" />
     <ClInclude Include="Source\Rendering\Classes\Pipelines\DefaultPipeline.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\CubemapRenderer.h" />
+    <ClInclude Include="Source\Rendering\Classes\Renderers\DebugRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\MeshRenderer.h" />
     <ClInclude Include="Source\Rendering\Classes\Renderers\QuadRenderer.h" />
     <ClInclude Include="Source\Rendering\FrameBuffer.h" />
@@ -219,6 +236,7 @@
     <ClInclude Include="Source\Utils\ModelLoader.h" />
     <ClInclude Include="Source\Utils\ObjectUtils.h" />
     <ClInclude Include="Source\Utils\Paths.h" />
+    <ClInclude Include="Source\Utils\PhysicsUtils.h" />
     <ClInclude Include="Source\Utils\Rand.h" />
     <ClInclude Include="Source\Utils\RenderUtils.h" />
     <ClInclude Include="Source\Utils\SceneUtils.h" />
@@ -234,6 +252,8 @@
     <ClCompile Include="Source\Core\Log.cpp" />
     <ClCompile Include="Source\Framework\AppObject.cpp" />
     <ClCompile Include="Source\Framework\Application.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\BoxColliderComponent.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\ColliderComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
     <ClCompile Include="Source\Framework\InputManager.cpp" />
@@ -246,10 +266,20 @@
     <ClCompile Include="Source\Framework\SceneObject.cpp" />
     <ClCompile Include="Source\Framework\StaticClass.cpp" />
     <ClCompile Include="Source\Framework\StructBase.cpp" />
+    <ClCompile Include="Source\Physics\ContactListener.cpp" />
+    <ClCompile Include="Source\Physics\CookingFactory.cpp" />
+    <ClCompile Include="Source\Physics\PhysXAPI.cpp" />
+    <ClCompile Include="Source\Physics\PhysXDebugger.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsActor.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsLayer.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsScene.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsShapes.cpp" />
+    <ClCompile Include="Source\Physics\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Rendering\Camera.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Materials\PBR_Material.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Pipelines\DefaultPipeline.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\CubemapRenderer.cpp" />
+    <ClCompile Include="Source\Rendering\Classes\Renderers\DebugRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\MeshRenderer.cpp" />
     <ClCompile Include="Source\Rendering\Classes\Renderers\QuadRenderer.cpp" />
     <ClCompile Include="Source\Rendering\FrameBuffer.cpp" />
@@ -272,6 +302,7 @@
     <ClCompile Include="Source\Utils\ModelLoader.cpp" />
     <ClCompile Include="Source\Utils\ObjectUtils.cpp" />
     <ClCompile Include="Source\Utils\Paths.cpp" />
+    <ClCompile Include="Source\Utils\PhysicsUtils.cpp" />
     <ClCompile Include="Source\Utils\Rand.cpp" />
     <ClCompile Include="Source\Utils\RenderUtils.cpp" />
     <ClCompile Include="Source\Utils\SceneUtils.cpp" />

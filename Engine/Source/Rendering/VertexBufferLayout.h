@@ -7,7 +7,7 @@ enum class ShaderDataType
 };
 
 
-struct DENGINE_API VertexBufferElement
+struct VertexBufferElement
 {
 	uint type;
 	uint count;

@@ -21,6 +21,7 @@ void ImGuiLayer::Init(Ref<Window> window)
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.ConfigWindowsMoveFromTitleBarOnly = true;
 	ImGui::SetCurrentContext(m_ImGuidContext);
 
 	ImGui_ImplGlfw_InitForOpenGL(window->GetGlfwWindow(), true);

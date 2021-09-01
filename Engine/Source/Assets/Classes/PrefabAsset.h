@@ -77,6 +77,11 @@ public:
 		prefab->Serialize(m_SceneObjectBuffer);
 	}
 
+	void SavePrefab(SceneObject* prefab)
+	{
+		prefab->Serialize(m_SceneObjectBuffer);
+	}
+
 	const std::string GetPrefabBaseClassName() const
 	{
 		return m_SceneObjectClassName;

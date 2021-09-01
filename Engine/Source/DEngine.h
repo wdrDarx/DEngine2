@@ -43,6 +43,12 @@
 
 //Framework Classes
 #include "Framework/Classes/Components/TransformComponent.h"
+#include "Framework/Classes/Components/ColliderComponent.h"
+#include "Framework/Classes/Components/BoxColliderComponent.h"
+
+
+//physics
+#include "Physics/PhysicsCore.h"
 
 //Assets
 #include "Assets/Asset.h"
@@ -65,6 +71,7 @@
 #include "Rendering/Classes/Renderers/QuadRenderer.h"
 #include "Rendering/Classes/Renderers/CubemapRenderer.h"
 #include "Rendering/Classes/Renderers/MeshRenderer.h"
+#include "Rendering/Classes/Renderers/DebugRenderer.h"
 #include "Rendering/Classes/Pipelines/DefaultPipeline.h"
 
 //Default Materials
@@ -87,3 +94,4 @@
 #include "Utils/RenderUtils.h"
 #include "Utils/ModelLoader.h"
 #include "Utils/InputUtils.h"
+#include "Utils/PhysicsUtils.h"

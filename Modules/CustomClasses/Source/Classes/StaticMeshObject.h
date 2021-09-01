@@ -16,5 +16,5 @@ public:
 
 public:
 	Ref<StaticMeshComponent> m_Mesh;
-	Ref<TransformComponent> m_Root;
+	Ref<BoxColliderComponent> m_Collider;
 };

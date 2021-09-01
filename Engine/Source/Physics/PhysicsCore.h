@@ -1,0 +1,11 @@
+#pragma once
+#include "ContactListener.h"
+#include "CookingFactory.h"
+#include "PhysicsActor.h"
+#include "PhysicsScene.h"
+#include "PhysicsMaterial.h"
+#include "PhysicsShapes.h"
+#include "PhysicsWorld.h"
+#include "PhysicsLayer.h"
+#include "PhysXAPI.h"
+#include "PhysXDebugger.h"

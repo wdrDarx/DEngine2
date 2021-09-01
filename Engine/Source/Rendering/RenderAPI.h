@@ -51,7 +51,7 @@ class DENGINE_API RenderAPI
 			return m_LastViewportSize;
 		}
 
-		const vec2d& GetWindowSize() const
+		vec2d GetWindowSize() const
 		{
 			ASSERT(GetCurrentContext());
 			int width, height;

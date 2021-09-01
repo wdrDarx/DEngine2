@@ -17,6 +17,7 @@ using superclass::superclass;
 #define _TO_PROP_TYPE(cppType) [&]() -> PropType { PropType out = PropType::NONE; \
 if(std::is_same<cppType, bool>::value) { out = PropType::BOOL; } else \
 if(std::is_same<cppType, int>::value) { out = PropType::INT; } else \
+if(std::is_same<cppType, uint>::value) { out = PropType::UINT; } else \
 if(std::is_same<cppType, float>::value) { out = PropType::FLOAT; } else \
 if(std::is_same<cppType, std::string>::value) { out =  PropType::STRING; } else \
 if(std::is_same<cppType, vec2d>::value) {out = PropType::VEC2D; } else \
@@ -38,6 +39,7 @@ if(std::is_base_of<StructBase, cppType>::value) {out = PropType::STRUCT; } \
 #define FROM_PROP_TYPE(propType)  [&]() ->  std::type_index {  std::type_index out = typeid(bool); \
 if(propType == PropType::BOOL) {out = typeid(bool);} else \
 if(propType == PropType::INT) {out = typeid(int);} else \
+if(propType == PropType::UINT) {out = typeid(uint);} else \
 if(propType == PropType::FLOAT) {out = typeid(float);} else \
 if(propType == PropType::STRING) {out = typeid(std::string);} else \
 if(propType == PropType::VEC2D) {out = typeid(vec2d);} else \
@@ -55,6 +57,7 @@ return out; }();
 #define PROPDEF_FLAGS(x, flags) { int _flags = flags; \
 if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::BOOL,						 &x, sizeof(bool),  _flags)); } else \
 if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::INT,						 &x, sizeof(int),   _flags)); } else \
+if(typeid(x) == typeid(uint)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::UINT,						 &x, sizeof(uint),   _flags)); } else \
 if(typeid(x) == typeid(float)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::FLOAT,					 &x, sizeof(float), _flags)); } else \
 if(typeid(x) == typeid(std::string)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRING,				 &x, ((std::string*)&x)->length(), _flags)); } else \
 if(typeid(x) == typeid(vec2d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::VEC2D,					 &x, sizeof(vec2d), _flags)); } else \

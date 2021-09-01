@@ -16,26 +16,8 @@ workspace "DEngine"
 	startproject "Editor"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-IncludeDir = {}
-IncludeDir["GLFW"] = "Vendor/GLFW/include"
-IncludeDir["GLAD"] = "Vendor/GLAD/include"
-IncludeDir["ImGui"] = "Vendor/ImGui"
-IncludeDir["GLM"] = "Vendor/GLM"
-IncludeDir["Objloader"] = "Vendor/ObjLoader"
-IncludeDir["STB_IMAGE"] = "Vendor/stb_image"
-IncludeDir["ASSIMP"] = "Vendor/Assimp/include"
-IncludeDir["OpenVR"] = "Vendor/OpenVR/include"
 
---assimp stuff
-AssimpLibs = {}
-AssimpLibs["ASSIMP_RELEASE"] = "Vendor/Assimp/lib/assimp-Release.lib"
-AssimpLibs["ASSIMP_DEBUG"] = "Vendor/Assimp/lib/assimp-Debug.lib"
-AssimpLibs["ZLIB"] = "Vendor/zlib/lib/zlibstatic.lib"
-AssimpLibs["IRRXLM"] = "Vendor/irrXML/lib/IrrXML.lib" 	
-
---openvr stuff
-OpenVRLibs = {}
-OpenVRLibs["OpenVR"] = "Vendor/OpenVR/libs/openvr_api.lib"
+include "Dependencies.lua"	
 
 group "Dependecies"
 include "Vendor/GLFW"
@@ -62,19 +44,29 @@ project "Engine"
 	includedirs
 	{
 		"%{prj.name}/Source",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}",
-		"%{IncludeDir.ASSIMP}"
+		IncludeDir["GLFW"],
+		IncludeDir["GLAD"],
+		IncludeDir["ImGui"],
+		IncludeDir["GLM"],
+		IncludeDir["Objloader"],
+		IncludeDir["STB_IMAGE"],
+		IncludeDir["ASSIMP"],
+		IncludeDir["PhysX"]
 	}
 
 	links
 	{			
-		AssimpLibs["ZLIB"],
-		AssimpLibs["IRRXLM"],
+		Library["PhysX"],
+		Library["PhysXCharacterKinematic"],
+		Library["PhysXCommon"],
+		Library["PhysXCooking"],
+		Library["PhysXExtensions"],
+		Library["PhysXFoundation"],
+		Library["PhysXPvd"],
+
+		Library["Assimp"],
+		Library["Zlib"],
+		Library["IRRXLM"],
 
 		"opengl32.lib",
 		"imGui",
@@ -82,28 +74,12 @@ project "Engine"
 		"GLAD"
 	}
 
-	filter "configurations:Release"
-		links 
-		{
-			AssimpLibs["ASSIMP_RELEASE"]
-		}
-
-	filter "configurations:Runtime"
-		links 
-		{
-			AssimpLibs["ASSIMP_RELEASE"]
-		}
-
-	filter "configurations:Debug"
-		links 
-		{
-			AssimpLibs["ASSIMP_DEBUG"]
-		}
-
 	defines
 	{
+		"DENGINE_EXPORT", 
 		"_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS",
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"PX_PHYSX_STATIC_LIB"
 	}
 
 	filter "configurations:Debug"
@@ -112,9 +88,19 @@ project "Engine"
 	filter "configurations:Release"
       optimize "On"
 	  symbols "On"
+	  defines
+	  {
+			"NDEBUG" --for physx
+	  }
 
 	filter "configurations:Runtime"
       optimize "Speed"
+	  defines
+	  {
+			"NDEBUG" --for physx
+	  }
+
+group "Applications"
 
 project "Editor"
 	location "Editor"
@@ -136,13 +122,14 @@ project "Editor"
 	{
 		"Engine/Source",
 		"%{prj.name}/Source",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}",
-		"%{IncludeDir.ASSIMP}"
+		IncludeDir["GLFW"],
+		IncludeDir["GLAD"],
+		IncludeDir["ImGui"],
+		IncludeDir["GLM"],
+		IncludeDir["Objloader"],
+		IncludeDir["STB_IMAGE"],
+		IncludeDir["ASSIMP"],
+		IncludeDir["PhysX"]
 	}
 
 	defines
@@ -169,9 +156,17 @@ project "Editor"
 	filter "configurations:Release"
       optimize "On"
 	  symbols "On"
+	  defines
+	  {
+			"NDEBUG" --for physx
+	  }
 
 	filter "configurations:Runtime"
       optimize "Speed"
+	  defines
+	  {
+			"NDEBUG" --for physx
+	  }
 
 project "Runtime"
 	location "Runtime"
@@ -192,19 +187,20 @@ project "Runtime"
 	includedirs
 	{
 		"Engine/Source",
-		"%{prj.name}/Source",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}",
-		"%{IncludeDir.ASSIMP}"
+		IncludeDir["GLFW"],
+		IncludeDir["GLAD"],
+		IncludeDir["ImGui"],
+		IncludeDir["GLM"],
+		IncludeDir["Objloader"],
+		IncludeDir["STB_IMAGE"],
+		IncludeDir["ASSIMP"],
+		IncludeDir["PhysX"]
 	}
 
 	defines
 	{
-		"STB_IMAGE_IMPLEMENTATION"
+		"STB_IMAGE_IMPLEMENTATION",
+		"DENGINE_RUNTIME"
 	}
 
 	links
@@ -218,166 +214,20 @@ project "Runtime"
 	filter "configurations:Release"
       optimize "On"
 	  symbols "On"
+	  defines
+	  {
+			"NDEBUG" --for physx
+	  }
 
 	filter "configurations:Runtime"
       optimize "Speed"
+	  defines
+	  {
+			"NDEBUG" --for physx
+	  }
 
-
-project "VRApp"
-	location "VRApp"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
-	}
-
-	includedirs
-	{
-		"Engine/Source",
-		"%{prj.name}/Source",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}",
-		"%{IncludeDir.OpenVR}",
-		"%{IncludeDir.ASSIMP}"
-	}
-
-	defines
-	{
-		"STB_IMAGE_IMPLEMENTATION"
-	}
-
-	links
-	{
-		"Engine",
-		OpenVRLibs["OpenVR"]
-	}
-
-	filter "configurations:Debug"
-      symbols "On"
-
-	filter "configurations:Release"
-      optimize "On"
-	  symbols "On"
-
-	filter "configurations:Runtime"
-      optimize "Speed"
+group "" --Applications
 
 group "Modules"
-
-project "CustomClasses"
-	location "Modules/CustomClasses"
-	kind "SharedLib"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"Modules/%{prj.name}/Source/**.h",
-		"Modules/%{prj.name}/Source/**.cpp"
-	}
-
-	postbuildcommands
-	{
-		("{MKDIR} %{cfg.buildtarget.relpath}/../../Editor/Modules/%{prj.name}"),
-		("{COPY} %{cfg.buildtarget.relpath} ../../bin/" .. outputdir .. "/Editor/Modules/%{prj.name}" )		
-	}
-
-	includedirs
-	{
-		"Engine/Source",
-		"Modules/%{prj.name}/Source",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}",
-		"%{IncludeDir.ASSIMP}"
-	}
-
-	links
-	{
-		"Engine"
-	}
-
-	filter "configurations:Debug"
-      symbols "On"
-
-	filter "configurations:Release"
-      optimize "On"
-	  symbols "On"
-
-	filter "configurations:Runtime"
-      optimize "Speed"
-
-project "VRModule"
-	location "Modules/VRModule"
-	kind "SharedLib"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "off"
-
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"Modules/%{prj.name}/Source/**.h",
-		"Modules/%{prj.name}/Source/**.cpp"
-	}
-
-	postbuildcommands
-	{
-		("{MKDIR} %{cfg.buildtarget.relpath}/../../Editor/Modules/%{prj.name}"),
-		("{COPY} %{cfg.buildtarget.relpath} ../../bin/" .. outputdir .. "/Editor/Modules/%{prj.name}" )		
-	}
-
-	includedirs
-	{
-		"Engine/Source",
-		"Modules/CustomClasses/Source",
-		"Modules/%{prj.name}/Source",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.GLM}",
-		"%{IncludeDir.STB_IMAGE}",
-		"%{IncludeDir.Objloader}",
-		"%{IncludeDir.OpenVR}",
-		"%{IncludeDir.ASSIMP}"
-	}
-
-	links
-	{
-		"Engine",
-		"CustomClasses",
-		OpenVRLibs["OpenVR"]
-	}
-
-	filter "configurations:Debug"
-      symbols "On"
-
-	filter "configurations:Release"
-      optimize "On"
-	  symbols "On"
-
-	filter "configurations:Runtime"
-      optimize "Speed"
-
+include "Modules.lua"
 group "" --Modules

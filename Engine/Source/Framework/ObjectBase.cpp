@@ -22,7 +22,7 @@ void ObjectBase::Initialize(const ObjectInitializer& initializer)
 	//assign random ID
 	if (initializer.Flags & ConstructFlags::RANDOMID)
 	{
-		m_ID = { Rand::Int64() };
+		m_ID = { Rand().Int64() };
 	}
 
 	//start invalid

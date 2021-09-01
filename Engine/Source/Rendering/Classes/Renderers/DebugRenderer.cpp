@@ -1,0 +1,114 @@
+#include "DebugRenderer.h"
+#include "DEngine.h"
+
+void DebugRenderer::OnConstruct()
+{
+	Super::OnConstruct();
+
+	m_StorageBuffer = MakeRef<ShaderStorageBuffer>(0); //binding = 0
+}
+
+void DebugRenderer::PrepareFrame()
+{
+	Super::PrepareFrame();
+
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("LineShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\LineShader.shader"), "LineShader");
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("WireframeShader"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\WireframeShader.shader"), "WireframeShader");
+		
+	//draw physx stuff
+	return;
+	if(GetPipeline()->GetScene()->GetPhysicsScene() && GetPipeline()->GetScene()->GetPhysicsScene()->GetPhysXScene())
+	{
+		const physx::PxRenderBuffer& rb = GetPipeline()->GetScene()->GetPhysicsScene()->GetPhysXScene()->getRenderBuffer();
+		for (physx::PxU32 i = 0; i < rb.getNbLines(); i++)
+		{
+			const physx::PxDebugLine& line = rb.getLines()[i];
+			vec4d start = vec4d(PhysicsUtils::FromPhysXVector(line.pos0), 1.0f);
+			vec4d end = vec4d(PhysicsUtils::FromPhysXVector(line.pos1), 1.0f);
+			m_LineBuffer.push_back({ start, end, color4{0,1,0,1} });
+		}
+	}
+}
+
+void DebugRenderer::RenderFrame(Ref<Camera> camera)
+{
+	Super::RenderFrame(camera);
+
+	//draw in dev mode only
+	if (GetPipeline()->GetScene()->GetApplication()->GetAppType() != AppType::DEVELOPMENT)
+		return;
+
+	glEnable(GL_DEPTH_TEST);
+
+	if(m_LineBuffer.size() < 1 && m_CubeBuffer.size() < 1) return;
+
+	//Draw Lines
+	Ref<Shader> lineShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("LineShader");
+	lineShader->Bind();
+	lineShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	m_StorageBuffer->SetData(m_LineBuffer.data(), m_LineBuffer.size() * sizeof(LineSegment));
+	glDrawArraysInstanced(GL_LINES, 0, 2, m_LineBuffer.size()); //draw m_LineBuffer.size() line segments (each have a start, end and color)
+
+	//Draw Cubes
+	//Wireframe
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+	Ref<Shader> WireframeShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("WireframeShader");
+	WireframeShader->Bind();
+	WireframeShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	for (auto& cube : m_CubeBuffer)
+	{
+		WireframeShader->SetUniformMat4f("u_Model", World::MakeMatrix(cube.trans));
+		WireframeShader->SetUniform4f("u_Color", cube.color.r, cube.color.g, cube.color.b, 1.0f);
+		RenderUtils::RenderCube();
+	}
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+
+	glDisable(GL_DEPTH_TEST);
+}
+
+void DebugRenderer::ClearFrame()
+{
+	Super::ClearFrame();
+
+	m_LineBuffer.clear();
+	m_CubeBuffer.clear();
+}
+
+void DebugRenderer::DrawDebugLine(const vec3d& start, const vec3d& end, const color3& color)
+{
+	color4 out;
+	out.r = color.r;
+	out.g = color.g;
+	out.b = color.b;
+	out.a = 1.0f;
+
+	m_LineBuffer.push_back({ vec4d(start, 1.0) ,  vec4d(end, 1.0), out });
+}
+
+void DebugRenderer::DrawDebugLineStrip(const std::vector<vec3d>& positions, const color3& color)
+{
+	color4 out;
+	out.r = color.r;
+	out.g = color.g;
+	out.b = color.b;
+	out.a = 1.0f;
+
+	for (uint i = 0; i < positions.size(); i++)
+	{
+		if(i > positions.size() - 2) break;
+
+		m_LineBuffer.push_back({ vec4d(positions[i], 1.0) ,  vec4d(positions[i + 1], 1.0), out });
+	}
+
+	
+}
+
+void DebugRenderer::DrawDebugCube(const vec3d& pos, const vec3d& rot, const vec3d& size, const color3& color)
+{
+	m_CubeBuffer.push_back({{pos, rot, size}, color});
+}

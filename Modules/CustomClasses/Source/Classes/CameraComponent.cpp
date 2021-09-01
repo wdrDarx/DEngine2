@@ -4,7 +4,7 @@ void CameraComponent::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
 
-	if(tick.GetTickGroup() != TickGroup::GAME) return;
+	if(tick.GetTickGroup() != TickGroup::GAME || !m_Camera) return;
 
 	m_Camera->SetTransform(GetWorldTransform());
 	m_Camera->SetFOV(FOV);

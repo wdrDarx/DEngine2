@@ -11,10 +11,11 @@ enum PropFlags
 	EditAnywhere = BIT(1)
 };
 
-enum class PropType
+enum class PropType : uint
 {
 	BOOL = 0,
 	INT,
+	UINT,
 	FLOAT,
 	STRING,
 	VEC2D,

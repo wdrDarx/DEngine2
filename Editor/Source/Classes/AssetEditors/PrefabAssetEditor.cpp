@@ -103,6 +103,7 @@ void PrefabAssetEditor::Render()
 	//viewport
 	m_App->GetWindow()->GetInputManager().ForwardTo(m_Viewport->m_InputManager);
 	m_Viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
+	m_Viewport->m_TransformMode = m_App->m_TransformMode;
 	m_Viewport->BeginFrame();
 	m_Scene->GetPipeline()->PrepareFrame();
 	m_Viewport->EndFrame(false);

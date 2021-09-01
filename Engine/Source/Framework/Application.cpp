@@ -80,6 +80,8 @@ void Application::RegisterBaseClasses()
 
 	//Classes
 	REGISTER_OBJECT(GetObjectRegistry(), TransformComponent, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), ColliderComponent, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), BoxColliderComponent, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()

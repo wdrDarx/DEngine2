@@ -107,6 +107,7 @@ struct ClassType
 using color4 = glm::vec4;
 using color3 = glm::vec3;
 using vec3d = glm::vec3;
+using vec4d = glm::vec4;
 using vec2d = glm::vec2;
 using quat = glm::quat;
 

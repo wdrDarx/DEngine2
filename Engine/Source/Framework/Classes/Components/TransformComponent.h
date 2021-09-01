@@ -1,6 +1,7 @@
 #pragma once
 #include "Framework/ObjectComponent.h"
 #include "Utils/World.h"
+
 /*
 	unique identifies for a local component within a scene object
 	because component id's are generated on CreateComponent on construct
@@ -53,12 +54,13 @@ public:
 	//used to detect changes in transform to clear cache
 	void OnUpdate(const Tick& tick) override;
 
-	const Transform& GetLocalTransform() const
+	virtual const Transform& GetLocalTransform() const
 	{
 		return m_Transform;
 	}
 
-	void SetLocalTransform(const Transform& LocalTrans)
+	//returns true if transform has changed
+	virtual bool SetLocalTransform(const Transform& LocalTrans)
 	{
 		if (!World::NearlyEqual(LocalTrans, m_Transform))
 		{ 
@@ -66,13 +68,15 @@ public:
 
 			//clear caches
 			ClearCache();
+			return true;
 		}
+		return false;
 	}
 
 	//recursively gets world matrix by combining transforms of all the parents on the hierarchy
 	const glm::mat4& GetWorldMatrix();
 
-	Transform GetWorldTransform()
+	virtual Transform GetWorldTransform()
 	{
 		if (!m_WorldTransformCache)
 		{
@@ -83,24 +87,26 @@ public:
 		return m_WorldTransformCache.value();
 	}
 
-	void SetWorldTransform(const Transform& WorldTrans)
+	//returns true if transform has changed
+	virtual bool SetWorldTransform(const Transform& WorldTrans)
 	{
 		if (m_WorldTransformCache)
 		{
-			if(World::NearlyEqual(WorldTrans, m_WorldTransformCache.value())) return;
+			if(World::NearlyEqual(WorldTrans, m_WorldTransformCache.value())) return false;
 		}
 
 		SetWorldMatrix(World::MakeMatrix(WorldTrans));
+		return true;
 	}
 
 	//idk if is even correct really
-	void SetWorldMatrix(const glm::mat4& matrix)
+	virtual void SetWorldMatrix(const glm::mat4& matrix)
 	{
 		glm::mat4 world = GetWorldMatrix();
 		SetMatrix(GetMatrix() * glm::inverse(world) * matrix);
 	}
 
-	const glm::mat4& GetMatrix()
+	virtual const glm::mat4& GetMatrix()
 	{
 		if(!m_LocalMatrixCache)
 			m_LocalMatrixCache = World::MakeMatrix(m_Transform);
@@ -108,7 +114,7 @@ public:
 		return m_LocalMatrixCache.value();
 	}
 
-	void SetMatrix(const glm::mat4& mat)
+	virtual void SetMatrix(const glm::mat4& mat)
 	{
 		if (m_LocalMatrixCache)
 		{
@@ -138,7 +144,7 @@ public:
 	}
 
 	//rotation
-	const vec3d& GetWorldRotation()
+	vec3d GetWorldRotation()
 	{
 		return GetWorldTransform().rot;
 	}
@@ -189,12 +195,12 @@ public:
 		AddWorldTransform({ {0,0,0}, rot, {0,0,0} });
 	}
 
-	Ref<TransformComponent> GetParent() const
+	virtual Ref<TransformComponent> GetParent() const
 	{
 		return m_Parent;
 	}
 
-	void AttachTo(Ref<TransformComponent> NewParent)
+	virtual void AttachTo(Ref<TransformComponent> NewParent)
 	{
 		ASSERT(NewParent); //cant be nullptr, use Detach to clear parent
 		if(NewParent.get() != this)
@@ -206,7 +212,7 @@ public:
 		}
 	}
 
-	void Detach()
+	virtual void Detach()
 	{
 		m_Parent = nullptr;
 
@@ -228,10 +234,10 @@ public:
 		}
 	}
 
-	bool IsRootComponent() const;
+	virtual bool IsRootComponent() const;
 
 	//needs to have an owner, children are got by scanning all components and checking if they're attached to us
-	std::vector<Ref<TransformComponent>> GetChildren() const;
+	virtual std::vector<Ref<TransformComponent>> GetChildren() const;
 
 	//override to serialize the parent reference
 	uint Serialize(Buffer& buffer) const override;

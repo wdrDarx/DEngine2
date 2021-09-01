@@ -27,6 +27,10 @@ Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsse
 	if(auto root = sceneObject->GetRootComponent())
 		root->SetWorldTransform(WorldTransform);
 
+	//call on begin play if the game is running
+	if(scene->GetApplication()->GetAppState() == AppState::GAME)
+		sceneObject->OnBeginPlay();
+
 	return sceneObject;
 }
 
@@ -39,7 +43,7 @@ void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene
 	sceneAsset->LoadScene(scene);
 }
 
-Ref<SceneObject> SceneUtils::CloneSceneObject(Ref<SceneObject> obj, Ref<Scene> TargetScene)
+Ref<SceneObject> SceneUtils::CloneSceneObject(SceneObject* obj, Ref<Scene> TargetScene)
 {
 	ObjectInitializer temp = obj->GetObjectInitializer();
 	Ref<PrefabAsset> tempasset = MakeRef<PrefabAsset>();

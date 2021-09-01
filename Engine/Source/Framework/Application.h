@@ -23,6 +23,12 @@ enum class AppState
 	EDITOR = 2
 };
 
+enum class AppType
+{
+	DEVELOPMENT = 1,
+	SHIPPING = 2
+};
+
 
 /*
 Application contains a window and houses application objects
@@ -132,6 +138,18 @@ public:
 		obj->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));	
 	}
 
+	template<class T>
+	Ref<T> GetAppObject()
+	{
+		for (auto& obj : GetAppObjects())
+		{
+			if(Ref<T> out = Cast<T>(obj))
+				return out;
+		}
+
+		return nullptr;
+	}
+
 	const std::vector<Ref<AppObject>> GetAppObjects() const
 	{
 		return m_AppObjects;
@@ -161,6 +179,16 @@ public:
 	{
 		return m_AssetManager;
 	}
+
+	AppType GetAppType() const
+	{
+		return m_AppType;
+	}
+
+	void SetAppType(AppType type)
+	{
+		m_AppType = type;
+	}
 	
 protected:
 	void MakeWindow(const std::string& name, int width, int height, bool vsync);
@@ -170,6 +198,7 @@ protected:
 	void Shutdown();
 
 	AppState m_AppState;
+	AppType m_AppType;
 	Ref<Window> m_Window;
 	
 	//used to relay window events to this event dispatcher

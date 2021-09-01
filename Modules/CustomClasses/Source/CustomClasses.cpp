@@ -44,7 +44,7 @@ void GetModuleMemory(DWORD dwProcID, char* szModuleName, uptr& memPtr, uint64& m
 
 void CustomClasses::OnLoad()
 {
-	//assign App
+	//cancer
 	Module::AssignApplication(GetApplication());
 
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);

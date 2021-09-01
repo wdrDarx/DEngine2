@@ -80,7 +80,7 @@ struct ObjectInitializer
 };
 
 
-class _placeholder
+class DENGINE_API _placeholder
 {
 protected:
 	virtual uint Serialize(Buffer& buffer)

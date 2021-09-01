@@ -9,7 +9,7 @@ struct ShaderProgramSource
 	std::string GeometryShader;
 };
 
-struct DENGINE_API Shader
+struct Shader
 {
 public:
 	std::string m_Filepath;

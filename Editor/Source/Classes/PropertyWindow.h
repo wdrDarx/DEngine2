@@ -277,6 +277,15 @@ class PropertyWindow
 						break;
 					}
 
+					case PropType::UINT:
+					{
+						int copy = *(uint*)prop.m_Value;
+						ImGui::DragInt(DisplayName.c_str(), &copy);
+						uint final = MAX(0,copy);
+						*(uint*)prop.m_Value = final;
+						break;
+					}
+
 					case PropType::FLOAT:
 					{
 						ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);

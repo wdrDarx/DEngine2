@@ -7,6 +7,7 @@
 #include "Rendering/Renderer.h"
 #include "Framework/InputManager.h"
 #include "Rendering/Pipeline.h"
+#include "Physics/PhysicsScene.h"
 
 /*
 * An AppObject that contains scoped SceneObjects and relays functions to them
@@ -64,9 +65,23 @@ public:
 		//call destroy on all scene objects
 		for (auto& obj : GetSceneObjects())
 		{
+			SceneEvent event;
+			event.m_EventType = SceneEventType::OBJECT_PRE_DELETE;
+			event.m_ObjectClass = SceneObjectClass::SCENEOBJECT;
+			event.m_SceneObject = obj.get();
+
+			//Dispatch PRE_DELETE event
+			GetSceneEventDipatcher().Dispatch(event);
+
+			//call on destroy
 			obj->OnDestroy();
+
+			//Dispatch POST_DELETE event
+			event.m_EventType = SceneEventType::OBJECT_POST_DELETE;
+			GetSceneEventDipatcher().Dispatch(event);
 		}
 
+		//this actually kills memory
 		m_SceneObjects.clear();
 	}
 
@@ -138,6 +153,13 @@ public:
 		m_ActiveCamera = camera;
 	}
 
+	Ref<PhysicsScene> GetPhysicsScene()
+	{
+		return m_PhysicsScene;
+	}
+
+	void CreatePhysicsScene(PhysicsWorld* worldContext);
+
 private:
 
 	//for scene events
@@ -150,8 +172,11 @@ private:
 	std::vector<Ref<SceneObject>> m_SceneObjects;
 
 	//optional setting, used during play mode 
-	Ref<Camera> m_ActiveCamera;
+	Ref<Camera> m_ActiveCamera = nullptr;
 
 	//used for rendering
-	Ref<Pipeline> m_Pipeline;
+	Ref<Pipeline> m_Pipeline = nullptr;
+
+	//PhysX Scene
+	Ref<PhysicsScene> m_PhysicsScene = nullptr;
 };

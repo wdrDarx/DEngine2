@@ -5,6 +5,9 @@ void Scene::OnBeginPlay()
 {
 	Super::OnBeginPlay();
 
+	if (GetApplication()->GetAppObject<PhysicsWorld>())
+		m_PhysicsScene = GetApplication()->GetAppObject<PhysicsWorld>()->CreatePhysicsScene();
+
 	for (auto& obj : GetSceneObjects())
 	{
 		obj->OnBeginPlay();
@@ -19,6 +22,11 @@ void Scene::OnEndPlay()
 	{
 		obj->OnEndPlay();
 	}
+
+	SetActiveCamera(nullptr);
+
+	if (m_PhysicsScene)
+		m_PhysicsScene = nullptr;
 }
 
 void Scene::OnUpdate(const Tick& tick)
@@ -33,12 +41,15 @@ void Scene::OnUpdate(const Tick& tick)
 		if(CastCheck<SceneObject>(obj))
 			obj->OnUpdate(tick);
 	}
+
+	//simulate in game only
+	if(GetPhysicsScene() && tick.GetTickGroup() == TickGroup::GAME)
+		GetPhysicsScene()->Simulate(tick.DeltaTime);
 }
 
 void Scene::OnConstruct()
 {
 	Super::OnConstruct();
-	//CreateDefaultRenderers();
 
 	SceneEvent constructEvent;
 	constructEvent.m_Scene = this;
@@ -50,6 +61,7 @@ void Scene::OnConstruct()
 void Scene::OnDestroy()
 {
 	Super::OnDestroy();
+	//GetPhysicsScene()->OnDestroy();
 
 	//call on destroy for all scene objects
 	for (auto& obj : GetSceneObjects())
@@ -216,4 +228,9 @@ void Scene::AddSceneObject(Ref<SceneObject> obj, const ObjectInitializer& Initia
 	//Dispatch POST_INITIALIZE event
 	event.m_EventType = SceneEventType::OBJECT_POST_INITIALIZE;
 	GetSceneEventDipatcher().Dispatch(event);
+}
+
+void Scene::CreatePhysicsScene(PhysicsWorld* worldContext)
+{
+	m_PhysicsScene = worldContext->CreatePhysicsScene();
 }
