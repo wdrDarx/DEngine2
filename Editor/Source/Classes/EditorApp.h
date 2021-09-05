@@ -20,6 +20,8 @@ public:
 	void BeginFrame();
 	void EndFrame();
 
+	void DrawRendererWindow();
+
 	void HotReload();
 	
 	void BeginPlay();
@@ -32,6 +34,7 @@ public:
 	void DestroyViewport(Viewport* viewport);
 
 	void OnKeyDown(KeyEvent* event);
+	void OnFileDropped(const std::string& FullPath);
 
 	void AddAssetEditor(Ref<AssetHandle> TargetAssetHandle);
 	void RemoveAssetEditor(AssetEditor* assetEditor);
@@ -52,6 +55,9 @@ public:
 	Ref<SceneAsset> m_BeginPlaySceneAsset;
 
 	Ref<PhysicsWorld> m_PhysicsWorld;
+	Ref<DropTarget> m_DropTarget;
+
+	RenderFlags m_DebugFlags = (RenderFlags)0;
 
 	Callback<KeyEvent> m_OnKeyDownCallback;
 	ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;

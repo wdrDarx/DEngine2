@@ -27,7 +27,7 @@ void ChildSceneObject::OnPostConstruct()
 	{
 		if (event->GetKeyCode() == GLFW_KEY_SPACE)
 		{
-			for(uint i = 0; i < 1; i++)
+			for(uint i = 0; i < 1000; i++)
 			{ 
 				Transform RandomTransform;
 				RandomTransform.pos.x = Rand().Float() * RandomSpawnRange - RandomSpawnRange * 0.5f;

@@ -51,6 +51,16 @@ public:
 		return m_MaterialAsset.IsValid() && m_MeshAsset.IsValid();
 	}
 
+	Ref<MeshAsset> GetLoadedMeshAsset()
+	{
+		return m_LoadedMeshAsset;
+	}
+
+	Ref<MaterialAsset> GetLoadedMaterialAsset()
+	{
+		return m_LoadedMaterialAsset;
+	}
+
 private:
 	
 	//called by the renderer when generating draw calls

@@ -10,6 +10,7 @@ class Viewport
 			FrameBufferSpec spec;
 			spec.Width = 1;
 			spec.Height = 1;
+			spec.Samples = 8;
 			m_Framebuffer = MakeRef<FrameBuffer>(spec);
 
 			m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
@@ -91,6 +92,7 @@ class Viewport
  			m_ViewportPos = vec2d(viewportPanelPos.x, viewportPanelPos.y);
 
  			uint64_t textureID = m_Framebuffer->GetColorAttachement();
+			ImVec2 PreViewportCursor = ImGui::GetCursorPos();
  			ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_LastViewportSize.x, m_LastViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 			bool isFocused = ImGui::IsWindowFocused();
@@ -166,7 +168,7 @@ class Viewport
 				}
 			}
 
-			DrawMenu();
+			DrawMenu(PreViewportCursor);
 
 			if (DrawImGui)
 			{ 
@@ -310,15 +312,20 @@ class Viewport
 		}
 
 
-		void DrawMenu()
+		void DrawMenu(const ImVec2& startPos)
 		{
-			ImGui::SetCursorPos({ m_MenuOffset.x, m_MenuOffset.y });
+			ImVec2 start = startPos;
+			ImGui::SetCursorPos({ m_MenuOffset.x + start.x, m_MenuOffset.y + start.y});
 			std::string modeStr = "Mode : " + std::string(m_ViewportMode == AppState::GAME ? "Game" : "Editor");
 
 			if (ImGui::Button(modeStr.c_str()))
 			{
 				m_ViewportMode = m_ViewportMode == AppState::GAME ? AppState::EDITOR : AppState::GAME;
 			}
+			ImGui::SameLine();
+			ImGui::PushItemWidth(100.f);
+			ImGui::SliderFloat("Camera Speed", &m_CameraMovementSpeed, 10.f, 1000.f, "%.0f");
+			ImGui::PopItemWidth();
 		}
 
 		
@@ -334,7 +341,7 @@ class Viewport
 		Ref<Window> m_Window;
 		Ref<Camera> m_Camera;
 
-		float m_CameraMovementSpeed = 200.f;
+		float m_CameraMovementSpeed = 700.f;
 		float m_CameraRotationSpeed = 100.f;
 
 		bool m_Close = false;
@@ -345,7 +352,7 @@ class Viewport
 		vec2d m_LastMouseVector = {0,0};
 
 		//menu offset
-		vec2d m_MenuOffset = {10.f, 30.f};
+		vec2d m_MenuOffset = {10.f, 10.f};
 
 		AppState m_ViewportMode;
 

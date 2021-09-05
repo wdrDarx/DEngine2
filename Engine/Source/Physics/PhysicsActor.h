@@ -2,6 +2,8 @@
 #include "Core/Core.h"
 #include "Utils/PhysicsUtils.h"
 #include "PhysicsShapes.h"
+#include "Event/EventDispatcher.h"
+#include "Event/PhysicsActorEvent.h"
 #include "Utils/World.h"
 
 //can shapes and collision stuff be changed on runtime
@@ -78,7 +80,6 @@ public:
 
 	void SetLockFlag(ActorLockFlag flag, bool value);
 	void SetBodyType(RigidBodyType type);
-	void OnFixedUpdate(float fixedDeltaTime);
 
 	vec3d GetPosition() const 
 	{
@@ -126,6 +127,9 @@ public:
 
 	void SetCollisionDetectionType(const CollisionDetectionType& type);
 
+	void BindOnAdvance(Callback<PhysicsActorEvent>& callback);
+	void OnAdvance();
+
 private:
 	std::vector<Ref<ColliderShape>> m_Colliders;
 	uint m_LockFlags = 0;
@@ -139,6 +143,9 @@ private:
 
 	physx::PxRigidActor* m_RigidActor = nullptr;
 	PhysicsScene* m_PhysicsScene = nullptr;
+
+	//dispaches physics actor events
+	EventDispatcher m_EventDispatcher;
 private:
 	friend class PhysicsScene;
 };

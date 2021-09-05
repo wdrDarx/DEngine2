@@ -62,7 +62,7 @@ void Application::CoreUpdate(float DeltaTime)
 {
 	//NOTE: window start and end frame needs to be called manually because an app can have no window
 	Tick tick(GetAppState() == AppState::EDITOR ? TickGroup::EDITOR : TickGroup::GAME, DeltaTime);
-
+	m_LastTick = tick;
 	OnUpdate(tick);
 }
 
@@ -82,6 +82,7 @@ void Application::RegisterBaseClasses()
 	REGISTER_OBJECT(GetObjectRegistry(), TransformComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), ColliderComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), BoxColliderComponent, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), DirectionalLightObject, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()

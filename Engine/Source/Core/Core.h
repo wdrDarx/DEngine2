@@ -42,6 +42,8 @@ typedef unsigned char byte;
 #include <typeindex>
 #include <memory>
 #include <optional>
+#include <locale>
+#include <codecvt>
 #include <map>
 #include <cstdint>
 #include <queue>
@@ -57,7 +59,8 @@ typedef unsigned char byte;
 #define ASSERT(x) { if(!(x)) { __debugbreak(); } }
 
 #define BIT(x) 1 << x
-#define ENUM_BITWISE(enumClass) inline enumClass operator|(enumClass a, enumClass b) { return static_cast<AnimalFlags>(static_cast<int>(a) | static_cast<int>(b)); }
+#define ENUM_BITWISE(enumClass) inline enumClass operator|(const enumClass& a, const enumClass& b) { return static_cast<enumClass>(static_cast<int>(a) | static_cast<int>(b)); }\
+inline void operator|=(enumClass& target, const enumClass& other) { *(int*)(&target) |= (int)(other); } 
 
 #define MIN(x,y) ((x) < (y)) ? (x) : (y)
 #define MAX(x,y) ((x) > (y)) ? (x) : (y)
@@ -119,7 +122,6 @@ constexpr bool CastCheck(Ref<U> ptr)
 {
 	return dynamic_cast<T*>(ptr.get());
 }
-
 
 template<class FwdIt, class Equal = std::equal_to<>>
 void cluster(FwdIt first, FwdIt last, Equal eq = Equal{})

@@ -3,7 +3,15 @@
 void StaticMeshComponent::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
+	MeshFlags flags = (MeshFlags)0;
 
+	if(!CastShadow)
+		flags |= MeshFlags::NOSHADOW;
+
+	if(!Visible)
+		flags |= MeshFlags::INVISIBLE;
+
+	m_StaticMesh->SetMeshFlags(flags);
 	m_StaticMesh->SetTransform(GetWorldTransform());
 	m_StaticMesh->SetStaticMaterial(m_MaterialAsset);
 	m_StaticMesh->SetStaticMesh(m_MeshAsset);

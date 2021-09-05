@@ -23,8 +23,6 @@ public:
 			m_Pixels = Buffer(image.pixels, image.pixels + image.Width * image.Height * 4);
 		if (m_Spec.Type == TextureType::HDR)
 			m_Pixels = Buffer(image.pixels, image.pixels + image.Width * image.Height * 3 * 4); //3 channels, 4 bytes per channel
-
-	
 	}
 
 	TextureAsset(const uint& width, const uint& height, const Buffer& pixels) : m_width(width), m_height(height), m_Pixels(pixels)

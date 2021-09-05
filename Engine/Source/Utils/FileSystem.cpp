@@ -1,7 +1,8 @@
 #include "FileSystem.h"
-
+#include "DEngine.h"
 #include <windows.h>
 #include <commdlg.h>
+#include "ole2.h"
 #include "GLFW/glfw3.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include "GLFW/glfw3native.h"
@@ -110,6 +111,13 @@ std::wstring File::StringToWideString(const std::string& str)
 	return r;
 }
 
+std::string File::WideStringToString(const std::wstring& str)
+{
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+	return converterX.to_bytes(str);
+}
+
 void File::WriteFile(const std::string& path, const Buffer& buffer)
 {
 #ifdef FILE_THREADED 
@@ -142,4 +150,79 @@ bool File::DoesFileExist(const std::string& path)
 {
 	std::ifstream f(path.c_str());
 	return f.good();
+}
+
+void File::AcceptDragFiles(Window* targetWindow, DropTarget* dropTarget)
+{
+	OleInitialize(NULL);
+	DragAcceptFiles(glfwGetWin32Window(targetWindow->GetGlfwWindow()), true);
+	auto result = RegisterDragDrop(glfwGetWin32Window(targetWindow->GetGlfwWindow()), dropTarget);
+
+	if(result < 0)
+		LogError("Failed to register Drop target! " + STRING(result));
+}
+
+
+HRESULT DropTarget::DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+{
+
+	return HRESULT();
+}
+
+HRESULT DropTarget::DragLeave()
+{
+	return HRESULT();
+}
+
+HRESULT DropTarget::DragOver(DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+{
+	return HRESULT();
+}
+
+HRESULT DropTarget::Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+{
+	FORMATETC fdrop = { CF_HDROP, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+
+	if (SUCCEEDED(pDataObj->QueryGetData(&fdrop)))
+	{
+		STGMEDIUM stgMedium = { 0 };
+		stgMedium.tymed = TYMED_HGLOBAL;
+		HRESULT hr = pDataObj->GetData(&fdrop, &stgMedium);
+		if (SUCCEEDED(hr))
+		{
+			HGLOBAL gmem = stgMedium.hGlobal;
+			HDROP hdrop = (HDROP)GlobalLock(gmem);
+			UINT numOfFiles = DragQueryFile((HDROP)hdrop, 0xFFFFFFFF, NULL, 0);
+			TCHAR buffer[MAX_PATH];
+			for (int i = 0; i < numOfFiles; i++)
+			{
+				UINT charsCopied = DragQueryFile((HDROP)hdrop, i, buffer, MAX_PATH);
+// 				wchar_t* name = L"File : ";
+// 				MessageBox(NULL, buffer, name, MB_OK);
+
+				//call if a callback is assigned (the string is the full path to the file dropped in)
+				if(m_Callback)
+				{ 
+					m_Callback(File::WideStringToString(buffer));
+				}
+			}
+			GlobalUnlock(gmem);
+		}
+	}
+	return HRESULT();
+}
+
+HRESULT DropTarget::QueryInterface(REFIID iid, void** ppvObject)
+{
+	return HRESULT();
+}
+
+ULONG DropTarget::AddRef(void)
+{
+	return ULONG();
+}
+
+ULONG DropTarget::Release(void)
+{
+	return ULONG();
 }

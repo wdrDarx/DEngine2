@@ -215,5 +215,7 @@ protected:
 	ModuleManager m_ModuleManager;
 
 	AssetManager m_AssetManager;
+
+	Tick m_LastTick;
 };
 

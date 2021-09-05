@@ -7,7 +7,11 @@ void ColliderComponent::OnBeginPlay()
 
 	m_PhysicsActor = MakeRef<PhysicsActor>(GetOwner()->GetScene()->GetPhysicsScene().get());
 	m_PhysicsActor->SetDynamic(Dynamic);
-	m_PhysicsActor->CreateRigidActor(GetWorldTransform());
+
+	Transform WorldTrans = GetWorldTransform();
+	m_PhysicsActor->CreateRigidActor(WorldTrans);
+	m_TargetPhysicsPos = WorldTrans.pos;
+	m_TargetPhysicsQuat = World::RotationDegreesToQuat(WorldTrans.rot);
 
 	if (m_PhysicsActor->IsDynamic())
 	{ 
@@ -23,7 +27,7 @@ void ColliderComponent::OnBeginPlay()
 	
 	m_Shape->SetTrigger(IsTrigger);
 
-	m_PhysicsActor->SetMass(100.f);
+	m_PhysicsActor->SetMass(Mass);
 	m_PhysicsActor->SetLinearDrag(LinearDamping);
 	m_PhysicsActor->SetAngularDrag(AngularDamping);
 
@@ -35,6 +39,15 @@ void ColliderComponent::OnBeginPlay()
 	m_PhysicsActor->SetLockFlag(ActorLockFlag::RotationZ, LockRotZ);
 
 	GetOwner()->GetScene()->GetPhysicsScene()->AddActor(m_PhysicsActor);
+
+	//assign and bind callback
+	m_PhysicsActorCallback.Assign([&](PhysicsActorEvent* event)
+	{
+		if(event->GetEventType() == PhysicsActorEventType::ONADVANCE)
+			OnPhysicsActorAdvance();
+	});
+
+	m_PhysicsActor->BindOnAdvance(m_PhysicsActorCallback);
 }
 
 void ColliderComponent::OnEndPlay()
@@ -68,23 +81,47 @@ void ColliderComponent::OnUpdate(const Tick& tick)
 		}
 		else
 		{ 
-			if(m_PendingTransform)
+			if(m_PendingTransform) //this means we wanna teleport so no need to interpolate
 			{			
 				m_PhysicsActor->SetPosition(m_PendingTransform->pos);
 				m_PhysicsActor->SetRotation(m_PendingTransform->rot);
 				m_RecieveNextTransform = false;
 				Super::SetWorldTransform(m_PendingTransform.value());
 			}
-			else
-			{ 
-				NewTrans.pos = m_PhysicsActor->GetPosition();
-				NewTrans.rot = m_PhysicsActor->GetRotation();
+			else if(m_PhysicsActor->IsDynamic()) //static actors dont recieve position back, its 1 sided
+			{
+				if(Lerp && !World::IsNearlyZero(m_TargetPhysicsPos)) //we're lerping and the target position has been set
+				{  
+					//interpolate - (takes exactly 1 physics step to get to new location which is perfect timing)
+					//also means the transform is 1 physics timestep behind but that shouldnt be an issue
+					float PhysicsFrequency = 1.0f / GetOwner()->GetScene()->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsSettings().FixedTimestep;
+
+					NewTrans.pos = World::Lerp(NewTrans.pos, m_TargetPhysicsPos, PhysicsFrequency * tick.DeltaTime);
+					quat FinalQuat = World::LerpQuat(World::RotationDegreesToQuat(NewTrans.rot), m_TargetPhysicsQuat, PhysicsFrequency * tick.DeltaTime);
+					NewTrans.rot = World::QuatToRotationDegrees(FinalQuat);
+				}
+				else
+				{
+					NewTrans.pos = m_PhysicsActor->GetPosition();
+					NewTrans.rot = m_PhysicsActor->GetRotation();
+				}
+
 				m_RecieveNextTransform = false;
 				Super::SetWorldTransform(NewTrans);
 			}
 			m_PendingTransform = {};
 			m_RecieveNextTransform = true;
 		}
+	}
+}
+
+void ColliderComponent::OnPhysicsActorAdvance()
+{
+	//assign targets
+	if(Lerp)
+	{ 
+		m_TargetPhysicsPos = m_PhysicsActor->GetPosition();
+		m_TargetPhysicsQuat = PhysicsUtils::FromPhysXQuat(m_PhysicsActor->GetPhysXActor()->getGlobalPose().q);
 	}
 }
 

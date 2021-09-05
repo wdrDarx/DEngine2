@@ -18,16 +18,18 @@ void DebugRenderer::PrepareFrame()
 		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\WireframeShader.shader"), "WireframeShader");
 		
 	//draw physx stuff
-	return;
-	if(GetPipeline()->GetScene()->GetPhysicsScene() && GetPipeline()->GetScene()->GetPhysicsScene()->GetPhysXScene())
-	{
-		const physx::PxRenderBuffer& rb = GetPipeline()->GetScene()->GetPhysicsScene()->GetPhysXScene()->getRenderBuffer();
-		for (physx::PxU32 i = 0; i < rb.getNbLines(); i++)
+	if (GetPipeline()->GetScene()->GetApplication()->GetAppType() == AppType::DEVELOPMENT && GetRenderFlags() & RenderFlags::PHYSX)
+	{ 
+		if(GetPipeline()->GetScene()->GetPhysicsScene() && GetPipeline()->GetScene()->GetPhysicsScene()->GetPhysXScene())
 		{
-			const physx::PxDebugLine& line = rb.getLines()[i];
-			vec4d start = vec4d(PhysicsUtils::FromPhysXVector(line.pos0), 1.0f);
-			vec4d end = vec4d(PhysicsUtils::FromPhysXVector(line.pos1), 1.0f);
-			m_LineBuffer.push_back({ start, end, color4{0,1,0,1} });
+			const physx::PxRenderBuffer& rb = GetPipeline()->GetScene()->GetPhysicsScene()->GetPhysXScene()->getRenderBuffer();
+			for (physx::PxU32 i = 0; i < rb.getNbLines(); i++)
+			{
+				const physx::PxDebugLine& line = rb.getLines()[i];
+				vec4d start = vec4d(PhysicsUtils::FromPhysXVector(line.pos0), 1.0f);
+				vec4d end = vec4d(PhysicsUtils::FromPhysXVector(line.pos1), 1.0f);
+				m_LineBuffer.push_back({ start, end, color4{0,1,0,1} });
+			}
 		}
 	}
 }
@@ -40,33 +42,42 @@ void DebugRenderer::RenderFrame(Ref<Camera> camera)
 	if (GetPipeline()->GetScene()->GetApplication()->GetAppType() != AppType::DEVELOPMENT)
 		return;
 
-	glEnable(GL_DEPTH_TEST);
-
 	if(m_LineBuffer.size() < 1 && m_CubeBuffer.size() < 1) return;
 
 	//Draw Lines
-	Ref<Shader> lineShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("LineShader");
-	lineShader->Bind();
-	lineShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
-	m_StorageBuffer->SetData(m_LineBuffer.data(), m_LineBuffer.size() * sizeof(LineSegment));
-	glDrawArraysInstanced(GL_LINES, 0, 2, m_LineBuffer.size()); //draw m_LineBuffer.size() line segments (each have a start, end and color)
+	glEnable(GL_DEPTH_TEST);
+	glLineWidth(m_LineWidth);
+
+	if (GetRenderFlags() & RenderFlags::DEBUGLINES)
+	{
+		Ref<Shader> lineShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("LineShader");
+		lineShader->Bind();
+		lineShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+		m_StorageBuffer->SetData(m_LineBuffer.data(), m_LineBuffer.size() * sizeof(LineSegment));
+		glDrawArraysInstanced(GL_LINES, 0, 2, m_LineBuffer.size()); //draw m_LineBuffer.size() line segments (each have a start, end and color)
+		GetPipeline()->GetRenderAPI()->GetRenderStats().DrawCalls++;
+	}
 
 	//Draw Cubes
 	//Wireframe
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
-	Ref<Shader> WireframeShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("WireframeShader");
-	WireframeShader->Bind();
-	WireframeShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
-	for (auto& cube : m_CubeBuffer)
-	{
-		WireframeShader->SetUniformMat4f("u_Model", World::MakeMatrix(cube.trans));
-		WireframeShader->SetUniform4f("u_Color", cube.color.r, cube.color.g, cube.color.b, 1.0f);
-		RenderUtils::RenderCube();
+	if(GetRenderFlags() & RenderFlags::DEBUGCUBES)
+	{ 
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT, GL_LINE);
+		glPolygonMode(GL_BACK, GL_LINE);
+		Ref<Shader> WireframeShader = GetPipeline()->GetRenderAPI()->GetShaderFromCache("WireframeShader");
+		WireframeShader->Bind();
+		WireframeShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+		for (auto& cube : m_CubeBuffer)
+		{
+			WireframeShader->SetUniformMat4f("u_Model", World::MakeMatrix(cube.trans));
+			WireframeShader->SetUniform4f("u_Color", cube.color.r, cube.color.g, cube.color.b, 1.0f);
+			RenderUtils::RenderCube();
+			GetPipeline()->GetRenderAPI()->GetRenderStats().DrawCalls++;
+		}
+		glPolygonMode(GL_FRONT, GL_FILL);
+		glPolygonMode(GL_BACK, GL_FILL);
 	}
-	glPolygonMode(GL_FRONT, GL_FILL);
-	glPolygonMode(GL_BACK, GL_FILL);
 
 	glDisable(GL_DEPTH_TEST);
 }

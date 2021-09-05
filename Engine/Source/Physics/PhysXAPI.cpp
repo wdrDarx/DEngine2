@@ -64,7 +64,11 @@ PhysXAPI::PhysXAPI()
 	ASSERT(m_PhysXSDK);
 
 	s_ExtensionsLoaded = true;
-	m_PhysXCPUDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
+	m_PhysXCPUDispatcher = physx::PxDefaultCpuDispatcherCreate(std::thread::hardware_concurrency());
+
+	// create GPU dispatcher
+	physx::PxCudaContextManagerDesc cudaContextManagerDesc;
+	m_PhysXCudaContextManager = PxCreateCudaContextManager(*m_PhysXFoundation, cudaContextManagerDesc);
 
 	//CookingFactory::Initialize();
 
@@ -99,16 +103,14 @@ bool PhysXAPI::setMassAndUpdateInertia(physx::PxRigidBody& body, physx::PxReal m
 physx::PxFoundation* PhysXAPI::GetFoundation() { return m_PhysXFoundation; }
 physx::PxPhysics* PhysXAPI::GetPhysXSDK() { return m_PhysXSDK; }
 physx::PxCpuDispatcher* PhysXAPI::GetCPUDispatcher() { return m_PhysXCPUDispatcher; }
+physx::PxCudaContextManager* PhysXAPI::GetCudaContextManager() { return m_PhysXCudaContextManager;}
+
 physx::PxDefaultAllocator* PhysXAPI::GetAllocator() { return &m_Allocator; }
 
 void PhysXAPI::Load()
 {
 	if(!s_ExtensionsLoaded)
 	{ 
-		//default sim values (1 cm = 1.f)
-		m_PhysicsWorldScale.length = 100.0f;
-		m_PhysicsWorldScale.speed = 981.f;
-
 		auto foundation = PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
 		auto sdk = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, m_PhysicsWorldScale, false, m_Debugger->GetDebugger());
 		bool extentionsLoaded = PxInitExtensions(*sdk, GetDebugger()->GetDebugger());

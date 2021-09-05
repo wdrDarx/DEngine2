@@ -88,6 +88,8 @@ void VRPawn::OnBeginPlay()
 	FrameBufferSpec spec;
 	spec.Width = width;
 	spec.Height = height;
+	spec.ColorFormat = GL_RGBA8;
+	spec.Samples = 8;
 	m_LeftEyeBuffer = MakeRef<FrameBuffer>(spec);
 	m_RightEyeBuffer = MakeRef<FrameBuffer>(spec);
 

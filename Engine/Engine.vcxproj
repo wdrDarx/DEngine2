@@ -161,6 +161,8 @@
     <ClInclude Include="Source\DEngine.h" />
     <ClInclude Include="Source\Event\ApplicationEvent.h" />
     <ClInclude Include="Source\Event\AssetEvent.h" />
+    <ClInclude Include="Source\Event\PhysicsActorEvent.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\DirectionalLightObject.h" />
     <ClInclude Include="Source\Event\Callback.h" />
     <ClInclude Include="Source\Event\EditorCallback.h" />
     <ClInclude Include="Source\Event\Event.h" />
@@ -250,6 +252,7 @@
     <ClCompile Include="Source\Assets\AssetManager.cpp" />
     <ClCompile Include="Source\Core\Allocater.cpp" />
     <ClCompile Include="Source\Core\Log.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\DirectionalLightObject.cpp" />
     <ClCompile Include="Source\Framework\AppObject.cpp" />
     <ClCompile Include="Source\Framework\Application.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\BoxColliderComponent.cpp" />

@@ -13,7 +13,7 @@ using superclass::superclass;
 
 #define _PROP_MEMBER_NAME m_Properties
 
-//returns a PropType from a cpp value input
+//returns a PropType from a cpp value input (uses string sometimes because vec3d and color3 are the same type)
 #define _TO_PROP_TYPE(cppType) [&]() -> PropType { PropType out = PropType::NONE; \
 if(std::is_same<cppType, bool>::value) { out = PropType::BOOL; } else \
 if(std::is_same<cppType, int>::value) { out = PropType::INT; } else \
@@ -32,8 +32,6 @@ if(std::is_base_of<StructBase, cppType>::value) {out = PropType::STRUCT; } \
  return out; }();
 
  #define TO_PROP_TYPE(cppValue) _TO_PROP_TYPE(decltype(cppValue))
-
-
 
 //return std::type_info from a PropType input
 #define FROM_PROP_TYPE(propType)  [&]() ->  std::type_index {  std::type_index out = typeid(bool); \

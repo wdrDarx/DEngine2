@@ -7,13 +7,20 @@
 PhysicsScene::PhysicsScene(PhysicsWorld* world, const PhysicsSettings& settings) : m_SubStepSize(settings.FixedTimestep), m_PhysicsWorld(world)
 {
 	physx::PxSceneDesc sceneDesc(world->GetPhysicsAPI()->GetPhysXSDK()->getTolerancesScale());
-	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD | physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS; // TODO: | physx::PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS
+	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD | physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS | physx::PxSceneFlag::eADAPTIVE_FORCE; // TODO: | physx::PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS
 	sceneDesc.gravity = PhysicsUtils::ToPhysXVector(settings.Gravity);
 	sceneDesc.broadPhaseType = PhysicsUtils::ToPhysXBroadphaseType(settings.BroadphaseAlgorithm);
 	sceneDesc.cpuDispatcher = world->GetPhysicsAPI()->GetCPUDispatcher();
 	sceneDesc.filterShader = (physx::PxSimulationFilterShader)PhysicsUtils::FilterShader;
 	sceneDesc.simulationEventCallback = &m_ContactListener;
 	sceneDesc.frictionType = PhysicsUtils::ToPhysXFrictionType(settings.FrictionModel);
+
+	//gpu dispatcher
+	if(world->GetPhysicsAPI()->GetCudaContextManager())
+	{ 
+		sceneDesc.cudaContextManager = world->GetPhysicsAPI()->GetCudaContextManager();
+		sceneDesc.flags |= physx::PxSceneFlag::eENABLE_GPU_DYNAMICS;
+	}
 
 	ASSERT(sceneDesc.isValid());
 
@@ -49,8 +56,17 @@ PhysicsScene::~PhysicsScene()
 void PhysicsScene::Simulate(float ts, bool callFixedUpdate)
 {
 	bool advanced = Advance(ts);
-	//m_PhysXScene->simulate(m_SubStepSize);
-	//m_PhysXScene->fetchResults(true);
+
+	if (advanced)
+	{
+		uint32_t nbActiveActors;
+		physx::PxActor** activeActors = m_PhysXScene->getActiveActors(nbActiveActors);
+		for (uint32_t i = 0; i < nbActiveActors; i++)
+		{
+			PhysicsActor* actor = (PhysicsActor*)(activeActors[i]->userData);
+			actor->OnAdvance();
+		}
+	}
 }
 
 void PhysicsScene::AddActor(Ref<PhysicsActor> actor)

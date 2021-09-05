@@ -39,10 +39,12 @@ public:
 	physx::PxFoundation* GetFoundation();
 	physx::PxPhysics* GetPhysXSDK();
 	physx::PxCpuDispatcher* GetCPUDispatcher();
+	physx::PxCudaContextManager* GetCudaContextManager();
 	physx::PxDefaultAllocator* GetAllocator();
 
 	physx::PxFoundation* m_PhysXFoundation;
 	physx::PxDefaultCpuDispatcher* m_PhysXCPUDispatcher;
+	physx::PxCudaContextManager* m_PhysXCudaContextManager;
 	physx::PxPhysics* m_PhysXSDK;
 
 	physx::PxDefaultAllocator m_Allocator;

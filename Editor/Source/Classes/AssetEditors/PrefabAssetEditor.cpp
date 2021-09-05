@@ -82,6 +82,7 @@ void PrefabAssetEditor::Render()
 	}
 
 	ImGui::Columns(3);
+	ImGui::BeginChild("Properties");
 
 	//Object pannel
 	m_SceneObjectPannel.Render(m_Scene.get(), false);
@@ -96,11 +97,15 @@ void PrefabAssetEditor::Render()
 		m_PropertyWindow.Render(false);
 		ImGui::TreePop();
 	}
+	ImGui::EndChild();
 
 	ImGui::NextColumn();
 
 
 	//viewport
+	if(auto renderer = m_Scene->GetPipeline()->GetRenderer<DebugRenderer>())
+		renderer->SetRenderFlags(m_App->m_DebugFlags);
+
 	m_App->GetWindow()->GetInputManager().ForwardTo(m_Viewport->m_InputManager);
 	m_Viewport->m_SelectedComponent = m_SceneObjectPannel.m_SelectedComponent;
 	m_Viewport->m_TransformMode = m_App->m_TransformMode;

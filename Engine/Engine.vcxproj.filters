@@ -349,6 +349,8 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Framework\Classes\Components\DirectionalLightObject.h" />
+    <ClInclude Include="Source\Event\PhysicsActorEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -540,5 +542,6 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\Classes\Components\DirectionalLightObject.cpp" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,14 @@
 #include "Indexbuffer.h"
 #include "Material.h"
 
+enum MeshFlags
+{
+	INVISIBLE = BIT(1),
+	NOSHADOW = BIT(2)
+};
+ENUM_BITWISE(MeshFlags);
+
+
 struct DENGINE_API MeshVertex
 {
 	vec3d Pos;
@@ -95,6 +103,16 @@ public:
 		return GetMaterial() && m_VertexArray->m_VertexBuffer;
 	}
 
+	void SetMeshFlags(const MeshFlags& flags)
+	{
+		m_MeshFlags = flags;
+	}
+
+	MeshFlags& GetMeshFlags()
+	{
+		return m_MeshFlags;
+	}
+
 private:
 	void UpdateMatrix();
 
@@ -110,5 +128,6 @@ private:
 	glm::mat4 m_Matrix;
 	Transform m_Transform;
 
+	MeshFlags m_MeshFlags = (MeshFlags)0;
 	bool m_FlagChanged;
 };

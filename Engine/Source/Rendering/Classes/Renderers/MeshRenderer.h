@@ -3,7 +3,42 @@
 #include "Rendering/Renderer.h"
 #include "Utils/Task.h"
 
+struct DENGINE_API MeshRendererSettings
+{
+	float AmbientLightMultiplier = 0.5f;
+
+};
+
+struct DENGINE_API DirectionalShadowMap
+{
+	DirectionalShadowMap(uint Size = 4096);
+	~DirectionalShadowMap();
+
+	void Bind();
+	void Unbind();
+
+	uint m_FrameBuffer = 0;
+	uint m_DepthTexture = 0;
+	vec2d m_DepthTextureSize;
+};
+
 struct DENGINE_API DirectionalLight
+{
+	vec3d Direction;
+	color3 Radiance;
+
+	float SourceLength = 1000.f;
+	float ShadowMapInfuenceSize = 1000.f;
+	float NearPlane = 10.f;
+	float FarPlane = 10000.f;
+
+	bool CastShadows = true;
+	Ref<DirectionalShadowMap> ShadowMap;
+	glm::mat4 ViewProjectionMatrix;
+	vec3d LastDirection; // for caching
+};
+
+struct DENGINE_API CookedDirectionalLight
 {
 	color4 Direction;
 	color4 Radiance;
@@ -48,10 +83,25 @@ public:
 	void SubmitStaticMesh(Ref<StaticMesh> mesh);
 	void RemoveStaticMesh(Ref<StaticMesh> mesh);
 
+	void SubmitDirectionalLight(Ref<DirectionalLight> Light);
+	void RemoveDirectionalLight(Ref<DirectionalLight> Light);
+
 	void GenDrawCalls();
+	std::vector<MeshDrawCall> CreateShadowMapDrawCalls();
+	void RenderShadowMaps();
+
+
+	MeshRendererSettings& GetSettingsMutable()
+	{
+		return m_Settings;
+	}
 
 private:
 
+	//render settings
+	MeshRendererSettings m_Settings;
+
+	//draw calls for rendering meshes 
 	std::vector<MeshDrawCall> m_DrawCalls;
 
 	//dynamic mesh array (for submition)
@@ -68,6 +118,10 @@ private:
 
 	//lights
 	Ref<ShaderStorageBuffer> m_LightDataBuffer;
-	std::vector<DirectionalLight> m_DirectionalLights;
+	std::vector<Ref<DirectionalLight>> m_DirectionalLights;
+	std::vector<CookedDirectionalLight> m_CookedDirectionalLights;
+
+	//shadow stuff
+	const uint m_MaxDirectionalShadowMaps = 4;
 };
 

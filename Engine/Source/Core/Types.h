@@ -104,12 +104,13 @@ struct ClassType
 };
 
 #ifdef USE_GLM_TYPES
-using color4 = glm::vec4;
-using color3 = glm::vec3;
-using vec3d = glm::vec3;
-using vec4d = glm::vec4;
-using vec2d = glm::vec2;
-using quat = glm::quat;
+typedef glm::lowp_vec4 color4;
+typedef glm::lowp_vec3 color3;
+typedef glm::vec3 vec3d;
+typedef glm::vec4 vec4d;
+typedef glm::vec2 vec2d;
+typedef glm::quat quat;
+
 
 struct Transform
 {

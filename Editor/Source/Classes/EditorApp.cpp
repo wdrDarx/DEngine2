@@ -19,6 +19,11 @@ EditorApp::EditorApp() : Application()
 	MakeWindow("DEditor", 1280, 720, false);
 	GetWindow()->SetVsync(false);
 
+	//register drop target 
+	m_DropTarget = MakeRef<DropTarget>();
+	m_DropTarget->m_Callback = std::bind(&EditorApp::OnFileDropped, this, std::placeholders::_1);
+	File::AcceptDragFiles(GetWindow().get(), m_DropTarget.get());
+
 	//close event for window
 	m_WindowEvent.Assign([&](WindowEvent* event)
 	{
@@ -113,6 +118,11 @@ EditorApp::EditorApp() : Application()
 
 	//create the begin play scene asset
 	m_BeginPlaySceneAsset = MakeRef<SceneAsset>();
+
+	//set debug render flag by default
+	auto renderer = m_EditorScene->GetPipeline()->GetRenderer<DebugRenderer>();
+	if(renderer)
+		renderer->SetRenderFlags(RenderFlags::DEBUGLINES | RenderFlags::DEBUGCUBES);
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
@@ -293,28 +303,7 @@ void EditorApp::RenderImGui(const Tick& tick)
 
 	ImGui::End();
 
-	ImGui::Begin("Renderer");
-	ImGui::Text(std::string("FPS : " + STRING(int(1.0f / tick.DeltaTime))).c_str());
-	ImGui::Text(std::string("Draw Calls : " + STRING(m_EditorScene->GetPipeline()->GetRenderAPI()->GetRenderStats().DrawCalls)).c_str());
-	m_EditorScene->GetPipeline()->GetRenderAPI()->ResetRenderStats();
-
-	ImGui::Text("Shader Cache");
-	for (const auto& shader : GetWindow()->GetRenderAPI()->GetAllShadersInCache())
-	{
-		ImGui::PushID(shader.first.c_str());
-		ImGui::Columns(2);
-		ImGui::Text(shader.first.c_str());
-		ImGui::NextColumn();
-		
-		if (ImGui::Button("Reload"))
-		{
-			GetWindow()->GetRenderAPI()->ReloadShader(shader.first);
-			LogTemp("Reloaded Shader : " + shader.first);
-		}
-		ImGui::Columns(1);
-		ImGui::PopID();
-	}
-	ImGui::End();
+	DrawRendererWindow();
 }
 
 void EditorApp::BeginFrame()
@@ -388,6 +377,77 @@ void EditorApp::EndFrame()
 	m_EditorScene->GetPipeline()->ClearFrame();
 	m_ImGuiLayer.End();
 	GetWindow()->EndFrame();
+}
+
+void EditorApp::DrawRendererWindow()
+{
+	ImGui::Begin("Renderer");
+	ImGui::Text(std::string("FPS : " + STRING(int(1.0f / m_LastTick.DeltaTime))).c_str());
+	ImGui::Text(std::string("Draw Calls : " + STRING(m_EditorScene->GetPipeline()->GetRenderAPI()->GetRenderStats().DrawCalls)).c_str());
+	m_EditorScene->GetPipeline()->GetRenderAPI()->ResetRenderStats();
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
+	bool bDebugRenderer = ImGui::TreeNodeEx((void*)("Debug Renderer"), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Debug Renderer");
+	ImGui::PopStyleVar();
+
+	auto Debugrenderer = m_EditorScene->GetPipeline()->GetRenderer<DebugRenderer>();
+	if (bDebugRenderer && Debugrenderer)
+	{
+		bool debuglines = Debugrenderer->GetRenderFlags() & RenderFlags::DEBUGLINES;
+		bool debugCubes = Debugrenderer->GetRenderFlags() & RenderFlags::DEBUGCUBES;
+		bool physx = Debugrenderer->GetRenderFlags() & RenderFlags::PHYSX;
+		ImGui::Checkbox("Debug Lines ", &debuglines);
+		ImGui::Checkbox("Debug Cubes ", &debugCubes);
+		ImGui::Checkbox("Colliders ", &physx);
+		m_DebugFlags = RenderFlags(0);
+		if (debuglines)
+			m_DebugFlags |= RenderFlags::DEBUGLINES;
+		if (debugCubes)
+			m_DebugFlags |= RenderFlags::DEBUGCUBES;
+		if (physx)
+			m_DebugFlags |= RenderFlags::PHYSX;
+
+		Debugrenderer->SetRenderFlags(m_DebugFlags);
+
+		ImGui::DragFloat("Line Width", &Debugrenderer->m_LineWidth, 1.0f, 10.f);
+		ImGui::TreePop();
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
+	bool bMeshRenderer = ImGui::TreeNodeEx((void*)("Mesh Renderer"), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Mesh Renderer");
+	ImGui::PopStyleVar();
+
+	auto Meshrenderer = m_EditorScene->GetPipeline()->GetRenderer<MeshRenderer>();
+	if (bMeshRenderer && Meshrenderer)
+	{
+		ImGui::DragFloat("Ambient Light Multiplier", &Meshrenderer->GetSettingsMutable().AmbientLightMultiplier, 0.0f, 1.f);
+		ImGui::TreePop();
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
+	bool shaderCache = ImGui::TreeNodeEx((void*)("shadercache"), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Shader Cache");
+	ImGui::PopStyleVar();
+
+	if (shaderCache)
+	{
+		for (const auto& shader : GetWindow()->GetRenderAPI()->GetAllShadersInCache())
+		{
+			ImGui::PushID(shader.first.c_str());
+			ImGui::Columns(2);
+			ImGui::Text(shader.first.c_str());
+			ImGui::NextColumn();
+
+			if (ImGui::Button("Reload"))
+			{
+				GetWindow()->GetRenderAPI()->ReloadShader(shader.first);
+				LogTemp("Reloaded Shader : " + shader.first);
+			}
+			ImGui::Columns(1);
+			ImGui::PopID();
+		}
+		ImGui::TreePop();
+	}
+	ImGui::End();
 }
 
 void EditorApp::HotReload()
@@ -480,6 +540,32 @@ void EditorApp::OnKeyDown(KeyEvent* event)
 		{
 			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(m_SceneObjectPannel.m_SelectedObject, m_EditorScene).get();
 		}
+	}
+}
+
+void EditorApp::OnFileDropped(const std::string& FullPath)
+{
+	auto Save = [&](Ref<Asset> NewAsset, const std::string& saveExtension)
+	{
+		std::string FinalPath = m_ContentBrowser.m_CurrentPath.string();
+		FinalPath +=  "\\" + File::GetFileNameFromPath(FullPath) + "." + saveExtension;
+		GetAssetManager().SaveAsset(NewAsset, FinalPath);
+	};
+
+	std::string extension = File::GetFileExtenstionFromPath(FullPath);
+	if (extension == "fbx" || extension == "FBX")
+	{
+		Ref<MeshAsset> NewAsset = MakeRef<MeshAsset>();	
+		Ref<Mesh> TempMesh = MakeRef<Mesh>();
+		ModelLoader::LoadFBX(FullPath, TempMesh.get());
+		NewAsset->m_Verticies = TempMesh->GetVerticies();
+		NewAsset->m_Indicies = TempMesh->GetIndicies();
+		Save(NewAsset, GetAssetManager().GetAssetExtenstion<MeshAsset>());
+	}
+	if (extension == "png" || extension == "jpg" || extension == "hdr" || extension == "HDR")
+	{
+		Ref<TextureAsset> NewAsset = MakeRef<TextureAsset>(Image(FullPath));
+		Save(NewAsset, GetAssetManager().GetAssetExtenstion<TextureAsset>());
 	}
 }
 

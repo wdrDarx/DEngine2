@@ -10,6 +10,7 @@ public:
 		PROPS_CATEGORY(Collider)
 			PROPDEF(CollisionLayer, EditAnywhere);
 			PROPDEF(CCD, EditAnywhere);
+			PROPDEF(Lerp, EditAnywhere);
 			PROPDEF(GravityEnabled, EditAnywhere);
 			PROPDEF(Dynamic, EditAnywhere);
 			PROPDEF(Kinamtic, EditAnywhere);
@@ -22,14 +23,15 @@ public:
 			PROPDEF(LockPosY, EditAnywhere);
 			PROPDEF(LockPosZ, EditAnywhere);
 			PROPDEF(LockRotX, EditAnywhere);
-			PROPDEF(LockRotX, EditAnywhere);
-			PROPDEF(LockRotX, EditAnywhere);
+			PROPDEF(LockRotY, EditAnywhere);
+			PROPDEF(LockRotZ, EditAnywhere);
 	OBJECT_PROPS_END()
 
 	void OnBeginPlay() override;
 	void OnEndPlay() override;
 	void OnDestroy() override;
 	void OnUpdate(const Tick& tick) override;
+	void OnPhysicsActorAdvance();
 
 	//force update the world transform for the collider
 	virtual bool SetLocalTransform(const Transform& LocalTrans) override;
@@ -60,6 +62,7 @@ public:
 	bool Kinamtic = false;
 	bool IsTrigger = false;
 	bool CCD = true;
+	bool Lerp = true;
 
 	float LinearDamping = 1.0f;
 	float AngularDamping = 1.0f;
@@ -76,5 +79,9 @@ public:
 private:
 	bool m_RecieveNextTransform = true;
 	std::optional<Transform> m_PendingTransform;
+
+	Callback<PhysicsActorEvent> m_PhysicsActorCallback;
+	vec3d m_TargetPhysicsPos;
+	quat m_TargetPhysicsQuat;
 };
 

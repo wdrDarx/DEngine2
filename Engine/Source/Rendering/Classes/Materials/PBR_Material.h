@@ -16,15 +16,14 @@ class DENGINE_API PBR_Material : public Material
 				PROPDEF(RoughnessTexture, EditAnywhere);
 				PROPDEF(Metallic, EditAnywhere);
 				PROPDEF(MetallicTexture, EditAnywhere);
-			PROPS_CATEGORY(Scene);
-				PROPDEF(AmbientMultiplier, EditAnywhere);
+				PROPDEF(UseCombined, EditAnywhere);
+				PROPDEF(CombinedTexture, EditAnywhere);
 		OBJECT_PROPS_END()
 
 	void OnConstruct() override;
 	void Bind(Ref<RenderAPI> RenderApi) override;
 
 public:
-	float AmbientMultiplier = 0.5f;
 	color4 Albedo = {1,1,1,1};
 	AssetRef<TextureAsset> AlbedoTexture;
 
@@ -35,6 +34,9 @@ public:
 
 	float Metallic = 0.f;
 	AssetRef<TextureAsset> MetallicTexture;
+
+	bool UseCombined = false;
+	AssetRef<TextureAsset> CombinedTexture;
 
 	Ref<Texture> m_BlankTexture;
 };

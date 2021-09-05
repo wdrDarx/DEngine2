@@ -1,11 +1,15 @@
 #pragma once
 #include "Core/Core.h"
+#include "RenderAPI.h"
 
 struct DENGINE_API FrameBufferSpec
 {
 	uint Width, Height;
 	uint Samples = 1;
-	bool SwapChainTarget = false;
+	uint ColorFormat = GL_RGBA32F;
+	uint DepthFormat = GL_DEPTH32F_STENCIL8;
+	bool CreateDepthTexture = true;
+	bool CreateColorTexture = true;
 };
 
 struct DENGINE_API FrameBuffer
@@ -15,8 +19,8 @@ public:
 	~FrameBuffer();
 	const FrameBufferSpec& GetSpec() const {return m_Spec; };
 	
-	uint GetColorAttachement() const {return m_ColorAttachement;};
-	uint GetDepthAttachement() const {return m_DepthAttachement;};
+	uint GetColorAttachement() const;
+	uint GetDepthAttachement() const;
 
 	void Bind();
 	void Unbind();
@@ -25,9 +29,14 @@ public:
 	void Resize(const uint& Width, const uint& Height);
 
 private:
-	uint m_RendererID = 0;
-	uint m_ColorAttachement = 0;
-	uint m_DepthAttachement = 0;
+	uint m_MainFrameBuffer = 0;
+	uint m_IntermidiateBuffer = 0;
+
+	uint m_MainColorAttachement = 0;
+	uint m_MainDepthRenderBuffer = 0;
+
+	uint m_IntermidiateColorAttachment = 0;
+	uint m_IntermidiateDepthAttachment = 0;
 	FrameBufferSpec m_Spec;
 };
 

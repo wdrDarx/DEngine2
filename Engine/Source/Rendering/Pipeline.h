@@ -65,7 +65,7 @@ public:
 			}
 		}
 
-		ASSERT(false) //renderer not found in this scene
+		//ASSERT(false) //renderer not found in this scene
 			return nullptr;
 	}
 

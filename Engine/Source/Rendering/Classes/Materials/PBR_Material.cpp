@@ -24,14 +24,15 @@ void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 	GetShader()->SetUniform1i("u_Normal", 0);
 	GetShader()->SetUniform1i("u_Metallic", 0);
 	GetShader()->SetUniform1i("u_Roughness", 0);
+	GetShader()->SetUniform1i("u_CombinedMap", 0);
 
 	//multipliers
 	GetShader()->SetUniform1f("u_MetallicMult", Metallic);
 	GetShader()->SetUniform1f("u_RoughnessMult", Roughness);
-	GetShader()->SetUniform1f("u_AmbientLightMult", AmbientMultiplier);
 
 	//bools 
 	GetShader()->SetUniform1i("u_HasNormalMap", NormalTexture.IsValid());
+	GetShader()->SetUniform1i("u_UseCombinedMap", UseCombined);
 
 
 	if(auto AlbedoAsset = GetSceneContext()->GetApplication()->GetAssetManager().LoadAsset(AlbedoTexture))
@@ -73,5 +74,16 @@ void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 			GetShader()->SetUniform1i("u_Metallic", 4);
 		}
 	}
+
+	if (auto CombinedAsset = GetSceneContext()->GetApplication()->GetAssetManager().LoadAsset(CombinedTexture))
+	{
+		auto CombinedText = CombinedAsset->GetTexture();
+		if (CombinedText)
+		{
+			CombinedText->Bind(5);
+			GetShader()->SetUniform1i("u_CombinedMap", 5);
+		}
+	}
+
 
 }

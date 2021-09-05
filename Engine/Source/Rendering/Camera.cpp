@@ -17,7 +17,7 @@ void Camera::RecalculateViewProjectionMatrix(bool CalcView /*= true*/)
 		m_ProjectionMatrix = glm::ortho(-NewWidth, NewWidth, -NewHeight, NewHeight, -1.0f, 1.0f);
 	else
 	{
-		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), NewWidth / NewHeight, 0.01f, 10000.f);
+		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), NewWidth / NewHeight, 10.f, 10000.f);
 	}
 
 

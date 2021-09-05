@@ -374,6 +374,18 @@ void PhysicsActor::SetCollisionDetectionType(const CollisionDetectionType& type)
 	m_CollisionDetectionType = type;
 }
 
+void PhysicsActor::BindOnAdvance(Callback<PhysicsActorEvent>& callback)
+{
+	m_EventDispatcher.Bind(callback);
+}
+
+void PhysicsActor::OnAdvance()
+{
+	PhysicsActorEvent event;
+	event.m_EventType = PhysicsActorEventType::ONADVANCE;
+	m_EventDispatcher.Dispatch(event);
+}
+
 void PhysicsActor::CreateRigidActor(const Transform& WorldTransform)
 {
 	auto sdk = GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK();

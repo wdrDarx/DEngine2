@@ -71,6 +71,7 @@ physx::PxBroadPhaseType::Enum PhysicsUtils::ToPhysXBroadphaseType(BroadphaseType
 		case BroadphaseType::SweepAndPrune: return physx::PxBroadPhaseType::eSAP;
 		case BroadphaseType::MultiBoxPrune: return physx::PxBroadPhaseType::eMBP;
 		case BroadphaseType::AutomaticBoxPrune: return physx::PxBroadPhaseType::eABP;
+		case BroadphaseType::GPU: return physx::PxBroadPhaseType::eGPU;
 	}
 
 	return physx::PxBroadPhaseType::eABP;

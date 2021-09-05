@@ -43,36 +43,24 @@ class PropertyWindow
 			ImGui::SameLine();
 			ImGui::InputText("##Name", &sceneObject->GetNameMutable());
 
-			if (ImGui::Button("Serialize/Reload"))
-			{
-				Buffer temp;
-				sceneObject->Serialize(temp);
-				sceneObject->Deserialize(temp);
-			}
+// 			if (ImGui::Button("Serialize/Reload"))
+// 			{
+// 				Buffer temp;
+// 				sceneObject->Serialize(temp);
+// 				sceneObject->Deserialize(temp);
+// 			}
 			ListProperties(sceneObject->GetPropertiesMutable(), sceneObject);
 		}
 
 		void DrawComponentProps(ObjectComponent* Comp)
 		{
-			if (ImGui::Button("Serialize/Reload"))
-			{
-				Buffer temp;
-				Comp->Serialize(temp);
-				Comp->Deserialize(temp);
-			}
+// 			if (ImGui::Button("Serialize/Reload"))
+// 			{
+// 				Buffer temp;
+// 				Comp->Serialize(temp);
+// 				Comp->Deserialize(temp);
+// 			}
 			ListProperties(Comp->GetPropertiesMutable(), Comp);
-		}
-
-		void BeginCategory(const std::string& CategoryName)
-		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
-			bool expanded = ImGui::TreeNodeEx((void*)(CategoryName.c_str()), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed, CategoryName.c_str());
-			if (expanded)
-			{
-				
-				ImGui::TreePop();
-			}
-			ImGui::PopStyleVar();
 		}
 
 		void ResetProperty(ObjectBase* object, const std::string& propName, ObjectRegistry& objRegistry)
@@ -127,7 +115,9 @@ class PropertyWindow
 						CurrectCategory = pair.Category;
 						
 						//Draw category thing here
+						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });						
 						LastCategoryExpanded = ImGui::TreeNodeEx((void*)(CategoryIDindex), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, CurrectCategory.c_str());
+						ImGui::PopStyleVar();
 						CategoryIDindex++;
 					}
 					if (LastCategoryExpanded)
@@ -288,6 +278,7 @@ class PropertyWindow
 
 					case PropType::FLOAT:
 					{
+						//ImGui::PushItemWidth(-1 * m_ResetButtonOffset);
 						ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);
 						break;
 					}
@@ -300,19 +291,22 @@ class PropertyWindow
 
 					case PropType::VEC2D:
 					{
-						float drag2[2];
-						drag2[0] = ((vec2d*)prop.m_Value)->x;
-						drag2[1] = ((vec2d*)prop.m_Value)->y;
-						ImGui::DragFloat2(DisplayName.c_str(), drag2);
-
-						((vec2d*)prop.m_Value)->x = drag2[0];
-						((vec2d*)prop.m_Value)->y = drag2[1];
+						ImGui::Columns(2);
+						ImGui::Text(DisplayName.c_str());
+						ImGui::NextColumn();
+						DrawVec2Control(prop.m_Value, glm::value_ptr(*(vec2d*)prop.m_Value));
+						ImGui::EndColumns();
 						break;
 					}
 
 					case PropType::VEC3D:
-					{
+					{	
+						ImGui::Columns(2);
+						ImGui::Text(DisplayName.c_str());
+						ImGui::SetColumnOffset(1, ImGui::GetCursorPosX() + ImGui::CalcTextSize(DisplayName.c_str()).x);
+						ImGui::NextColumn();
 						DrawVec3Control(prop.m_Value, glm::value_ptr(*(vec3d*)prop.m_Value));
+						ImGui::EndColumns();
 						break;
 					}
 					case PropType::COLOR3:
@@ -333,10 +327,22 @@ class PropertyWindow
 						if (expanded)
 						{
 							Transform* transform = (Transform*)prop.m_Value;
-					
+							ImGui::Columns(2);
+							ImGui::SetColumnWidth(0, m_VecColumnWidth);
+							ImGui::Text("Position");
+							ImGui::NextColumn();
 							DrawVec3Control("Position", glm::value_ptr(transform->pos));
+							ImGui::NextColumn();
+
+							ImGui::Text("Rotation");
+							ImGui::NextColumn();
 							DrawVec3Control("Rotation", glm::value_ptr(transform->rot));
+							ImGui::NextColumn();
+							ImGui::Text("Scale");
+							ImGui::NextColumn();
 							DrawVec3Control("Scale", glm::value_ptr(transform->scale), 1.0f, 0.05f);
+
+							ImGui::EndColumns();
 							ImGui::TreePop();
 						}
 						ImGui::PopItemWidth();
@@ -370,7 +376,7 @@ class PropertyWindow
 		}
 
 
-		static void DrawVec3Control(void* ID, float* value, float ResetValue = 0.f, const float& Speed = 1.0f, float columnWidth = 50.f)
+		static void DrawVec3Control(void* ID, float* value, float ResetValue = 0.f, const float& Speed = 1.0f, float columnWidth = 20.f)
 		{
 			auto BoldFont = ImGui::GetIO().Fonts->Fonts[0];
 
@@ -378,7 +384,7 @@ class PropertyWindow
 			float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
 			ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
-			ImGui::PushMultiItemsWidths(3, (ImGui::CalcItemWidth() - buttonSize.x * 3.f) + buttonSize.x / 3.f);
+			ImGui::PushMultiItemsWidths(3, (ImGui::GetContentRegionAvailWidth() - columnWidth - buttonSize.x * 3.f) + buttonSize.x / 3.f);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f,1.0f });
@@ -429,9 +435,55 @@ class PropertyWindow
 			ImGui::PopStyleVar();
 			ImGui::PopID();
 		}
+
+		static void DrawVec2Control(void* ID, float* value, float ResetValue = 0.f, const float& Speed = 1.0f, float columnWidth = 20.f)
+		{
+			auto BoldFont = ImGui::GetIO().Fonts->Fonts[0];
+
+			ImGui::PushID(ID);
+			float lineHeight = ImGui::GetFont()->FontSize + ImGui::GetStyle().FramePadding.y * 2.0f;
+			ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+			ImGui::PushMultiItemsWidths(2, (ImGui::GetContentRegionAvailWidth() - columnWidth - buttonSize.x * 3.f) + buttonSize.x / 3.f);
+			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0,0 });
+
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f,1.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f,1.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f,1.0f });
+			ImGui::PushFont(BoldFont);
+			if (ImGui::Button("X", buttonSize))
+				value[0] = ResetValue;
+			ImGui::PopFont();
+
+			ImGui::PopStyleColor(3);
+
+			ImGui::SameLine();
+			ImGui::DragFloat("##X", &value[0], Speed);
+			ImGui::PopItemWidth();
+			ImGui::SameLine();
+
+
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.3f, 1.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f,1.0f });
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.3f, 1.0f });
+			ImGui::PushFont(BoldFont);
+			if (ImGui::Button("Y", buttonSize))
+				value[1] = ResetValue;
+			ImGui::PopFont();
+
+			ImGui::SameLine();
+			ImGui::DragFloat("##Y", &value[1], Speed);
+			ImGui::PopItemWidth();
+			ImGui::PopStyleColor(3);
+
+			ImGui::PopStyleVar();
+			ImGui::PopID();
+		}
 public:
 	SceneObject* m_SelectedSceneObject = nullptr;
 	ObjectComponent* m_SelectedComponent = nullptr;
 	Application* m_App = nullptr;
 	float m_ColumnWidth = 100.f;
+	float m_VecColumnWidth = 60.f;
+	float m_ResetButtonOffset = 20.f;
 };

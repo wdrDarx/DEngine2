@@ -19,6 +19,7 @@
 #include "Event/AssetEvent.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
+#include "Event/PhysicsActorEvent.h"
 
 //Framework
 #include "Framework/Tick.h"
@@ -45,6 +46,7 @@
 #include "Framework/Classes/Components/TransformComponent.h"
 #include "Framework/Classes/Components/ColliderComponent.h"
 #include "Framework/Classes/Components/BoxColliderComponent.h"
+#include "Framework/Classes/Components/DirectionalLightObject.h"
 
 
 //physics

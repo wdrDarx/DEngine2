@@ -13,7 +13,8 @@ enum class BroadphaseType
 {
 	SweepAndPrune,
 	MultiBoxPrune,
-	AutomaticBoxPrune
+	AutomaticBoxPrune,
+	GPU
 };
 
 enum class FrictionType
@@ -31,11 +32,11 @@ enum class DebugType : int8_t
 
 struct PhysicsSettings
 {
-	float FixedTimestep = 1.0f / 80.0f;
-	vec3d Gravity = { 0.0f, -1100.f, 0.0f };
-	BroadphaseType BroadphaseAlgorithm = BroadphaseType::AutomaticBoxPrune;
+	float FixedTimestep = 1.0f / 30.0f;
+	vec3d Gravity = { 0.0f, -981.f, 0.0f };
+	BroadphaseType BroadphaseAlgorithm = BroadphaseType::GPU;
 	FrictionType FrictionModel = FrictionType::Patch;
-	uint SolverIterations = 8;
-	uint SolverVelocityIterations = 2;
+	uint SolverIterations = 6;
+	uint SolverVelocityIterations = 1;
 	DebugType DebugType = DebugType::LiveDebug;
 };

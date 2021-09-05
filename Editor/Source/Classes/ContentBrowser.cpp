@@ -60,16 +60,29 @@ void ContentBrowser::Render(EditorApp* m_App)
 
 	if (ImGui::BeginPopup("New"))
 	{
-		for (auto& key : m_App->GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
+		if (ImGui::BeginMenu("New"))
 		{
-			std::string ItemText = "New " + key.name;
-			if (ImGui::MenuItem(ItemText.c_str()))
+			if (ImGui::MenuItem("New Folder"))
 			{
-				Ref<Asset> newAsset = ToRef<Asset>(m_App->GetAssetManager().GetAssetTypeRegistry().Make(key));
-				m_App->GetAssetManager().SaveAsset(newAsset, m_CurrentPath.string() + "\\Asset_" + STRING(newAsset->GetID().ID) + "." + key.name);
-				m_FlagRediscover = true;
-				ImGui::CloseCurrentPopup();
+				std::string NewFolder = m_CurrentPath.string() + "\\New Folder";
+				std::filesystem::create_directory(NewFolder);
 			}
+			ImGui::Separator();
+
+			for (auto& key : m_App->GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
+			{
+				std::string ItemText = "New " + key.name;
+				if (ImGui::MenuItem(ItemText.c_str()))
+				{
+					Ref<Asset> newAsset = ToRef<Asset>(m_App->GetAssetManager().GetAssetTypeRegistry().Make(key));
+					std::string assetPath = m_CurrentPath.string() + "\\Asset" + "." + key.name;
+					m_App->GetAssetManager().SaveAsset(newAsset, assetPath);
+					m_FlagRediscover = true;
+					m_RenamingPath = assetPath;
+					ImGui::CloseCurrentPopup();
+				}
+			}
+			ImGui::EndMenu();
 		}
 
 		ImGui::EndPopup();
@@ -142,7 +155,8 @@ void ContentBrowser::Render(EditorApp* m_App)
 
 		if (ImGui::BeginPopup("FileOptions"))
 		{
-			if (ImGui::MenuItem("Delete Asset"))
+			std::string label = directory.is_directory() ? "Delete Folder" : "Delete File";
+			if (ImGui::MenuItem(label.c_str()))
 			{
 				std::filesystem::remove(path);
 				m_FlagRediscover = true;
@@ -152,7 +166,7 @@ void ContentBrowser::Render(EditorApp* m_App)
 			ImGui::EndPopup();
 		}
 
-		if (directory.is_regular_file() && ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
 		{
 			ImGui::OpenPopup("FileOptions");
 		}
@@ -167,7 +181,15 @@ void ContentBrowser::Render(EditorApp* m_App)
 		}
 		if (m_RenamingPath == path.string()) //is this file being renamed
 		{
+			//cancel rename
+			if (m_App->GetWindow()->GetInputManager().IsKeyDown(GLFW_KEY_ESCAPE))
+			{
+				m_RenamingPath.clear();
+			}
+
+			ImGui::PushItemWidth(ImGui::CalcItemWidth());
 			ImGui::InputText("##rename", &RenameString);
+			ImGui::PopItemWidth();
 			if (m_App->GetWindow()->GetInputManager().IsKeyDown(GLFW_KEY_ENTER))
 			{ 
 				//complete renaming
