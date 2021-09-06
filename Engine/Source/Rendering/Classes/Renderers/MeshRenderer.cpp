@@ -209,12 +209,13 @@ void MeshRenderer::RenderShadowMaps()
 			light->ShadowMap = MakeRef<DirectionalShadowMap>();
 		}
 
-		if(light->LastDirection != light->Direction) //need to regenerate matrix
+		if(light->LastDirection != light->Direction || light->Position != light->LastPosition) //need to regenerate matrix
 		{ 
 			glm::mat4 ProjectionMatrix = glm::ortho(-1.f * light->ShadowMapInfuenceSize, light->ShadowMapInfuenceSize, -1.f * light->ShadowMapInfuenceSize, light->ShadowMapInfuenceSize, light->NearPlane, light->FarPlane);
-			glm::mat4 LightViewMatrix = glm::lookAt(light->Direction * light->SourceLength * -1.f, { 0,0,0 }, { 0,1,0 }); //light direction looking at the center 
+			glm::mat4 LightViewMatrix = glm::lookAt(light->Position, light->Position + light->Direction * light->SourceLength, { 0,1,0 }); //light direction looking at the center + directional light location
 			light->ViewProjectionMatrix = ProjectionMatrix * LightViewMatrix;
 			light->LastDirection = light->Direction;
+			light->LastPosition = light->Position;
 		}
 
 		//bind light shadow map, set viewport size and clear the depth

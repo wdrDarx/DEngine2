@@ -190,7 +190,7 @@ void StaticProperty::FromStaticBuffer(const Buffer& buffer, StructRegistry& stru
 		READSTRING(StructClassName);
 
 		//construct the struct with the class name (ONLY WORKS IF ITS REGISTERED)
-		m_Value = structRegistry.Make({StructClassName});
+		m_Value = structRegistry.MakeObjectFromClassName(StructClassName);
 
 		//now that we have a pointer to a correct object we can read in the properties which are tied to pointers in the struct
 		StructBase* StructProp = (StructBase*)(m_Value);

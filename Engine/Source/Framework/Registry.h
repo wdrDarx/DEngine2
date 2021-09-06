@@ -4,13 +4,13 @@
 #include "Core/Allocator.h"
 
 #define REGISTER_OBJECT(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Register<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
-#define UNREGISTER_OBJECT(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Unregister<ObjectClass>({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
+#define UNREGISTER_OBJECT(RegistryRef, ObjectClass, ModuleClass) RegistryRef.Unregister({OBJECT_STATIC_CLASS(ObjectClass).GetObjectClassType(), #ObjectClass, #ModuleClass});
 
-#define REGISTER_STRUCT(RegistryRef, StructClass) RegistryRef.Register<StructClass>({#StructClass});
-#define UNREGISTER_STRUCT(RegistryRef, StructClass) RegistryRef.Unregister<StructClass>({#StructClass});
+#define REGISTER_STRUCT(RegistryRef, StructClass, ModuleClass) RegistryRef.Register<StructClass>({#StructClass, #ModuleClass});
+#define UNREGISTER_STRUCT(RegistryRef, StructClass, ModuleClass) RegistryRef.Unregister({#StructClass, #ModuleClass});
 
-#define REGISTER_ASSETCLASS(RegistryRef, AssetClass) RegistryRef.Register<AssetClass>({#AssetClass});
-#define UNREGISTER_ASSETCLASS(RegistryRef, AssetClass) RegistryRef.Unregister<AssetClass>({#AssetClass});
+#define REGISTER_ASSETCLASS(RegistryRef, AssetClass, ModuleClass) RegistryRef.Register<AssetClass>({#AssetClass, #ModuleClass});
+#define UNREGISTER_ASSETCLASS(RegistryRef, AssetClass, ModuleClass) RegistryRef.Unregister({#AssetClass, #ModuleClass});
 
 
 struct ObjectRegisterKey
@@ -29,10 +29,11 @@ struct StructRegisterKey
 {
 	//just the name of the class
 	std::string name;
+	std::string AssignedModuleName;
 
 	bool operator==(const StructRegisterKey& other) const
 	{
-		return (name == other.name);
+		return (name == other.name && AssignedModuleName == other.AssignedModuleName);
 	}
 };
 
@@ -62,7 +63,8 @@ namespace std
 			using std::hash;
 			using std::string;
 
-			return hash<std::string>()(k.name);
+			return hash<std::string>()(k.name)
+				^ (hash<string>()(k.AssignedModuleName) << 1);
 		}
 	};
 
@@ -119,10 +121,8 @@ public:
 		subclassInstantiators.emplace(key, &createInstance<U>);
 	}
 
-	template<typename U>
 	void Unregister(const Key& key)
 	{
-		static_assert(std::is_base_of<T, U>::value, "Cant unregister this class");
 		auto it = subclassInstantiators.find(key);
 		if (it != subclassInstantiators.end())
 		{
@@ -156,9 +156,6 @@ public:
 
 	T* MakeObjectFromClassName(const std::string& FriendlyClassName, ConstructionArgs... args) const
 	{
-		//cant do this if the key isnt a RegisterKey
-		if constexpr (!std::is_same<Key, ObjectRegisterKey>::value) ASSERT(false);
-
 		for (auto it = subclassInstantiators.begin(); it != subclassInstantiators.end(); it++)
 		{
 			if ((*it).first.name == FriendlyClassName)
@@ -167,7 +164,8 @@ public:
 				T* obj = instantiator(std::forward<ConstructionArgs>(args)...);
 
 				//set the assigned module name for the object
-				obj->SetAssociatedModuleName((*it).first.AssignedModuleName);
+				if constexpr (std::is_same<Key, ObjectRegisterKey>::value)
+					obj->SetAssociatedModuleName((*it).first.AssignedModuleName);
 
 				return obj;
 			}

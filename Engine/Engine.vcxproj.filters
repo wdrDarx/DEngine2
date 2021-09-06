@@ -124,6 +124,9 @@
     <ClInclude Include="Source\Event\MouseEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Event\PhysicsActorEvent.h">
+      <Filter>Event</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Event\SceneEvent.h">
       <Filter>Event</Filter>
     </ClInclude>
@@ -143,6 +146,9 @@
       <Filter>Framework\Classes\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Classes\Components\ColliderComponent.h">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework\Classes\Components\DirectionalLightObject.h">
       <Filter>Framework\Classes\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h">
@@ -349,8 +355,6 @@
     <ClInclude Include="Source\Utils\World.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Framework\Classes\Components\DirectionalLightObject.h" />
-    <ClInclude Include="Source\Event\PhysicsActorEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -378,6 +382,9 @@
       <Filter>Framework\Classes\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Classes\Components\ColliderComponent.cpp">
+      <Filter>Framework\Classes\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framework\Classes\Components\DirectionalLightObject.cpp">
       <Filter>Framework\Classes\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp">
@@ -542,6 +549,5 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Framework\Classes\Components\DirectionalLightObject.cpp" />
   </ItemGroup>
 </Project>

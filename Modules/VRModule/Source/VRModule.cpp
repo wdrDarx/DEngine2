@@ -18,8 +18,7 @@ void VRModule::OnLoad()
 
 void VRModule::OnUnload()
 {
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), VRPawn, VRModule);
-	GetApplication()->GetAssetManager().UnmountContentDirectory(Paths::GetModuleContentDirectory("VRModule"));
+
 }
 
 void VRModule::OnUpdate(float DeltaTime)

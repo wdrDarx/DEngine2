@@ -95,7 +95,7 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 		if (arrayProperty->m_ElementType == PropType::STRUCT)
 		{
 			//create struct with the correct class
-			StructBase* struc = registry.Make({ arrayProperty->m_ElementClassName });
+			StructBase* struc = registry.MakeObjectFromClassName(arrayProperty->m_ElementClassName);
 			struc->GetPropertiesMutable().clear();
  			newElem.Assign(struc, arrayProperty->m_ElementSize);
 			
@@ -124,7 +124,7 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 void ObjectUtils::ResetStructProp(StructBase* Struct, const std::string& propName, StructRegistry& registry)
 {
 	//create a base class copy
-	Ref<StructBase> str = ToRef<StructBase>(registry.Make({Struct->GetClassType().Name}));
+	Ref<StructBase> str = ToRef<StructBase>(registry.MakeObjectFromClassName(Struct->GetClassType().Name));
 
 	for (auto& prop : Struct->GetPropertiesMutable())
 	{

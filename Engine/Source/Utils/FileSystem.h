@@ -50,6 +50,8 @@ class DENGINE_API File
 		static void WriteFile(const std::string& path, const Buffer& buffer);
 		static int GetFileSize(const std::string& path);
 		static bool DoesFileExist(const std::string& path);
+		static bool DoesPathExist(const std::string& path);
+		static void MakePath(const std::string& path);
 
 		/*
 			Start accepting dragged in files to a window

@@ -25,6 +25,7 @@ public:
 	bool FlipForwardVector = true;
 
 	Ref<BoxColliderComponent> collider;
+	Ref<TransformComponent> BulletSpawn;
 	Ref<TransformComponent> root;
 	Ref<CameraComponent> camera;
 	Ref<StaticMeshComponent> mesh;

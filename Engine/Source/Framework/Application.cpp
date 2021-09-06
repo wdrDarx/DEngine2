@@ -14,6 +14,49 @@ Application::Application() : m_ModuleManager(ToRef<Application>(this)) //initial
 
 	//mount default content directory
 	GetAssetManager().MountContentDirectory(Paths::GetContentDirectory());
+
+	//auto unregister
+	m_ModuleEventCallback.Assign([&](ModuleEvent* event)
+	{
+		if (event->GetEventType() == ModuleEventType::UNLOADED)
+		{
+			for (auto& reg : GetObjectRegistry().GetRegisteredKeys())
+			{
+				if (reg.AssignedModuleName == event->m_ModuleName)
+				{
+					GetObjectRegistry().Unregister(reg);
+				}
+			}
+
+			for (auto& reg : GetStructRegistry().GetRegisteredKeys())
+			{
+				if (reg.AssignedModuleName == event->m_ModuleName)
+				{
+					GetStructRegistry().Unregister(reg);
+				}
+			}
+
+			for (auto& reg : GetAssetManager().GetAssetTypeRegistry().GetRegisteredKeys())
+			{
+				if (reg.AssignedModuleName == event->m_ModuleName)
+				{
+					GetAssetManager().GetAssetTypeRegistry().Unregister(reg);
+				}
+			}
+
+			for (auto& dir : GetAssetManager().GetMountedDirectories())
+			{
+				std::string name = std::filesystem::path(dir).parent_path().parent_path().filename().string();
+				if (name == event->m_ModuleName)
+				{
+					GetAssetManager().UnmountContentDirectory(dir);
+				}
+			}
+		}
+	});
+
+	//bind to myself
+	GetEventDispatcher().Bind(m_ModuleEventCallback);
 }
 
 void Application::OnUpdate(const Tick& tick)
@@ -87,12 +130,12 @@ void Application::RegisterBaseClasses()
 
 void Application::RegisterBaseAssetTypes()
 {
-	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), TextureAsset);
-	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), PrefabAsset);
-	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), SceneAsset);
-	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), ObjectAsset);
-	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MaterialAsset);
-	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MeshAsset);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), TextureAsset, Engine);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), PrefabAsset, Engine);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), SceneAsset, Engine);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), ObjectAsset, Engine);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MaterialAsset, Engine);
+	REGISTER_ASSETCLASS(GetAssetManager().GetAssetTypeRegistry(), MeshAsset, Engine);
 }
 
 void Application::Shutdown()

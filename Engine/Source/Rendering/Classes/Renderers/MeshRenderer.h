@@ -25,6 +25,7 @@ struct DENGINE_API DirectionalShadowMap
 struct DENGINE_API DirectionalLight
 {
 	vec3d Direction;
+	vec3d Position;
 	color3 Radiance;
 
 	float SourceLength = 1000.f;
@@ -36,6 +37,7 @@ struct DENGINE_API DirectionalLight
 	Ref<DirectionalShadowMap> ShadowMap;
 	glm::mat4 ViewProjectionMatrix;
 	vec3d LastDirection; // for caching
+	vec3d LastPosition; // for caching
 };
 
 struct DENGINE_API CookedDirectionalLight

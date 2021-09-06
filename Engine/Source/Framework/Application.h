@@ -13,6 +13,7 @@
 //events
 #include "Event/Callback.h"
 #include "Event/WindowEvent.h"
+#include "Event/ModuleEvent.h"
 
 //assets
 #include "Assets/AssetManager.h"
@@ -203,6 +204,9 @@ protected:
 	
 	//used to relay window events to this event dispatcher
 	Callback<WindowEvent> m_WindowEventCallback;
+
+	//used to auto unregister module classes and auto unmount module dirs
+	Callback<ModuleEvent> m_ModuleEventCallback;
 
 	//for all app events (also relays window events)
 	EventDispatcher m_EventDispatcher;

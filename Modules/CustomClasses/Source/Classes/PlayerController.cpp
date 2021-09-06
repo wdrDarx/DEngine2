@@ -9,11 +9,16 @@ void PlayerController::OnConstruct()
 	root = CreateComponent<TransformComponent>(ObjectInitializer::Module(this), "Root");
 	mesh = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "Mesh");
 	camera = CreateComponent<CameraComponent>(ObjectInitializer::Module(this), "Camera");
+	BulletSpawn = CreateComponent<TransformComponent>(ObjectInitializer::Module(this), "BulletSpawn");
 
 	SetRootComponent(root);
 	collider->AttachTo(root);
 	mesh->AttachTo(collider);
+	BulletSpawn->AttachTo(mesh);
 	camera->AttachTo(collider);
+
+	collider->Kinamtic = false;
+	collider->Dynamic = true;
 }
 
 void PlayerController::OnUpdate(const Tick& tick)
@@ -58,7 +63,7 @@ void PlayerController::OnUpdate(const Tick& tick)
 
 	if (!World::IsNearlyZero(MovementVec))
 	{
-		collider->m_PhysicsActor->AddForce(World::GetForwardVector(mesh->GetWorldRotation()) * MovementSpeed * tick.DeltaTime * (FlipForwardVector ? -1.f : 1.f), ForceMode::Force);
+		collider->GetPhysicsActor()->AddForce(World::GetForwardVector(mesh->GetWorldRotation()) * MovementSpeed * tick.DeltaTime * (FlipForwardVector ? -1.f : 1.f), ForceMode::VelocityChange);
 		//collider->SetWorldPosition(collider->GetWorldPostition() + World::GetForwardVector(mesh->GetWorldRotation()) * MovementSpeed * tick.DeltaTime * (FlipForwardVector ? -1.f : 1.f));
 	}
 }
@@ -71,7 +76,7 @@ void PlayerController::OnBeginPlay()
 	{
 		if(event->GetEventType() == MouseEventType::BUTTON && event->GetKeyCode() == GLFW_MOUSE_BUTTON_LEFT)
 		{
-			Transform spawnTrans = mesh->GetWorldTransform();
+			Transform spawnTrans = BulletSpawn->GetWorldTransform();
 			if(FlipForwardVector) spawnTrans.rot.y += 180.f;
 
 			SceneUtils::SpawnPrefabInScene(BulletPrefab, GetScene(), spawnTrans, ObjectInitializer::Module(this));

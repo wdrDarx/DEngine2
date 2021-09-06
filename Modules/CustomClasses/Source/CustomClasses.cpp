@@ -91,32 +91,15 @@ void CustomClasses::OnLoad()
 // 		scene->CreateRenderer<QuadRenderer>(ObjectInitializer::Module(GetThisModuleName()));
 // 	}
 	
-	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
-	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
+	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct, CustomClasses);
+	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2, CustomClasses);
 
 	GetApplication()->GetAssetManager().MountContentDirectory(Paths::GetModulesDirectory());
 }
 
 void CustomClasses::OnUnload()
 {
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshObject, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MeshComponent, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshComponent, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CameraComponent, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), PlayerController, CustomClasses);
-	UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), Bullet, CustomClasses);
-
-	//UNREGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadRenderer, CustomClasses);
-
-	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct);
-	UNREGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2);
-
-	GetApplication()->GetAssetManager().UnmountContentDirectory(Paths::GetModulesDirectory());
+	
 }
 
 void CustomClasses::OnUpdate(float DeltaTime)

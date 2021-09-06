@@ -9,6 +9,7 @@ IncludeDir["STB_IMAGE"] = "%{wks.location}/Vendor/stb_image"
 IncludeDir["ASSIMP"] = "%{wks.location}/Vendor/Assimp/include"
 IncludeDir["OpenVR"] = "%{wks.location}/Vendor/OpenVR/include"
 IncludeDir["PhysX"] = "%{wks.location}/Vendor/PhysX/include"
+IncludeDir["Json"] = "%{wks.location}/Vendor/Json"
 
 LibraryDir = {}
 LibraryDir["PhysX"] = "%{wks.location}/vendor/PhysX/lib/%{cfg.buildcfg}"

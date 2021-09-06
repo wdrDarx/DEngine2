@@ -23,6 +23,7 @@ group "Dependecies"
 include "Vendor/GLFW"
 include "Vendor/ImGui"
 include "Vendor/GLAD"
+include "Vendor/Json"
 group "" --Dependecies
 
 project "Engine"
@@ -51,8 +52,10 @@ project "Engine"
 		IncludeDir["Objloader"],
 		IncludeDir["STB_IMAGE"],
 		IncludeDir["ASSIMP"],
+		IncludeDir["Json"],
 		IncludeDir["PhysX"]
 	}
+}
 
 	links
 	{			
@@ -70,6 +73,7 @@ project "Engine"
 
 		"opengl32.lib",
 		"imGui",
+		"Json",
 		"GLFW",
 		"GLAD"
 	}
@@ -129,6 +133,7 @@ project "Editor"
 		IncludeDir["Objloader"],
 		IncludeDir["STB_IMAGE"],
 		IncludeDir["ASSIMP"],
+		IncludeDir["Json"],
 		IncludeDir["PhysX"]
 	}
 
@@ -194,6 +199,7 @@ project "Runtime"
 		IncludeDir["Objloader"],
 		IncludeDir["STB_IMAGE"],
 		IncludeDir["ASSIMP"],
+		IncludeDir["Json"],
 		IncludeDir["PhysX"]
 	}
 

@@ -15,9 +15,10 @@ class CUSTOMCLASSES Bullet : public SceneObject
 		void OnConstruct() override;
 		void OnPostConstruct() override;
 		void OnUpdate(const Tick& tick) override;
+		void OnBeginPlay() override;
 
 	public:
-		Ref<TransformComponent> Root;
+		Ref<BoxColliderComponent> Root;
 		Ref<StaticMeshComponent> mesh;
 		float Speed = 100.f;
 };

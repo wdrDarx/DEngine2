@@ -15,7 +15,7 @@ RuntimeApp::RuntimeApp() : Application()
 	SetAppState(AppState::GAME);
 	
 
-	Ref<SceneAsset> scene = GetAssetManager().LoadAsset<SceneAsset>(Paths::GetContentDirectory() + "\\Scenes\\VRTest.SceneAsset");
+	Ref<SceneAsset> scene = GetAssetManager().LoadAsset<SceneAsset>(Paths::GetContentDirectory() + "\\Runtime.SceneAsset");
 	SceneUtils::LoadSceneFromAsset(scene, m_openScene);
 	m_openScene->OnBeginPlay();
 }

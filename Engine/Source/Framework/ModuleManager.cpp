@@ -5,112 +5,85 @@
 #include "Event/ModuleEvent.h"
 
 
+void ModuleManager::LoadModule(const std::string& FullPath, const std::string& BaseSearchDirectory)
+{
+	//full path points to a .Module file
+	if (IsModuleLoaded(File::GetFileNameFromPath(FullPath))) return;
 
-void ModuleManager::LoadModule(const std::string& FullPath)
+	std::ifstream in;
+	in.open(FullPath);
+	if(in.is_open())
+	{
+		Buffer FileBuf;
+		File::ReadFile(FullPath, FileBuf);
+		std::string stringValue = std::string(FileBuf.begin(), FileBuf.end());
+		Json::Reader reader;
+		Json::Value value;
+		reader.parse(stringValue, value);
+
+		ModuleMetadata metadata;
+		metadata.FromJson(value);
+
+		for (auto& dep : metadata.Dependencies)
+		{
+			if(!IsModuleLoaded(dep.ModuleName))
+				LoadModuleFromName(dep.ModuleName, BaseSearchDirectory);
+		}
+
+		//finally load the actual module
+		std::filesystem::path parent = std::filesystem::path(FullPath).parent_path();
+		std::string dllPath = parent.string() + "\\" + File::GetFileNameFromPath(FullPath) + ".dll";
+		LoadModuleDLL(dllPath);
+	}
+	else
+	{
+		LogError("Failed to open " + FullPath);
+	}
+}
+
+void ModuleManager::LoadModuleDLL(const std::string& ModuleDLLPath)
 {
 	//add the module dir (modules/myModule) as a dll path for external libs
-	auto path = std::filesystem::path(FullPath);
+	auto path = std::filesystem::path(ModuleDLLPath);
 	SetDllDirectoryA(path.parent_path().string().c_str());
 
 	//load the dll
-	auto TempInstance = LoadLibraryA(FullPath.c_str());
+	auto TempInstance = LoadLibraryA(ModuleDLLPath.c_str());
 	ASSERT(TempInstance);
 	auto func = (CreateModuleFunc)GetProcAddress(TempInstance, "CreateModule");
 	Module* mod = func(); //get the custom class module instance
 	mod->m_Instance = TempInstance; //assign the module its instance
 
-	//check for dependencies before loading (Module exists in memory at this point)
-	bool ReadyToLoad = true;
-	for (auto& dep : mod->m_Dependencies)
-	{
-		bool found = false;
-		for (auto& loadedMod : m_LoadedModules)
-		{
-			if(loadedMod->m_Name == dep.ModuleName)
-			{ 
-				found = true;
-				break;
-			}
-		}
-		if (found)
-		{
-			continue;
-		}
-		else
-		{
-			//missing a dependency
-			ReadyToLoad = false;
-		}
-
-	}
-
-	//ready to load
-	if(ReadyToLoad)
-	{ 
-		m_LoadedModules.push_back(mod); //add to module array
-		mod->m_ModuleManager = this;
-		mod->m_App = m_App;
-		mod->OnLoad();
-		m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));		
-	}
-	else //put on a waiting list
-	{
-		m_PendingLoad.push_back(mod);
-	}
-
-	CheckPendingModules();
+	m_LoadedModules.push_back(mod); //add to module array
+	mod->m_ModuleManager = this;
+	mod->m_App = m_App;
+	mod->OnLoad();
+	m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));
 }
 
-void ModuleManager::CheckPendingModules()
+void ModuleManager::LoadModuleFromName(const std::string& ModuleName, const std::string& SearchPath)
 {
-	for (auto it = m_PendingLoad.begin(); it != m_PendingLoad.end();)
-	{
-		Module* mod = *it;
-		bool ReadyToLoad = true;
+	if (IsModuleLoaded(ModuleName)) return;
 
-		//check if all dependencies are satisfied
-		for (auto& dep : mod->m_Dependencies)
+	for (const auto& file : std::filesystem::directory_iterator(SearchPath))
+	{
+		std::string debug = file.path().filename().string();
+		if (file.is_directory() && file.path().filename().string() == ModuleName)
 		{
-			bool depFound = false;
-			for (auto& loaded : m_LoadedModules)
+			for (const auto& file : std::filesystem::directory_iterator(file.path()))
 			{
-				if (loaded->m_Name == dep.ModuleName)
+				if (file.is_regular_file() && file.path().extension().string() == ".Module")
 				{
-					depFound = true;
-					break;
+					LoadModule(file.path().string(), SearchPath);
 				}
 			}
-			if(!depFound)
-			{ 
-				//if a dependency is missing mark as not ready to load and forget the rest 
-				ReadyToLoad = false;
-				break;
-			}
-			//otherwise keep checking
-		}
-
-		//all dependencies are satisfied
-		if (ReadyToLoad)
-		{
-			//move the module from pending to loaded
-			m_PendingLoad.erase(it);
-			m_LoadedModules.push_back(mod);
-			mod->m_ModuleManager = this;
-			mod->m_App = m_App;
-			m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::LOADED, mod->m_Name));
-			mod->OnLoad();
-
-			it = m_PendingLoad.begin();
-		}
-		else
-		{		
-			//increment itterator to continue
-			it++;
 		}
 	}
+
+	
 }
 
-bool ModuleManager::isModuleLoaded(const std::string& ModuleName)
+bool ModuleManager::IsModuleLoaded(const std::string& ModuleName)
 {
 	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
 	{
@@ -122,18 +95,6 @@ bool ModuleManager::isModuleLoaded(const std::string& ModuleName)
 	}
 
 	return false;
-}
-
-void ModuleManager::HotReloadModule(const std::string& ModuleName)
-{
-	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
-	{
-		Module* mod = *it;
-		if (mod->m_Name == ModuleName)
-		{
-
-		}
-	}
 }
 
 void ModuleManager::LoadAllModules(const std::string& FolderPath)
@@ -149,14 +110,12 @@ void ModuleManager::LoadAllModules(const std::string& FolderPath)
 
 	for (const auto& file : std::filesystem::recursive_directory_iterator(FolderPath))
 	{
-		if (file.is_regular_file() && file.path().extension().string() == ".dll" && std::count(ModuleNames.begin(), ModuleNames.end(), File::GetFileNameFromPath(file.path().string())) > 0)
+		if (file.is_regular_file() && file.path().extension().string() == ".Module" && std::count(ModuleNames.begin(), ModuleNames.end(), File::GetFileNameFromPath(file.path().string())) > 0)
 		{
-			LoadModule(file.path().string());
+			LoadModule(file.path().string(), FolderPath);
 		}
 	}
 }
-
-
 
 void ModuleManager::UnloadModule(const std::string& ModuleName)
 {
@@ -179,7 +138,7 @@ void ModuleManager::UnloadModule(const std::string& ModuleName)
 	for (auto it = m_LoadedModules.begin(); it != m_LoadedModules.end(); it++)
 	{
 		Module* mod = *it;
-		for (auto& dep : mod->m_Dependencies)
+		for (auto& dep : mod->GetMetadata().Dependencies)
 		{
 			if(dep.ModuleName == ToUnload->GetThisModuleName())
 				ToUnloadChildren.push_back(mod->GetThisModuleName()); //recurisvly unload this module too
@@ -201,13 +160,17 @@ void ModuleManager::UnloadModule(const std::string& ModuleName)
 
 void ModuleManager::UnloadAllModules()
 {
-	for (size_t i = 0; i < m_LoadedModules.size(); i++)
+	std::vector<std::string> AllModuleNames;
+	for (auto& mod : m_LoadedModules)
 	{
-		Module* mod = m_LoadedModules[i];
-		m_App->GetEventDispatcher().Dispatch(ModuleEvent(ModuleEventType::UNLOADED, mod->m_Name));
-		mod->OnUnload();
-		delete mod;
+		AllModuleNames.push_back(mod->GetThisModuleName());
 	}
+
+	for (size_t i = 0; i < AllModuleNames.size(); i++)
+	{
+		UnloadModule(AllModuleNames[i]);
+	}
+
 	m_LoadedModules.clear();
 }
 

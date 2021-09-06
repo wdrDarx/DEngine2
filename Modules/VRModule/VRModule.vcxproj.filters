@@ -4,10 +4,25 @@
     <Filter Include="Classes">
       <UniqueIdentifier>{F3F6462C-5FD6-C5C7-68EE-509ED44C2C29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OpenVR">
+      <UniqueIdentifier>{7F884AC8-6B2A-759E-54E5-88F24026FCEE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenVR\include">
+      <UniqueIdentifier>{F2BE9B52-DE8C-8F58-C720-007FB38D6BBD}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Classes\VRPawn.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OpenVR\include\openvr.h">
+      <Filter>OpenVR\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OpenVR\include\openvr_capi.h">
+      <Filter>OpenVR\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OpenVR\include\openvr_driver.h">
+      <Filter>OpenVR\include</Filter>
     </ClInclude>
     <ClInclude Include="Source\VRModule.h" />
   </ItemGroup>

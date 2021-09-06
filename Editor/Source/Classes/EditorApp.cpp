@@ -595,7 +595,7 @@ void EditorApp::AddAssetEditor(Ref<AssetHandle> TargetAssetHandle)
 	}
 
 	//test if its an ObjectAsset
-	Ref<Asset> testAsset = ToRef<Asset>(GetAssetManager().GetAssetTypeRegistry().Make({assetType}));
+	Ref<Asset> testAsset = ToRef<Asset>(GetAssetManager().GetAssetTypeRegistry().MakeObjectFromClassName(assetType));
 	if (Cast<ObjectAsset>(testAsset))
 	{
 		NewEditor = MakeRef<ObjectAssetEditor>();

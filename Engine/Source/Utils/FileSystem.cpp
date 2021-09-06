@@ -152,6 +152,19 @@ bool File::DoesFileExist(const std::string& path)
 	return f.good();
 }
 
+bool File::DoesPathExist(const std::string& path)
+{
+	return std::filesystem::exists(path);
+}
+
+void File::MakePath(const std::string& path)
+{
+	if (!DoesPathExist(path))
+	{
+		std::filesystem::create_directory(std::filesystem::path(path));
+	}
+}
+
 void File::AcceptDragFiles(Window* targetWindow, DropTarget* dropTarget)
 {
 	OleInitialize(NULL);

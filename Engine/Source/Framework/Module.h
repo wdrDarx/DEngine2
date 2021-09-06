@@ -4,12 +4,39 @@
 
 #define EXTERN extern "C"
 #define MODULEDEF(name) Module* CreateModule() { return new name(#name); };
-#define DEPENDENCY(name) m_Dependencies.push_back({#name});
 
 struct Dependency
 {
 	std::string ModuleName;
 };
+
+struct ModuleMetadata
+{
+	std::vector<Dependency> Dependencies;
+
+	void FromJson(const Json::Value& json)
+	{
+		if (json["Dependencies"].isArray())
+		{
+			for (uint i = 0; i < json["Dependencies"].size(); i++)
+			{
+				Dependencies.push_back({json["Dependencies"][0].asString()});
+			}
+		}
+	}
+
+ 	Json::Value ToJson()
+ 	{
+		Json::Value out;
+		for(uint i = 0; i < Dependencies.size(); i++)
+		{
+			out["Dependencies"][i] = Dependencies[i].ModuleName;
+		}
+		
+		return out;
+ 	}
+};
+
 
 class Application;
 class Module
@@ -76,12 +103,21 @@ public:
 		return m_Name;
 	}
 
+	const ModuleMetadata& GetMetadata() const
+	{
+		return m_MetaData;
+	}
+
+	void SetMetadata(const ModuleMetadata& metadata)
+	{
+		m_MetaData = metadata;
+	}
+
 	std::string m_Name;
 	HINSTANCE m_Instance = nullptr;
-	std::vector<Dependency> m_Dependencies;
-	std::function<void(void)> m_InvokeFunc;
 	ModuleManager* m_ModuleManager = nullptr;
 	Ref<Application> m_App;
+	ModuleMetadata m_MetaData;
 
 	//static app ref
 	static Ref<Application> s_App;
