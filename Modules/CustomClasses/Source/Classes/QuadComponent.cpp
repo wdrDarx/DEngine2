@@ -19,4 +19,14 @@ void QuadComponent::OnConstruct()
 {
 	Super::OnConstruct();
 
+// 	int value = m_TestEnum.Value();
+// 
+// 	m_TestEnum |= EnumTest::Enum::TestEnum1;
+// 	m_TestEnum |= EnumTest::Enum::TestEnum2;
+// 	value = m_TestEnum.Value();
+// 	std::string test = EnumTest::ToString(EnumTest::Enum::TestEnum1);
+// 	LogTemp(test);
+// 
+// 	test = EnumTest::ToString(EnumTest::Enum::TestEnum2);
+// 	LogTemp(test);
 }

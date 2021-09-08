@@ -549,5 +549,6 @@
     <ClCompile Include="Source\Utils\World.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Framework\EnumBase.cpp" />
   </ItemGroup>
 </Project>

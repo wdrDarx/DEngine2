@@ -1,6 +1,7 @@
 #pragma once
 #include "StructBase.h"
 #include "FrameworkMacros.h"
+#include "EnumBase.h"
 
 struct DENGINE_API _ArrayInternal : public StructBase
 {

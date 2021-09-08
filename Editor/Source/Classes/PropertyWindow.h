@@ -43,23 +43,23 @@ class PropertyWindow
 			ImGui::SameLine();
 			ImGui::InputText("##Name", &sceneObject->GetNameMutable());
 
-// 			if (ImGui::Button("Serialize/Reload"))
-// 			{
-// 				Buffer temp;
-// 				sceneObject->Serialize(temp);
-// 				sceneObject->Deserialize(temp);
-// 			}
+			if (ImGui::Button("Serialize/Reload"))
+			{
+				Buffer temp;
+				sceneObject->Serialize(temp);
+				sceneObject->Deserialize(temp);
+			}
 			ListProperties(sceneObject->GetPropertiesMutable(), sceneObject);
 		}
 
 		void DrawComponentProps(ObjectComponent* Comp)
 		{
-// 			if (ImGui::Button("Serialize/Reload"))
-// 			{
-// 				Buffer temp;
-// 				Comp->Serialize(temp);
-// 				Comp->Deserialize(temp);
-// 			}
+			if (ImGui::Button("Serialize/Reload"))
+			{
+				Buffer temp;
+				Comp->Serialize(temp);
+				Comp->Deserialize(temp);
+			}
 			ListProperties(Comp->GetPropertiesMutable(), Comp);
 		}
 
@@ -136,6 +136,47 @@ class PropertyWindow
 				for (auto& prop : props)
 				{
 					DrawProperty(prop, owner, ForceNewLine);
+				}
+			}
+		}
+
+		void DrawEnum(const std::string& PropName, EnumBase* enumValue)
+		{
+			
+			if(!enumValue->IsBitmask())
+			{ 
+				std::string SelectedItem = enumValue->ToString(enumValue->IntValue());
+				if (ImGui::BeginCombo(PropName.c_str(), SelectedItem.c_str())) // The second parameter is the label previewed before opening the combo.
+				{
+					for (auto& e : enumValue->GetEnumMap())
+					{
+						bool selected = SelectedItem == e.first;
+						if (ImGui::Selectable(e.first.c_str(), &selected))
+						{
+							enumValue->IntValue() = e.second;
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+			}
+			else
+			{
+				//Draw category thing here
+				bool expanded = ImGui::TreeNodeEx((void*)(enumValue), ImGuiTreeNodeFlags_Framed , PropName.c_str());
+				
+				if (expanded)
+				{	
+					for (auto& e : enumValue->GetEnumMap())
+					{
+						bool checked = (e.second & enumValue->IntValue());
+						ImGui::Checkbox(e.first.c_str(), &checked);
+						if(checked)
+							enumValue->IntValue() |= e.second;							
+						else
+							enumValue->IntValue() &= ~e.second;
+					}
+					ImGui::TreePop();
 				}
 			}
 		}
@@ -280,6 +321,12 @@ class PropertyWindow
 					{
 						//ImGui::PushItemWidth(-1 * m_ResetButtonOffset);
 						ImGui::DragFloat(DisplayName.c_str(), (float*)prop.m_Value);
+						break;
+					}
+
+					case PropType::ENUM:
+					{
+						DrawEnum(DisplayName, (EnumBase*)prop.m_Value);
 						break;
 					}
 

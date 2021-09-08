@@ -93,6 +93,8 @@ void CustomClasses::OnLoad()
 	
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct, CustomClasses);
 	REGISTER_STRUCT(GetApplication()->GetStructRegistry(), TestStruct2, CustomClasses);
+	REGISTER_ENUM(GetApplication()->GetStructRegistry(), EnumTest, CustomClasses);
+	REGISTER_ENUM(GetApplication()->GetStructRegistry(), BitmaskTest, CustomClasses);
 
 	GetApplication()->GetAssetManager().MountContentDirectory(Paths::GetModulesDirectory());
 }

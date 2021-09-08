@@ -1,12 +1,20 @@
 #pragma once
 #include "Core/Core.h"
 #include "Rendering/RenderAPI.h"
+#include "Framework/EnumBase.h"
 
-
-enum class ProjectionType
+struct DENGINE_API ProjectionType : public EnumBase
 {
-	ORTHO = 0,
-	PERSPECTIVE
+	enum Enum
+	{
+		ORTHO = 0,
+		PERSPECTIVE
+	};
+
+	ENUM_DEF_BEGIN(ProjectionType, Enum);
+		ENUM_DEF(ORTHO);
+		ENUM_DEF(PERSPECTIVE);
+	ENUM_DEF_END()
 };
 
 /*
@@ -75,13 +83,13 @@ public:
 
 	void RecalculateViewProjectionMatrix(bool CalcView = true);
 
-	void SetProjectionType(const ProjectionType& proj)
+	void SetProjectionType(const ProjectionType::Enum& proj)
 	{
 		m_ProjectionType = proj;
 		RecalculateViewProjectionMatrix();
 	}
 
-	const ProjectionType& GetProjectionType() const
+	const ProjectionType::Enum& GetProjectionType() const
 	{
 		return m_ProjectionType;
 	}
@@ -117,7 +125,7 @@ public:
 
 private:
 	Ref<RenderAPI> m_RenderAPI;
-	ProjectionType m_ProjectionType = ProjectionType::PERSPECTIVE;
+	ProjectionType::Enum m_ProjectionType = ProjectionType::Enum::PERSPECTIVE;
 
 	glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
 	glm::mat4 m_ViewMatrix = glm::mat4(1.0f);

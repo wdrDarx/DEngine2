@@ -6,6 +6,12 @@ void CameraComponent::OnUpdate(const Tick& tick)
 
 	if(tick.GetTickGroup() != TickGroup::GAME || !m_Camera) return;
 
+	if (m_LastProjectionType != Projection.Value())
+	{
+		m_LastProjectionType = Projection.Value();
+		m_Camera->SetProjectionType(Projection.Value());
+	}
+
 	m_Camera->SetTransform(GetWorldTransform());
 	m_Camera->SetFOV(FOV);
 }

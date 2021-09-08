@@ -26,6 +26,8 @@ public:
 	AssetRef<PrefabAsset> PrefabToSpawn;
 	Callback<KeyEvent> m_KeyDownEvent;
 
+
+
 	float test = 12.f;
 	float Speed = 30.f;
 	float RandomSpawnRange = 1000.f;

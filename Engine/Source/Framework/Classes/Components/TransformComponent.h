@@ -2,6 +2,7 @@
 #include "Framework/ObjectComponent.h"
 #include "Utils/World.h"
 #include "Framework/Array.h"
+#include "Framework/EnumBase.h"
 
 /*
 	unique identifies for a local component within a scene object

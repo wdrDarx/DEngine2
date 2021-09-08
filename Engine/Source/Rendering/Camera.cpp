@@ -13,7 +13,7 @@ void Camera::RecalculateViewProjectionMatrix(bool CalcView /*= true*/)
 	float NewHeight = (float)GetRenderAPI()->GetViewportSize().y * m_Zoom; /// HeightRatio;
 
 
-	if (m_ProjectionType == ProjectionType::ORTHO)
+	if (m_ProjectionType == ProjectionType::Enum::ORTHO)
 		m_ProjectionMatrix = glm::ortho(-NewWidth, NewWidth, -NewHeight, NewHeight, -1.0f, 1.0f);
 	else
 	{

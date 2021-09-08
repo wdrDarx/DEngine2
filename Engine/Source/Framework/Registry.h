@@ -9,6 +9,10 @@
 #define REGISTER_STRUCT(RegistryRef, StructClass, ModuleClass) RegistryRef.Register<StructClass>({#StructClass, #ModuleClass});
 #define UNREGISTER_STRUCT(RegistryRef, StructClass, ModuleClass) RegistryRef.Unregister({#StructClass, #ModuleClass});
 
+//same as register struct
+#define REGISTER_ENUM(RegistryRef, EnumClass, ModuleClass) RegistryRef.Register<EnumClass>({#EnumClass, #ModuleClass});
+#define UNREGISTER_ENUM(RegistryRef, EnumClass, ModuleClass) RegistryRef.Unregister({#EnumClass, #ModuleClass});
+
 #define REGISTER_ASSETCLASS(RegistryRef, AssetClass, ModuleClass) RegistryRef.Register<AssetClass>({#AssetClass, #ModuleClass});
 #define UNREGISTER_ASSETCLASS(RegistryRef, AssetClass, ModuleClass) RegistryRef.Unregister({#AssetClass, #ModuleClass});
 

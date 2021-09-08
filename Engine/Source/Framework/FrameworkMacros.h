@@ -25,7 +25,7 @@ if(std::is_same<cppType, vec3d>::value) {out = PropType::VEC3D; } else \
 if(std::is_same<cppType, color3>::value) {out = PropType::COLOR3; } else \
 if(std::is_same<cppType, color4>::value) {out = PropType::COLOR4; } else \
 if(std::is_same<cppType, Transform>::value) {out = PropType::TRANSFORM; } else \
-if(std::is_enum<cppType>::value) {out = PropType::ENUM; } else \
+if(std::is_base_of<EnumBase, cppType>::value) {out = PropType::ENUM; } else \
 if(is_base_of_template<AssetRef, cppType>::value) {out = PropType::ASSETREF;} else \
 if(std::is_base_of<_ArrayInternal, cppType>::value) {out = PropType::ARRAY;} else \
 if(std::is_base_of<StructBase, cppType>::value) {out = PropType::STRUCT; } \
@@ -53,7 +53,7 @@ return out; }();
 
 //Simple prop additions macro
 #define PROPDEF_FLAGS(x, flags) { int _flags = flags; \
-if(std::is_base_of<_ArrayInternal, decltype(x)>::value) {LogError("Please use PROPDE_ARRAY for array properties!");} else \
+if(std::is_base_of<_ArrayInternal, decltype(x)>::value) {LogError("Please use PROPDEF_ARRAY for array properties!");} else \
 if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::BOOL,						 &x, sizeof(bool),  _flags)); } else \
 if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::INT,						 &x, sizeof(int),   _flags)); } else \
 if(typeid(x) == typeid(uint)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::UINT,						 &x, sizeof(uint),   _flags)); } else \
@@ -64,7 +64,7 @@ if(typeid(x) == typeid(vec3d)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Categ
 if(typeid(x) == typeid(color3)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::COLOR3,					 &x, sizeof(color3), _flags)); } else \
 if(typeid(x) == typeid(color4)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::COLOR4,					 &x, sizeof(color4), _flags)); } else \
 if(typeid(x) == typeid(Transform)) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::TRANSFORM,		     &x, sizeof(Transform), _flags)); } else \
-if(std::is_enum<decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category, PropType::ENUM,					     &x, sizeof(x), _flags)); } else \
+if(std::is_base_of<EnumBase, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category, PropType::ENUM,	 &x, sizeof(x), _flags)); } else \
 if(is_base_of_template<AssetRef, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x,  _Category,PropType::ASSETREF, &x, sizeof(x), _flags)); } else \
 if(std::is_base_of<StructBase, decltype(x)>::value) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::STRUCT,&x, sizeof(x), _flags)); } \
 }
@@ -75,7 +75,7 @@ if (std::is_base_of<_ArrayInternal, decltype(x)>::value) { \
 _PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::ARRAY, &x, sizeof(x), _flags)); \
 }
 
-//TODO give all "DStructs" a function that returns their serializable size based on their properties
+//TODO give all "StructBase" a function that returns their serializable size based on their properties
 
 #define PROPDEF(x, flags) PROPDEF_FLAGS(x, flags)
 

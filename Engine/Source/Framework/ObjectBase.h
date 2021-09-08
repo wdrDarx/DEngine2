@@ -2,6 +2,7 @@
 #include "Core/Core.h"
 #include "Framework/Tick.h"
 #include "Framework/Property.h"
+#include "Framework/EnumBase.h"
 #include "Event/EditorCallback.h"
 #include "Serialization/Buffer.h"
 #include "Framework/StaticClass.h"
