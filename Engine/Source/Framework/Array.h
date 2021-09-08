@@ -17,7 +17,11 @@ struct DENGINE_API Array : public _ArrayInternal
 
 	const _Type& Get(size_t index)
 	{
-		ASSERT(index < m_InternalArray.size());
+		if (index >= m_InternalArray.size())
+		{
+			LogError("Array index exceeded!");
+			index = m_InternalArray.size() - 1;
+		}
 
 		const StaticProperty& elem = m_InternalArray[index];
 		return *(_Type*)(elem.m_Value);
@@ -98,8 +102,8 @@ private:
 	PropType GetElementType() const
 	{
 		PropType out = _TO_PROP_TYPE(_Type);
-		if (out == PropType::NONE || out == PropType::ARRAY) 
-			ASSERT(false); //invalid types
+		if (out == PropType::NONE || out == PropType::ARRAY || out == PropType::ASSETREF) 
+			LogError("Array cant be type " + STRING((int)out));
 
 		return out;
 	}

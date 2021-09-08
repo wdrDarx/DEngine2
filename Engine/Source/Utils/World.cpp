@@ -424,3 +424,11 @@ glm::quat World::LerpQuat(const glm::quat& A, const glm::quat& B, float Alpha)
 {
 	return glm::slerp(A, B, glm::clamp(Alpha, 0.f, 1.0f));
 }
+
+vec3d World::RotateVector(const vec3d& inVector, const vec3d& rotation)
+{
+	quat rotquat = RotationDegreesToQuat(rotation);
+	glm::mat4 matrix = QuatToMat(rotquat);
+	vec4d transformed = matrix * vec4d(inVector, 1.0f);
+	return vec3d({transformed.x, transformed.y, transformed.z});
+}

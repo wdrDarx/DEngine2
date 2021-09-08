@@ -53,6 +53,7 @@ return out; }();
 
 //Simple prop additions macro
 #define PROPDEF_FLAGS(x, flags) { int _flags = flags; \
+if(std::is_base_of<_ArrayInternal, decltype(x)>::value) {LogError("Please use PROPDE_ARRAY for array properties!");} else \
 if(typeid(x) == typeid(bool)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::BOOL,						 &x, sizeof(bool),  _flags)); } else \
 if(typeid(x) == typeid(int)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::INT,						 &x, sizeof(int),   _flags)); } else \
 if(typeid(x) == typeid(uint)) {_PROP_MEMBER_NAME.push_back(Property(#x, _Category, PropType::UINT,						 &x, sizeof(uint),   _flags)); } else \

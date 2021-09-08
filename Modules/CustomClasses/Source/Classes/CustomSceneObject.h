@@ -10,18 +10,16 @@ struct CUSTOMCLASSES TestStruct : public StructBase
 			//PROPDEF(porp2, EditAnywhere);
 		STRUCT_PROPS_END()
 	
-	float porp = 12.f;
+	AssetRef<SceneAsset> porp;
 };
 
 struct CUSTOMCLASSES TestStruct2 : public TestStruct
 {
 	STRUCT_CLASS_DEF(TestStruct2, TestStruct)
 		STRUCT_PROPS_BEGIN()
-			prop2.GetPropertiesMutable().clear();
 			PROPDEF(childProp, EditAnywhere);
 			PROPDEF(childProp2, EditAnywhere);
 			PROPDEF(prop2, EditAnywhere);
-			prop2.DefineProperties();
 		STRUCT_PROPS_END()
 
 	float childProp = 3.f;

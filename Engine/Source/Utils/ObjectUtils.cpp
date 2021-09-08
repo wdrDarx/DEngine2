@@ -103,12 +103,6 @@ void ObjectUtils::AddEmptyArrayPropertyElement(Array<bool>* arrayProperty, Struc
 			delete[] (byte*)struc;			
 		}
 		else
-			if (arrayProperty->m_ElementType == PropType::ASSETREF)
-			{
-				AssetRef<Asset> asset;
-				newElem.Assign(&asset, sizeof(asset));
-			} 
-			else
 			{
 				//allocate the value bytes
 				void* mem = new byte[arrayProperty->m_ElementSize];

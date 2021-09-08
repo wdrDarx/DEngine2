@@ -1,6 +1,7 @@
 #pragma once
 #include "Framework/ObjectComponent.h"
 #include "Utils/World.h"
+#include "Framework/Array.h"
 
 /*
 	unique identifies for a local component within a scene object
@@ -62,7 +63,7 @@ public:
 	//returns true if transform has changed
 	virtual bool SetLocalTransform(const Transform& LocalTrans)
 	{
-		if (!World::NearlyEqual(LocalTrans, m_Transform))
+		if (LocalTrans != m_Transform)
 		{ 
 			m_Transform = LocalTrans;
 
@@ -74,7 +75,7 @@ public:
 	}
 
 	//recursively gets world matrix by combining transforms of all the parents on the hierarchy
-	const glm::mat4& GetWorldMatrix();
+	glm::mat4 GetWorldMatrix();
 
 	virtual Transform GetWorldTransform()
 	{
@@ -92,7 +93,7 @@ public:
 	{
 		if (m_WorldTransformCache)
 		{
-			if(World::NearlyEqual(WorldTrans, m_WorldTransformCache.value())) return false;
+			if(WorldTrans == m_WorldTransformCache) return false;
 		}
 
 		SetWorldMatrix(World::MakeMatrix(WorldTrans));

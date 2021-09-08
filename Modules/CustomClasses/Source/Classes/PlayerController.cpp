@@ -19,6 +19,11 @@ void PlayerController::OnConstruct()
 
 	collider->Kinamtic = false;
 	collider->Dynamic = true;
+	collider->CCD = false;
+	collider->Lerp = true;
+	collider->LockRotX = true;
+	collider->LockRotY = true;
+	collider->LockRotZ = true;
 }
 
 void PlayerController::OnUpdate(const Tick& tick)
@@ -52,6 +57,7 @@ void PlayerController::OnUpdate(const Tick& tick)
 			MovementVec *= -1.f;
 
 		//TargetRotation = World::VectorToRotation(MovementVec);
+		MovementVec += MovementVecAdd;
 		TargetRotation = MovementVec;
 	}
 	glm::quat CurrentRot = World::RotationDegreesToQuat(mesh->GetWorldRotation());

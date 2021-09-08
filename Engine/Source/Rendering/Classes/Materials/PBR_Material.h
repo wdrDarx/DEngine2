@@ -2,6 +2,7 @@
 #include "Rendering/Material.h"
 #include "Assets/Classes/TextureAsset.h"
 #include "Assets/AssetRef.h"
+#include "Framework/Array.h"
 
 class DENGINE_API PBR_Material : public Material
 {

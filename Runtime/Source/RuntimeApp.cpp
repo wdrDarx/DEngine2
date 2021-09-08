@@ -13,7 +13,6 @@ RuntimeApp::RuntimeApp() : Application()
 	m_openScene->SetPipeline<DefaultPipeline>(GetWindow()->GetRenderAPI());
 
 	SetAppState(AppState::GAME);
-	
 
 	Ref<SceneAsset> scene = GetAssetManager().LoadAsset<SceneAsset>(Paths::GetContentDirectory() + "\\Runtime.SceneAsset");
 	SceneUtils::LoadSceneFromAsset(scene, m_openScene);
@@ -35,6 +34,7 @@ void RuntimeApp::OnUpdate(const Tick& tick)
 	
 	m_openScene->GetPipeline()->PrepareFrame();
 	
+	GetWindow()->GetRenderAPI()->SetViewport({ GetWindow()->GetWidth(), GetWindow()->GetHeight() });
 	m_openScene->GetPipeline()->RenderFrame(m_openScene->GetActiveCamera());
 
 	m_openScene->GetPipeline()->ClearFrame();

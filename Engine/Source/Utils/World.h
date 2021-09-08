@@ -93,5 +93,7 @@ public:
 
 	static glm::quat VectorDirToQuat(const vec3d& DirVector);
 	static glm::quat LerpQuat(const glm::quat& A, const glm::quat& B, float Alpha);
+
+	static vec3d RotateVector(const vec3d& inVector, const vec3d& rotation);
 };
 

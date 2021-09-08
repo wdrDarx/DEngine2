@@ -28,10 +28,13 @@ void TransformComponent::OnUpdate(const Tick& tick)
 	}
 }
 
-const glm::mat4& TransformComponent::GetWorldMatrix()
+glm::mat4 TransformComponent::GetWorldMatrix()
 {
 	if (m_Parent)
-		return m_Parent->GetWorldMatrix() * GetMatrix();
+	{ 
+		glm::mat4 parent = m_Parent->GetWorldMatrix();
+		return parent * GetMatrix();
+	}
 	else
 	{
 		return  GetMatrix();

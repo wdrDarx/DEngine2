@@ -41,6 +41,14 @@ void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene
 	scene->GetInputManager().ClearInput();
 
 	sceneAsset->LoadScene(scene);
+	
+	if (scene->GetLastTick().GetTickGroup() == TickGroup::GAME)
+	{
+		for (auto& obj : scene->GetSceneObjects())
+		{
+			obj->OnBeginPlay();
+		}
+	}
 }
 
 Ref<SceneObject> SceneUtils::CloneSceneObject(SceneObject* obj, Ref<Scene> TargetScene)

@@ -20,19 +20,20 @@ public:
 	void OnBeginPlay() override;
 
 public:
-	float MovementSpeed = 100.f;
-	float RoatationLerpSpeed = 0.5f;
+	float MovementSpeed = 2000.f;
+	float RoatationLerpSpeed = 20.f;
 	bool FlipForwardVector = true;
 
-	Ref<BoxColliderComponent> collider;
-	Ref<TransformComponent> BulletSpawn;
-	Ref<TransformComponent> root;
-	Ref<CameraComponent> camera;
-	Ref<StaticMeshComponent> mesh;
+	Ref<BoxColliderComponent> collider = nullptr;
+	Ref<TransformComponent> BulletSpawn = nullptr;
+	Ref<TransformComponent> root = nullptr;
+	Ref<CameraComponent> camera = nullptr;
+	Ref<StaticMeshComponent> mesh = nullptr;
 
 	AssetRef<PrefabAsset> BulletPrefab;
 
 	vec3d TargetRotation;
+	vec3d MovementVecAdd = {0,0,0};
 
 	Callback<MouseEvent> mouseEvent;
 };
