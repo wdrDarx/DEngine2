@@ -35,12 +35,6 @@ public:
 
 	void SetMaterial(Ref<PhysicsMaterial> material);
 
-	bool IsTrigger() const
-	{
-		return m_IsTrigger;
-	}
-	void SetTrigger(bool isTrigger);
-
 	void SetFilterData(const physx::PxFilterData& filterData)
 	{
 		m_Shape->setSimulationFilterData(filterData);
@@ -69,7 +63,6 @@ public:
 
 protected:
 	physx::PxShape* m_Shape = nullptr;
-	bool m_IsTrigger = false;
 	PhysicsActor* m_Parent = nullptr;
 	ColliderType m_Type;
 	physx::PxMaterial* m_Material = nullptr;

@@ -10,6 +10,9 @@
 
 EditorApp::EditorApp() : Application()
 {	
+	//create base dirs if they dont exist already
+	Paths::CreateBaseDirs();
+
 	//set app state to editor
 	SetAppState(AppState::EDITOR);
 
@@ -122,7 +125,7 @@ EditorApp::EditorApp() : Application()
 	//set debug render flag by default
 	auto renderer = m_EditorScene->GetPipeline()->GetRenderer<DebugRenderer>();
 	if(renderer)
-		renderer->SetRenderFlags(RenderFlags::DEBUGLINES | RenderFlags::DEBUGCUBES);
+		renderer->SetRenderFlags(RenderFlags::Enum(RenderFlags::Enum::DEBUGLINES | RenderFlags::Enum::DEBUGLINES));
 }
 
 void EditorApp::OnUpdate(const Tick& tick)
@@ -393,19 +396,23 @@ void EditorApp::DrawRendererWindow()
 	auto Debugrenderer = m_EditorScene->GetPipeline()->GetRenderer<DebugRenderer>();
 	if (bDebugRenderer && Debugrenderer)
 	{
-		bool debuglines = Debugrenderer->GetRenderFlags() & RenderFlags::DEBUGLINES;
-		bool debugCubes = Debugrenderer->GetRenderFlags() & RenderFlags::DEBUGCUBES;
-		bool physx = Debugrenderer->GetRenderFlags() & RenderFlags::PHYSX;
+		bool debuglines = m_DebugFlags & RenderFlags::DEBUGLINES;
+		bool debugCubes = m_DebugFlags & RenderFlags::DEBUGCUBES;
+		bool physx = m_DebugFlags & RenderFlags::PHYSX;
+		bool Grid = m_DebugFlags & RenderFlags::GRID;
+		ImGui::Checkbox("Grid", &Grid);
 		ImGui::Checkbox("Debug Lines ", &debuglines);
 		ImGui::Checkbox("Debug Cubes ", &debugCubes);
 		ImGui::Checkbox("Colliders ", &physx);
-		m_DebugFlags = RenderFlags(0);
+		m_DebugFlags = 0;
 		if (debuglines)
 			m_DebugFlags |= RenderFlags::DEBUGLINES;
 		if (debugCubes)
 			m_DebugFlags |= RenderFlags::DEBUGCUBES;
 		if (physx)
 			m_DebugFlags |= RenderFlags::PHYSX;
+		if (Grid)
+			m_DebugFlags |= RenderFlags::GRID;
 
 		Debugrenderer->SetRenderFlags(m_DebugFlags);
 

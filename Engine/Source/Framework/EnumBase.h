@@ -5,60 +5,58 @@
 #define BITMASK_CLASS(thisClass)  \
 inline void operator|=(const EnumBase& other) { IntValue() |= other.ConstIntValue(); }  \
 inline void operator|=(int other) { IntValue() |= other; }  \
-inline bool operator&(const EnumBase& other) { return IntValue() & other.ConstIntValue(); }  \
-inline bool operator&(int other) { return IntValue() & other; }   \
-thisClass FromInt(int in) { thisClass out; out.IntValue() = in; return out; } \
-inline thisClass operator|(const EnumBase& other) { return FromInt(ConstIntValue() | other.ConstIntValue()); } \
-inline thisClass operator|(int other) { return FromInt(ConstIntValue() | other); }
+inline bool operator&(const EnumBase& other) const { return (ConstIntValue() & other.ConstIntValue()); } \
+inline bool operator&(int other) const { return (ConstIntValue() & other); }  \
+inline thisClass FromInt(int in) const { thisClass out; out.IntValue() = in; return out; }  \
+inline thisClass operator|(const EnumBase& other) const { return FromInt(ConstIntValue() | other.ConstIntValue()); } \
+inline thisClass operator|(int other) const { return FromInt(ConstIntValue() | other); }
 
-#define _ENUM_DEF_BEGIN() void DefineEnum() override { _EnumClass* e = new _EnumClass(); m_Enum = (int*)e;
-#define ENUM_DEF(EnumValue) m_StringMap[#EnumValue] = _EnumClass::EnumValue;
-#define ENUM_DEF_END() }
+#define _ENUM_DEF_BEGIN() void DefineEnum() override { _EnumClass e = _EnumClass(); m_Enum = (int)e; } std::map<std::string, int> GetEnumMap() override { std::map<std::string, int> _StringMap;
+#define ENUM_DEF(EnumValue) _StringMap[#EnumValue] = _EnumClass::EnumValue;
+#define ENUM_DEF_END() return _StringMap; }
 
 #define ENUM_DEF_BEGIN(thisClass, EnumClassName) using _EnumClass = EnumClassName; STRUCT_CLASS_DEF(thisClass, EnumBase) STRUCT_PROPS_BEGIN() m_IsBitmask = false; STRUCT_PROPS_END() \
-_EnumClass& Value() {return (_EnumClass&)*m_Enum;} \
-const _EnumClass& ConstValue() const {return (const _EnumClass&)*m_Enum;} \
- _ENUM_DEF_BEGIN(EnumClassName) 
+_EnumClass& Value() {return (_EnumClass&)m_Enum;} \
+const _EnumClass& ConstValue() const {return (const _EnumClass&)m_Enum;} \
+ _ENUM_DEF_BEGIN() 
 
 #define BITMASK_DEF_BEGIN(thisClass, EnumClassName) using _EnumClass = EnumClassName; STRUCT_CLASS_DEF(thisClass, EnumBase) STRUCT_PROPS_BEGIN() m_IsBitmask = true; STRUCT_PROPS_END() \
-_EnumClass& Value() {return (_EnumClass&)*m_Enum;} \
-const _EnumClass& ConstValue() const {return (const _EnumClass&)*m_Enum;} \
+_EnumClass& Value() {return (_EnumClass&)m_Enum;} \
+const _EnumClass& ConstValue() const {return (const _EnumClass&)m_Enum;} \
 BITMASK_CLASS(thisClass) \
- _ENUM_DEF_BEGIN(EnumClassName) 
+ _ENUM_DEF_BEGIN() 
 
 struct DENGINE_API EnumBase : public StructBase
 {
+	STRUCT_CLASS_DEF(EnumBase, StructBase)
+	STRUCT_PROPS_BEGIN()
+		m_Properties.push_back(Property("Enum", "Default", PropType::INT, &m_Enum, sizeof(int), 0));
+	STRUCT_PROPS_END()
 
-	void operator=(int value)
-	{		
-		*m_Enum = value;
+	void operator=(const int& value)
+	{
+		m_Enum = value;
+	}
+
+	//Key = enum name, Value = pointer to int value of enum
+	virtual std::map<std::string, int> GetEnumMap()
+	{
+		return std::map<std::string, int>();
 	}
 
 	virtual void DefineEnum()
 	{
-
+		
 	}
-
-	~EnumBase()
-	{
-		if(m_Enum)
-			delete m_Enum;
-	}
-
-	STRUCT_CLASS_DEF(EnumBase, StructBase)
-	STRUCT_PROPS_BEGIN()
-		DefineEnum();
-		m_Properties.push_back(Property("Enum", std::string(""), PropType::INT, (void*)m_Enum, (size_t)sizeof(int), 0));
-	STRUCT_PROPS_END()
 
 	int& IntValue()
 	{
-		return *m_Enum;
+		return m_Enum;
 	}
 
-	const int& ConstIntValue() const
+	int ConstIntValue() const
 	{
-		return *m_Enum;
+		return m_Enum;
 	}
 
 	bool IsBitmask() const
@@ -66,16 +64,9 @@ struct DENGINE_API EnumBase : public StructBase
 		return m_IsBitmask;
 	}
 
-	const std::map<std::string, int>& GetEnumMap() const
-	{
-		return m_StringMap;
-	}
-
 	std::string ToString(int enumVal);
-	int FromString(const std::string& EnumName);
+	int FromString(const std::string& EnumName);	
 
-	//Key = enum name, Value = pointer to int value of enum
-	std::map<std::string, int> m_StringMap;
-	int* m_Enum = nullptr;
+	int m_Enum = 0;
 	bool m_IsBitmask = false;
 };

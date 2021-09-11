@@ -32,6 +32,12 @@ void DebugRenderer::PrepareFrame()
 			}
 		}
 	}
+
+	//Grid
+	if (m_RenderFlags & RenderFlags::Enum::GRID)
+	{
+		DrawGrid(100.f, 2000.f);
+	}
 }
 
 void DebugRenderer::RenderFrame(Ref<Camera> camera)
@@ -115,11 +121,25 @@ void DebugRenderer::DrawDebugLineStrip(const std::vector<vec3d>& positions, cons
 
 		m_LineBuffer.push_back({ vec4d(positions[i], 1.0) ,  vec4d(positions[i + 1], 1.0), out });
 	}
-
-	
 }
 
 void DebugRenderer::DrawDebugCube(const vec3d& pos, const vec3d& rot, const vec3d& size, const color3& color)
 {
 	m_CubeBuffer.push_back({{pos, rot, size}, color});
+}
+
+void DebugRenderer::DrawGrid(float DivisionSize, float TotalSize, const color3& color)
+{
+	int divs = TotalSize / DivisionSize;
+	for (int x = -divs; x < divs; x++)
+	{
+		float Offset = x * DivisionSize;
+		DrawDebugLine({Offset, 0,0}, {0, 0,TotalSize }, color);
+	}
+
+	for (int x = -divs; x < divs; x++)
+	{
+		float Offset = x * DivisionSize;
+		DrawDebugLine({ 0, 0,Offset }, {TotalSize,0,0}, color);
+	}
 }

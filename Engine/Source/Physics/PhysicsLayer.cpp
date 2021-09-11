@@ -1,4 +1,5 @@
 #include "PhysicsLayer.h"
+#include "DEngine.h"
 
 template<typename T, typename ConditionFunction>
 static bool RemoveIfExists(std::vector<T>& vector, ConditionFunction condition)
@@ -15,19 +16,15 @@ static bool RemoveIfExists(std::vector<T>& vector, ConditionFunction condition)
 	return false;
 }
 
-uint32_t PhysicsLayerManager::AddLayer(const std::string& name, bool setCollisions)
+uint PhysicsLayerManager::AddLayer(const std::string& name, bool BlockAll /*= false*/, bool OverlappAll /*= false*/)
 {
-	uint32_t layerId = GetNextLayerID();
+	uint layerId = GetNextLayerID();
 	PhysicsLayer layer = { layerId, name, BIT(layerId), BIT(layerId) };
-	s_Layers.insert(s_Layers.begin() + layerId, layer);
-	s_LayerNames.insert(s_LayerNames.begin() + layerId, name);
+	m_Layers.insert(m_Layers.begin() + layerId, layer);
 
-	if (setCollisions)
+	for (const auto& layer2 : m_Layers)
 	{
-		for (const auto& layer2 : s_Layers)
-		{
-			SetLayerCollision(layer.LayerID, layer2.LayerID, true);
-		}
+		SetLayerCollision(layer.LayerID, layer2.LayerID, BlockAll, OverlappAll);
 	}
 
 	return layer.LayerID;
@@ -37,66 +34,138 @@ void PhysicsLayerManager::RemoveLayer(uint layerId)
 {
 	PhysicsLayer& layerInfo = GetLayer(layerId);
 
-	for (auto& otherLayer : s_Layers)
+	for (auto& otherLayer : m_Layers)
 	{
 		if (otherLayer.LayerID == layerId)
 			continue;
 
-		if (otherLayer.CollidesWith & layerInfo.BitValue)
+		if (otherLayer.Blocking & layerInfo.BitValue)
 		{
-			otherLayer.CollidesWith &= ~layerInfo.BitValue;
+			otherLayer.Blocking &= ~layerInfo.BitValue;
+		}
+
+		if (otherLayer.Overlapping & layerInfo.BitValue)
+		{
+			otherLayer.Overlapping &= ~layerInfo.BitValue;
 		}
 	}
 
-	RemoveIfExists<std::string>(s_LayerNames, [&](const std::string& name) { return name == layerInfo.Name; });
-	RemoveIfExists<PhysicsLayer>(s_Layers, [&](const PhysicsLayer& layer) { return layer.LayerID == layerId; });
+	RemoveIfExists<PhysicsLayer>(m_Layers, [&](const PhysicsLayer& layer) { return layer.LayerID == layerId; });
 }
 
-void PhysicsLayerManager::SetLayerCollision(uint layerId, uint otherLayer, bool shouldCollide)
+void PhysicsLayerManager::SetLayerCollision(uint layerId, uint otherLayer, bool shouldBlock, bool shouldOverlap)
 {
-	if (ShouldCollide(layerId, otherLayer) && shouldCollide)
+	if (ShouldBlock(layerId, otherLayer) && shouldBlock && ShouldOverlap(layerId, otherLayer) && shouldOverlap)
 		return;
 
 	PhysicsLayer& layerInfo = GetLayer(layerId);
 	PhysicsLayer& otherLayerInfo = GetLayer(otherLayer);
 
-	if (shouldCollide)
+	if (shouldBlock)
 	{
-		layerInfo.CollidesWith |= otherLayerInfo.BitValue;
-		otherLayerInfo.CollidesWith |= layerInfo.BitValue;
+		layerInfo.Blocking |= otherLayerInfo.BitValue;
+		otherLayerInfo.Blocking |= layerInfo.BitValue;
 	}
 	else
 	{
-		layerInfo.CollidesWith &= ~otherLayerInfo.BitValue;
-		otherLayerInfo.CollidesWith &= ~layerInfo.BitValue;
+		layerInfo.Blocking &= ~otherLayerInfo.BitValue;
+		otherLayerInfo.Blocking &= ~layerInfo.BitValue;
+	}
+
+	if (shouldOverlap)
+	{
+		layerInfo.Overlapping |= otherLayerInfo.BitValue;
+		otherLayerInfo.Overlapping |= layerInfo.BitValue;
+	}
+	else
+	{
+		layerInfo.Overlapping &= ~otherLayerInfo.BitValue;
+		otherLayerInfo.Overlapping &= ~layerInfo.BitValue;
 	}
 }
 
-std::vector<PhysicsLayer> PhysicsLayerManager::GetLayerCollisions(uint layerId)
+std::vector<PhysicsLayer> PhysicsLayerManager::GetBlockingLayers(uint layerId)
 {
 	const PhysicsLayer& layer = GetLayer(layerId);
 
 	std::vector<PhysicsLayer> layers;
-	for (const auto& otherLayer : s_Layers)
+	for (const auto& otherLayer : m_Layers)
 	{
 		if (otherLayer.LayerID == layerId)
 			continue;
 
-		if (layer.CollidesWith & otherLayer.BitValue)
+		if(ShouldBlock(layerId, otherLayer.LayerID))
 			layers.push_back(otherLayer);
 	}
 
 	return layers;
 }
 
+
+std::vector<PhysicsLayer> PhysicsLayerManager::GetOverlappingLayers(uint layerId)
+{
+	const PhysicsLayer& layer = GetLayer(layerId);
+
+	std::vector<PhysicsLayer> layers;
+	for (const auto& otherLayer : m_Layers)
+	{
+		if (otherLayer.LayerID == layerId)
+			continue;
+
+		if (ShouldOverlap(layerId, otherLayer.LayerID))
+			layers.push_back(otherLayer);
+	}
+
+	return layers;
+}
+
+const std::vector<std::string>& PhysicsLayerManager::GetLayerNames()
+{
+	//because its static we gotta check each call
+	if (s_LayerNames.size() < 1)
+	{
+		//do file stuff
+		if (File::DoesFileExist(Paths::GetConfigDirectory() + "CollisionLayers.Config"))
+		{
+			Buffer FileBuf;
+			File::ReadFile(Paths::GetConfigDirectory() + "CollisionLayers.Config", FileBuf);
+			std::string stringValue = std::string(FileBuf.begin(), FileBuf.end());
+			Json::Reader reader;
+			Json::Value value;
+			reader.parse(stringValue, value);
+
+			for (uint i = 0; i < value["LayerNames"].size(); i++)
+			{
+				s_LayerNames.push_back(value["LayerNames"][i].asString());
+			}
+		}
+		else
+		{
+			Json::Value value;
+			for (uint i = 0; i < 10; i++)
+			{
+				value["LayerNames"][i] = "LayerName";
+			}
+			std::string stringValue = value.toStyledString();
+
+			Buffer FileBuf = Buffer(stringValue.begin(), stringValue.end());
+			File::WriteFile(Paths::GetConfigDirectory() + "CollisionLayers.Config", FileBuf);
+
+			GetLayerNames(); // do again but we got a file this time
+		}
+	}
+
+	return s_LayerNames;
+}
+
 PhysicsLayer& PhysicsLayerManager::GetLayer(uint layerId)
 {
-	return layerId >= s_Layers.size() ? s_NullLayer : s_Layers[layerId];
+	return layerId >= m_Layers.size() ? s_NullLayer : m_Layers[layerId];
 }
 
 PhysicsLayer& PhysicsLayerManager::GetLayer(const std::string& layerName)
 {
-	for (auto& layer : s_Layers)
+	for (auto& layer : m_Layers)
 	{
 		if (layer.Name == layerName)
 		{
@@ -107,9 +176,14 @@ PhysicsLayer& PhysicsLayerManager::GetLayer(const std::string& layerName)
 	return s_NullLayer;
 }
 
-bool PhysicsLayerManager::ShouldCollide(uint layer1, uint layer2)
+bool PhysicsLayerManager::ShouldBlock(uint layer1, uint layer2)
 {
-	return GetLayer(layer1).CollidesWith & GetLayer(layer2).BitValue;
+	return GetLayer(layer1).Blocking & GetLayer(layer2).BitValue;
+}
+
+bool PhysicsLayerManager::ShouldOverlap(uint layer1, uint layer2)
+{
+	return GetLayer(layer1).Overlapping & GetLayer(layer2).BitValue;
 }
 
 bool PhysicsLayerManager::IsLayerValid(uint layerId)
@@ -122,7 +196,7 @@ uint32_t PhysicsLayerManager::GetNextLayerID()
 {
 	int lastId = -1;
 
-	for (const auto& layer : s_Layers)
+	for (const auto& layer : m_Layers)
 	{
 		if (lastId != -1)
 		{
@@ -135,6 +209,8 @@ uint32_t PhysicsLayerManager::GetNextLayerID()
 		lastId = layer.LayerID;
 	}
 
-	return (uint)s_Layers.size();
+	return (uint)m_Layers.size();
 }
+
+std::vector<std::string> PhysicsLayerManager::s_LayerNames;
 

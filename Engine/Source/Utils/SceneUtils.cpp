@@ -42,7 +42,7 @@ void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene
 
 	sceneAsset->LoadScene(scene);
 	
-	if (scene->GetLastTick().GetTickGroup() == TickGroup::GAME)
+	if (scene->GetApplication()->GetAppState() == AppState::GAME)
 	{
 		for (auto& obj : scene->GetSceneObjects())
 		{

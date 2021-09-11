@@ -57,7 +57,7 @@ public:
 	Ref<PhysicsWorld> m_PhysicsWorld;
 	Ref<DropTarget> m_DropTarget;
 
-	RenderFlags m_DebugFlags = (RenderFlags)0;
+	RenderFlags m_DebugFlags = RenderFlags::DEBUGCUBES | RenderFlags::DEBUGLINES | RenderFlags::GRID;
 
 	Callback<KeyEvent> m_OnKeyDownCallback;
 	ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;

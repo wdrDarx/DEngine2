@@ -3,13 +3,23 @@
 #include "Rendering/Renderer.h"
 #include "Utils/Task.h"
 
-enum RenderFlags : int
-{	
-	DEBUGLINES = BIT(1),
-	DEBUGCUBES = BIT(2),
-	PHYSX = BIT(3),
+struct DENGINE_API RenderFlags : public EnumBase
+{
+	enum Enum
+	{
+		DEBUGLINES = BIT(1),
+		DEBUGCUBES = BIT(2),
+		PHYSX = BIT(3),
+		GRID = BIT(4),
+	};
+
+	BITMASK_DEF_BEGIN(RenderFlags, Enum)
+		ENUM_DEF(DEBUGLINES);
+		ENUM_DEF(DEBUGCUBES);
+		ENUM_DEF(PHYSX);
+		ENUM_DEF(GRID);
+	ENUM_DEF_END();
 };
-ENUM_BITWISE(RenderFlags);
 
 struct DENGINE_API DebugMesh
 {
@@ -49,21 +59,22 @@ public:
 	void DrawDebugLineStrip(const std::vector<vec3d>& positions, const color3& color);
 	void DrawDebugCube(const vec3d& pos, const vec3d& rot, const vec3d& size, const color3& color);
 
-	void SetRenderFlags(RenderFlags flags)
+	void DrawGrid(float DivisionSize, float TotalSize, const color3& color = {0.2f, 1.0f, 0.2f});
+
+	void SetRenderFlags(const RenderFlags& flags)
 	{
 		m_RenderFlags = flags;
 	}
 
-	RenderFlags GetRenderFlags()
+	const RenderFlags& GetRenderFlags()
 	{
 		return m_RenderFlags;
 	}
 
-
 	float m_LineWidth = 1.0f;
 private:
 
-	RenderFlags m_RenderFlags = (RenderFlags)0;
+	RenderFlags m_RenderFlags = 0;
 	std::vector<DebugCube> m_CubeBuffer;
 	std::vector<LineSegment> m_LineBuffer;
 	Ref<ShaderStorageBuffer> m_StorageBuffer;

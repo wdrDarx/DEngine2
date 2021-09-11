@@ -20,12 +20,22 @@ void ColliderComponent::OnBeginPlay()
 		m_PhysicsActor->SetGravityEnabled(GravityEnabled);
 	}
 
-	m_PhysicsActor->SetCollisionLayer(CollisionLayer);
+	m_PhysicsActor->SetCollisionLayer(CollisionLayer.IntValue());
+
+	for(auto& e : Overlaping.GetEnumMap())
+	{ 
+		if(Overlaping & e.second)
+			m_PhysicsActor->SetOverlapLayer(e.second);
+	}
+
+	for (auto& e : Blocking.GetEnumMap())
+	{
+		if (Blocking & e.second)
+			m_PhysicsActor->SetBlockLayer(e.second);
+	}
 
 	m_Shape = CreateColliderShape();
 	m_PhysicsActor->AddCollider(m_Shape);
-	
-	m_Shape->SetTrigger(IsTrigger);
 
 	m_PhysicsActor->SetMass(Mass);
 	m_PhysicsActor->SetLinearDrag(LinearDamping);

@@ -1,5 +1,6 @@
 #include "PhysicsWorld.h"
 #include "PhysicsCore.h"
+#include "json/json.h"
 
 void PhysicsWorld::OnUpdate(const Tick& tick)
 {
@@ -14,7 +15,13 @@ void PhysicsWorld::OnConstruct()
 	m_API = MakeRef<PhysXAPI>();
 	m_CookingFactory = MakeRef<CookingFactory>(GetPhysicsAPI().get());
 
-	m_PhysicsLayerManager->AddLayer("Default");
+	//add layers
+	CollisionLayerEnum temp;
+	auto map = temp.GetEnumMap();
+	for (auto& val : map)
+	{
+		m_PhysicsLayerManager->AddLayer(val.first);
+	}
 }
 
 void PhysicsWorld::OnDestroy()

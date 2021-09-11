@@ -129,6 +129,8 @@ void Application::RegisterBaseClasses()
 
 	//enums
 	REGISTER_ENUM(GetStructRegistry(), ProjectionType, Engine);
+	REGISTER_ENUM(GetStructRegistry(), CollisionLayerEnum, Engine);
+	REGISTER_ENUM(GetStructRegistry(), LayerCollisions, Engine);
 }
 
 void Application::RegisterBaseAssetTypes()

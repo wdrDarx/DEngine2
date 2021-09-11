@@ -8,13 +8,11 @@ public:
 	OBJECT_CLASS_DEF(ColliderComponent, TransformComponent);
 	OBJECT_PROPS_BEGIN()
 		PROPS_CATEGORY(Collider)
-			PROPDEF(CollisionLayer, EditAnywhere);
 			PROPDEF(CCD, EditAnywhere);
 			PROPDEF(Lerp, EditAnywhere);
 			PROPDEF(GravityEnabled, EditAnywhere);
 			PROPDEF(Dynamic, EditAnywhere);
 			PROPDEF(Kinamtic, EditAnywhere);
-			PROPDEF(IsTrigger, EditAnywhere);
 			PROPDEF(LinearDamping, EditAnywhere);
 			PROPDEF(AngularDamping, EditAnywhere);
 			PROPDEF(Mass, EditAnywhere);
@@ -25,6 +23,10 @@ public:
 			PROPDEF(LockRotX, EditAnywhere);
 			PROPDEF(LockRotY, EditAnywhere);
 			PROPDEF(LockRotZ, EditAnywhere);
+		PROPS_CATEGORY(Collision Layer)
+			PROPDEF(CollisionLayer, EditAnywhere);
+			PROPDEF(Overlaping, EditAnywhere);
+			PROPDEF(Blocking, EditAnywhere);
 	OBJECT_PROPS_END()
 
 	void OnBeginPlay() override;
@@ -56,11 +58,9 @@ public:
 
 	Ref<PhysicsActor> m_PhysicsActor;
 	Ref<ColliderShape> m_Shape;
-	uint CollisionLayer = 0;
 	bool GravityEnabled = true;
 	bool Dynamic = false;
 	bool Kinamtic = false;
-	bool IsTrigger = false;
 	bool CCD = true;
 	bool Lerp = true;
 
@@ -75,6 +75,11 @@ public:
 	bool LockRotX = false;
 	bool LockRotY = false;
 	bool LockRotZ = false;
+
+	//Layer
+	CollisionLayerEnum CollisionLayer;
+	LayerCollisions Overlaping;
+	LayerCollisions Blocking;
 
 private:
 	bool m_RecieveNextTransform = true;

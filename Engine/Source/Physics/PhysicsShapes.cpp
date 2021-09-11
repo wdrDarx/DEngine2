@@ -26,14 +26,6 @@ void ColliderShape::SetMaterial(Ref<PhysicsMaterial> material)
 	m_Material = m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK()->createMaterial(material->StaticFriction, material->DynamicFriction, material->Bounciness);
 }
 
-void ColliderShape::SetTrigger(bool isTrigger)
-{
-	m_Shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, !isTrigger);
-	m_Shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, isTrigger);
-	m_Shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
-	m_IsTrigger = isTrigger;
-}
-
 physx::PxShape* ColliderShape::AttachShape(PhysicsActor* parent)
 {	
 	m_Parent = parent;
@@ -44,6 +36,9 @@ physx::PxShape* ColliderShape::AttachShape(PhysicsActor* parent)
 
 	physx::PxGeometry* geom = CreateGeometry();
 	m_Shape = createExclusiveShape(m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK(), *GetParentActor()->GetPhysXActor(), *geom, GetMaterial());
+
+	m_Shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
+	m_Shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
 
 	return m_Shape;
 }

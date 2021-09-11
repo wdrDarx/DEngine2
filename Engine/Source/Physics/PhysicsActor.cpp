@@ -244,15 +244,13 @@ void PhysicsActor::SetKinematicTarget(const vec3d& targetPosition, const vec3d& 
 
 void PhysicsActor::SetSimulationData(uint layerId)
 {
-	const PhysicsLayer& layerInfo =  GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsLayerManager()->GetLayer(layerId);
-
-	if (layerInfo.CollidesWith == 0)
-		return;
+	const PhysicsLayer& layerInfo = GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsLayerManager()->GetLayer(layerId);
 
 	physx::PxFilterData filterData;
-	filterData.word0 = layerInfo.BitValue;
-	filterData.word1 = layerInfo.CollidesWith;
-	filterData.word2 = (uint)m_CollisionDetectionType;
+	filterData.word0 = layerInfo.BitValue; //my layer
+	filterData.word1 = m_BlockingLayers; //what layers i block
+	filterData.word2 = m_OverlappingLayers; //what layers i overlap
+	filterData.word3 = (uint)m_CollisionDetectionType; //my collision mode
 
 	for (auto& collider : m_Colliders)
 		collider->SetFilterData(filterData);
@@ -388,6 +386,8 @@ void PhysicsActor::OnAdvance()
 
 void PhysicsActor::CreateRigidActor(const Transform& WorldTransform)
 {
+	if(!m_PhysicsScene) return;
+
 	auto sdk = GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK();
 	
 	GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->Load();

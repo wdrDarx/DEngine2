@@ -19,12 +19,12 @@ struct CUSTOMCLASSES TestStruct2 : public TestStruct
 		STRUCT_PROPS_BEGIN()
 			PROPDEF(childProp, EditAnywhere);
 			PROPDEF(childProp2, EditAnywhere);
-			PROPDEF(prop2, EditAnywhere);
+			//PROPDEF(prop2, EditAnywhere);
 		STRUCT_PROPS_END()
 
 	float childProp = 3.f;
 	float childProp2 = 5.f;
-	TestStruct prop2;
+	//TestStruct prop2;
 };
 
 class CUSTOMCLASSES CustomSceneObject : public SceneObject

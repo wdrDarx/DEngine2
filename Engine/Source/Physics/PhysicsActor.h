@@ -71,8 +71,6 @@ public:
 		return !m_RigidActor->getActorFlags().isSet(physx::PxActorFlag::eDISABLE_GRAVITY); 
 	}
 
-	
-
 	bool GetLockFlag(ActorLockFlag flag) const 
 	{ 
 		return (uint32_t)flag & m_LockFlags; 
@@ -125,6 +123,22 @@ public:
 		m_CollisionLayer = layer;
 	}
 
+	void SetBlockLayer(int LayerBit)
+	{
+		m_BlockingLayers |= LayerBit;
+	}
+
+	void SetOverlapLayer(int LayerBit)
+	{
+		m_OverlappingLayers |= LayerBit;
+	}
+
+	void SetIgnoreLayer(int LayerBit)
+	{
+		m_BlockingLayers &= ~LayerBit;
+		m_OverlappingLayers &= ~LayerBit;
+	}
+
 	void SetCollisionDetectionType(const CollisionDetectionType& type);
 
 	void BindOnAdvance(Callback<PhysicsActorEvent>& callback);
@@ -134,6 +148,9 @@ private:
 	std::vector<Ref<ColliderShape>> m_Colliders;
 	uint m_LockFlags = 0;
 	uint m_CollisionLayer = 0;
+
+	int m_BlockingLayers = 0;
+	int m_OverlappingLayers = 0;
 
 	RigidBodyType m_BodyType;
 	CollisionDetectionType m_CollisionDetectionType = CollisionDetectionType::Discrete;

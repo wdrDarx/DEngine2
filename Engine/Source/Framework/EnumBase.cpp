@@ -2,7 +2,7 @@
 
 std::string EnumBase::ToString(int enumVal)
 {
-	for (auto& str : m_StringMap)
+	for (auto& str : GetEnumMap())
 	{
 		if (str.second == enumVal)
 			return str.first;
@@ -13,7 +13,7 @@ std::string EnumBase::ToString(int enumVal)
 
 int EnumBase::FromString(const std::string& EnumName)
 {
-	for (auto& str : m_StringMap)
+	for (auto& str : GetEnumMap())
 	{
 		if (str.first == EnumName)
 			return str.second;

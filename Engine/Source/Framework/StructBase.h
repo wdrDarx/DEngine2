@@ -36,10 +36,15 @@ public:
 		
 	}
 
-	~StructBase()
-	{
-	
-	}
+// 	virtual ~StructBase()
+// 	{
+// 		for (auto it = m_Properties.begin(); it != m_Properties.end(); it++)
+// 		{
+// 			m_Properties.erase(it);
+// 			if(it == m_Properties.end())
+// 				return;
+// 		}
+// 	}
 
 	//get static class - use STRUCT_STATIC_CLASS()
 	template<class T>

@@ -3,7 +3,14 @@
 #include <filesystem>
 #include <iostream>
 
-
+void Paths::CreateBaseDirs()
+{
+	std::filesystem::create_directory(GetContentDirectory());
+	std::filesystem::create_directory(GetEngineDirectory());
+	std::filesystem::create_directory(GetModulesDirectory());
+	std::filesystem::create_directory(GetSavedDirectory());
+	std::filesystem::create_directory(GetConfigDirectory());
+}
 
 std::string Paths::GetBaseDirectory()
 {
@@ -27,6 +34,16 @@ std::string Paths::GetModulesDirectory()
 std::string Paths::GetContentDirectory()
 {
 	return GetBaseDirectory() + "\\Content\\";
+}
+
+std::string Paths::GetSavedDirectory()
+{
+	return GetBaseDirectory() + "\\Saved\\";
+}
+
+std::string Paths::GetConfigDirectory()
+{
+	return  GetBaseDirectory() + "\\Config\\";
 }
 
 std::string Paths::GetModuleContentDirectory(const std::string& ModuleName)

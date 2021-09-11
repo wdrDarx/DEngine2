@@ -48,6 +48,7 @@ Buffer Property::MakeBuffer() const
 	}
 
 	case PropType::STRUCT:
+	case PropType::ENUM: //enum and string are technically the same
 	{
 		StructBase* Struct = (StructBase*)(m_Value);
 		
@@ -109,6 +110,7 @@ void Property::FromBuffer(const Buffer& buffer)
 	}
 
 	case PropType::STRUCT:
+	case PropType::ENUM: //enum and string are technically the same
 	{
 		StructBase* StructProp = (StructBase*)(m_Value);
 
