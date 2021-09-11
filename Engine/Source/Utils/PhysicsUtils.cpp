@@ -115,16 +115,16 @@ physx::PxFilterFlags PhysicsUtils::FilterShader(physx::PxFilterObjectAttributes 
 		pairFlags |= physx::PxPairFlag::eDETECT_CCD_CONTACT;
 	}
 
-	if ((filterData0.word0 & filterData1.word1) || (filterData1.word0 & filterData0.word1))
+	if ((filterData0.word0 & filterData1.word2) || (filterData1.word0 & filterData0.word2))
 	{
+		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 
-	if ((filterData0.word0 & filterData1.word2) || (filterData1.word0 & filterData0.word2))
+	if ((filterData0.word0 & filterData1.word1) || (filterData1.word0 & filterData0.word1))
 	{
-		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
 		return physx::PxFilterFlag::eDEFAULT;

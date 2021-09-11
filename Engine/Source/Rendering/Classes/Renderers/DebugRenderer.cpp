@@ -36,7 +36,7 @@ void DebugRenderer::PrepareFrame()
 	//Grid
 	if (m_RenderFlags & RenderFlags::Enum::GRID)
 	{
-		DrawGrid(100.f, 2000.f);
+		DrawGrid(100.f, 1000.f);
 	}
 }
 
@@ -52,6 +52,9 @@ void DebugRenderer::RenderFrame(Ref<Camera> camera)
 
 	//Draw Lines
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glLineWidth(m_LineWidth);
 
 	if (GetRenderFlags() & RenderFlags::DEBUGLINES)
@@ -86,6 +89,8 @@ void DebugRenderer::RenderFrame(Ref<Camera> camera)
 	}
 
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 }
 
 void DebugRenderer::ClearFrame()
@@ -104,7 +109,12 @@ void DebugRenderer::DrawDebugLine(const vec3d& start, const vec3d& end, const co
 	out.b = color.b;
 	out.a = 1.0f;
 
-	m_LineBuffer.push_back({ vec4d(start, 1.0) ,  vec4d(end, 1.0), out });
+	DrawDebugLine(start, end, out);
+}
+
+void DebugRenderer::DrawDebugLine(const vec3d& start, const vec3d& end, const color4& color)
+{
+	m_LineBuffer.push_back({ vec4d(start, 1.0) ,  vec4d(end, 1.0), color });
 }
 
 void DebugRenderer::DrawDebugLineStrip(const std::vector<vec3d>& positions, const color3& color)
@@ -115,11 +125,16 @@ void DebugRenderer::DrawDebugLineStrip(const std::vector<vec3d>& positions, cons
 	out.b = color.b;
 	out.a = 1.0f;
 
+	DrawDebugLineStrip(positions, out);
+}
+
+void DebugRenderer::DrawDebugLineStrip(const std::vector<vec3d>& positions, const color4& color)
+{
 	for (uint i = 0; i < positions.size(); i++)
 	{
-		if(i > positions.size() - 2) break;
+		if (i > positions.size() - 2) break;
 
-		m_LineBuffer.push_back({ vec4d(positions[i], 1.0) ,  vec4d(positions[i + 1], 1.0), out });
+		m_LineBuffer.push_back({ vec4d(positions[i], 1.0) ,  vec4d(positions[i + 1], 1.0), color });
 	}
 }
 
@@ -128,18 +143,18 @@ void DebugRenderer::DrawDebugCube(const vec3d& pos, const vec3d& rot, const vec3
 	m_CubeBuffer.push_back({{pos, rot, size}, color});
 }
 
-void DebugRenderer::DrawGrid(float DivisionSize, float TotalSize, const color3& color)
+void DebugRenderer::DrawGrid(float DivisionSize, float TotalSize, const color4& color)
 {
 	int divs = TotalSize / DivisionSize;
-	for (int x = -divs; x < divs; x++)
+	for (int x = -divs; x <= divs; x++)
 	{
 		float Offset = x * DivisionSize;
-		DrawDebugLine({Offset, 0,0}, {0, 0,TotalSize }, color);
+		DrawDebugLine({Offset, 0, -TotalSize}, { Offset, 0, TotalSize}, color);
 	}
 
-	for (int x = -divs; x < divs; x++)
+	for (int x = -divs; x <= divs; x++)
 	{
 		float Offset = x * DivisionSize;
-		DrawDebugLine({ 0, 0,Offset }, {TotalSize,0,0}, color);
+		DrawDebugLine({ -TotalSize, 0, Offset }, {TotalSize, 0, Offset}, color);
 	}
 }

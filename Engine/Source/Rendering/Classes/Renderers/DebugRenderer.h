@@ -57,9 +57,13 @@ public:
 
 	void DrawDebugLine(const vec3d& start, const vec3d& end, const color3& color);
 	void DrawDebugLineStrip(const std::vector<vec3d>& positions, const color3& color);
+
+	void DrawDebugLine(const vec3d& start, const vec3d& end, const color4& color);
+	void DrawDebugLineStrip(const std::vector<vec3d>& positions, const color4& color);
+
 	void DrawDebugCube(const vec3d& pos, const vec3d& rot, const vec3d& size, const color3& color);
 
-	void DrawGrid(float DivisionSize, float TotalSize, const color3& color = {0.2f, 1.0f, 0.2f});
+	void DrawGrid(float DivisionSize, float TotalSize, const color4& color = {0.7f, 0.7f, 0.7f, 0.3f});
 
 	void SetRenderFlags(const RenderFlags& flags)
 	{

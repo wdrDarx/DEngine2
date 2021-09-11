@@ -32,7 +32,7 @@ enum class DebugType : int8_t
 
 struct PhysicsSettings
 {
-	float FixedTimestep = 1.0f / 30.0f;
+	float FixedTimestep = 1.0f / 60.0f;
 	vec3d Gravity = { 0.0f, -981.f, 0.0f };
 	BroadphaseType BroadphaseAlgorithm = BroadphaseType::GPU;
 	FrictionType FrictionModel = FrictionType::Patch;
