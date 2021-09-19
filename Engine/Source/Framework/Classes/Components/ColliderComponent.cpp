@@ -7,6 +7,7 @@ void ColliderComponent::OnBeginPlay()
 
 	m_PhysicsActor = MakeRef<PhysicsActor>(GetOwner()->GetScene()->GetPhysicsScene().get());
 	m_PhysicsActor->SetDynamic(Dynamic);
+	m_PhysicsActor->SetColliderComponent(this);
 
 	Transform WorldTrans = GetWorldTransform();
 	m_PhysicsActor->CreateRigidActor(WorldTrans);
@@ -21,25 +22,24 @@ void ColliderComponent::OnBeginPlay()
 	}
 
 	m_PhysicsActor->SetCollisionLayer(CollisionLayer.IntValue());
-
-	for(auto& e : Overlaping.GetEnumMap())
-	{ 
-		if(Overlaping & e.second)
-			m_PhysicsActor->SetOverlapLayer(e.second);
-	}
-
-	for (auto& e : Blocking.GetEnumMap())
-	{
-		if (Blocking & e.second)
-			m_PhysicsActor->SetBlockLayer(e.second);
-	}
+	m_PhysicsActor->SetOverlappingLayers(Overlaping.IntValue());
+	m_PhysicsActor->SetBlockingLayers(Blocking.IntValue());
 
 	m_Shape = CreateColliderShape();
 	m_PhysicsActor->AddCollider(m_Shape);
 
-	m_PhysicsActor->SetMass(Mass);
-	m_PhysicsActor->SetLinearDrag(LinearDamping);
-	m_PhysicsActor->SetAngularDrag(AngularDamping);
+	m_PhysicsMaterial = MakeRef<PhysicsMaterial>();
+	m_PhysicsMaterial->DynamicFriction = Friction;
+	m_PhysicsMaterial->StaticFriction = Friction;
+	m_PhysicsMaterial->Bounciness = Bounciness;
+	m_Shape->SetMaterial(m_PhysicsMaterial);
+
+	if (m_PhysicsActor->IsDynamic())
+	{
+		m_PhysicsActor->SetMass(Mass);
+		m_PhysicsActor->SetLinearDrag(LinearDamping);
+		m_PhysicsActor->SetAngularDrag(AngularDamping);
+	}
 
 	m_PhysicsActor->SetLockFlag(ActorLockFlag::PositionX, LockPosX);
 	m_PhysicsActor->SetLockFlag(ActorLockFlag::PositionY, LockPosY);

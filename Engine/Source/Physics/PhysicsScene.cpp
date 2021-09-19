@@ -7,7 +7,7 @@
 PhysicsScene::PhysicsScene(PhysicsWorld* world, const PhysicsSettings& settings) : m_SubStepSize(settings.FixedTimestep), m_PhysicsWorld(world)
 {
 	physx::PxSceneDesc sceneDesc(world->GetPhysicsAPI()->GetPhysXSDK()->getTolerancesScale());
-	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD | physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS | physx::PxSceneFlag::eADAPTIVE_FORCE; // TODO: | physx::PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS
+	sceneDesc.flags |= physx::PxSceneFlag::eENABLE_CCD | physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS | physx::PxSceneFlag::eADAPTIVE_FORCE | physx::PxSceneFlag::eENABLE_PCM;// TODO: | physx::PxSceneFlag::eEXCLUDE_KINEMATICS_FROM_ACTIVE_ACTORS
 	sceneDesc.gravity = PhysicsUtils::ToPhysXVector(settings.Gravity);
 	sceneDesc.broadPhaseType = PhysicsUtils::ToPhysXBroadphaseType(settings.BroadphaseAlgorithm);
 	sceneDesc.cpuDispatcher = world->GetPhysicsAPI()->GetCPUDispatcher();

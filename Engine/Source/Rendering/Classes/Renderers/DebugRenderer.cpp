@@ -38,6 +38,30 @@ void DebugRenderer::PrepareFrame()
 	{
 		DrawGrid(100.f, 1000.f);
 	}
+
+	//pivots
+	const float AxisLength = 20.f;
+	if (m_RenderFlags & RenderFlags::Enum::PIVOTS)
+	{
+		for (auto& obj : GetPipeline()->GetScene()->GetSceneObjects())
+		{
+			for (auto& comp : obj->GetComponents())
+			{
+				if (auto& trans = Cast<TransformComponent>(comp))
+				{			
+					Transform WorldTrans = trans->GetWorldTransform();
+
+					//X
+					DrawDebugLine(WorldTrans.pos, World::GetRightVector(WorldTrans.rot) * AxisLength + WorldTrans.pos, {1,0,0});
+					//Y
+					DrawDebugLine(WorldTrans.pos, World::GetUpVector(WorldTrans.rot) * AxisLength + WorldTrans.pos, { 0,1,0 });
+					//Z
+					DrawDebugLine(WorldTrans.pos, World::GetForwardVector(WorldTrans.rot) * AxisLength + WorldTrans.pos, { 0,0,1 });
+				}
+			}
+		}
+	}
+
 }
 
 void DebugRenderer::RenderFrame(Ref<Camera> camera)

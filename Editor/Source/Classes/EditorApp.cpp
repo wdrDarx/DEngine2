@@ -280,25 +280,29 @@ void EditorApp::RenderImGui(const Tick& tick)
 	if (ImGui::Button("Unload All"))
 	{
 		UnloadAll();
-	}
+	} 
+	ImGui::SameLine();
 	if (ImGui::Button("Load All"))
 	{
 		LoadAll();
 	}
 
 	//set to unload module name (because cant remove elements while in a loop)
+	ImGui::Columns(2);
 	std::string ToUnloadName;
 	for (const auto& mod : GetModuleManager().GetLoadedModules())
 	{
 		ImGui::PushID(mod->m_Name.c_str());
 		ImGui::Text(mod->m_Name.c_str());
-		ImGui::SameLine();
+		ImGui::NextColumn();
 		if (ImGui::Button("Unload"))
 		{
 			ToUnloadName = mod->m_Name;
 		}
 		ImGui::PopID();
+		ImGui::NextColumn();
 	}
+	ImGui::EndColumns();
 
 	//unload module
 	if(!ToUnloadName.empty())
@@ -399,11 +403,13 @@ void EditorApp::DrawRendererWindow()
 		bool debuglines = m_DebugFlags & RenderFlags::DEBUGLINES;
 		bool debugCubes = m_DebugFlags & RenderFlags::DEBUGCUBES;
 		bool physx = m_DebugFlags & RenderFlags::PHYSX;
+		bool pivots = m_DebugFlags & RenderFlags::PIVOTS;
 		bool Grid = m_DebugFlags & RenderFlags::GRID;
 		ImGui::Checkbox("Grid", &Grid);
 		ImGui::Checkbox("Debug Lines ", &debuglines);
 		ImGui::Checkbox("Debug Cubes ", &debugCubes);
 		ImGui::Checkbox("Colliders ", &physx);
+		ImGui::Checkbox("Pivots ", &pivots);
 		m_DebugFlags = 0;
 		if (debuglines)
 			m_DebugFlags |= RenderFlags::DEBUGLINES;
@@ -413,6 +419,8 @@ void EditorApp::DrawRendererWindow()
 			m_DebugFlags |= RenderFlags::PHYSX;
 		if (Grid)
 			m_DebugFlags |= RenderFlags::GRID;
+		if (pivots)
+			m_DebugFlags |= RenderFlags::PIVOTS;
 
 		Debugrenderer->SetRenderFlags(m_DebugFlags);
 
@@ -454,6 +462,26 @@ void EditorApp::DrawRendererWindow()
 		}
 		ImGui::TreePop();
 	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
+	bool cascades = ImGui::TreeNodeEx((void*)("Shadow Cascades"), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Shadow Cascades");
+	ImGui::PopStyleVar();
+
+	if (cascades)
+	{	
+		if (auto renderer = m_EditorScene->GetPipeline()->GetRenderer<MeshRenderer>())
+		{
+			if (renderer->m_DirectionalLights.size() > 0 && renderer->m_DirectionalLights[0]->ShadowMap)
+			{
+				for(uint i = 0; i< renderer->m_DirectionalLights[0]->ShadowMap->m_CascadeCount; i++)
+					ImGui::Image((ImTextureID)renderer->m_DirectionalLights[0]->ShadowMap->m_DepthTexture[i], {256, 256});
+			}
+	
+		}
+		ImGui::TreePop();
+	}
+
+
 	ImGui::End();
 }
 

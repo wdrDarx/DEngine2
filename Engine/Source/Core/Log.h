@@ -13,6 +13,7 @@ class Log
 {
 public:
 	static std::string string(const vec3d& in);
+	static std::string string(const vec4d& in);
 	static std::string string(const vec2d& in);
 	static std::string string(const float& in);
 };

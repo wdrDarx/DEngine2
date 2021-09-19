@@ -38,3 +38,10 @@ void PhysicsWorld::OnEndPlay()
 {
 
 }
+
+Ref<PhysicsScene> PhysicsWorld::CreatePhysicsScene(const PhysicsSettings* CustomSettings /*= nullptr*/)
+{
+	Ref<PhysicsScene> scene = MakeRef<PhysicsScene>(this, CustomSettings ? *CustomSettings : GetPhysicsSettings());
+	m_PhysicsScenes.push_back(scene);
+	return scene;
+}

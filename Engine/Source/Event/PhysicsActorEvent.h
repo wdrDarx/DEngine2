@@ -1,20 +1,23 @@
 #pragma once
 #include "Event/Event.h"
-
+#include "Physics/ContactListener.h"
 
 enum class PhysicsActorEventType
 {
 	ONADVANCE = 0,
+	ONHIT,
+	ONBEGINOVERLAP,
+	ONENDOVERLAP,
 };
 
-//inheritable class to represent an event
-struct PhysicsActorEvent : public Event
+struct DENGINE_API PhysicsActorEvent : public Event
 {
 public:
 	const PhysicsActorEventType& GetEventType() const
 	{
-		return m_EventType;
+		return EventType;
 	}
 
-	PhysicsActorEventType m_EventType;
+	PhysicsActorEventType EventType;
+	HitResult Hit;
 };

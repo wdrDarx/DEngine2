@@ -10,7 +10,7 @@ class Viewport
 			FrameBufferSpec spec;
 			spec.Width = 1;
 			spec.Height = 1;
-			spec.Samples = 8;
+			spec.Samples = 16;
 			m_Framebuffer = MakeRef<FrameBuffer>(spec);
 
 			m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
@@ -280,7 +280,7 @@ class Viewport
 					glm::mat4 transform = selectedTransform->GetWorldMatrix();
 					glm::mat4 Delta = glm::mat4(1.0);
 					float snapValues[3] = { 0.5f, 0.5f, 0.5f };
-					ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(proj), m_TransformMode, ImGuizmo::LOCAL, glm::value_ptr(transform), glm::value_ptr(Delta));
+					ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(proj), m_TransformMode, m_TransformSpace, glm::value_ptr(transform), glm::value_ptr(Delta));
 					if (ImGuizmo::IsUsing())
 					{
 						if (selectedTransform->GetParent())
@@ -322,9 +322,19 @@ class Viewport
 			{
 				m_ViewportMode = m_ViewportMode == AppState::GAME ? AppState::EDITOR : AppState::GAME;
 			}
+
 			ImGui::SameLine();
 			ImGui::PushItemWidth(100.f);
 			ImGui::SliderFloat("Camera Speed", &m_CameraMovementSpeed, 10.f, 1000.f, "%.0f");
+			ImGui::PopItemWidth();
+
+			ImGui::SameLine();
+			ImGui::PushItemWidth(100.f);
+			std::string spacestr = "Transform Space : " + std::string(m_TransformSpace == ImGuizmo::WORLD ? "World" : "Local");
+			if (ImGui::Button(spacestr.c_str()))
+			{
+				m_TransformSpace = m_TransformSpace == ImGuizmo::WORLD ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
+			}
 			ImGui::PopItemWidth();
 		}
 
@@ -357,6 +367,7 @@ class Viewport
 		AppState m_ViewportMode;
 
 		ImGuizmo::OPERATION m_TransformMode = ImGuizmo::TRANSLATE;
+		ImGuizmo::MODE m_TransformSpace = ImGuizmo::LOCAL;
 
 		//gizmo stuff
 		bool m_DrawGizmo = true;

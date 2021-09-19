@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Framework/EnumBase.h"
 
-struct PhysicsLayer
+struct DENGINE_API PhysicsLayer
 {
 	uint LayerID;
 
@@ -17,6 +17,9 @@ struct PhysicsLayer
 	}
 };
 
+/*
+	Class that stores physics layer data
+*/
 class DENGINE_API PhysicsLayerManager
 {
 public:
@@ -57,7 +60,9 @@ private:
 	PhysicsLayer s_NullLayer = { 0, "NULL", 0, -1 };
 };
 
-
+/*
+	Bitmask for every physics layer
+*/
 struct DENGINE_API LayerCollisions : public EnumBase
 {
 	enum Enum
@@ -94,6 +99,10 @@ struct DENGINE_API LayerCollisions : public EnumBase
 	ENUM_DEF_END()
 };
 
+
+/*
+	Enum for every physics layer
+*/
 struct DENGINE_API CollisionLayerEnum : public EnumBase
 {
 	enum Enum

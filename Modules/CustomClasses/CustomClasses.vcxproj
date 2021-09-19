@@ -150,6 +150,7 @@ IF EXIST ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\FirstPersonPawn.h" />
     <ClInclude Include="Source\Classes\Bullet.h" />
     <ClInclude Include="Source\Classes\CameraComponent.h" />
     <ClInclude Include="Source\Classes\ChildSceneObject.h" />
@@ -165,6 +166,7 @@ IF EXIST ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Classes\FirstPersonPawn.cpp" />
     <ClCompile Include="Source\Classes\Bullet.cpp" />
     <ClCompile Include="Source\Classes\CameraComponent.cpp" />
     <ClCompile Include="Source\Classes\ChildSceneObject.cpp" />

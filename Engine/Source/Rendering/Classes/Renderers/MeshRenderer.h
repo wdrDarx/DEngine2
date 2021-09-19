@@ -6,44 +6,59 @@
 struct DENGINE_API MeshRendererSettings
 {
 	float AmbientLightMultiplier = 0.5f;
-
 };
 
+
+struct DirectionalLight;
 struct DENGINE_API DirectionalShadowMap
 {
-	DirectionalShadowMap(uint Size = 4096);
+	DirectionalShadowMap(float NearPlane, float FarPlane, uint Size = 4096);
 	~DirectionalShadowMap();
 
-	void Bind();
+	void BindWrite(uint CascadeIndex);
+
+	void BindRead(uint StartTextureSlot, uint NumberOfCascadesToBind);
+
 	void Unbind();
 
+	void GenCascadeProjections(Camera* camera, DirectionalLight* DirLight);
+
 	uint m_FrameBuffer = 0;
-	uint m_DepthTexture = 0;
+	std::vector<uint> m_DepthTexture = {0,0,0,0}; //4 cascades
+	const uint m_CascadeCount = m_DepthTexture.size();
+
+	std::vector<glm::mat4> m_CascadeProjections = std::vector<glm::mat4>(m_CascadeCount);
+	std::vector<float> m_CascadesSplit = std::vector<float>(m_CascadeCount);
+
 	vec2d m_DepthTextureSize;
 };
 
 struct DENGINE_API DirectionalLight
 {
+	//call when a camera is available
+	void GenCascades(Camera* camera);
+	
+	//3d direction into which the light is pointing
 	vec3d Direction;
-	vec3d Position;
+
+	//color and intensity of the light
 	color3 Radiance;
 
-	float SourceLength = 1000.f;
-	float ShadowMapInfuenceSize = 1000.f;
-	float NearPlane = 10.f;
+	float NearPlane = 0.01f;
 	float FarPlane = 10000.f;
+
+	//more = softer shadows
+	float LightSize = 1000.f;
 
 	bool CastShadows = true;
 	Ref<DirectionalShadowMap> ShadowMap;
-	glm::mat4 ViewProjectionMatrix;
-	vec3d LastDirection; // for caching
-	vec3d LastPosition; // for caching
 };
 
 struct DENGINE_API CookedDirectionalLight
 {
 	color4 Direction;
 	color4 Radiance;
+	color4 LightSize;
 };
 
 //parameters that can differ for each mesh within 1 draw call
@@ -90,7 +105,8 @@ public:
 
 	void GenDrawCalls();
 	std::vector<MeshDrawCall> CreateShadowMapDrawCalls();
-	void RenderShadowMaps();
+
+	void RenderShadowMaps(Ref<Camera> camera, const std::vector<MeshDrawCall>& DrawCalls);
 
 
 	MeshRendererSettings& GetSettingsMutable()
@@ -98,7 +114,7 @@ public:
 		return m_Settings;
 	}
 
-private:
+public:
 
 	//render settings
 	MeshRendererSettings m_Settings;
@@ -125,5 +141,8 @@ private:
 
 	//shadow stuff
 	const uint m_MaxDirectionalShadowMaps = 4;
+
+	//draw calls for rendering shadow maps 
+	std::vector<MeshDrawCall> m_ShadowMeshDrawCalls;
 };
 

@@ -107,12 +107,14 @@ physx::PxRigidDynamicLockFlag::Enum PhysicsUtils::ToPhysXActorLockFlag(ActorLock
 
 physx::PxFilterFlags PhysicsUtils::FilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0, physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1, physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
 {
-	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+	//be default have no collision
+	pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
 
 	if (filterData0.word3 == (uint)CollisionDetectionType::Continuous || filterData1.word3 == (uint)CollisionDetectionType::Continuous)
 	{
 		pairFlags |= physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
 		pairFlags |= physx::PxPairFlag::eDETECT_CCD_CONTACT;
+		pairFlags |= physx::PxPairFlag::eSOLVE_CONTACT;
 	}
 
 	if ((filterData0.word0 & filterData1.word2) || (filterData1.word0 & filterData0.word2))
@@ -120,13 +122,16 @@ physx::PxFilterFlags PhysicsUtils::FilterShader(physx::PxFilterObjectAttributes 
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
+		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 
 	if ((filterData0.word0 & filterData1.word1) || (filterData1.word0 & filterData0.word1))
 	{
+		pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_LOST;
+		pairFlags |= physx::PxPairFlag::eNOTIFY_CONTACT_POINTS;
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 

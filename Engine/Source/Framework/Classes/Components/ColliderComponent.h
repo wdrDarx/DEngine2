@@ -15,6 +15,8 @@ public:
 			PROPDEF(Kinamtic, EditAnywhere);
 			PROPDEF(LinearDamping, EditAnywhere);
 			PROPDEF(AngularDamping, EditAnywhere);
+			PROPDEF(Friction, EditAnywhere);
+			PROPDEF(Bounciness, EditAnywhere);
 			PROPDEF(Mass, EditAnywhere);
 		PROPS_CATEGORY(Locks)
 			PROPDEF(LockPosX, EditAnywhere);
@@ -66,6 +68,8 @@ public:
 
 	float LinearDamping = 1.0f;
 	float AngularDamping = 1.0f;
+	float Friction = 0.6f;
+	float Bounciness = 0.6f;
 	float Mass = 100.0f;
 
 	//lock flags
@@ -76,7 +80,7 @@ public:
 	bool LockRotY = false;
 	bool LockRotZ = false;
 
-	//Layer
+	//Phyiscs Layer
 	CollisionLayerEnum CollisionLayer;
 	LayerCollisions Overlaping;
 	LayerCollisions Blocking;
@@ -85,6 +89,7 @@ private:
 	bool m_RecieveNextTransform = true;
 	std::optional<Transform> m_PendingTransform;
 
+	Ref<PhysicsMaterial> m_PhysicsMaterial = nullptr;
 	Callback<PhysicsActorEvent> m_PhysicsActorCallback;
 	vec3d m_TargetPhysicsPos;
 	quat m_TargetPhysicsQuat;

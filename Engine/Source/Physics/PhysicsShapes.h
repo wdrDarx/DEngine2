@@ -4,7 +4,6 @@
 #include "Utils/PhysicsUtils.h"
 #include "CookingFactory.h"
 
-// TODO: Heightfield, Plane
 enum class ColliderType
 {
 	Box, Sphere, Capsule, ConvexMesh, TriangleMesh

@@ -11,6 +11,7 @@ public:
 
 	Ref<Scene> m_openScene;
 	Ref<Camera> m_Camera;
+	Ref<FrameBuffer> m_ScreenFrameBuffer;
 
 	bool loaded = false;
 };

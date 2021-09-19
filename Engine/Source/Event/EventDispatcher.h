@@ -55,6 +55,9 @@ public:
 	template<typename T>
 	void Bind(Callback<T>& callback)
 	{
+		if(callback.m_EventDispatcher && callback.m_EventDispatcher != this)
+			LogWarning("Callback Already bound to a dispatcher! this might cause a crash!");
+
 		callback.m_EventDispatcher = this;
 		Callback<T>* ptr = static_cast<Callback<T>*>(&callback);
 		m_BoundCallbacks.push_back((Callback<Event>*)ptr);

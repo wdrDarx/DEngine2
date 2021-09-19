@@ -5,6 +5,8 @@ RuntimeApp::RuntimeApp() : Application()
 	MakeWindow("Runtime", 1920, 1080, false);
 	GetWindow()->SetVsync(false);
 	GetWindow()->SetInputMode(InputMode::GAME);
+	
+
 	GetAssetManager().DiscoverAssets();
 	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
 
@@ -17,6 +19,12 @@ RuntimeApp::RuntimeApp() : Application()
 	Ref<SceneAsset> scene = GetAssetManager().LoadAsset<SceneAsset>(Paths::GetContentDirectory() + "\\Runtime.SceneAsset");
 	m_openScene->OnBeginPlay();
 	SceneUtils::LoadSceneFromAsset(scene, m_openScene);	
+
+	FrameBufferSpec spec;
+	spec.Samples = 16;
+	spec.Width = 1920;
+	spec.Height = 1080;
+	m_ScreenFrameBuffer = MakeRef<FrameBuffer>(spec);
 }
 
 void RuntimeApp::OnUpdate(const Tick& tick)
@@ -31,13 +39,30 @@ void RuntimeApp::OnUpdate(const Tick& tick)
 	GetWindow()->GetInputManager().ForwardTo(m_openScene->GetInputManager());
 	
 	Super::OnUpdate(tick);
-	
+
+
 	m_openScene->GetPipeline()->PrepareFrame();
 	
 	GetWindow()->GetRenderAPI()->SetViewport({ GetWindow()->GetWidth(), GetWindow()->GetHeight() });
+
+	m_ScreenFrameBuffer->Bind();
+	m_openScene->GetPipeline()->GetRenderAPI()->SetClearColor({ 0,0,0,0 });
+	m_openScene->GetPipeline()->GetRenderAPI()->Clear();
 	m_openScene->GetPipeline()->RenderFrame(m_openScene->GetActiveCamera());
+	m_ScreenFrameBuffer->Unbind();
+
+	auto shader = m_openScene->GetPipeline()->GetRenderAPI()->GetShaderFromCache("BasicShader");
+	shader->Bind();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_ScreenFrameBuffer->GetColorAttachement());
+
+	shader->SetUniform1i("u_Texture", 0);
+	RenderUtils::RenderQuad();
 
 	m_openScene->GetPipeline()->ClearFrame();
+
+	
+
 
 	GetWindow()->EndFrame();
 }

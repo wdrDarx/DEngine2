@@ -10,6 +10,7 @@
 #include "Classes/CameraComponent.h"
 #include "Classes/PlayerController.h"
 #include "Classes/Bullet.h"
+#include "Classes/FirstPersonPawn.h"
 
 #include "Classes/QuadRenderer.h"
 #include "Classes/MyObject.h"
@@ -58,6 +59,7 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CameraComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), PlayerController, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), Bullet, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), FirstPersonPawn, CustomClasses);
 
 	
 // 	//custom renderer

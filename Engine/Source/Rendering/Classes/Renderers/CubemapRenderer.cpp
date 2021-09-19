@@ -43,6 +43,8 @@ void CubemapRenderer::ClearFrame()
 
 Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 {
+	if(asset->m_Spec.Type != TextureType::HDR) return nullptr;
+
 	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BasicShader"))
 		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
 	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("CubemapProjector"))

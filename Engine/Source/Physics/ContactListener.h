@@ -2,6 +2,17 @@
 #include "Core/Core.h"
 #include <PhysX/PxPhysicsAPI.h>
 
+class ColliderComponent;
+class PhysicsActor;
+struct DENGINE_API HitResult
+{
+	ColliderComponent* OtherColliderComponent;
+	PhysicsActor* OtherPhysicsActor;
+	vec3d HitPosition;
+	vec3d HitNormal;
+	vec3d HitImpulse;
+};
+
 class ContactListener : public physx::PxSimulationEventCallback
 {
 public:

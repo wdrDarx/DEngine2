@@ -19,6 +19,10 @@ struct DENGINE_API Transform2D
 #define KINDA_SMALL_NUMBER	(1.e-4f)
 #define BIG_NUMBER			(3.4e+38f)
 
+#define FASTASIN_HALF_PI (1.5707963050f)
+#define INV_PI			(0.31830988618f)
+#define HALF_PI			(1.57079632679f)
+
 class b2World;
 struct b2RayCastOutput;
 class Camera;
@@ -80,6 +84,7 @@ public:
 	static glm::mat4 QuatToMat(const glm::quat& rotation);
 
 	static bool IsNearlyZero(const vec3d& in);
+	static bool IsNearlyZero(float in);
 	static bool NearlyEqual(const vec3d& v1, const vec3d& v2);
 	static bool NearlyEqual(const Transform& T1, const Transform& T2);
 
@@ -93,6 +98,14 @@ public:
 
 	static glm::quat VectorDirToQuat(const vec3d& DirVector);
 	static glm::quat LerpQuat(const glm::quat& A, const glm::quat& B, float Alpha);
+	static glm::quat CombineQuat(const glm::quat& Parent, const glm::quat& Child);
+
+	static float FastAsin(float rad);
+	static float Atan2(float y, float x);
+	static void  SinCos(float* ScalarSin, float* ScalarCos, float  Value);
+
+	static vec3d QuatToEuler(const glm::quat& q);
+	static glm::quat EulerToQuat(const vec3d& rot);
 
 	static vec3d RotateVector(const vec3d& inVector, const vec3d& rotation);
 };

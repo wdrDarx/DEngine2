@@ -50,12 +50,15 @@ vec3d World::VectorToRotation(const vec3d& VectorDir, const vec3d& WorldSpaceUpV
 
 glm::quat World::RotationDegreesToQuat(const vec3d& Rotation)
 {
-	return glm::quat(glm::radians(Rotation));
+	vec3d rotCopy = World::NormalizeRot(Rotation);
+	return glm::quat(glm::radians(rotCopy));
+	//return EulerToQuat(Rotation);
 }
 
 vec3d World::QuatToRotationDegrees(const glm::quat& Rotation)
 {
 	return glm::degrees(glm::eulerAngles(Rotation));
+	//return QuatToEuler(Rotation);
 }
 
 vec3d World::Radians(const vec3d& deg)
@@ -157,10 +160,11 @@ glm::mat4 World::MakeMatrix(const Transform& trans)
 	const Transform& copy = trans;
 	glm::vec3 rot = glm::radians(copy.rot);
 	glm::mat4 rotation = glm::toMat4(glm::quat(rot));
+	//glm::mat4 rotation = glm::toMat4(EulerToQuat(copy.rot));
 	
 	glm::mat4 transform =
 		glm::translate(glm::mat4(1.0f), glm::vec3(copy.pos.x, copy.pos.y, copy.pos.z)) *
-		rotation *
+		rotation *	
 		glm::scale(glm::mat4(1.0f), glm::vec3(copy.scale.x, copy.scale.y, copy.scale.z));
 
 	return transform;
@@ -183,17 +187,17 @@ Transform World::MakeTransform(const glm::mat4& mat)
 	// Normalize the matrix.
 	if (epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), epsilon<T>()))
 		return Transform();
-
-	// First, isolate perspective.  This is the messiest.
-	if (
-		epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), epsilon<T>()) ||
-		epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), epsilon<T>()) ||
-		epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), epsilon<T>()))
-	{
-		// Clear the perspective partition
-		LocalMatrix[0][3] = LocalMatrix[1][3] = LocalMatrix[2][3] = static_cast<T>(0);
-		LocalMatrix[3][3] = static_cast<T>(1);
-	}
+// 
+// 	// First, isolate perspective.  This is the messiest.
+// 	if (
+// 		epsilonNotEqual(LocalMatrix[0][3], static_cast<T>(0), epsilon<T>()) ||
+// 		epsilonNotEqual(LocalMatrix[1][3], static_cast<T>(0), epsilon<T>()) ||
+// 		epsilonNotEqual(LocalMatrix[2][3], static_cast<T>(0), epsilon<T>()))
+// 	{
+// 		// Clear the perspective partition
+// 		LocalMatrix[0][3] = LocalMatrix[1][3] = LocalMatrix[2][3] = static_cast<T>(0);
+// 		LocalMatrix[3][3] = static_cast<T>(1);
+// 	}
 
 	// Next take care of translation (easy).
 	translation = vec3(LocalMatrix[3]);
@@ -229,6 +233,7 @@ Transform World::MakeTransform(const glm::mat4& mat)
 	}
 #endif
 
+
 	rotation.y = asin(-Row[0][2]);
 	if (cos(rotation.y) != 0) {
 		rotation.x = atan2(Row[1][2], Row[2][2]);
@@ -239,8 +244,12 @@ Transform World::MakeTransform(const glm::mat4& mat)
 		rotation.z = 0;
 	}
 
+// 	quat rot = World::MatToQuat(LocalMatrix);
+// 	rotation = World::QuatToRotationDegrees(rot);
+
 	out.pos = vec3d(translation.x, translation.y, translation.z);
 	out.rot = Degrees(vec3d(rotation.x,rotation.y,rotation.z));
+	//out.rot = rotation;
 	out.scale = vec3d(scale.x, scale.y, scale.z);
 
 	return out;
@@ -298,6 +307,11 @@ bool World::IsNearlyZero(const vec3d& in)
 	return fabsf(in.x) <= SMALL_NUMBER && 
 	fabsf(in.y) <= SMALL_NUMBER && 
 	fabsf(in.z) <= SMALL_NUMBER;
+}
+
+bool World::IsNearlyZero(float in)
+{
+	return fabsf(in) <= SMALL_NUMBER;
 }
 
 bool World::NearlyEqual(const vec3d& v1, const vec3d& v2)
@@ -404,7 +418,7 @@ vec3d World::InterpRot(const vec3d& A, const vec3d& B, float DeltaTime, float Sp
 	const vec3d Delta = World::NormalizeRot(B - A);
 
 	// If steps are too small, just return Target and assume we have reached our destination.
-	if (IsNearlyZero(Delta));
+	if (IsNearlyZero(Delta))
 	{
 		return B;
 	}
@@ -423,6 +437,178 @@ glm::quat World::VectorDirToQuat(const vec3d& DirVector)
 glm::quat World::LerpQuat(const glm::quat& A, const glm::quat& B, float Alpha)
 {
 	return glm::slerp(A, B, glm::clamp(Alpha, 0.f, 1.0f));
+}
+
+glm::quat World::CombineQuat(const glm::quat& Parent, const glm::quat& Child)
+{
+	return World::MatToQuat(World::QuatToMat(Parent) * World::QuatToMat(Child));
+}
+
+float World::FastAsin(float rad)
+{
+	// Clamp input to [-1,1].
+	bool nonnegative = (rad >= 0.0f);
+	float x = fabsf(rad);
+	float omx = 1.0f - x;
+	if (omx < 0.0f)
+	{
+		omx = 0.0f;
+	}
+	float root = sqrtf(omx);
+	// 7-degree minimax approximation
+	float result = ((((((-0.0012624911f * x + 0.0066700901f) * x - 0.0170881256f) * x + 0.0308918810f) * x - 0.0501743046f) * x + 0.0889789874f) * x - 0.2145988016f) * x + FASTASIN_HALF_PI;
+	result *= root;  // acos(|x|)
+	// acos(x) = pi - acos(-x) when x < 0, asin(x) = pi/2 - acos(x)
+	return (nonnegative ? FASTASIN_HALF_PI - result : result - FASTASIN_HALF_PI);
+}
+
+float World::Atan2(float y, float x)
+{
+	const float absX = fabsf(x);
+	const float absY = fabsf(y);
+	const bool yAbsBigger = (absY > absX);
+	float t0 = yAbsBigger ? absY : absX; // Max(absY, absX)
+	float t1 = yAbsBigger ? absX : absY; // Min(absX, absY)
+
+	if (t0 == 0.f)
+		return 0.f;
+
+	float t3 = t1 / t0;
+	float t4 = t3 * t3;
+
+	static const float c[7] = {
+		+7.2128853633444123e-03f,
+		-3.5059680836411644e-02f,
+		+8.1675882859940430e-02f,
+		-1.3374657325451267e-01f,
+		+1.9856563505717162e-01f,
+		-3.3324998579202170e-01f,
+		+1.0f
+	};
+
+	t0 = c[0];
+	t0 = t0 * t4 + c[1];
+	t0 = t0 * t4 + c[2];
+	t0 = t0 * t4 + c[3];
+	t0 = t0 * t4 + c[4];
+	t0 = t0 * t4 + c[5];
+	t0 = t0 * t4 + c[6];
+	t3 = t0 * t3;
+
+	t3 = yAbsBigger ? (0.5f * M_PI) - t3 : t3;
+	t3 = (x < 0.0f) ? M_PI - t3 : t3;
+	t3 = (y < 0.0f) ? -t3 : t3;
+
+	return t3;
+}
+
+void World::SinCos(float* ScalarSin, float* ScalarCos, float Value)
+{
+	// Map Value to y in [-pi,pi], x = 2*pi*quotient + remainder.
+	float quotient = (INV_PI * 0.5f) * Value;
+	if (Value >= 0.0f)
+	{
+		quotient = (float)((int)(quotient + 0.5f));
+	}
+	else
+	{
+		quotient = (float)((int)(quotient - 0.5f));
+	}
+	float y = Value - (2.0f * M_PI) * quotient;
+
+	// Map y to [-pi/2,pi/2] with sin(y) = sin(Value).
+	float sign;
+	if (y > HALF_PI)
+	{
+		y = M_PI - y;
+		sign = -1.0f;
+	}
+	else if (y < -HALF_PI)
+	{
+		y = -M_PI - y;
+		sign = -1.0f;
+	}
+	else
+	{
+		sign = +1.0f;
+	}
+
+	float y2 = y * y;
+
+	// 11-degree minimax approximation
+	*ScalarSin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+
+	// 10-degree minimax approximation
+	float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
+	*ScalarCos = sign * p;
+}
+
+vec3d World::QuatToEuler(const glm::quat& q)
+{
+	vec3d out;
+
+	const float SingularityTest = q.z * q.x - q.w * q.y;
+	const float YawY = 2.f * (q.w * q.z + q.x * q.y);
+	const float YawX = (1.f - 2.f * (q.y * q.y + q.z * q.z));
+
+	// reference 
+	// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+	// http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
+
+	// this value was found from experience, the above websites recommend different values
+	// but that isn't the case for us, so I went through different testing, and finally found the case 
+	// where both of world lives happily. 
+
+	const float SINGULARITY_THRESHOLD = 0.4999995f;
+	const float RAD_TO_DEG = (180.f) / M_PI;
+
+	if (SingularityTest < -SINGULARITY_THRESHOLD)
+	{
+		out.y = -90.f;
+		out.z = Atan2(YawY, YawX) * RAD_TO_DEG;
+		out.x = NormalizeAngle(-out.z - (2.f * Atan2(q.x, q.w) * RAD_TO_DEG));
+	}
+	else if (SingularityTest > SINGULARITY_THRESHOLD)
+	{
+		out.y = 90.f;
+		out.z = Atan2(YawY, YawX) * RAD_TO_DEG;
+		out.x = NormalizeAngle(out.z - (2.f * Atan2(q.x, q.w) * RAD_TO_DEG));
+	}
+	else
+	{
+		out.y = FastAsin(2.f * (SingularityTest)) * RAD_TO_DEG;
+		out.z = Atan2(YawY, YawX) * RAD_TO_DEG;
+		out.x = Atan2(-2.f * (q.w * q.x + q.y * q.z), (1.f - 2.f * (q.x * q.x + q.y * q.y))) * RAD_TO_DEG;
+	}
+
+	//out *= -1.f;
+	return out;
+}
+
+glm::quat World::EulerToQuat(const vec3d& rot)
+{
+	glm::quat out;
+	const float DEG_TO_RAD = M_PI / (180.f);
+	const float RADS_DIVIDED_BY_2 = DEG_TO_RAD / 2.f;
+	float SP, SY, SR;
+	float CP, CY, CR;
+
+// 	const float PitchNoWinding = Fmod(rot.y, 360.0f);
+// 	const float YawNoWinding = Fmod(rot.z, 360.0f);
+// 	const float RollNoWinding = Fmod(rot.x, 360.0f);
+	const float PitchNoWinding = -rot.y;
+	const float YawNoWinding = -rot.z;
+	const float RollNoWinding = -rot.x;
+
+	SinCos(&SP, &CP, PitchNoWinding * RADS_DIVIDED_BY_2);
+	SinCos(&SY, &CY, YawNoWinding * RADS_DIVIDED_BY_2);
+	SinCos(&SR, &CR, RollNoWinding * RADS_DIVIDED_BY_2);
+
+	out.x = CR * SP * SY - SR * CP * CY;
+	out.y = -CR * SP * CY - SR * CP * SY;
+	out.z = CR * CP * SY - SR * SP * CY;
+	out.w = CR * CP * CY + SR * SP * SY;
+	return out;
 }
 
 vec3d World::RotateVector(const vec3d& inVector, const vec3d& rotation)

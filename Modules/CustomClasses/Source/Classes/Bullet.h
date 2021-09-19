@@ -20,6 +20,8 @@ class CUSTOMCLASSES Bullet : public SceneObject
 	public:
 		Ref<BoxColliderComponent> Root;
 		Ref<StaticMeshComponent> mesh;
+
+		Callback<PhysicsActorEvent> m_PhysicsCallback;
 		float Speed = 100.f;
 };
 

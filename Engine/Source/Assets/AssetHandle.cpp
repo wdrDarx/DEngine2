@@ -124,7 +124,8 @@ uint AssetHandle::Serialize(Buffer& buffer) const
 	WRITE(&m_AssetID, sizeof(UID));
 	WRITESTRING(m_AssetType);
 	WRITESTRING(m_AssetName);
-	WRITESTRING(m_LastKnownPath);
+	std::string empty = ""; //for compatibility with previous files that used to store the last known path
+	WRITESTRING(empty);
 	STOPWRITE();
 }
 

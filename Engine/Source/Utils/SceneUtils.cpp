@@ -4,12 +4,21 @@
 Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsset, Scene* scene, const Transform& WorldTransform, ObjectInitializer initializer)
 {
 	auto loadedPrefab = scene->GetApplication()->GetAssetManager().LoadAsset(prefabAsset);
-	auto sceneObject = ToRef<SceneObject>(Cast<SceneObject>(scene->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(loadedPrefab->GetPrefabBaseClassName())));
-	//ASSERT(sceneObject); //object class invalid or not registered
-	if (!sceneObject) return nullptr;
+	if(!loadedPrefab) 
+	{
+		LogError("Prefab Asset Invalid for spawn!");
+		return nullptr;
+	}
 
-	//initialize the object calling DefineProperties and OnConstruct so all the props and components are there 
+	SceneObject* created = Cast<SceneObject>(scene->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(loadedPrefab->GetPrefabBaseClassName()));
+	if(!created)
+	{
+		LogError("Prefab class invalid or not registered!");
+		return nullptr;
+	}
+	auto sceneObject = ToRef<SceneObject>(created);
 
+	//initialize the object by calling DefineProperties and OnConstruct so all the props and components are there 
 	initializer.Flags |= ConstructFlags::NOPOSTCONSTRUCT;
 	initializer.Flags |= ConstructFlags::RANDOMID;
 	scene->AddSceneObject(sceneObject, initializer);

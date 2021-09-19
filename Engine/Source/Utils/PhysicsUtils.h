@@ -53,6 +53,9 @@ class DENGINE_API PhysicsUtils
 
 		static physx::PxRigidDynamicLockFlag::Enum ToPhysXActorLockFlag(ActorLockFlag flag);
 
+		/*
+			Filter shader function used to determine if 2 objects should block, overlap or ignore
+		*/
 		static physx::PxFilterFlags FilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0, physx::PxFilterObjectAttributes attributes1,
 			physx::PxFilterData filterData1, physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize);
 };

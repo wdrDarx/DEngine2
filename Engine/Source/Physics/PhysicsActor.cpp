@@ -242,12 +242,10 @@ void PhysicsActor::SetKinematicTarget(const vec3d& targetPosition, const vec3d& 
 	actor->setKinematicTarget(PhysicsUtils::ToPhysXTransform(targetPosition, targetRotation));
 }
 
-void PhysicsActor::SetSimulationData(uint layerId)
+void PhysicsActor::SetSimulationData(uint MyLayerID)
 {
-	const PhysicsLayer& layerInfo = GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsLayerManager()->GetLayer(layerId);
-
 	physx::PxFilterData filterData;
-	filterData.word0 = layerInfo.BitValue; //my layer
+	filterData.word0 = BIT(MyLayerID + 1); //my layer (+1 because blocking and overlapping are bitmasks and for example layer 0 would translate into no collision)
 	filterData.word1 = m_BlockingLayers; //what layers i block
 	filterData.word2 = m_OverlappingLayers; //what layers i overlap
 	filterData.word3 = (uint)m_CollisionDetectionType; //my collision mode
@@ -364,6 +362,48 @@ void PhysicsActor::SetRotation(const vec3d& rot)
 	GetPhysXActor()->setGlobalPose(transform);
 }
 
+void PhysicsActor::CallOnHit(const HitResult& hit)
+{
+	PhysicsActorEvent event;
+	event.EventType = PhysicsActorEventType::ONHIT;
+	event.Hit = hit;
+	m_EventDispatcher.Dispatch(event);
+}
+
+void PhysicsActor::CallOnBeginOverlap(const HitResult& hit)
+{
+	PhysicsActorEvent event;
+	event.EventType = PhysicsActorEventType::ONBEGINOVERLAP;
+	event.Hit = hit;
+	m_EventDispatcher.Dispatch(event);
+}
+
+void PhysicsActor::CallOnEndOverlap(const HitResult& hit)
+{
+	PhysicsActorEvent event;
+	event.EventType = PhysicsActorEventType::ONENDOVERLAP;
+	event.Hit = hit;
+	m_EventDispatcher.Dispatch(event);
+}
+
+void PhysicsActor::BindOnHit(Callback<PhysicsActorEvent>& callback)
+{
+	m_EventDispatcher.Bind(callback);
+	m_RecieveCollisionCallbacks = true;
+}
+
+void PhysicsActor::BindOnBeginOverlap(Callback<PhysicsActorEvent>& callback)
+{
+	m_EventDispatcher.Bind(callback);
+	m_RecieveCollisionCallbacks = true;
+}
+
+void PhysicsActor::BindOnEndOverlap(Callback<PhysicsActorEvent>& callback)
+{
+	m_EventDispatcher.Bind(callback);
+	m_RecieveCollisionCallbacks = true;
+}
+
 void PhysicsActor::SetCollisionDetectionType(const CollisionDetectionType& type)
 {
 	GetPhysXActor()->is<physx::PxRigidDynamic>()->setRigidBodyFlag(physx::PxRigidBodyFlag::eENABLE_CCD, type == CollisionDetectionType::Continuous);
@@ -380,7 +420,7 @@ void PhysicsActor::BindOnAdvance(Callback<PhysicsActorEvent>& callback)
 void PhysicsActor::OnAdvance()
 {
 	PhysicsActorEvent event;
-	event.m_EventType = PhysicsActorEventType::ONADVANCE;
+	event.EventType = PhysicsActorEventType::ONADVANCE;
 	m_EventDispatcher.Dispatch(event);
 }
 

@@ -22,12 +22,7 @@ class DENGINE_API PhysicsWorld : public AppObject
 	void OnBeginPlay() override;
 	void OnEndPlay() override;
 
-	Ref<PhysicsScene> CreatePhysicsScene(const PhysicsSettings* CustomSettings = nullptr)
-	{
-		Ref<PhysicsScene> scene = MakeRef<PhysicsScene>(this, CustomSettings ? *CustomSettings : GetPhysicsSettings());
-		m_PhysicsScenes.push_back(scene);
-		return scene;
-	}
+	Ref<PhysicsScene> CreatePhysicsScene(const PhysicsSettings* CustomSettings = nullptr);
 
 	const std::vector<Ref<PhysicsScene>>& GetPhysicsScene() const
 	{
@@ -52,6 +47,11 @@ class DENGINE_API PhysicsWorld : public AppObject
 	const PhysicsSettings& GetPhysicsSettings() const
 	{
 		return m_PhysicsSettings;
+	}
+
+	void SetPhysicsSettings(const PhysicsSettings& settings)
+	{
+		m_PhysicsSettings = settings;
 	}
 
 public:

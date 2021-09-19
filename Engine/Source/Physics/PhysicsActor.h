@@ -46,7 +46,7 @@ public:
 	vec3d GetKinematicTargetRotation() const;
 	void SetKinematicTarget(const vec3d& targetPosition, const vec3d& targetRotation) const;
 
-	void SetSimulationData(uint layerId);
+	void SetSimulationData(uint MyLayerID);
 
 	bool IsDynamic() const
 	{ 
@@ -123,20 +123,62 @@ public:
 		m_CollisionLayer = layer;
 	}
 
-	void SetBlockLayer(int LayerBit)
+	void SetBlockLayer(uint LayerBit)
 	{
 		m_BlockingLayers |= LayerBit;
 	}
 
-	void SetOverlapLayer(int LayerBit)
+	void SetBlockingLayers(uint BlockingLayers)
+	{
+		m_BlockingLayers = BlockingLayers;
+	}
+
+	void SetOverlappingLayers(uint OverlappingLayers)
+	{
+		m_OverlappingLayers = OverlappingLayers;
+	}
+
+	void SetOverlapLayer(uint LayerBit)
 	{
 		m_OverlappingLayers |= LayerBit;
 	}
 
-	void SetIgnoreLayer(int LayerBit)
+	void SetIgnoreLayer(uint LayerBit)
 	{
 		m_BlockingLayers &= ~LayerBit;
 		m_OverlappingLayers &= ~LayerBit;
+	}
+
+	uint GetBlockingLayers() const
+	{
+		return m_BlockingLayers;
+	}
+
+	uint GetOverlappingLayers() const
+	{
+		return m_OverlappingLayers;
+	}
+
+	void CallOnHit(const HitResult& hit);
+	void CallOnBeginOverlap(const HitResult& hit);
+	void CallOnEndOverlap(const HitResult& hit);
+	void BindOnHit(Callback<PhysicsActorEvent>& callback);
+	void BindOnBeginOverlap(Callback<PhysicsActorEvent>& callback);
+	void BindOnEndOverlap(Callback<PhysicsActorEvent>& callback);
+
+	void SetColliderComponent(ColliderComponent* component)
+	{
+		m_ColliderComponent = component;
+	}
+
+	bool ShouldReceiveCollisionCallbacks() const
+	{
+		return m_RecieveCollisionCallbacks;
+	}
+
+	ColliderComponent* GetColliderComponent() const
+	{
+		return m_ColliderComponent;
 	}
 
 	void SetCollisionDetectionType(const CollisionDetectionType& type);
@@ -149,17 +191,19 @@ private:
 	uint m_LockFlags = 0;
 	uint m_CollisionLayer = 0;
 
-	int m_BlockingLayers = 0;
-	int m_OverlappingLayers = 0;
+	uint m_BlockingLayers = 0;
+	uint m_OverlappingLayers = 0;
 
 	RigidBodyType m_BodyType;
 	CollisionDetectionType m_CollisionDetectionType = CollisionDetectionType::Discrete;
 	float m_Mass = 1.0f;
 	bool m_GravityEnabled = true;
 	bool m_IsKinematic = false;
+	bool m_RecieveCollisionCallbacks = false;
 
 	physx::PxRigidActor* m_RigidActor = nullptr;
 	PhysicsScene* m_PhysicsScene = nullptr;
+	ColliderComponent* m_ColliderComponent = nullptr;
 
 	//dispaches physics actor events
 	EventDispatcher m_EventDispatcher;

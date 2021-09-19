@@ -38,6 +38,11 @@ struct DENGINE_API EnumBase : public StructBase
 		m_Enum = value;
 	}
 
+	EnumBase(const int& value) : EnumBase()
+	{
+		m_Enum = value;
+	}
+
 	//Key = enum name, Value = pointer to int value of enum
 	virtual std::map<std::string, int> GetEnumMap()
 	{

@@ -21,6 +21,11 @@ std::string Log::string(const vec3d& in)
 	return "X: " + std::to_string(in.x) + " Y: " + std::to_string(in.y) + " Z: " + std::to_string(in.z);
 }
 
+std::string Log::string(const vec4d& in)
+{
+	return "X: " + std::to_string(in.x) + " Y: " + std::to_string(in.y) + " Z: " + std::to_string(in.z) + " W: " + std::to_string(in.w);
+}
+
 std::string Log::string(const vec2d& in)
 {
 	return "X: " + std::to_string(in.x) + " Y: " + std::to_string(in.y);

@@ -43,6 +43,7 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Source\CustomClasses.h" />
+    <ClInclude Include="Source\Classes\FirstPersonPawn.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Classes\Bullet.cpp">
@@ -80,5 +81,6 @@
     </ClCompile>
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
+    <ClCompile Include="Source\Classes\FirstPersonPawn.cpp" />
   </ItemGroup>
 </Project>

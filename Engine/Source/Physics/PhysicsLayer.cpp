@@ -125,10 +125,10 @@ const std::vector<std::string>& PhysicsLayerManager::GetLayerNames()
 	if (s_LayerNames.size() < 1)
 	{
 		//do file stuff
-		if (File::DoesFileExist(Paths::GetConfigDirectory() + "CollisionLayers.Config"))
+		if (File::DoesFileExist(Paths::GetConfigDirectory() + "Physics.Config"))
 		{
 			Buffer FileBuf;
-			File::ReadFile(Paths::GetConfigDirectory() + "CollisionLayers.Config", FileBuf);
+			File::ReadFile(Paths::GetConfigDirectory() + "Physics.Config", FileBuf);
 			std::string stringValue = std::string(FileBuf.begin(), FileBuf.end());
 			Json::Reader reader;
 			Json::Value value;
@@ -149,7 +149,7 @@ const std::vector<std::string>& PhysicsLayerManager::GetLayerNames()
 			std::string stringValue = value.toStyledString();
 
 			Buffer FileBuf = Buffer(stringValue.begin(), stringValue.end());
-			File::WriteFile(Paths::GetConfigDirectory() + "CollisionLayers.Config", FileBuf);
+			File::WriteFile(Paths::GetConfigDirectory() + "Physics.Config", FileBuf);
 
 			GetLayerNames(); // do again but we got a file this time
 		}

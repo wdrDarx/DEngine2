@@ -11,6 +11,7 @@ struct DENGINE_API RenderFlags : public EnumBase
 		DEBUGCUBES = BIT(2),
 		PHYSX = BIT(3),
 		GRID = BIT(4),
+		PIVOTS = BIT(5),
 	};
 
 	BITMASK_DEF_BEGIN(RenderFlags, Enum)
@@ -18,6 +19,7 @@ struct DENGINE_API RenderFlags : public EnumBase
 		ENUM_DEF(DEBUGCUBES);
 		ENUM_DEF(PHYSX);
 		ENUM_DEF(GRID);
+		ENUM_DEF(PIVOTS);
 	ENUM_DEF_END();
 };
 

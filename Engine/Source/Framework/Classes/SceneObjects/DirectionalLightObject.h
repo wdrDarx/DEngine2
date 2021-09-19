@@ -11,9 +11,7 @@ public:
 			PROPDEF(Color, EditAnywhere);
 			PROPDEF(Intensity, EditAnywhere);
 		PROPS_CATEGORY(Details)
-			PROPDEF(AutoFollowCamera, EditAnywhere);
-			PROPDEF(SourceLength, EditAnywhere);
-			PROPDEF(ShadowMapScale, EditAnywhere);
+			PROPDEF(LightSize, EditAnywhere);
 			PROPDEF(NearPlane, EditAnywhere);
 			PROPDEF(FarPlane, EditAnywhere);
 	OBJECT_PROPS_END()
@@ -25,12 +23,9 @@ public:
 
 	float Intensity = 1.f;
 	color3 Color = {1,1,1};
-	float SourceLength = 1000.f;
-	float ShadowMapScale = 1000.f;
-	float NearPlane = 10.f;
+	float LightSize = 1000.f;
+	float NearPlane = 0.01f;
 	float FarPlane = 10000.f;
-
-	bool AutoFollowCamera = false;
 
 private:
 	Ref<DirectionalLight> m_DirLight = nullptr;

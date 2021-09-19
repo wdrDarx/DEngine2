@@ -27,6 +27,7 @@ out vec3 Normal;
 out vec2 TexCoord;
 out mat3 TBN;
 out vec4[MaxDirectionalShadowMaps] DirectionalLightProjectedVerticies;
+out float DirLightClipSpacePosZ;
 
 void main()
 {
@@ -50,7 +51,9 @@ void main()
 	{
 		DirectionalLightProjectedVerticies[i] = u_DirectionLightMatricies[i] * Pos;
 	}
-	
+
+	//DirLightClipSpacePosZ = vec3(u_ViewMatrix * Pos).z;
+	DirLightClipSpacePosZ = gl_Position.z;
 }
 
 #shader fragment
@@ -67,6 +70,7 @@ struct ST_DirectionalLight
 {
 	vec4 direction;
 	vec4 radiance;
+	vec4 LightSize;
 };
 
 layout(std140, binding = 1) buffer LightData
@@ -91,8 +95,10 @@ uniform sampler2D u_BRDF;
 //shadow maps
 const int MaxDirectionalShadowMaps = 4;
 uniform int u_DirectionalShadowMapCount;
+uniform float u_CascadeEndClipSpace[MaxDirectionalShadowMaps];
 uniform sampler2D u_DirectionalShadowMaps[MaxDirectionalShadowMaps];
 in vec4 DirectionalLightProjectedVerticies[MaxDirectionalShadowMaps];
+in float DirLightClipSpacePosZ;
 
 //multipliers
 uniform float u_MetallicMult;
@@ -202,41 +208,6 @@ vec3 ImportanceSampleGGX(vec2 Xi, float Roughness, vec3 N)
 	return TangentX * H.x + TangentY * H.y + N * H.z;
 }
 
-float TotalWeight = 0.0;
-
-vec3 PrefilterEnvMap(float Roughness, vec3 R)
-{
-	vec3 N = R;
-	vec3 V = R;
-	vec3 PrefilteredColor = vec3(0.0);
-	int NumSamples = 1024;
-	for (int i = 0; i < NumSamples; i++)
-	{
-		vec2 Xi = Hammersley(i, NumSamples);
-		vec3 H = ImportanceSampleGGX(Xi, Roughness, N);
-		vec3 L = 2 * dot(V, H) * H - V;
-		float NoL = clamp(dot(N, L), 0.0, 1.0);
-		if (NoL > 0)
-		{
-			//PrefilteredColor += texture(u_EnvRadianceTex, L).rgb * NoL;
-			TotalWeight += NoL;
-		}
-	}
-	return PrefilteredColor / TotalWeight;
-}
-
-// ---------------------------------------------------------------------------------------------------
-
-vec3 RotateVectorAboutY(float angle, vec3 vec)
-{
-	angle = radians(angle);
-	mat3x3 rotationMatrix = { vec3(cos(angle),0.0,sin(angle)),
-							vec3(0.0,1.0,0.0),
-							vec3(-sin(angle),0.0,cos(angle)) };
-	return rotationMatrix * vec;
-}
-// ---------------------------------------------------------------------------------------------------
-
 vec3 getNormalFromMap()
 {
 	vec3 normal = texture(u_Normal, TexCoord).rgb;
@@ -268,7 +239,173 @@ float SampleShadowMapLinear(sampler2D shadowMap, vec2 coords, float compare, vec
 	return mix(mixA, mixB, fracPart.x);
 }
 
-float DirectionalLightShadowCalculation(int index, vec3 Normal, vec3 LightDirection)
+/////////////////////////////////////////////
+// PCSS
+/////////////////////////////////////////////
+
+// Penumbra
+
+// this search area estimation comes from the following article: 
+// http://developer.download.nvidia.com/whitepapers/2008/PCSS_Integration.pdf
+float SearchWidth(float uvLightSize, float receiverDistance)
+{
+	const float NEAR = 0.01;
+	return (1.0 / uvLightSize) * (receiverDistance - NEAR) / receiverDistance;
+}
+
+
+const vec2 PoissonDistribution[64] = vec2[](
+	vec2(-0.884081, 0.124488),
+	vec2(-0.714377, 0.027940),
+	vec2(-0.747945, 0.227922),
+	vec2(-0.939609, 0.243634),
+	vec2(-0.985465, 0.045534),
+	vec2(-0.861367, -0.136222),
+	vec2(-0.881934, 0.396908),
+	vec2(-0.466938, 0.014526),
+	vec2(-0.558207, 0.212662),
+	vec2(-0.578447, -0.095822),
+	vec2(-0.740266, -0.095631),
+	vec2(-0.751681, 0.472604),
+	vec2(-0.553147, -0.243177),
+	vec2(-0.674762, -0.330730),
+	vec2(-0.402765, -0.122087),
+	vec2(-0.319776, -0.312166),
+	vec2(-0.413923, -0.439757),
+	vec2(-0.979153, -0.201245),
+	vec2(-0.865579, -0.288695),
+	vec2(-0.243704, -0.186378),
+	vec2(-0.294920, -0.055748),
+	vec2(-0.604452, -0.544251),
+	vec2(-0.418056, -0.587679),
+	vec2(-0.549156, -0.415877),
+	vec2(-0.238080, -0.611761),
+	vec2(-0.267004, -0.459702),
+	vec2(-0.100006, -0.229116),
+	vec2(-0.101928, -0.380382),
+	vec2(-0.681467, -0.700773),
+	vec2(-0.763488, -0.543386),
+	vec2(-0.549030, -0.750749),
+	vec2(-0.809045, -0.408738),
+	vec2(-0.388134, -0.773448),
+	vec2(-0.429392, -0.894892),
+	vec2(-0.131597, 0.065058),
+	vec2(-0.275002, 0.102922),
+	vec2(-0.106117, -0.068327),
+	vec2(-0.294586, -0.891515),
+	vec2(-0.629418, 0.379387),
+	vec2(-0.407257, 0.339748),
+	vec2(0.071650, -0.384284),
+	vec2(0.022018, -0.263793),
+	vec2(0.003879, -0.136073),
+	vec2(-0.137533, -0.767844),
+	vec2(-0.050874, -0.906068),
+	vec2(0.114133, -0.070053),
+	vec2(0.163314, -0.217231),
+	vec2(-0.100262, -0.587992),
+	vec2(-0.004942, 0.125368),
+	vec2(0.035302, -0.619310),
+	vec2(0.195646, -0.459022),
+	vec2(0.303969, -0.346362),
+	vec2(-0.678118, 0.685099),
+	vec2(-0.628418, 0.507978),
+	vec2(-0.508473, 0.458753),
+	vec2(0.032134, -0.782030),
+	vec2(0.122595, 0.280353),
+	vec2(-0.043643, 0.312119),
+	vec2(0.132993, 0.085170),
+	vec2(-0.192106, 0.285848),
+	vec2(0.183621, -0.713242),
+	vec2(0.265220, -0.596716),
+	vec2(-0.009628, -0.483058),
+	vec2(-0.018516, 0.435703)
+	);
+
+const vec2 poissonDisk[16] = vec2[](
+	vec2(-0.94201624, -0.39906216),
+	vec2(0.94558609, -0.76890725),
+	vec2(-0.094184101, -0.92938870),
+	vec2(0.34495938, 0.29387760),
+	vec2(-0.91588581, 0.45771432),
+	vec2(-0.81544232, -0.87912464),
+	vec2(-0.38277543, 0.27676845),
+	vec2(0.97484398, 0.75648379),
+	vec2(0.44323325, -0.97511554),
+	vec2(0.53742981, -0.47373420),
+	vec2(-0.26496911, -0.41893023),
+	vec2(0.79197514, 0.19090188),
+	vec2(-0.24188840, 0.99706507),
+	vec2(-0.81409955, 0.91437590),
+	vec2(0.19984126, 0.78641367),
+	vec2(0.14383161, -0.14100790)
+	);
+
+vec2 SamplePoisson(int index)
+{
+	return PoissonDistribution[index % 64];
+}
+
+float GetShadowBias(vec3 Normal, vec3 LightDirection)
+{
+	const float MIN_BIAS = 0.0004;
+	return -max(MIN_BIAS * (1.0 - dot(Normal, LightDirection)), MIN_BIAS);
+
+	//return -0.0004;
+}
+
+float FindBlockerDistance_DirectionalLight(vec3 Normal, vec3 LightDirection, vec3 ProjCoords, sampler2D shadowMap, float uvLightSize)
+{
+	float bias = GetShadowBias(Normal, LightDirection);
+	int blockers = 0;
+	float avgBlockerDistance = 0;
+	int numBlockerSearchSamples = 64;
+	float searchWidth = SearchWidth(uvLightSize, ProjCoords.z);
+	for (int i = 0; i < numBlockerSearchSamples; i++)
+	{
+		float z = texture(shadowMap, ProjCoords.xy + SamplePoisson(i) * 1).r;
+		if (z < (ProjCoords.z - bias))
+		{
+			blockers++;
+			avgBlockerDistance += z;
+		}
+	}
+	if (blockers > 0)
+		return avgBlockerDistance / blockers;
+	else
+		return -1;
+}
+
+float PCF_DirectionalLight(vec3 Normal, vec3 LightDirection, sampler2D shadowMap, vec3 ProjCoords, float uvRadius)
+{
+	float bias = GetShadowBias(Normal, LightDirection);
+	int numPCFSamples = 64;
+
+	float sum = 0;
+	for (int i = 0; i < numPCFSamples; i++)
+	{
+		vec2 offset = SamplePoisson(i) * uvRadius;
+		float z = texture(shadowMap, ProjCoords.xy + offset).r;
+		sum += step(ProjCoords.z - bias, z);
+	}
+	return sum / numPCFSamples;
+}
+
+float PCSS_DirectionalLight(vec3 Normal, vec3 LightDirection, sampler2D shadowMap, vec3 ProjCoords, float uvLightSize)
+{
+	float blockerDistance = FindBlockerDistance_DirectionalLight(Normal, LightDirection, ProjCoords, shadowMap, uvLightSize);
+	//if (blockerDistance == -1) // No occlusion
+	//	return 1.0f;
+
+	blockerDistance = 0.1;
+	float penumbraWidth = (ProjCoords.z - blockerDistance) / blockerDistance;
+
+	float NEAR = 0.01; // Should this value be tweakable?
+	float uvRadius = penumbraWidth * uvLightSize * NEAR / ProjCoords.z; // Do we need to divide by ProjCoords.z?
+	uvRadius = min(uvRadius, 0.002f);
+	return PCF_DirectionalLight(Normal, LightDirection, shadowMap, ProjCoords, uvRadius);
+}
+
+float DirectionalLightShadowCalculation(int index, vec3 Normal, vec3 LightDirection, float LightUvSize)
 {
 	//vec4 fragPosLightSpace = DirLightMatrix * vec4(Position, 1.0);
 	vec4 fragPosLightSpace = DirectionalLightProjectedVerticies[index];
@@ -278,15 +415,15 @@ float DirectionalLightShadowCalculation(int index, vec3 Normal, vec3 LightDirect
 	// get depth of current fragment from light's perspective
 	float currentDepth = projCoords.z;
 	// check whether current frag pos is in shadow
-	float bias = max(0.0000001 * (1.0 - dot(Normal, LightDirection)), 0.000001);
+	//float bias = max(0.0000001 * (1.0 - dot(Normal, LightDirection)), 0.000001);
 
 	//pcf
-	const int Samples = 3;
+	const int Samples = 4;
 	const int SamplesStart = (Samples - 1)/2;
 	const int SamplesSquared = Samples * Samples;
 
 	float shadow = 0.0;
-	vec2 texelSize = 1.0 / textureSize(u_DirectionalShadowMaps[index], 0);
+	/*vec2 texelSize = 1.0 / textureSize(u_DirectionalShadowMaps[index], 0);
 	for (int x = -Samples; x <= SamplesStart; ++x)
 	{
 		for (int y = -Samples; y <= SamplesStart; ++y)
@@ -296,8 +433,11 @@ float DirectionalLightShadowCalculation(int index, vec3 Normal, vec3 LightDirect
 			shadow += pcfDepth;
 		}
 	}
-	shadow /= SamplesSquared;
+	shadow /= SamplesSquared;*/
 
+	shadow = PCSS_DirectionalLight(Normal, LightDirection, u_DirectionalShadowMaps[index], projCoords, LightUvSize / 1000);
+
+	//shadow = step(projCoords.z, texture(u_DirectionalShadowMaps[index], projCoords.xy).r);
 	return shadow;
 }
 
@@ -419,23 +559,85 @@ void main()
 
 	//directional shadows (start at 1.0 because its inverse)
 	float ShadowSum = 0.0;
+	int shadowCascade = 0;
 	if(u_DirectionalShadowMapCount < 1)
 	{ 
 		ShadowSum = 1.0; //dont calculate shadows and leave shadow sum at 1.0 (default everything is lit)
 	}
 	else
-	{ 
+	{ 				
 		for (int i = 0; i < u_DirectionalShadowMapCount; i++)
 		{
-			//add shadow
-			ShadowSum += (DirectionalLightShadowCalculation(i, normal, DirectionalLights[i].direction.xyz));
+			if (DirLightClipSpacePosZ <= u_CascadeEndClipSpace[i])
+			{ 
+				shadowCascade = i;
+				break;
+			}
 		}
+
+		bool FadeCascades = true;
+		if (FadeCascades)
+		{
+			float cascadeTransitionFade = 1000.0;
+
+			float c0 = smoothstep(u_CascadeEndClipSpace[0] - cascadeTransitionFade * 0.5f, u_CascadeEndClipSpace[0] + cascadeTransitionFade * 0.5f, DirLightClipSpacePosZ);
+			float c1 = smoothstep(u_CascadeEndClipSpace[1] - cascadeTransitionFade * 0.5f, u_CascadeEndClipSpace[1] + cascadeTransitionFade * 0.5f, DirLightClipSpacePosZ);
+			float c2 = smoothstep(u_CascadeEndClipSpace[2] - cascadeTransitionFade * 0.5f, u_CascadeEndClipSpace[2] + cascadeTransitionFade * 0.5f, DirLightClipSpacePosZ);
+			if (c0 > 0.0 && c0 < 1.0)
+			{
+				// Sample 0 & 1
+				float shadowAmount0 = DirectionalLightShadowCalculation(0, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+				float shadowAmount1 = DirectionalLightShadowCalculation(1, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+
+				ShadowSum = mix(shadowAmount0, shadowAmount1, c0);
+			}
+			else if (c1 > 0.0 && c1 < 1.0)
+			{
+				// Sample 1 & 2
+				float shadowAmount1 = DirectionalLightShadowCalculation(1, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+				float shadowAmount2 = DirectionalLightShadowCalculation(2, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+
+				ShadowSum = mix(shadowAmount1, shadowAmount2, c1);
+			}
+			else if (c2 > 0.0 && c2 < 1.0)
+			{
+				// Sample 2 & 3
+				float shadowAmount2 = DirectionalLightShadowCalculation(2, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+				float shadowAmount3 = DirectionalLightShadowCalculation(3, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+
+				ShadowSum = mix(shadowAmount2, shadowAmount3, c2);
+			}
+			else
+				ShadowSum = DirectionalLightShadowCalculation(shadowCascade, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
+		}
+		else
+			ShadowSum = DirectionalLightShadowCalculation(shadowCascade, normal, DirectionalLights[0].direction.xyz, DirectionalLights[0].LightSize.x);
 	}
 	//clamp the shadow sum 
 	ShadowSum = clamp(ShadowSum, 0.0, 1.0);
 
 	// Final fragment color.
 	vec3 BaseColor = ShadowSum * directLighting + ambientLighting;
+
+	vec3 CascadeColor = vec3(1.0);
+	switch (shadowCascade)
+	{
+	case 0:
+		CascadeColor.rgb *= vec3(1.0f, 0.25f, 0.25f);
+		break;
+	case 1:
+		CascadeColor.rgb *= vec3(0.25f, 1.0f, 0.25f);
+		break;
+	case 2:
+		CascadeColor.rgb *= vec3(0.25f, 0.25f, 1.0f);
+		break;
+	case 3:
+		CascadeColor.rgb *= vec3(1.0f, 1.0f, 0.25f);
+		break;
+	}
+
+	//preview cascades
+	//BaseColor *= CascadeColor;
 
 	//tonemap
 	const float gamma = 2.2;
