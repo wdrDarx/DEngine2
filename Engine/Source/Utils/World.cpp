@@ -314,6 +314,12 @@ bool World::IsNearlyZero(float in)
 	return fabsf(in) <= SMALL_NUMBER;
 }
 
+bool World::IsNearlyZero(const vec2d& in)
+{
+	return fabsf(in.x) <= SMALL_NUMBER &&
+		fabsf(in.y) <= SMALL_NUMBER;
+}
+
 bool World::NearlyEqual(const vec3d& v1, const vec3d& v2)
 {
 	return fabsf(v1.x - v2.x) <= SMALL_NUMBER && 

@@ -4,6 +4,7 @@
 #include "Utils/PhysicsUtils.h"
 #include "CookingFactory.h"
 
+
 enum class ColliderType
 {
 	Box, Sphere, Capsule, ConvexMesh, TriangleMesh
@@ -85,4 +86,40 @@ public:
 
 private:
 	vec3d m_BoxSize;
+};
+
+class Mesh;
+class DENGINE_API TriangleColliderShape : public ColliderShape
+{
+public:
+	TriangleColliderShape();
+	physx::PxGeometry* CreateGeometry() override;
+
+	void SetCollisionMesh(const Ref<Mesh>& meshAsset, const std::string& CacheName)
+	{
+		m_ColliderMesh = meshAsset;
+		m_CacheName = CacheName;
+	}
+
+	void SetScale(const vec3d& scale)
+	{
+		m_Scale = scale;
+	}
+
+	Ref<Mesh> GetCollisionMesh() const
+	{
+		return m_ColliderMesh;
+	}
+
+protected:
+	Ref<Mesh> m_ColliderMesh;
+	std::string m_CacheName;
+	vec3d m_Scale;
+};
+
+class DENGINE_API ConvexColliderShape : public TriangleColliderShape
+{
+public:
+	ConvexColliderShape();
+	physx::PxGeometry* CreateGeometry() override;
 };

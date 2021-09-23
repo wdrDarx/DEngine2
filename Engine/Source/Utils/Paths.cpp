@@ -10,6 +10,7 @@ void Paths::CreateBaseDirs()
 	std::filesystem::create_directory(GetModulesDirectory());
 	std::filesystem::create_directory(GetSavedDirectory());
 	std::filesystem::create_directory(GetConfigDirectory());
+	std::filesystem::create_directory(GetCacheDirectory());
 }
 
 std::string Paths::GetBaseDirectory()
@@ -39,6 +40,11 @@ std::string Paths::GetContentDirectory()
 std::string Paths::GetSavedDirectory()
 {
 	return GetBaseDirectory() + "\\Saved\\";
+}
+
+std::string Paths::GetCacheDirectory()
+{
+	return GetSavedDirectory() + "\\Cache\\";
 }
 
 std::string Paths::GetConfigDirectory()

@@ -140,14 +140,14 @@ void FrameBuffer::Invalidate()
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_IntermidiateColorAttachment);
 		glBindTexture(GL_TEXTURE_2D, m_IntermidiateColorAttachment);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, m_Spec.ColorFormat, m_Spec.Width, m_Spec.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_Spec.IntermediateColorFormat, m_Spec.Width, m_Spec.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_IntermidiateColorAttachment, 0);
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_IntermidiateDepthAttachment);
 		glBindTexture(GL_TEXTURE_2D, m_IntermidiateDepthAttachment);
-		glTexStorage2D(GL_TEXTURE_2D, 1, m_Spec.DepthFormat, m_Spec.Width, m_Spec.Height);
+		glTexStorage2D(GL_TEXTURE_2D, 1, m_Spec.IntermediateDepthFormat, m_Spec.Width, m_Spec.Height);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_IntermidiateDepthAttachment, 0);
 
 		ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
@@ -157,9 +157,20 @@ void FrameBuffer::Invalidate()
 
 void FrameBuffer::Resize(const uint& Width, const uint& Height)
 {
+	if(m_Spec.Width == Width && m_Spec.Height == Height) return;
+
+	//save previously bound framebuffer (because Invalidate binds framebuffer 0)
+	GLint DrawFrameBuffer = 0;
+	GLint ReadFrameBuffer = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &DrawFrameBuffer);
+	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &ReadFrameBuffer);
+
 	m_Spec.Width = Width;
 	m_Spec.Height = Height;
 	
 	glViewport(0, 0, m_Spec.Width, m_Spec.Height);
 	Invalidate();
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, DrawFrameBuffer);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER_BINDING, ReadFrameBuffer);
 }

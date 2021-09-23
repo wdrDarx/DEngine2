@@ -30,12 +30,17 @@ physx::PxShape* ColliderShape::AttachShape(PhysicsActor* parent)
 {	
 	m_Parent = parent;
 
+	physx::PxGeometry* geom = CreateGeometry();
+	if (!geom) return nullptr;
+
 	Ref<PhysicsMaterial> material = MakeRef<PhysicsMaterial>();
 	SetMaterial(material);
 	m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->Load();
 
-	physx::PxGeometry* geom = CreateGeometry();
+	
+
 	m_Shape = createExclusiveShape(m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK(), *GetParentActor()->GetPhysXActor(), *geom, GetMaterial());
+	delete geom;
 
 	m_Shape->setFlag(physx::PxShapeFlag::eSIMULATION_SHAPE, true);
 	m_Shape->setFlag(physx::PxShapeFlag::eSCENE_QUERY_SHAPE, true);
@@ -51,4 +56,51 @@ BoxColliderShape::BoxColliderShape() : ColliderShape(ColliderType::Box)
 physx::PxGeometry* BoxColliderShape::CreateGeometry()
 {
 	return new physx::PxBoxGeometry(GetBoxSize().x, GetBoxSize().y, GetBoxSize().z);
+}
+
+TriangleColliderShape::TriangleColliderShape() : ColliderShape(ColliderType::TriangleMesh)
+{
+
+}
+
+physx::PxGeometry* TriangleColliderShape::CreateGeometry()
+{
+	if(!GetCollisionMesh()) return nullptr;
+
+	MeshColliderData data;
+	CookingResult result = m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetCookingFactory()->CookMesh(*GetCollisionMesh(), m_CacheName, false, data);
+	ASSERT(data.Data.size() > 0);
+
+	if (result != CookingResult::Success)
+		return nullptr;
+
+	physx::PxDefaultMemoryInputData input(data.Data.data(), data.Data.size());
+	physx::PxTriangleMesh* trimesh = m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK()->createTriangleMesh(input);
+
+	return new physx::PxTriangleMeshGeometry(trimesh, physx::PxMeshScale({m_Scale.x, m_Scale.y, m_Scale.z}));
+}
+
+ConvexColliderShape::ConvexColliderShape() : TriangleColliderShape()
+{
+	m_Type = ColliderType::ConvexMesh;
+}
+
+physx::PxGeometry* ConvexColliderShape::CreateGeometry()
+{
+	if (!GetCollisionMesh()) return nullptr;
+
+	MeshColliderData data;
+	CookingResult result = m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetCookingFactory()->CookMesh(*GetCollisionMesh(), m_CacheName, true, data);
+	ASSERT(data.Data.size() > 0);
+
+	if (result != CookingResult::Success)
+		return nullptr;
+
+	physx::PxDefaultMemoryInputData input(data.Data.data(), data.Data.size());
+	physx::PxConvexMesh* convexMesh = m_Parent->GetPhysicsScene()->GetPhysicsWorld()->GetPhysicsAPI()->GetPhysXSDK()->createConvexMesh(input);
+
+	physx::PxConvexMeshGeometry* convexGeometry = new physx::PxConvexMeshGeometry(convexMesh, physx::PxMeshScale({ m_Scale.x, m_Scale.y, m_Scale.z }));
+	convexGeometry->meshFlags = physx::PxConvexMeshGeometryFlag::eTIGHT_BOUNDS;
+
+	return convexGeometry;
 }

@@ -7,6 +7,7 @@ class DENGINE_API ColliderComponent : public TransformComponent
 public:	
 	OBJECT_CLASS_DEF(ColliderComponent, TransformComponent);
 	OBJECT_PROPS_BEGIN()
+			PROPDEF(Disable, EditAnywhere);
 		PROPS_CATEGORY(Collider)
 			PROPDEF(CCD, EditAnywhere);
 			PROPDEF(Lerp, EditAnywhere);
@@ -57,6 +58,8 @@ public:
 		if (!m_Shape) LogWarning(GetName() + " Collider Shape is Null!");
 		return m_Shape;
 	}
+
+	bool Disable = false;
 
 	Ref<PhysicsActor> m_PhysicsActor;
 	Ref<ColliderShape> m_Shape;

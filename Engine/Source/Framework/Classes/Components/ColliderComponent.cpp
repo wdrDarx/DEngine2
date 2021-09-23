@@ -5,6 +5,8 @@ void ColliderComponent::OnBeginPlay()
 {
 	Super::OnBeginPlay();
 
+	if(Disable) return;
+
 	m_PhysicsActor = MakeRef<PhysicsActor>(GetOwner()->GetScene()->GetPhysicsScene().get());
 	m_PhysicsActor->SetDynamic(Dynamic);
 	m_PhysicsActor->SetColliderComponent(this);
@@ -98,7 +100,7 @@ void ColliderComponent::OnUpdate(const Tick& tick)
 				m_RecieveNextTransform = false;
 				Super::SetWorldTransform(m_PendingTransform.value());
 			}
-			else if(m_PhysicsActor->IsDynamic()) //static actors dont recieve position back, its 1 sided
+			else if(m_PhysicsActor->IsDynamic()) //static actors dont receive position back
 			{
 				if(Lerp && !World::IsNearlyZero(m_TargetPhysicsPos)) //we're lerping and the target position has been set
 				{  

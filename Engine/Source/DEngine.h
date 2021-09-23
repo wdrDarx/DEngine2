@@ -47,6 +47,7 @@
 #include "Framework/Classes/Components/TransformComponent.h"
 #include "Framework/Classes/Components/ColliderComponent.h"
 #include "Framework/Classes/Components/BoxColliderComponent.h"
+#include "Framework/Classes/Components/MeshColliderComponent.h"
 #include "Framework/Classes/SceneObjects/DirectionalLightObject.h"
 #include "Framework/Classes/SceneObjects/SkyLightObject.h"
 

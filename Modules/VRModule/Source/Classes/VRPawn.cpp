@@ -22,6 +22,7 @@ void VRPawn::OnUpdate(const Tick& tick)
 	m_VRsystem->GetTimeSinceLastVsync(&fSecondsSinceLastVsync, NULL);
 	float fDisplayFrequency = m_VRsystem->GetFloatTrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_DisplayFrequency_Float);
 	float fFrameDuration = 1.f / fDisplayFrequency;
+	fFrameDuration += tick.DeltaTime;
 	float fVsyncToPhotons = m_VRsystem->GetFloatTrackedDeviceProperty(vr::k_unTrackedDeviceIndex_Hmd, vr::Prop_SecondsFromVsyncToPhotons_Float);
 	float fPredictedSecondsFromNow = fFrameDuration - fSecondsSinceLastVsync + fVsyncToPhotons;
 
@@ -31,6 +32,7 @@ void VRPawn::OnUpdate(const Tick& tick)
 	glm::mat4 WorldTrans = VRModule::Mat4From3x4VR(PosArray->mDeviceToAbsoluteTracking);
 	glm::mat4 FinalWorldTrans = m_VRScaleMat * WorldTrans;
 	HMD->SetLocalTransform(World::MakeTransform(FinalWorldTrans));
+
 
 	//logs
 	//LogTemp("Pos : " + Log::string(m_HeadsetTransform.pos));
@@ -88,16 +90,16 @@ void VRPawn::OnBeginPlay()
 	FrameBufferSpec spec;
 	spec.Width = width;
 	spec.Height = height;
-	spec.ColorFormat = GL_RGBA8;
-	spec.Samples = 8;
+	spec.ColorFormat = GL_RGB8;
+	spec.Samples = 1;
 	m_LeftEyeBuffer = MakeRef<FrameBuffer>(spec);
 	m_RightEyeBuffer = MakeRef<FrameBuffer>(spec);
 
 	m_VRcompositor = vr::VRCompositor();
 	m_VRChaperone = vr::VRChaperone();
 
-	m_LeftEyeProj = VRModule::Mat4From4VR(m_VRsystem->GetProjectionMatrix(vr::Eye_Left, 0.01f, 10000.f));
-	m_RightEyeProj = VRModule::Mat4From4VR(m_VRsystem->GetProjectionMatrix(vr::Eye_Right, 0.01f, 10000.f));
+	m_LeftEyeProj = VRModule::Mat4From4VR(m_VRsystem->GetProjectionMatrix(vr::Eye_Left, 0.1f, 100.f));
+	m_RightEyeProj = VRModule::Mat4From4VR(m_VRsystem->GetProjectionMatrix(vr::Eye_Right, 0.1f, 100.f));
 	m_VRScaleMat = glm::scale(glm::mat4(1.0f), { m_VRScale, m_VRScale, m_VRScale });
 
 	//assign the render frame function to be called after all objects are updated
@@ -118,6 +120,8 @@ void VRPawn::OnEndPlay()
 
 void VRPawn::RenderFrame()
 {
+
+
 	vr::TrackedDevicePose_t trackedDevicePose[vr::k_unMaxTrackedDeviceCount];
 	m_VRcompositor->WaitGetPoses(trackedDevicePose, vr::k_unMaxTrackedDeviceCount, nullptr, 0);
 
@@ -147,6 +151,7 @@ void VRPawn::RenderFrame()
 	m_RightEyeCam->SetViewMatrix(glm::inverse(RightEyeMatrix) * glm::inverse(World::MakeMatrix(HMD->GetWorldTransform())));
 	m_RightEyeCam->SetViewProjectionMatrix(m_RightEyeCam->GetProjectionMatrix() * m_RightEyeCam->GetViewMatrix());
 
+	//m_RightEyeCam->SetTransform(HMD->GetWorldTransform());
 	GetScene()->GetPipeline()->RenderFrame(m_RightEyeCam);
 	m_RightEyeBuffer->Unbind();
 

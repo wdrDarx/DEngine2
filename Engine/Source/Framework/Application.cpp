@@ -125,6 +125,7 @@ void Application::RegisterBaseClasses()
 	REGISTER_OBJECT(GetObjectRegistry(), TransformComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), ColliderComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), BoxColliderComponent, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), MeshColliderComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), DirectionalLightObject, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), SkyLightObject, Engine);
 

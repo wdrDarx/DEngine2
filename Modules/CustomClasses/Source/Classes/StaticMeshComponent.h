@@ -3,10 +3,10 @@
 #include "CustomSceneObject.h"
 #include "DEngine.h"
 
-class CUSTOMCLASSES StaticMeshComponent : public TransformComponent
+class CUSTOMCLASSES StaticMeshComponent : public MeshColliderComponent
 {
 public:
-	OBJECT_CLASS_DEF(StaticMeshComponent, TransformComponent)
+	OBJECT_CLASS_DEF(StaticMeshComponent, MeshColliderComponent)
 		OBJECT_PROPS_BEGIN()
 		PROPS_CATEGORY(Static Mesh);
 			PROPDEF(m_MeshAsset, EditAnywhere)

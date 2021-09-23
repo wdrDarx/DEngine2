@@ -84,6 +84,7 @@ public:
 	static glm::mat4 QuatToMat(const glm::quat& rotation);
 
 	static bool IsNearlyZero(const vec3d& in);
+	static bool IsNearlyZero(const vec2d& in);
 	static bool IsNearlyZero(float in);
 	static bool NearlyEqual(const vec3d& v1, const vec3d& v2);
 	static bool NearlyEqual(const Transform& T1, const Transform& T2);

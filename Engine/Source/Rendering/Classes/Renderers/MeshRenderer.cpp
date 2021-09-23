@@ -99,7 +99,8 @@ void MeshRenderer::GenDrawCalls()
 		color4 dir = color4(light->Direction, 1.0);
 		color4 radiance = color4(light->Radiance, 1.0);
 		color4 LightSize = color4(light->LightSize);
-		m_CookedDirectionalLights.push_back({dir, radiance, LightSize});
+		color4 MinMaxSoftness = color4(light->MinSoftness, light->MaxSoftness, 0.f, 0.f);
+		m_CookedDirectionalLights.push_back({dir, radiance, LightSize, MinMaxSoftness});
 	}
 }
 
@@ -246,7 +247,7 @@ void MeshRenderer::RenderShadowMaps(Ref<Camera> camera, const std::vector<MeshDr
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, CurrentFB);
 	camera->GetRenderAPI()->SetViewport(CurrentViewport);
-	camera->RecalculateViewProjectionMatrix();
+	//camera->RecalculateViewProjectionMatrix();
 
 	ShadowMapShader->Unbind();
 	glDisable(GL_DEPTH_TEST);
@@ -275,7 +276,7 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 	Super::RenderFrame(camera);
 
 	//gen cascades and render shadow maps for the first dir light
-	if(m_DirectionalLights.size() > 0)
+	if(m_DirectionalLights.size() > 0 && m_DirectionalLights[0]->CastShadows)
 	{ 
 		m_DirectionalLights[0]->GenCascades(camera.get());
 		RenderShadowMaps(camera, m_ShadowMeshDrawCalls);
@@ -549,7 +550,7 @@ void DirectionalShadowMap::GenCascadeProjections(Camera* camera, DirectionalLigh
 	}
 
 #else
-	auto viewProjection = camera->GetViewProjectionMatrix();
+	glm::mat4 viewProjection = camera->GetViewProjectionMatrix();
 
 	const int SHADOW_MAP_CASCADE_COUNT = 4;
 	float cascadeSplits[SHADOW_MAP_CASCADE_COUNT];
@@ -560,7 +561,7 @@ void DirectionalShadowMap::GenCascadeProjections(Camera* camera, DirectionalLigh
 	float clipRange = farClip - nearClip;
 
 	float CascadeSplitLambda = 0.72f;
-	float CascadeFarPlaneOffset = -10.f, CascadeNearPlaneOffset = 10.0f;
+	float CascadeFarPlaneOffset = 5000.f, CascadeNearPlaneOffset = -5000.0f;
 	//float CascadeFarPlaneOffset = 0.f, CascadeNearPlaneOffset = 0.f;
 
 	float minZ = nearClip;
@@ -568,6 +569,9 @@ void DirectionalShadowMap::GenCascadeProjections(Camera* camera, DirectionalLigh
 
 	float range = maxZ - minZ;
 	float ratio = maxZ / minZ;
+
+	//CascadeFarPlaneOffset = range / -2.0f;
+	//CascadeNearPlaneOffset = range / 2.0f;
 
 	// Calculate split depths based on view camera frustum
 	// Based on method presented in https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch10.html
@@ -580,10 +584,10 @@ void DirectionalShadowMap::GenCascadeProjections(Camera* camera, DirectionalLigh
 		cascadeSplits[i] = (d - nearClip) / clipRange;
 	}
 
-// 	 cascadeSplits[0] = 0.05f;
-//   cascadeSplits[1] = 0.15f;
-// 	 cascadeSplits[2] = 0.3f;
-// 	 cascadeSplits[3] = 1.0f;
+	// cascadeSplits[0] = nearClip;
+	 //cascadeSplits[1] = 0.1f;
+	// cascadeSplits[2] = 0.4f;
+	//cascadeSplits[3] = 0.3f;
 
 	// Calculate orthographic projection matrix for each cascade
 	float lastSplitDist = 0.0;
@@ -639,7 +643,7 @@ void DirectionalShadowMap::GenCascadeProjections(Camera* camera, DirectionalLigh
 		glm::vec3 minExtents = -maxExtents;
 
 		glm::vec3 lightDir = DirLight->Direction;
-		glm::mat4 lightViewMatrix = glm::lookAt(frustumCenter - lightDir * -minExtents.z, frustumCenter, glm::vec3(0.0f, 0.0f, 1.0f));
+		glm::mat4 lightViewMatrix = glm::lookAt(frustumCenter - lightDir * -minExtents.z, frustumCenter, glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 lightOrthoMatrix = glm::ortho(minExtents.x, maxExtents.x, minExtents.y, maxExtents.y, 0.0f + CascadeNearPlaneOffset, maxExtents.z - minExtents.z + CascadeFarPlaneOffset);
 
 		// Offset to texel space to avoid shimmering (from https://stackoverflow.com/questions/33499053/cascaded-shadow-map-shimmering)

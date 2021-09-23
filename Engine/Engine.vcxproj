@@ -185,6 +185,7 @@
     <ClInclude Include="Source\Framework\Array.h" />
     <ClInclude Include="Source\Framework\Classes\Components\BoxColliderComponent.h" />
     <ClInclude Include="Source\Framework\Classes\Components\ColliderComponent.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\MeshColliderComponent.h" />
     <ClInclude Include="Source\Framework\Classes\SceneObjects\DirectionalLightObject.h" />
     <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h" />
     <ClInclude Include="Source\Framework\Classes\SceneObjects\SkyLightObject.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="Source\Framework\Application.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\BoxColliderComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\ColliderComponent.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\MeshColliderComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\SceneObjects\DirectionalLightObject.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\SceneObjects\SkyLightObject.cpp" />

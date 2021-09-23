@@ -10,7 +10,7 @@ class Viewport
 			FrameBufferSpec spec;
 			spec.Width = 1;
 			spec.Height = 1;
-			spec.Samples = 16;
+			spec.Samples = 1;
 			m_Framebuffer = MakeRef<FrameBuffer>(spec);
 
 			m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());
@@ -184,6 +184,8 @@ class Viewport
 			{
 				EnterFocus();
 
+				if((m_ViewportMode == AppState::GAME && m_Scene->GetLastTick().GetTickGroup() == TickGroup::GAME && m_Scene->GetActiveCamera())) return;
+
 				auto trans = m_Camera->GetTransform();
 
 				//movement
@@ -222,13 +224,17 @@ class Viewport
 					trans.rot.y -= m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
 				}
 
-				trans.rot.x += m_LastMouseVector.y * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
-				trans.rot.y += -m_LastMouseVector.x * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
-				
+				if(!World::IsNearlyZero(m_LastMouseVector))
+				{ 
+					m_TargetCameraRotation.x += m_LastMouseVector.y * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+					m_TargetCameraRotation.y += -m_LastMouseVector.x * m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
+				}
 
-				//trans.rot.y += m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
-				//trans.rot.x += m_CameraRotationSpeed * m_Scene->GetLastTick().DeltaTime;
-				m_LastMouseVector  = {0,0};
+				//60 fps timing
+				trans.rot.y =  World::Lerp(trans.rot.y, m_TargetCameraRotation.y, 60.f * m_Scene->GetLastTick().DeltaTime);
+				trans.rot.x = World::Lerp(trans.rot.x, m_TargetCameraRotation.x, 60.f * m_Scene->GetLastTick().DeltaTime);
+
+				m_LastMouseVector = {0,0};
 				m_Camera->SetTransform(trans);
 			}
 			else
@@ -353,6 +359,7 @@ class Viewport
 
 		float m_CameraMovementSpeed = 700.f;
 		float m_CameraRotationSpeed = 100.f;
+		vec3d m_TargetCameraRotation = {0,0,0};
 
 		bool m_Close = false;
 

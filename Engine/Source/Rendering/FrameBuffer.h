@@ -8,6 +8,8 @@ struct DENGINE_API FrameBufferSpec
 	uint Samples = 1;
 	uint ColorFormat = GL_RGBA8;
 	uint DepthFormat = GL_DEPTH32F_STENCIL8;
+	uint IntermediateColorFormat = GL_RGBA8;
+	uint IntermediateDepthFormat = GL_DEPTH32F_STENCIL8;
 	bool CreateDepthTexture = true;
 	bool CreateColorTexture = true;
 };

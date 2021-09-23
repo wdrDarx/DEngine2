@@ -356,6 +356,7 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Source\Framework\Classes\SceneObjects\SkyLightObject.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\MeshColliderComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\Asset.cpp">
@@ -552,5 +553,6 @@
     </ClCompile>
     <ClCompile Include="Source\Framework\EnumBase.cpp" />
     <ClCompile Include="Source\Framework\Classes\SceneObjects\SkyLightObject.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\MeshColliderComponent.cpp" />
   </ItemGroup>
 </Project>

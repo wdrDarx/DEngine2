@@ -50,6 +50,9 @@ struct DENGINE_API DirectionalLight
 	//more = softer shadows
 	float LightSize = 1000.f;
 
+	float MinSoftness = 0.0008f;
+	float MaxSoftness = 0.002f;
+
 	bool CastShadows = true;
 	Ref<DirectionalShadowMap> ShadowMap;
 };
@@ -59,6 +62,7 @@ struct DENGINE_API CookedDirectionalLight
 	color4 Direction;
 	color4 Radiance;
 	color4 LightSize;
+	color4 MinMaxSoftness;
 };
 
 //parameters that can differ for each mesh within 1 draw call

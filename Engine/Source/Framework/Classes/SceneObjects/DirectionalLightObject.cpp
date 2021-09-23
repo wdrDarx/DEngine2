@@ -37,5 +37,8 @@ void DirectionalLightObject::OnUpdate(const Tick& tick)
 	m_DirLight->NearPlane = NearPlane;
 	m_DirLight->FarPlane = FarPlane;
 	m_DirLight->LightSize = LightSize;
+	m_DirLight->MinSoftness = MinSoftness;
+	m_DirLight->MaxSoftness = MaxSoftness;
+	m_DirLight->CastShadows = CastShadows;
 }
 

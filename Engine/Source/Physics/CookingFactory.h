@@ -1,44 +1,50 @@
 #pragma once
 #include "Core/Core.h"
 #include "Utils/PhysicsUtils.h"
+#include "Rendering/Mesh.h"
 #include <PhysX/PxPhysicsAPI.h>
 
-struct CookingData
+struct DENGINE_API CookingData
 {
 	physx::PxCooking* CookingSDK;
 	physx::PxCookingParams CookingParameters;
 
-	CookingData(const physx::PxTolerancesScale& scale)
-		: CookingSDK(nullptr), CookingParameters(scale)
+	CookingData(const physx::PxTolerancesScale& scale) : CookingSDK(nullptr), CookingParameters(scale)
 	{
+		
 	}
 };
 
-struct MeshColliderData
+struct DENGINE_API MeshColliderData
 {
-	byte* Data;
-	glm::mat4 Transform;
-	uint32_t Size;
+	Buffer Data;
+	//glm::mat4 Transform;
+	bool IsConvex;
 };
 
-class PhysXAPI;
+class PhysicsWorld;
 class DENGINE_API CookingFactory
 {
 public:
-	CookingFactory(PhysXAPI* api);
+	CookingFactory(PhysicsWorld* world);
 	virtual ~CookingFactory();
 
 public:
+
+	PhysicsWorld* GetPhysicsWorld() const
+	{
+		return m_PhysicsWorld;
+	}
+
 	Ref<CookingData> m_CookingData;
+	PhysicsWorld* m_PhysicsWorld;
 
-#if 0
-	static CookingResult CookMesh(MeshColliderComponent& component, bool invalidateOld = false, std::vector<MeshColliderData>& outData = std::vector<MeshColliderData>());
+	CookingResult CookMesh(Mesh& MeshToCook, const std::string& CacheName, bool CookConvex = false, MeshColliderData& outData = MeshColliderData());
 
-	static CookingResult CookConvexMesh(const Ref<Mesh>& mesh, std::vector<MeshColliderData>& outData);
-	static CookingResult CookTriangleMesh(const Ref<Mesh>& mesh, std::vector<MeshColliderData>& outData);
+	CookingResult CookConvexMesh(const Mesh* mesh, MeshColliderData& outData);
+	CookingResult CookTriangleMesh(const Mesh* mesh, MeshColliderData& outData);
 
 private:
-	static void GenerateDebugMesh(MeshColliderComponent& component, const MeshColliderData& colliderData);
-#endif
+	void GenerateDebugMesh(Mesh& mesh, const MeshColliderData& colliderData);
 };
 

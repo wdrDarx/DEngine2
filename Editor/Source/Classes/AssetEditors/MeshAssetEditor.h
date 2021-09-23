@@ -11,9 +11,14 @@ public:
 	void Render() override;
 	void Init() override;
 
-	void UpdateObjectClass();
+	void OnMeshUpdate();
 
-	PropertyWindow m_PropertyWindow;
+
+	Ref<Viewport> m_Viewport;
+	Ref<Scene> m_Scene;
 	Ref<MeshAsset> m_MeshAsset;
+	Ref<Mesh> m_PreviewMesh = nullptr;
+	Ref<PBR_Material> m_PreviewMaterial = nullptr;
+	Ref<DirectionalLight> m_Light = nullptr;
 	std::string title;
 };

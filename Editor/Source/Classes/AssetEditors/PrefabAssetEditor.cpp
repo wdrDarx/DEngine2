@@ -22,7 +22,6 @@ void PrefabAssetEditor::Init()
 
 	m_PropertyWindow.Init(m_App);
 
-
 	m_ModuleCallback.Assign([&](ModuleEvent* event)
 	{
 		if (event->GetEventType() == ModuleEventType::UNLOADED)

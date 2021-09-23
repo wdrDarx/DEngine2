@@ -13,7 +13,7 @@ void PhysicsWorld::OnConstruct()
 
 	m_PhysicsLayerManager = MakeRef<PhysicsLayerManager>();
 	m_API = MakeRef<PhysXAPI>();
-	m_CookingFactory = MakeRef<CookingFactory>(GetPhysicsAPI().get());
+	m_CookingFactory = MakeRef<CookingFactory>(this);
 
 	//add layers
 	CollisionLayerEnum temp;

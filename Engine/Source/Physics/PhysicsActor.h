@@ -95,7 +95,8 @@ public:
 	void AddCollider(Ref<ColliderShape> collider)
 	{
 		auto shape = collider->AttachShape(this);
-		m_Colliders.push_back(collider);
+		if(shape)
+			m_Colliders.push_back(collider);
 	}
 
 	physx::PxRigidActor* GetPhysXActor() const 
