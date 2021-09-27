@@ -3,12 +3,36 @@
 #include "Core/Core.h"
 #include "RenderAPI.h"
 #include <glm/gtc/type_ptr.hpp>
-
+#include "Utils/FileSystem.h"
 
 
 Shader::Shader(const std::string& filepath) : m_Filepath(filepath), m_RendererID(0)
 {
 	ShaderProgramSource source = ParseShader(filepath);
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+}
+
+Shader::Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath) : m_Filepath(""), m_RendererID(0), m_VertPath(VertexShaderPath), m_FragPath(FragmentShaderPath)
+{
+	std::string VertexShader = File::ReadFileAsString(VertexShaderPath);
+	std::string FragmentShader = File::ReadFileAsString(FragmentShaderPath);
+
+	ShaderProgramSource source;
+	source.VertexShader = VertexShader;
+	source.FragmentShader = FragmentShader;
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+}
+
+Shader::Shader(const std::string& VertexShaderPath, const std::string& GeometryShaderPath, const std::string& FragmentShaderPath) : m_Filepath(""), m_RendererID(0), m_VertPath(VertexShaderPath), m_FragPath(FragmentShaderPath), m_GeomPath(GeometryShaderPath)
+{
+	std::string VertexShader = File::ReadFileAsString(VertexShaderPath);
+	std::string FragmentShader = File::ReadFileAsString(FragmentShaderPath);
+	std::string GeometryShader = File::ReadFileAsString(GeometryShaderPath);
+
+	ShaderProgramSource source;
+	source.VertexShader = VertexShader;
+	source.FragmentShader = FragmentShader;
+	source.GeometryShader = GeometryShader;
 	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
 }
 
@@ -29,6 +53,7 @@ void Shader::Unbind() const
 
 void Shader::ReloadFromFile()
 {
+	ASSERT(false);
 	glDeleteProgram(m_RendererID);
 	ShaderProgramSource source = ParseShader(m_Filepath);
 	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
@@ -52,6 +77,11 @@ void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2,
 void Shader::SetUniform1i(const std::string& name, int i)
 {
 	glUniform1i(GetUniformLocation(name), i);
+}
+
+void Shader::SetUniform1ui(const std::string& name, uint i)
+{
+	glUniform1ui(GetUniformLocation(name), i);
 }
 
 void Shader::SetUniform1f(const std::string& name, float i)

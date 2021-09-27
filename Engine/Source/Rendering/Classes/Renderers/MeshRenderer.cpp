@@ -275,6 +275,12 @@ void MeshRenderer::RenderFrame(Ref<Camera> camera)
 {
 	Super::RenderFrame(camera);
 
+	if(m_DeferredFrameTarget)
+	{
+		RenderDeffered(camera, m_DeferredFrameTarget);
+		return;
+	}
+
 	//gen cascades and render shadow maps for the first dir light
 	if(m_DirectionalLights.size() > 0 && m_DirectionalLights[0]->CastShadows)
 	{ 
@@ -672,4 +678,315 @@ void DirectionalLight::GenCascades(Camera* camera)
 {
 	if(ShadowMap)
 		ShadowMap->GenCascadeProjections(camera, this);
+}
+
+void DeferredFrame::GenTextures(const vec2d& resolution, const FrameBufferSpec& FrameSpec)
+{
+	if(resolution == Resolution) return;
+	Resolution = resolution;
+
+	//save the render target frame buffer (can be 0 too which means no render target)
+	GLint DrawFrameBuffer = 0;
+	GLint ReadFrameBuffer = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &DrawFrameBuffer);
+	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &ReadFrameBuffer);
+
+	FrameBufferSpec gSpec;
+	gSpec.Samples = 1;
+	gSpec.Width = resolution.x;
+	gSpec.Height = resolution.y;
+
+	ColorAttachmentSpec WorldPosSpec;
+	WorldPosSpec.Channels = GL_RGBA;
+	WorldPosSpec.ColorFormat = GL_RGBA32F;
+	WorldPosSpec.ColorDataType = GL_FLOAT;
+	WorldPosSpec.FilterMode = GL_NEAREST;
+
+	ColorAttachmentSpec WorldNormalSpec;
+	WorldNormalSpec.Channels = GL_RGBA;
+	WorldNormalSpec.ColorFormat = GL_RGBA16F;
+	WorldNormalSpec.ColorDataType = GL_FLOAT;
+	WorldNormalSpec.FilterMode = GL_NEAREST;
+
+	ColorAttachmentSpec AlbedoSpec;
+	AlbedoSpec.Channels = GL_RGBA;
+	AlbedoSpec.ColorFormat = GL_RGBA16F;
+	AlbedoSpec.ColorDataType = GL_UNSIGNED_BYTE;
+	AlbedoSpec.FilterMode = GL_NEAREST;
+
+	ColorAttachmentSpec AO_R_M_Spec;
+	AO_R_M_Spec.Channels = GL_RGBA;
+	AO_R_M_Spec.ColorFormat = GL_RGBA16F;
+	AO_R_M_Spec.ColorDataType = GL_UNSIGNED_BYTE;
+	AO_R_M_Spec.FilterMode = GL_NEAREST;
+
+	gSpec.AttachColor(0, WorldPosSpec);
+	gSpec.AttachColor(1, WorldNormalSpec);
+	gSpec.AttachColor(2, AlbedoSpec);
+	gSpec.AttachColor(3, AO_R_M_Spec);
+
+	gBuffer = MakeRef<FrameBuffer>(gSpec);
+
+#if 0
+	//bind deferred framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, gBufferFrame);
+
+	// - position color buffer
+	glGenTextures(1, &WorldPos);
+	glBindTexture(GL_TEXTURE_2D, WorldPos);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, resolution.x, resolution.y, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, WorldPos, 0);
+
+	// - normal color buffer
+	glGenTextures(1, &WorldNormal);
+	glBindTexture(GL_TEXTURE_2D, WorldNormal);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, resolution.x, resolution.y, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, WorldNormal, 0);
+
+	// - albedo color buffer
+	glGenTextures(1, &Albedo);
+	glBindTexture(GL_TEXTURE_2D, Albedo);
+	//glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, Albedo);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, resolution.x, resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	//glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 16, GL_RGBA32F, resolution.x, resolution.y, GL_TRUE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, Albedo, 0);
+
+	// - AO roughness metallic color buffer
+	glGenTextures(1, &AO_Roughness_Metallic);
+	glBindTexture(GL_TEXTURE_2D, AO_Roughness_Metallic);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, resolution.x, resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, AO_Roughness_Metallic, 0);
+
+	// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
+	uint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2,  GL_COLOR_ATTACHMENT3};
+	glDrawBuffers(4, attachments);
+
+	//depth renderbuffer
+	glGenRenderbuffers(1, &Depth);
+	glBindRenderbuffer(GL_RENDERBUFFER, Depth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, resolution.x, resolution.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, Depth);
+
+	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+#endif
+	//bind previous frame buffers
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, DrawFrameBuffer);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, ReadFrameBuffer);
+}
+
+
+void MeshRenderer::RenderDeffered(Ref<Camera> camera, Ref<DeferredFrame> frame)
+{
+	//save the render target frame buffer (can be 0 too which means no render target)
+	GLint DrawFrameBuffer = 0;
+	GLint ReadFrameBuffer = 0;
+	glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &DrawFrameBuffer);
+	glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &ReadFrameBuffer);
+
+	vec2d CurrentViewport; //save the viewport
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	CurrentViewport.x = viewport[2];
+	CurrentViewport.y = viewport[3];
+
+	//copy all current depth into the gbuffer
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, ReadFrameBuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frame->gBuffer->GetFrameBufferID());
+	glBlitFramebuffer(0, 0, CurrentViewport.x, CurrentViewport.y, 0, 0, frame->Resolution.x, frame->Resolution.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+	//bind the frame buffer, remember this has color attachments that will get written into by the shader
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frame->gBuffer->GetFrameBufferID());
+
+	camera->GetRenderAPI()->SetClearColor({0,0,0,0});
+	camera->GetRenderAPI()->Clear();
+	camera->GetRenderAPI()->SetViewport(frame->Resolution); //set the desired resolution of the frame
+
+	//the PBR material auto detects deffered rendering and switches to the deffered shader
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	for (uint i = 0; i < m_DrawCalls.size(); i++)
+	{
+		auto& call = m_DrawCalls[i];
+		if (!call.CommonMesh->IsValidForDraw()) continue; //invalid for draw
+
+		call.CommonMesh->Bind(GetPipeline()->GetRenderAPI()); //binds mesh vertex array and material
+		if (!call.CommonMaterial->GetShader()) continue; //shader not valid
+
+		//mesh data
+		m_MeshDataBuffer->SetData(call.MeshDataArray.data(), call.MeshDataArray.size() * sizeof(MeshData));
+
+		//view projection matrix
+		call.CommonMaterial->GetShader()->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	
+		//set camera pos uniform
+		vec3d cameraPos = camera->GetTransform().pos;
+		call.CommonMaterial->GetShader()->SetUniform3f("u_CameraPos", cameraPos.x, cameraPos.y, cameraPos.z);
+
+		//draw call
+		GetPipeline()->GetRenderAPI()->DrawInstanced(*call.CommonMesh->GetIndexBuffer(), call.MeshDataArray.size());
+	}
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
+	glDisable(GL_CULL_FACE);
+
+	//COMPOSITE
+	//--------
+
+	//gen cascades and render shadow maps for the first dir light
+	if (m_DirectionalLights.size() > 0 && m_DirectionalLights[0]->CastShadows)
+	{
+		m_DirectionalLights[0]->GenCascades(camera.get());
+		RenderShadowMaps(camera, m_ShadowMeshDrawCalls);
+	}
+
+	//the gBuffer now has all the color attachments filled with relevant data, now composite them all and write to the final frame buffer
+	if (!camera->GetRenderAPI()->IsShaderInCache("PBR_Composite"))
+	{
+		camera->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "\\Shaders\\PBR_Composite.shader"), "PBR_Composite");
+	}
+
+
+	//light data (common across draw calls and all meshes)
+	m_LightDataBuffer->Bind();
+	m_LightDataBuffer->SetData(m_CookedDirectionalLights.data(), m_CookedDirectionalLights.size() * sizeof(DirectionalLight));
+
+	//cubemap stuff
+	if (auto cubemapRenderer = GetPipeline()->GetRenderer<CubemapRenderer>())
+	{
+		if (auto skybox = cubemapRenderer->GetActiveCubemap())
+		{
+			glActiveTexture(GL_TEXTURE0 + 32); //irradiance in slot 32
+			glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->m_IrradianceMap);
+
+			glActiveTexture(GL_TEXTURE0 + 31); //specular in slot 31
+			glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->m_CubeMapSlot);
+
+			glActiveTexture(GL_TEXTURE0 + 30); //BRDF in slot 30
+			glBindTexture(GL_TEXTURE_2D, skybox->m_brdfMap);
+
+		}
+	}
+
+	std::vector<glm::mat4> DirectionLightMatricies;
+	std::vector<float> DirectionalLightCascadeSplits;
+	int DirectionalShadowMapSlots[4] = { 0,0,0,0 };
+	uint DirectionalLightShadowMapAmount = 0;
+	if (m_DirectionalLights.size() > 0)
+	{
+		auto& light = m_DirectionalLights[0];
+		if (light->ShadowMap && light->CastShadows)
+		{
+			for (uint j = 0; j < light->ShadowMap->m_CascadeCount; j++)
+			{
+				DirectionLightMatricies.push_back(light->ShadowMap->m_CascadeProjections[j]);
+				DirectionalShadowMapSlots[j] = 29 - j; //start at 29, and go to 26
+				glActiveTexture(GL_TEXTURE0 + DirectionalShadowMapSlots[j]);
+				glBindTexture(GL_TEXTURE_2D, light->ShadowMap->m_DepthTexture[j]);
+				DirectionalLightShadowMapAmount++;
+			}
+			DirectionalLightCascadeSplits = light->ShadowMap->m_CascadesSplit;
+		}
+	}
+
+	//bind gbuffer textures
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, frame->gBuffer->GetColorAttachement(0)); //WorldPos
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, frame->gBuffer->GetColorAttachement(1)); //world normal
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, frame->gBuffer->GetColorAttachement(2)); //Albedo
+
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, frame->gBuffer->GetColorAttachement(3)); //AO_R_M
+
+	//composite the gbuffers
+	Ref<Shader> CompositeShader = camera->GetRenderAPI()->GetShaderFromCache("PBR_Composite");
+	CompositeShader->Bind();
+	CompositeShader->SetUniform1i("u_Position", 0);
+	CompositeShader->SetUniform1i("u_Normal", 1);
+	CompositeShader->SetUniform1i("u_Albedo", 2);
+	CompositeShader->SetUniform1i("u_AO_Roughness_Metallic", 3);
+
+	//camera pos uniform
+	vec3d cameraPos = camera->GetTransform().pos;
+	CompositeShader->SetUniform3f("u_CameraPos", cameraPos.x, cameraPos.y, cameraPos.z);
+
+	//view projection matrix
+	CompositeShader->SetUniformMat4f("u_ViewProjectionMatrix", camera->GetViewProjectionMatrix());
+	CompositeShader->SetUniformMat4f("u_ViewMatrix", camera->GetViewMatrix());
+
+	//ambient light multiplier
+	CompositeShader->SetUniform1f("u_AmbientLightMult", GetSettingsMutable().AmbientLightMultiplier);
+
+	//cubemap
+	CompositeShader->SetUniform1i("u_CubemapIrradiance", 32);
+	CompositeShader->SetUniform1i("u_CubemapSpecular", 31);
+	CompositeShader->SetUniform1i("u_BRDF", 30);
+
+	//directional light amount
+	CompositeShader->SetUniform1i("u_DirLightsCount", m_CookedDirectionalLights.size());
+
+	//directional light shadow maps
+	CompositeShader->SetUniformMat4fv("u_DirectionalLightMatricies", DirectionalLightShadowMapAmount, (float*)DirectionLightMatricies.data());
+	CompositeShader->SetUniform1iv("u_DirectionalShadowMaps", DirectionalLightShadowMapAmount, DirectionalShadowMapSlots);
+	CompositeShader->SetUniform1fv("u_CascadeEndClipSpace", DirectionalLightShadowMapAmount, DirectionalLightCascadeSplits.data());
+	CompositeShader->SetUniform1i("u_DirectionalShadowMapCount", DirectionalLightShadowMapAmount);
+		
+	//render to whatever render target was bound
+	camera->GetRenderAPI()->SetViewport(CurrentViewport);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, DrawFrameBuffer);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, ReadFrameBuffer);
+
+	//render quad to target frame
+	glEnable(GL_ALPHA_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(false);
+	RenderUtils::RenderQuad();
+	glDepthMask(true);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, frame->gBuffer->GetFrameBufferID());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, DrawFrameBuffer); // write to default framebuffer
+	glBlitFramebuffer(0, 0, CurrentViewport.x, CurrentViewport.y, 0, 0, CurrentViewport.x, CurrentViewport.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, DrawFrameBuffer);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, ReadFrameBuffer);
+}
+
+void MeshRenderer::SetRenderDeffered(Ref<DeferredFrame> frame)
+{
+	m_DeferredFrameTarget = frame;
+}
+
+void DeferredFrame::Destroy(bool TexturesOnly)
+{
+// 	glDeleteTextures(1, &WorldPos);
+// 	glDeleteTextures(1, &WorldNormal);
+// 	glDeleteTextures(1, &Albedo);
+// 	glDeleteTextures(1, &AO_Roughness_Metallic);
+// 
+// 	if(!TexturesOnly)
+// 	{
+// 		//glDeleteFramebuffers(1, &gBufferFrame);
+// 	}
+	gBuffer = nullptr;
 }

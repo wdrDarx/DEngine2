@@ -11,6 +11,7 @@ class Viewport
 			spec.Width = 1;
 			spec.Height = 1;
 			spec.Samples = 1;
+			spec.ColorFormat = GL_RGB16F;
 			m_Framebuffer = MakeRef<FrameBuffer>(spec);
 
 			m_Camera = MakeRef<Camera>(WindowContext->GetRenderAPI());

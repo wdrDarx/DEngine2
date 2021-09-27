@@ -23,6 +23,18 @@ void StaticMeshComponent::OnConstruct()
 
 	m_StaticMesh = MakeRef<StaticMesh>();
 	GetOwner()->GetScene()->GetPipeline()->GetRenderer<MeshRenderer>()->SubmitStaticMesh(m_StaticMesh);
+
+	//update stuff on asset save
+	m_AssetCallback.Assign([&](AssetEvent* event)
+	{
+		if (event->GetEventType() == AssetEventType::ASSETSAVE)
+		{
+			if(event->GetAsset()->GetID() == m_MeshAsset.GetAssetHandle()->GetAssetID() || event->GetAsset()->GetID() == m_MaterialAsset.GetAssetHandle()->GetAssetID())
+				m_StaticMesh->FlagChanged();
+		}
+	});
+
+	GetOwner()->GetScene()->GetApplication()->GetAssetManager().GetEventDispatcher().Bind(m_AssetCallback);
 }
 
 void StaticMeshComponent::OnDestroy()

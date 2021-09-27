@@ -19,6 +19,11 @@ class DENGINE_API PBR_Material : public Material
 				PROPDEF(MetallicTexture, EditAnywhere);
 				PROPDEF(UseCombined, EditAnywhere);
 				PROPDEF(CombinedTexture, EditAnywhere);
+			PROPS_CATEGORY(Parallax);
+ 				//PROPDEF(ParallaxHeightScale, EditAnywhere);
+// 				PROPDEF(ParallaxMinSteps, EditAnywhere);
+// 				PROPDEF(ParallaxMaxSteps, EditAnywhere);
+ 				//PROPDEF(ParallaxHeightmap, EditAnywhere);
 		OBJECT_PROPS_END()
 
 	void OnConstruct() override;
@@ -39,5 +44,10 @@ public:
 	bool UseCombined = false;
 	AssetRef<TextureAsset> CombinedTexture;
 
-	Ref<Texture> m_BlankTexture;
+	//float ParallaxHeightScale = 0.0f;
+	//int ParallaxMinSteps = 8;
+//	int ParallaxMaxSteps = 64;
+	//AssetRef<TextureAsset> ParallaxHeightmap;
+
+	Ref<Texture> m_BlankTexture = nullptr;
 };

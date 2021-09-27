@@ -48,6 +48,7 @@ typedef unsigned char byte;
 #include <cstdint>
 #include <queue>
 #include <windows.h>
+#include <sys/stat.h>
 #include <filesystem>
 #include "Enum.h"
 

@@ -1,7 +1,7 @@
 #include "SceneUtils.h"
 #include "DEngine.h"
 
-Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsset, Scene* scene, const Transform& WorldTransform, ObjectInitializer initializer)
+Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsset, Scene* scene, const Transform& WorldTransform, ObjectInitializer initializer, bool IgnoreScale)
 {
 	auto loadedPrefab = scene->GetApplication()->GetAssetManager().LoadAsset(prefabAsset);
 	if(!loadedPrefab) 
@@ -24,18 +24,25 @@ Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsse
 	scene->AddSceneObject(sceneObject, initializer);
 
 	//load the prefab data
-	loadedPrefab->LoadPrefab(sceneObject, false);
+	loadedPrefab->LoadPrefab(sceneObject, false, false);
 
 	//mark a prefab
 	sceneObject->MarkPrefab(prefabAsset);
 
 	//and now after being deserialized call on post construct 
 	sceneObject->OnPostConstruct();
-
+	
 	//set root transform if there is a root
-	if(auto root = sceneObject->GetRootComponent())
-		root->SetWorldTransform(WorldTransform);
+	if (auto root = sceneObject->GetRootComponent())
+	{
+		//ignore scale?
+		Transform SpawnTransform = WorldTransform;
+		if (IgnoreScale)
+			SpawnTransform.scale = root->GetLocalScale();
 
+		root->SetWorldTransform(WorldTransform);
+	}
+	
 	//call on begin play if the game is running
 	if(scene->GetApplication()->GetAppState() == AppState::GAME)
 		sceneObject->OnBeginPlay();

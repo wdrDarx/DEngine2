@@ -81,6 +81,19 @@ void File::ReadFile(const std::string& path, Buffer& buffer, const size_t& bytes
 	stream.close();
 }
 
+std::string File::ReadFileAsString(const std::string& path)
+{
+	Buffer temp;
+	ReadFile(path, temp);
+	return std::string(temp.begin(), temp.end());
+}
+
+void File::WriteFileAsString(const std::string& path, const std::string& string)
+{
+	Buffer temp(string.begin(), string.end());
+	WriteFile(path, temp);
+}
+
 std::string File::GetFileExtenstionFromPath(const std::string& path)
 {
 	size_t lastdot = path.find_last_of(".");
@@ -148,8 +161,13 @@ int File::GetFileSize(const std::string& path)
 
 bool File::DoesFileExist(const std::string& path)
 {
-	std::ifstream f(path.c_str());
-	return f.good();
+	if (FILE* file = fopen(path.c_str(), "r")) {
+		fclose(file);
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 bool File::DoesPathExist(const std::string& path)

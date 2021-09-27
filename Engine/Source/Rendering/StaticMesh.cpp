@@ -7,17 +7,21 @@ void StaticMesh::ReloadFromAssets(Scene* SceneContext)
 	m_LoadedMaterialAsset = SceneContext->GetApplication()->GetAssetManager().LoadAsset(m_MaterialAsset);
 
 	//this where data is actually changed
-	SetData(m_LoadedMeshAsset->GetVerticies(), m_LoadedMeshAsset->GetIndicies());
+	if(m_LoadedMeshAsset)
+		SetData(m_LoadedMeshAsset->GetVerticies(), m_LoadedMeshAsset->GetIndicies());
 
 	//create an instance of the material from the asset
-	Ref<Material> NewMaterial;
-	NewMaterial = ToRef<Material>(Cast<Material>(SceneContext->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(m_LoadedMaterialAsset->GetObjectClassName())));
-	NewMaterial->SetSceneContext(SceneContext);
-	NewMaterial->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));
+	if(m_LoadedMaterialAsset)
+	{ 
+		Ref<Material> NewMaterial;
+		NewMaterial = ToRef<Material>(Cast<Material>(SceneContext->GetApplication()->GetObjectRegistry().MakeObjectFromClassName(m_LoadedMaterialAsset->GetObjectClassName())));
+		NewMaterial->SetSceneContext(SceneContext);
+		NewMaterial->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));
 
-	//load material props
-	m_LoadedMaterialAsset->LoadObjectProps(NewMaterial);
+		//load material props
+		m_LoadedMaterialAsset->LoadObjectProps(NewMaterial);
 
-	//set material
-	SetMaterial(NewMaterial);
+		//set material
+		SetMaterial(NewMaterial);
+	}
 }

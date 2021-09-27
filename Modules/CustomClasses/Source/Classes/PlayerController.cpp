@@ -51,6 +51,9 @@ void PlayerController::OnUpdate(const Tick& tick)
 		MovementVec.x += MovementSpeed * tick.DeltaTime;
 	}
 
+
+
+
 	if(!World::IsNearlyZero(MovementVec))
 	{ 
 		if(FlipForwardVector)

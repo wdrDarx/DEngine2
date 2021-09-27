@@ -130,6 +130,21 @@ void RenderAPI::ReloadShader(const std::string& shaderName)
 	{
 		if (pair.first == shaderName)
 		{ 
+			if (pair.second->m_Filepath.empty())
+			{
+				if (pair.second->m_GeomPath.empty())
+				{
+					pair.second = MakeRef<Shader>(pair.second->m_VertPath, pair.second->m_FragPath);
+					break;
+				} 
+				else
+				{
+					pair.second = MakeRef<Shader>(pair.second->m_VertPath, pair.second->m_GeomPath, pair.second->m_FragPath);
+					break;
+				}
+				
+			}
+
 			pair.second = MakeRef<Shader>(pair.second->m_Filepath);
 			break;
 		}

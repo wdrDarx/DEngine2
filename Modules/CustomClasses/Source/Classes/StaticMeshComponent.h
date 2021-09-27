@@ -23,6 +23,7 @@ public:
 	AssetRef<MeshAsset> m_MeshAsset;
 	AssetRef<MaterialAsset> m_MaterialAsset;
 
+	Callback<AssetEvent> m_AssetCallback;
 	Ref<StaticMesh> m_StaticMesh;
 	bool CastShadow = true;
 	bool Visible = true;

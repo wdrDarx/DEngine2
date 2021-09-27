@@ -464,7 +464,7 @@ void EditorApp::DrawRendererWindow()
 	}
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
-	bool cascades = ImGui::TreeNodeEx((void*)("Shadow Cascades"), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_DefaultOpen, "Shadow Cascades");
+	bool cascades = ImGui::TreeNodeEx((void*)("Shadow Cascades"), ImGuiTreeNodeFlags_Framed, "Shadow Cascades");
 	ImGui::PopStyleVar();
 
 	if (cascades)
@@ -480,6 +480,27 @@ void EditorApp::DrawRendererWindow()
 		}
 		ImGui::TreePop();
 	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 2,2 });
+	bool gBuffers = ImGui::TreeNodeEx((void*)("G-Buffers"), ImGuiTreeNodeFlags_Framed, "G-Buffers");
+	ImGui::PopStyleVar();
+
+	if (gBuffers)
+	{
+		if (auto pipeline = Cast<DefaultPipeline>(m_EditorScene->GetPipeline()))
+		{
+			if (pipeline->m_DeferredFrame)
+			{
+				ImGui::Image((ImTextureID)pipeline->m_DeferredFrame->gBuffer->GetColorAttachement(0), { 256, 256 });
+				ImGui::Image((ImTextureID)pipeline->m_DeferredFrame->gBuffer->GetColorAttachement(1), { 256, 256 });
+				ImGui::Image((ImTextureID)pipeline->m_DeferredFrame->gBuffer->GetColorAttachement(2), { 256, 256 });
+				ImGui::Image((ImTextureID)pipeline->m_DeferredFrame->gBuffer->GetColorAttachement(3), { 256, 256 });
+			}
+
+		}
+		ImGui::TreePop();
+	}
+
 
 
 	ImGui::End();

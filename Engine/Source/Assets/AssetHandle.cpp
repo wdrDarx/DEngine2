@@ -12,7 +12,11 @@ std::string AssetHandle::GetAssetPath()
 
 		if (!m_SearchDirectories) ASSERT(false);
 
-		return FindAsset(*m_SearchDirectories, m_AssetID, m_AssetType);
+		//updates last known path
+		std::string foundPath = FindAsset(*m_SearchDirectories, m_AssetID, m_AssetType);
+		Update(foundPath);
+
+		return foundPath;
 	}
 
 	if (File::DoesFileExist(m_LastKnownPath))

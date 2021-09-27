@@ -5,13 +5,32 @@ void PBR_Material::OnConstruct()
 {
 	Super::OnConstruct();
 	m_BlankTexture = MakeRef<Texture>(TextureSpec());
-	
 }
 
 void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 {
+	bool Deffered = false;
+
+	if (auto pipeline = Cast<DefaultPipeline>(GetSceneContext()->GetPipeline()))
+	{
+		//use special shader for deferred rendering
+		if (pipeline->m_DefferedRendering)
+			Deffered = true;
+	}
+
 	if (!RenderApi->IsShaderInCache("PBR_Instanced"))
-		RenderApi->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "\\Shaders\\PBR_Instanced.shader"), "PBR_Instanced");
+	{	
+		Ref<Shader> PBR_Shader;
+		if(Deffered)
+		{
+			PBR_Shader = MakeRef<Shader>(Paths::GetEngineDirectory() + "\\Shaders\\PBR_Instanced_Deferred.vert", Paths::GetEngineDirectory() + "\\Shaders\\PBR_Instanced_Deferred.frag");
+		}
+		else
+			PBR_Shader = MakeRef<Shader>(Paths::GetEngineDirectory() + "\\Shaders\\PBR_Instanced.shader");
+
+		RenderApi->AddShaderToCache(PBR_Shader, "PBR_Instanced");
+	}
+		
 
 	m_Shader = RenderApi->GetShaderFromCache("PBR_Instanced");
 	m_Shader->Bind();
@@ -25,6 +44,7 @@ void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 	GetShader()->SetUniform1i("u_Metallic", 0);
 	GetShader()->SetUniform1i("u_Roughness", 0);
 	GetShader()->SetUniform1i("u_CombinedMap", 0);
+	GetShader()->SetUniform1i("u_ParallaxMap", 0);
 
 	//multipliers
 	GetShader()->SetUniform1f("u_MetallicMult", Metallic);
@@ -32,7 +52,13 @@ void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 
 	//bools 
 	GetShader()->SetUniform1i("u_HasNormalMap", NormalTexture.IsValid());
+	//GetShader()->SetUniform1i("u_HasParallaxMap", ParallaxHeightmap.IsValid());
 	GetShader()->SetUniform1i("u_UseCombinedMap", UseCombined);
+
+	//inputs
+	//GetShader()->SetUniform1f("u_ParallaxHeightScale", ParallaxHeightScale);
+	//GetShader()->SetUniform1ui("u_ParallaxMinSteps", ParallaxMinSteps);
+	//GetShader()->SetUniform1ui("u_ParallaxMaxSteps", ParallaxMaxSteps);
 
 
 	if(auto AlbedoAsset = GetSceneContext()->GetApplication()->GetAssetManager().LoadAsset(AlbedoTexture))
@@ -84,6 +110,17 @@ void PBR_Material::Bind(Ref<RenderAPI> RenderApi)
 			GetShader()->SetUniform1i("u_CombinedMap", 5);
 		}
 	}
+
+// 	if (auto ParallaxHeightmapAsset = GetSceneContext()->GetApplication()->GetAssetManager().LoadAsset(ParallaxHeightmap))
+// 	{
+// 		auto ParallaxHeightmapText = ParallaxHeightmapAsset->GetTexture();
+// 		if (ParallaxHeightmapText)
+// 		{
+// 			ParallaxHeightmapText->Bind(6);
+// 			GetShader()->SetUniform1i("u_ParallaxMap", 6);
+// 		}
+// 	}
+
 
 
 }

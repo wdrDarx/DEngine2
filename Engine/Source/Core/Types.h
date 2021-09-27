@@ -156,16 +156,31 @@ struct Bound
 };
 #endif
 
-enum class TextureType
+enum class TextureType : uint
 {
 	RGBA = 0,
 	HDR = 1
+};
+
+enum class FilterType : uint
+{
+	LINEAR = 0,
+	NEAREST = 1
+};
+
+enum class WrapMode : uint
+{
+	REPEAT = 0,
+	CLAMP = 1
 };
 
 //describes a texture format
 struct TextureSpec
 {
 	TextureType Type = TextureType::RGBA;
+	FilterType Filter = FilterType::LINEAR;
+	WrapMode Wrap = WrapMode::REPEAT;
+	bool Anisotropic = true;
 };
 
 #if 0

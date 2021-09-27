@@ -29,14 +29,16 @@ void Bullet::OnBeginPlay()
 {
 	Super::OnBeginPlay();
 
+	if(!Root->GetPhysicsActor()) return;
+
 	m_PhysicsCallback.Assign([&](PhysicsActorEvent* event)
 	{
-// 		if (event->GetEventType() == PhysicsActorEventType::ONBEGINOVERLAP)
-// 		{
+ 		if (event->GetEventType() == PhysicsActorEventType::ONBEGINOVERLAP)
+ 		{
 // 			LogTemp("BULLET Overlap " + event->Hit.OtherColliderComponent->GetName());
 // 			//GetScene()->DestroySceneObject(event->Hit.OtherColliderComponent->GetOwner());
 // 			event->Hit.OtherColliderComponent->GetPhysicsActor()->AddForce(event->Hit.HitNormal * -1000.f, ForceMode::VelocityChange);
-// 		}
+ 		}
 	});
 
 	Root->GetPhysicsActor()->BindOnBeginOverlap(m_PhysicsCallback);

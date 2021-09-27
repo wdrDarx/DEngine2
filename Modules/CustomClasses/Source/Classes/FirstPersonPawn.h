@@ -8,12 +8,13 @@ class CUSTOMCLASSES FirstPersonPawn : public SceneObject
 {
 public:
 	OBJECT_CLASS_DEF(FirstPersonPawn, SceneObject)
-		OBJECT_PROPS_BEGIN()
+	OBJECT_PROPS_BEGIN()
 		PROPDEF(MovementSpeed, EditAnywhere);
 		PROPDEF(RotationSpeed, EditAnywhere);
 		PROPDEF(JumpHeight, EditAnywhere);
 		PROPDEF(BulletPrefab, EditAnywhere);
 		PROPDEF(BulletForce, EditAnywhere);
+		PROPDEF(BlinkSpeed, EditAnywhere);
 	OBJECT_PROPS_END()
 
 	void OnConstruct() override;
@@ -27,6 +28,7 @@ public:
 	float RotationSpeed = 50.f;
 	float JumpHeight = 1500.f;
 	float BulletForce = 1500.f;
+	float BlinkSpeed = 1000.f;
 
 	Ref<BoxColliderComponent> collider = nullptr;
 	Ref<TransformComponent> BulletSpawn = nullptr;

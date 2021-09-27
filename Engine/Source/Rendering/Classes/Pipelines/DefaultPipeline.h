@@ -2,6 +2,7 @@
 #include "Rendering/Pipeline.h"
 #include "Rendering/FrameBuffer.h"
 
+struct DeferredFrame;
 class DENGINE_API DefaultPipeline : public Pipeline
 {
 	public:
@@ -20,7 +21,12 @@ class DENGINE_API DefaultPipeline : public Pipeline
 		uint m_CurrentRenderTargetIndex = 0;
 		uint m_LastNumberOfRenderTargets = 0;
 
+		//used with deferred rendering
+		Ref<DeferredFrame> m_DeferredFrame = nullptr;
+
+		//whether to use post processing or no 
 		bool m_PostProcessing = true;
+		bool m_DefferedRendering = true;
 
 		//resolution scalar
 		float m_RenderScale = 1.0; 

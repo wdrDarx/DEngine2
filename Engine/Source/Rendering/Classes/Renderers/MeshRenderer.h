@@ -83,6 +83,20 @@ struct MeshDrawCall
 	Ref<Mesh> CommonMesh;
 };
 
+struct DENGINE_API DeferredFrame
+{
+	void GenTextures(const vec2d& resolution, const FrameBufferSpec& FrameSpec = FrameBufferSpec());
+	void Destroy(bool TexturesOnly = false);
+
+	~DeferredFrame()
+	{
+		Destroy();
+	}
+
+	vec2d Resolution = {0,0};
+	Ref<FrameBuffer> gBuffer;
+};
+
 /*
 	renderer for both dynamic and static meshes, 
 	static meshes with the same materials and meshes get batched into 1 draw call
@@ -107,6 +121,11 @@ public:
 	void SubmitDirectionalLight(Ref<DirectionalLight> Light);
 	void RemoveDirectionalLight(Ref<DirectionalLight> Light);
 
+	//set to nullptr to disable
+	void SetRenderDeffered(Ref<DeferredFrame> frame);
+
+	void RenderDeffered(Ref<Camera> camera, Ref<DeferredFrame> frame);
+
 	void GenDrawCalls();
 	std::vector<MeshDrawCall> CreateShadowMapDrawCalls();
 
@@ -119,6 +138,9 @@ public:
 	}
 
 public:
+	
+	//if this is not nullptr, meshes will be rendered deferred
+	Ref<DeferredFrame> m_DeferredFrameTarget = nullptr;
 
 	//render settings
 	MeshRendererSettings m_Settings;

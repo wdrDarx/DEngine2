@@ -60,6 +60,21 @@ void TextureAssetEditor::Render()
 	assetText = "Height : " + STRING(m_TextureAsset->m_height);
 	ImGui::Text(assetText.c_str());
 
+	bool expanded = ImGui::TreeNodeEx((void*)("Options"), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_DefaultOpen, "Options");
+	if (expanded)
+	{
+		bool NearestFilter = m_TextureAsset->m_Spec.Filter == FilterType::NEAREST;
+		bool Wrap = m_TextureAsset->m_Spec.Wrap == WrapMode::CLAMP;
+		ImGui::Checkbox("Anisotropic", &m_TextureAsset->m_Spec.Anisotropic);
+		ImGui::Checkbox("Filter By Nearest", &NearestFilter);
+		ImGui::Checkbox("Clamp To Edge", &Wrap);
+	
+		m_TextureAsset->m_Spec.Filter = NearestFilter ?  FilterType::NEAREST : FilterType::LINEAR;
+		m_TextureAsset->m_Spec.Wrap = Wrap ? WrapMode::CLAMP : WrapMode::REPEAT;
+
+		ImGui::TreePop();
+	}
+
 	ImGui::Columns(1);
 
 	ImGui::End();

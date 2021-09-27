@@ -21,7 +21,7 @@ RuntimeApp::RuntimeApp() : Application()
 	SceneUtils::LoadSceneFromAsset(scene, m_openScene);	
 
 	FrameBufferSpec spec;
-	spec.Samples = 16;
+	spec.Samples = 1;
 	spec.Width = 1920;
 	spec.Height = 1080;
 	m_ScreenFrameBuffer = MakeRef<FrameBuffer>(spec);

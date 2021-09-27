@@ -69,6 +69,12 @@ void FirstPersonPawn::OnUpdate(const Tick& tick)
 		RightMovement += MovementSpeed;
 	}
 
+
+	if (GetScene()->GetInputManager().IsKeyDown(GLFW_KEY_E))
+	{
+		collider->GetPhysicsActor()->AddForce(World::GetForwardVector(mesh->GetWorldRotation()) * BlinkSpeed * tick.DeltaTime, ForceMode::VelocityChange);
+	}
+
 	if (!World::IsNearlyZero(ForwardMovement) || !World::IsNearlyZero(RightMovement))
 	{
 		vec3d Forward = World::GetForwardVector(m_ControlRotation * vec3d{ 0,1,0 }) * ForwardMovement * tick.DeltaTime;
