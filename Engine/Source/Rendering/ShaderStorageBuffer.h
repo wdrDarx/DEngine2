@@ -7,10 +7,11 @@ private:
 	uint m_RendererID = 0;
 	uint m_LastSize = 0;
 	uint m_Bindingindex = 0;
+	uint m_GLStorageMode = GL_DYNAMIC_DRAW;
 public:
-	ShaderStorageBuffer(uint Bindingindex);
-	ShaderStorageBuffer(uint Bindingindex, const void* Data, uint size);
-	ShaderStorageBuffer(uint Bindingindex, uint size);
+	ShaderStorageBuffer(uint Bindingindex, GLuint StorageMode = GL_DYNAMIC_DRAW);
+	ShaderStorageBuffer(uint Bindingindex, const void* Data, uint size, GLuint StorageMode = GL_DYNAMIC_DRAW);
+	ShaderStorageBuffer(uint Bindingindex, uint size, GLuint StorageMode);
 
 	~ShaderStorageBuffer();
 

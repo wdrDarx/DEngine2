@@ -58,5 +58,6 @@ const Transform& Mesh::GetTransform() const
 void Mesh::UpdateMatrix()
 {
 	m_Matrix = World::MakeMatrix(m_Transform);
+	OnMatrixUpdate();
 	FlagChanged();
 }

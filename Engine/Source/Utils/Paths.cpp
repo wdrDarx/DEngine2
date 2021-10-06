@@ -13,6 +13,7 @@ void Paths::CreateBaseDirs()
 	std::filesystem::create_directory(GetCacheDirectory());
 }
 
+
 std::string Paths::GetBaseDirectory()
 {
 	char buffer[MAX_PATH];

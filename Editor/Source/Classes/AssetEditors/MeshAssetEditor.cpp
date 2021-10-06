@@ -35,8 +35,8 @@ void MeshAssetEditor::Render()
 			ModelLoader::LoadFBX(meshPath, TempMesh.get());
 			
 
-		m_MeshAsset->m_Verticies = TempMesh->GetVerticies();
-		m_MeshAsset->m_Indicies = TempMesh->GetIndicies();
+		m_MeshAsset->SetVerticies(TempMesh->GetVerticies());
+		m_MeshAsset->Setindicies(TempMesh->GetIndicies());
 		m_App->GetAssetManager().SaveAsset(m_MeshAsset, m_TargetAsset);
 		OnMeshUpdate();
 	}

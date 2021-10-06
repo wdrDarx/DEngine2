@@ -6,6 +6,7 @@
 struct DENGINE_API MeshRendererSettings
 {
 	float AmbientLightMultiplier = 0.5f;
+	bool OcclusionCulling = false;
 };
 
 
@@ -121,6 +122,9 @@ public:
 	void SubmitDirectionalLight(Ref<DirectionalLight> Light);
 	void RemoveDirectionalLight(Ref<DirectionalLight> Light);
 
+	bool OcclusionTest(Ref<Mesh> mesh);
+	std::vector<Ref<StaticMesh>> MassOcclusionTest(const std::vector<Ref<StaticMesh>>& inputMeshes);
+
 	//set to nullptr to disable
 	void SetRenderDeffered(Ref<DeferredFrame> frame);
 
@@ -170,5 +174,10 @@ public:
 
 	//draw calls for rendering shadow maps 
 	std::vector<MeshDrawCall> m_ShadowMeshDrawCalls;
+
+	//used for occlusion tests
+	Camera* m_LastCamera = nullptr;
+	Transform m_LastCameraTransform;
+	JobPool m_JobPool;
 };
 

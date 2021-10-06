@@ -42,6 +42,7 @@ void RuntimeApp::OnUpdate(const Tick& tick)
 
 
 	m_openScene->GetPipeline()->PrepareFrame();
+	m_openScene->GetPipeline()->GetRenderer<MeshRenderer>()->GetSettingsMutable().OcclusionCulling = true;
 	
 	GetWindow()->GetRenderAPI()->SetViewport({ GetWindow()->GetWidth(), GetWindow()->GetHeight() });
 

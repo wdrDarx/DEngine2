@@ -123,9 +123,37 @@ public:
 		m_ViewProjectionMatrix = ViewProjMat;
 	}
 
+	const std::array<vec4d, 6>& GetFrustrumPlaneNormals() const
+	{
+		return m_FrustrumPlaneNormals;
+	}
+
+	void SetNearPlane(float nearPlane)
+	{
+		m_NearPlane = nearPlane;
+	}
+
+	void SetFarPlane(float farPlane)
+	{
+		m_FarPlane = farPlane;
+	}
+
+	float GetNearPlane() const
+	{
+		return m_NearPlane;
+	}
+
+	float GetFarPlane() const
+	{
+		return m_FarPlane;
+	}
+
+	void GenFrustrumPlaneNormals();
+
 private:
 	Ref<RenderAPI> m_RenderAPI;
 	ProjectionType::Enum m_ProjectionType = ProjectionType::Enum::PERSPECTIVE;
+	std::array<vec4d, 6> m_FrustrumPlaneNormals;
 
 	glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
 	glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
@@ -133,5 +161,7 @@ private:
 
 	float m_FOV = 60.f;
 	float m_Zoom = 1.0f;
+	float m_NearPlane = 10.f;
+	float m_FarPlane = 10000.f;
 	Transform m_Transform = Transform();
 };

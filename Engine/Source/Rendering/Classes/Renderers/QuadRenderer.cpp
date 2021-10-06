@@ -35,9 +35,6 @@ void QuadRenderer::OnConstruct()
 	//blank texture (White 1x1)
 	m_BlankTexture = MakeRef<Texture>(TextureSpec());
 
-	//init threads
-	m_JobPool.Initialize();
-
 	//gen a const amount of draw calls
 	m_DrawCalls.reserve(MaxDrawCalls);
 	for (uint i = 0; i < MaxDrawCalls; i++)

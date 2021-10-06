@@ -61,6 +61,18 @@ public:
 		return m_LoadedMaterialAsset;
 	}
 
+	void OnMatrixUpdate() override
+	{
+		GenBounds();
+	}
+
+	void GenBounds();
+
+	const Bound& GetCachedBounds() const
+	{
+		return m_CachedBounds;
+	}
+
 private:
 	
 	//called by the renderer when generating draw calls
@@ -71,6 +83,8 @@ private:
 
 	Ref<MeshAsset> m_LoadedMeshAsset;
 	Ref<MaterialAsset> m_LoadedMaterialAsset;
+
+	Bound m_CachedBounds;
 
 	bool m_FlagChanged;
 };

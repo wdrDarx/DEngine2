@@ -6,7 +6,7 @@
 /*
 	static class that provides random value functions (MAKE SURE TO CALL THE RAND FUNCTIONS FROM THE ENGINE MODULE FILES BECAUSE THE RANDOM ENGINE IS A STATIC VAR)
 */
-class DENGINE_API Rand
+class Rand
 {
 public:
 	Rand();
@@ -21,7 +21,10 @@ private:
 
 	static std::mt19937 s_RandomEngine;
 	static std::uniform_int_distribution<std::mt19937::result_type> s_Distribution;
-	static bool s_IsInit;
-};
 
+#pragma data_seg("SHARED")  // Begin the shared data segment.
+	DENGINE_API static bool s_IsInit;
+#pragma data_seg()          // End the shared data segment and default back to 
+};
+#pragma comment(linker, "/section:SHARED,RWS")
 #undef EXPORT_FILE

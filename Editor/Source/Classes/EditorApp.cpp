@@ -436,6 +436,7 @@ void EditorApp::DrawRendererWindow()
 	if (bMeshRenderer && Meshrenderer)
 	{
 		ImGui::DragFloat("Ambient Light Multiplier", &Meshrenderer->GetSettingsMutable().AmbientLightMultiplier, 0.0f, 1.f);
+		ImGui::Checkbox("Occlusion Culling", &Meshrenderer->GetSettingsMutable().OcclusionCulling);
 		ImGui::TreePop();
 	}
 
@@ -614,8 +615,8 @@ void EditorApp::OnFileDropped(const std::string& FullPath)
 		Ref<MeshAsset> NewAsset = MakeRef<MeshAsset>();	
 		Ref<Mesh> TempMesh = MakeRef<Mesh>();
 		ModelLoader::LoadFBX(FullPath, TempMesh.get());
-		NewAsset->m_Verticies = TempMesh->GetVerticies();
-		NewAsset->m_Indicies = TempMesh->GetIndicies();
+		NewAsset->SetVerticies(TempMesh->GetVerticies());
+		NewAsset->Setindicies(TempMesh->GetIndicies());
 		Save(NewAsset, GetAssetManager().GetAssetExtenstion<MeshAsset>());
 	}
 	if (extension == "png" || extension == "jpg" || extension == "hdr" || extension == "HDR")

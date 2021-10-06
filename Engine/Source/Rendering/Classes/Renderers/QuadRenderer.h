@@ -62,7 +62,6 @@ public:
 	void ProcessQuads();
 
 public:
-	JobPool m_JobPool;
 	Ref<Texture> m_BlankTexture;
 	std::vector<QR::Quad> m_QuadBuffer;
 

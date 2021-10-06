@@ -9,7 +9,7 @@
 Shader::Shader(const std::string& filepath) : m_Filepath(filepath), m_RendererID(0)
 {
 	ShaderProgramSource source = ParseShader(filepath);
-	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader, source.ComputeShader);
 }
 
 Shader::Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath) : m_Filepath(""), m_RendererID(0), m_VertPath(VertexShaderPath), m_FragPath(FragmentShaderPath)
@@ -20,7 +20,7 @@ Shader::Shader(const std::string& VertexShaderPath, const std::string& FragmentS
 	ShaderProgramSource source;
 	source.VertexShader = VertexShader;
 	source.FragmentShader = FragmentShader;
-	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader, source.ComputeShader);
 }
 
 Shader::Shader(const std::string& VertexShaderPath, const std::string& GeometryShaderPath, const std::string& FragmentShaderPath) : m_Filepath(""), m_RendererID(0), m_VertPath(VertexShaderPath), m_FragPath(FragmentShaderPath), m_GeomPath(GeometryShaderPath)
@@ -33,7 +33,7 @@ Shader::Shader(const std::string& VertexShaderPath, const std::string& GeometryS
 	source.VertexShader = VertexShader;
 	source.FragmentShader = FragmentShader;
 	source.GeometryShader = GeometryShader;
-	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader, source.ComputeShader);
 }
 
 Shader::~Shader()
@@ -56,7 +56,7 @@ void Shader::ReloadFromFile()
 	ASSERT(false);
 	glDeleteProgram(m_RendererID);
 	ShaderProgramSource source = ParseShader(m_Filepath);
-	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader);
+	m_RendererID = CreateShader(source.VertexShader, source.FragmentShader, source.GeometryShader, source.ComputeShader);
 }
 
 void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
@@ -117,12 +117,12 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 
 	enum class ShaderType
 	{
-		NONE = -1, VERTEX = 0, FRAGMENT = 1, GEOMETRY = 2
+		NONE = -1, VERTEX = 0, FRAGMENT = 1, GEOMETRY = 2, COMPUTE = 3
 	};
 
 
 	std::string line;
-	std::stringstream ss[3];
+	std::stringstream ss[4];
 	ShaderType type = ShaderType::NONE;
 
 	while (getline(stream, line))
@@ -137,11 +137,14 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 				else
 					if (line.find("geometry") != std::string::npos)
 						type = ShaderType::GEOMETRY;
+					else
+						if (line.find("compute") != std::string::npos)
+							type = ShaderType::COMPUTE;
 		}
 		else
 			ss[(int)type] << line << "\n";
 	}
-	return { ss[0].str(),ss[1].str(), ss[2].str() };
+	return { ss[0].str(),ss[1].str(), ss[2].str(),ss[3].str() };
 }
 
 
@@ -168,36 +171,59 @@ uint Shader::CompileShader(uint type, const std::string& source)
 	return id;
 }
 
-uint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader)
+uint Shader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader, const std::string& ComputeShader)
 {
 	uint program = glCreateProgram();
-	uint vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
-	uint fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+	uint vs = 0;
+	uint fs = 0;
+	uint cs = 0;
 	uint gs = 0;
+
+	if (!vertexShader.empty())
+	{
+		vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
+		glAttachShader(program, vs);
+	}
+
+	if (!fragmentShader.empty())
+	{
+		fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
+		glAttachShader(program, fs);
+	}
 
 	if(!geometryShader.empty())
 	{ 
 		gs = CompileShader(GL_GEOMETRY_SHADER, geometryShader);
-	}
-
-	glAttachShader(program, vs);
-
-	if (!geometryShader.empty())
-	{ 
 		glAttachShader(program, gs);
 	}
 
- 	glAttachShader(program, fs);
-
+	if (!ComputeShader.empty())
+	{
+		cs = CompileShader(GL_COMPUTE_SHADER, ComputeShader);
+		glAttachShader(program, cs);
+	}
+ 	
 	glLinkProgram(program);
 	glValidateProgram(program);
 
-	glDeleteShader(vs);
-	glDeleteShader(fs);
+	if (!vertexShader.empty())
+	{
+		glDeleteShader(vs);
+	}
+
+	if (!fragmentShader.empty())
+	{
+		glDeleteShader(fs);
+	}
 
 	if (!geometryShader.empty())
-	{ 
+	{
 		glDeleteShader(gs);
+	}
+
+	if (!ComputeShader.empty())
+	{ 
+		glDeleteShader(cs);
 	}
 
 	return program;

@@ -15,5 +15,8 @@ public:
 	std::string title;
 	Ref<Viewport> m_Viewport;
 	Ref<QuadRenderer> m_QuadRenderer;
+
+	Callback<MouseEvent> m_MouseScrollCallback;
+	float m_Zoom = 1.0f;
 };
 

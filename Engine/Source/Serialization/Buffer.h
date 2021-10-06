@@ -18,6 +18,14 @@
 #define WRITEBUFFER(buffer) WRITEVEC(buffer, 1)
 #define READBUFFER(buffer) READVEC(buffer, 1)
 
+
+#define MAPBUFFERWRITE(MapRef, Key, WriteFunc) [&](){ Buffer buffer; \
+STARTWRITE(buffer, 0); WriteFunc; MapRef.AddPiece(Key, buffer); }();
+
+#define MAPBUFFERREAD(MapRef, Key, ReadFunc) [&](){ if(!MapRef.HasKey(Key)) return; Buffer& buffer = MapRef[Key]; \
+STARTREAD(buffer, 0); ReadFunc; }();
+
+
 using Buffer = std::vector<byte>;
 
 //array of buffers
@@ -65,6 +73,82 @@ struct DENGINE_API ArrayBuffer
 		}
 
 		return buffer;
+	}
+};
+
+
+//map of buffers
+struct DENGINE_API MapBuffer
+{
+	std::unordered_map<std::string, Buffer> m_DataPieces;
+
+	const std::unordered_map<std::string, Buffer>& GetDataPieces() const
+	{
+		return m_DataPieces;
+	}
+
+	void AddPiece(const std::string& key, const Buffer& piece)
+	{
+		m_DataPieces[key] = piece;
+	}
+
+	bool HasKey(const std::string& key)
+	{
+		return (m_DataPieces.count(key));
+	}
+
+	void QuickWrite(const std::string& key, std::function<void()> WriteFunc)
+	{
+		Buffer buffer;
+		STARTWRITE(buffer, 0);
+		WriteFunc();
+		AddPiece(key, buffer);
+	}
+
+	void QuickRead(const std::string& key, std::function<void()> ReadFunc)
+	{
+		const Buffer& buffer = m_DataPieces[key];
+		STARTREAD(buffer, 0);
+		ReadFunc();
+	}
+
+
+	Buffer& operator[](const std::string& key) 
+	{
+		return m_DataPieces[key];
+	}
+
+	void FromBuffer(const Buffer& buffer)
+	{
+		ArrayBuffer PieceBuffer;
+		PieceBuffer.FromBuffer(buffer);
+
+		for(const auto& piece : PieceBuffer.GetDataPieces())
+		{
+			std::string Key;
+			Buffer Data;
+			STARTREAD(piece, 0);
+			READSTRING(Key);
+			READBUFFER(Data);
+
+			AddPiece(Key, Data);		
+		}
+	}
+
+	Buffer MakeBuffer()
+	{
+		ArrayBuffer PieceBuffer;
+		for (auto& piece : m_DataPieces)
+		{
+			Buffer BufferPiece;
+			STARTWRITE(BufferPiece, 0);
+			WRITESTRING(piece.first);
+			WRITEBUFFER(piece.second);
+
+			PieceBuffer.AddPiece(BufferPiece);
+		}
+
+		return PieceBuffer.MakeBuffer();
 	}
 };
 

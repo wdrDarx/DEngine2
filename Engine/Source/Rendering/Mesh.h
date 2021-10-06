@@ -113,6 +113,9 @@ public:
 		return m_MeshFlags;
 	}
 
+	//empty function thats called whenever this meshes model matrix changes
+	virtual void OnMatrixUpdate() {};
+
 private:
 	void UpdateMatrix();
 

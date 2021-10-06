@@ -81,6 +81,21 @@ void File::ReadFile(const std::string& path, Buffer& buffer, const size_t& bytes
 	stream.close();
 }
 
+std::future<void> File::AsyncReadFile(const std::string& path, Buffer& buffer)
+{
+	return
+	std::async(std::launch::async, [&]()
+	{
+		std::ifstream stream(path, std::ios::in | std::ios::binary);
+		if (stream)
+		{
+			buffer.resize(GetFileSize(path));
+			stream.read((char*)buffer.data(), buffer.size());
+		}
+		stream.close();
+	});
+}
+
 std::string File::ReadFileAsString(const std::string& path)
 {
 	Buffer temp;
@@ -133,20 +148,27 @@ std::string File::WideStringToString(const std::wstring& str)
 
 void File::WriteFile(const std::string& path, const Buffer& buffer)
 {
-#ifdef FILE_THREADED 
-	std::future<void> ftr = std::async(std::launch::async, [&]() {
-#endif
-
 	std::ofstream stream(path, std::ios::out | std::ios::binary);
 	if (stream)
 	{
 		stream.write((char*)buffer.data(), buffer.size());
 	}
 	stream.close();
+}
 
-#ifdef FILE_THREADED 
-		});
-#endif
+std::future<void> File::AsyncWriteFile(const std::string& path, const Buffer& buffer)
+{
+	return 
+	std::async(std::launch::async, [&]()
+	{
+
+		std::ofstream stream(path, std::ios::out | std::ios::binary);
+		if (stream)
+		{
+			stream.write((char*)buffer.data(), buffer.size());
+		}
+		stream.close();
+	});
 }
 
 int File::GetFileSize(const std::string& path)

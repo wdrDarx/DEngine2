@@ -38,6 +38,18 @@ void JobPool::Initialize()
 		});
 
 		// *****Here we could do platform specific thread setup...
+		HANDLE handle = (HANDLE)worker.native_handle();
+		DWORD_PTR affinityMask = 1ull << threadID;
+		DWORD_PTR affinity_result = SetThreadAffinityMask(handle, affinityMask);
+		assert(affinity_result > 0);
+
+		BOOL priority_result = SetThreadPriority(handle, THREAD_PRIORITY_HIGHEST);
+		assert(priority_result != 0);
+
+		std::wstringstream wss;
+		wss << "JobSystem_" << threadID;
+		HRESULT hr = SetThreadDescription(handle, wss.str().c_str());
+		assert(SUCCEEDED(hr));
 
 		worker.detach(); // forget about this thread, let it do it's job in the infinite loop that we created above
 	}

@@ -19,7 +19,7 @@ void MeshRenderer::GenDrawCalls()
 	//dynamic meshes each need a seperate draw call
 	for (auto& mesh : m_MeshBuffer)
 	{
-		if(mesh->GetMeshFlags() & MeshFlags::INVISIBLE)
+		if(mesh && mesh->GetMeshFlags() & MeshFlags::INVISIBLE) //no occlusion test because the mesh can change and bounds have to be recalculated too 
 			continue;
 
 		MeshDrawCall call;
@@ -37,11 +37,17 @@ void MeshRenderer::GenDrawCalls()
 		std::vector<MeshData> data;
 	};
 
+	//occlusion test for static meshes
+	std::vector<Ref<StaticMesh>> VisibleMeshes;
+	VisibleMeshes.reserve(m_StaticMeshBuffer.size());
+	VisibleMeshes = MassOcclusionTest(m_StaticMeshBuffer);
+
 	//static meshes get grouped into draw calls if they have the same material and mesh
 	std::vector<Group> groups;
-	for (auto& mesh : m_StaticMeshBuffer)
+	for (auto& mesh : VisibleMeshes)
 	{
-		if(!mesh->IsValid() || mesh->GetMeshFlags() & MeshFlags::INVISIBLE) continue;
+		if(!mesh) continue;
+		if(mesh && !mesh->IsValid() || mesh->GetMeshFlags() & MeshFlags::INVISIBLE) continue; //ignore
 
 		bool fits = false;
 		for (auto& group : groups)
@@ -266,6 +272,9 @@ void MeshRenderer::PrepareFrame()
 	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BasicShader"))
 		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
 
+	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("OcclusionCompute"))
+		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\Compute.shader"), "OcclusionCompute");
+
 	GenDrawCalls();
 	m_ShadowMeshDrawCalls = CreateShadowMapDrawCalls();
 
@@ -274,6 +283,9 @@ void MeshRenderer::PrepareFrame()
 void MeshRenderer::RenderFrame(Ref<Camera> camera)
 {
 	Super::RenderFrame(camera);
+
+	//set some values
+	m_LastCamera = camera.get();
 
 	if(m_DeferredFrameTarget)
 	{
@@ -433,6 +445,105 @@ void MeshRenderer::SubmitDirectionalLight(Ref<DirectionalLight> Light)
 void MeshRenderer::RemoveDirectionalLight(Ref<DirectionalLight> Light)
 {
 	ObjectUtils::RemoveFromVector(Light, m_DirectionalLights);
+}
+
+
+bool MeshRenderer::OcclusionTest(Ref<Mesh> mesh)
+{
+	return true;
+}
+
+std::vector<Ref<StaticMesh>> MeshRenderer::MassOcclusionTest(const std::vector<Ref<StaticMesh>>& inputMeshes)
+{
+	if (!GetSettingsMutable().OcclusionCulling || inputMeshes.size() < 1) return inputMeshes;
+
+	std::vector<Ref<StaticMesh>> out;
+	out.resize(inputMeshes.size());
+
+	uint ThreadCount = m_JobPool.numThreads;
+	uint JobsPerThread = ceil((float)inputMeshes.size() / (float)ThreadCount);
+
+	std::mutex mu;
+	uint t_JobIndex = 0;
+	for(uint i = 0; i < ThreadCount; i++)
+	{
+		m_JobPool.Execute([&]()
+		{
+			uint StartIndex = 0;	
+			{
+				std::lock_guard<std::mutex> lock(mu);
+				StartIndex = t_JobIndex;
+				//LogTemp("Index " + STRING(index));
+				t_JobIndex += JobsPerThread;				
+			}
+
+			uint EndIndex = StartIndex + JobsPerThread;
+			 
+			for(uint index = 0; index <= EndIndex; index++)
+			{
+				if(index >= inputMeshes.size()) 
+					return;
+
+				if(!inputMeshes[index]->GetLoadedMeshAsset())
+				{
+					out[index] = inputMeshes[index];
+					continue;
+				}
+
+				auto bounds = inputMeshes[index]->GetCachedBounds();
+				vec3d testMin = bounds.min;
+				vec3d testMax = bounds.max;
+
+				if(true)
+				{
+					std::lock_guard<std::mutex> lock(mu);			
+					GetPipeline()->GetRenderer<DebugRenderer>()->DrawDebugCube(testMin, {0,0,0}, {10,10,10}, {0,0,1});
+					GetPipeline()->GetRenderer<DebugRenderer>()->DrawDebugCube(testMax, {0,0,0}, {10,10,10}, {0,0,1});
+				}
+
+				auto FrustrumNormals = m_LastCamera->GetFrustrumPlaneNormals();
+
+				bool Cull = false;
+				for (uint i = 0; i < 6; i++)
+				{
+					vec3d planeNormal = vec3d(FrustrumNormals[i].x, FrustrumNormals[i].y, FrustrumNormals[i].z);
+					float planeConstant = FrustrumNormals[i].w;
+					vec3d axisVert;
+
+					if (FrustrumNormals[i].x < 0.0f)
+						axisVert.x = testMin.x;
+					else
+						axisVert.x = testMax.x;
+
+					if (FrustrumNormals[i].y < 0.0f) 
+						axisVert.y = testMin.y;
+					else
+						axisVert.y = testMax.y;
+
+					if (FrustrumNormals[i].z < 0.0f)    
+						axisVert.z = testMin.z;
+					else
+						axisVert.z = testMax.z;
+
+					if ( glm::dot(planeNormal, axisVert) + planeConstant < 0.0f)
+					{
+						Cull = true;
+						break;
+					}
+				}
+
+				if(!Cull)
+				{
+					out[index] = inputMeshes[index];
+				}
+			}
+		});
+	}
+
+	m_JobPool.Wait();
+	//LogTemp("\n");
+
+	return out;
 }
 
 DirectionalShadowMap::DirectionalShadowMap(float NearPlane, float FarPlane, uint Size /*= 1024*/) : m_DepthTextureSize(Size, Size)

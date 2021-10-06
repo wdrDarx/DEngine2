@@ -43,7 +43,7 @@ void CubemapRenderer::ClearFrame()
 
 Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 {
-	if(asset->m_Spec.Type != TextureType::HDR) return nullptr;
+	if(asset->GetSpec().Type != TextureType::HDR) return nullptr;
 
 	if (!GetPipeline()->GetRenderAPI()->IsShaderInCache("BasicShader"))
 		GetPipeline()->GetRenderAPI()->AddShaderToCache(MakeRef<Shader>(Paths::GetEngineDirectory() + "Shaders\\BasicShader.shader"), "BasicShader");
@@ -65,12 +65,14 @@ Ref<Cubemap> CubemapRenderer::CreateCubemapFromAsset(Ref<TextureAsset> asset)
 	glDepthFunc(GL_LEQUAL);
 
 	//load the hdr map
-	float* data = (float*)asset->m_Pixels.data();
+	asset->GetTexture(); //just to trigger caching
+	Buffer LoadedPixels = asset->LoadPixels();
+	float* data = (float*)LoadedPixels.data();
 	if (asset)
 	{
 		glGenTextures(1, &outCubemap->m_hdrTextureSlot);
 		glBindTexture(GL_TEXTURE_2D, outCubemap->m_hdrTextureSlot);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, asset->m_width, asset->m_height, 0, GL_RGB, GL_FLOAT, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, asset->GetWidth(), asset->GetHeight(), 0, GL_RGB, GL_FLOAT, data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

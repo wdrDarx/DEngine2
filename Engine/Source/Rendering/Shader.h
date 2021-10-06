@@ -7,6 +7,7 @@ struct ShaderProgramSource
 	std::string VertexShader;
 	std::string FragmentShader;
 	std::string GeometryShader;
+	std::string ComputeShader;
 };
 
 struct DENGINE_API Shader
@@ -16,11 +17,12 @@ public:
 	std::string m_FragPath;
 	std::string m_VertPath;
 	std::string m_GeomPath;
+	std::string m_ComputePath;
 
 	std::unordered_map<std::string, int> m_UniformLocationCache;
 public:
 	Shader(const std::string& CompleteShaderPath);
-	Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath );
+	Shader(const std::string& VertexShaderPath, const std::string& FragmentShaderPath);
 	Shader(const std::string& VertexShaderPath, const std::string& GeometryShaderPath, const std::string& FragmentShaderPath);
 	~Shader();
 	uint m_RendererID;
@@ -42,7 +44,7 @@ public:
 	int GetUniformLocation(const std::string& name);
 private:
 	uint CompileShader(uint type, const std::string& source);
-	uint CreateShader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader);
+	uint CreateShader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader, const std::string& ComputeShader);
 	ShaderProgramSource ParseShader(const std::string& filepath);
 
 };

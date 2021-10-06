@@ -22,6 +22,8 @@ typedef unsigned char byte;
 
 #include "Types.h"
 #include "Log.h"
+#include "nmmintrin.h" 
+#include "immintrin.h"
 #include <vector>
 #include <thread>
 #include <array>
