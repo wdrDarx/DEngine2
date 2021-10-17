@@ -142,6 +142,20 @@ public:
 		return ptr;
 	}
 
+	//set the pipeline from an already created pipeline object
+	void SetPipeline(Pipeline* pipeline, Ref<RenderAPI> renderApi)
+	{
+		Ref<Pipeline> ptr = ToRef(pipeline);
+		m_Pipeline = ptr;
+
+		if(!pipeline->IsInitialized())
+		{ 
+			ObjectInitializer initializer;
+			initializer.Flags |= ConstructFlags::RANDOMID;
+			ptr->Initialize(initializer);
+		}
+	}
+
 	//used during play, doesnt represet the actual render target
 	Ref<Camera> GetActiveCamera()
 	{

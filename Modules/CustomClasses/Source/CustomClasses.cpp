@@ -1,16 +1,16 @@
 #include "CustomClasses.h"
 
 #include "Classes/CustomAppObject.h"
-#include "Classes/StaticMeshObject.h"
 #include "Classes/CustomSceneObject.h"
 #include "Classes/ChildSceneObject.h"
 #include "Classes/QuadComponent.h"
 #include "Classes/MeshComponent.h"
-#include "Classes/StaticMeshComponent.h"
 #include "Classes/CameraComponent.h"
 #include "Classes/PlayerController.h"
 #include "Classes/Bullet.h"
 #include "Classes/FirstPersonPawn.h"
+
+#include "Classes/CustomScene.h"
 
 #include "Classes/QuadRenderer.h"
 #include "Classes/MyObject.h"
@@ -51,15 +51,14 @@ void CustomClasses::OnLoad()
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomAppObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomSceneObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), ChildSceneObject, CustomClasses);
-	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshObject, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), MeshComponent, CustomClasses);
-	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), StaticMeshComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), QuadMaterial, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CameraComponent, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), PlayerController, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), Bullet, CustomClasses);
 	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), FirstPersonPawn, CustomClasses);
+	REGISTER_OBJECT(GetApplication()->GetObjectRegistry(), CustomScene, CustomClasses);
 
 	
 // 	//custom renderer

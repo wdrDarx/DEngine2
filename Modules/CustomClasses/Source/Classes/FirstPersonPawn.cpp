@@ -42,7 +42,8 @@ void FirstPersonPawn::OnUpdate(const Tick& tick)
 		m_TargetRotation = World::NormalizeRot(m_TargetRotation);
 	}
 
-	m_ControlRotation = World::LerpRot(m_ControlRotation, m_TargetRotation, tick.DeltaTime * 60.f);
+	int RR = 30;
+	m_ControlRotation = World::LerpRot(m_ControlRotation, m_TargetRotation, tick.DeltaTime * RR);
 	camera->SetWorldRotation(m_ControlRotation);
 
 	vec3d MeshRot = mesh->GetLocalTransform().rot;
@@ -131,7 +132,7 @@ void FirstPersonPawn::OnBeginPlay()
 			{
 				Transform spawn = BulletSpawn->GetWorldTransform();
 				spawn.rot = camera->GetWorldRotation();
-				if (auto bullet = Cast<Bullet>(SceneUtils::SpawnPrefabInScene(BulletPrefab, GetScene(), spawn, ObjectInitializer::Module(this))))
+				if (auto bullet = Cast<Bullet>(SceneUtils::SpawnPrefabInScene(BulletPrefab, GetScene(), spawn, ObjectInitializer::Module(this), true)))
 				{
 					//bullet->Root->GetPhysicsActor()->AddForce(World::GetForwardVector(m_ControlRotation) * BulletForce * GetScene()->GetLastTick().DeltaTime, ForceMode::VelocityChange);
 				}

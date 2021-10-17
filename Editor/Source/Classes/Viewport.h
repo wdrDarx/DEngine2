@@ -1,6 +1,7 @@
 #pragma once
 #include "DEngine.h"
 #include "ImGuizmo.h"
+#include "EditorApp.h"
 
 class Viewport
 {
@@ -144,7 +145,7 @@ class Viewport
 								trans.pos += m_Camera->GetTransform().pos;
 								trans.pos += World::GetForwardVector(m_Camera->GetTransform().rot) * 10.f;
 
-								SceneUtils::SpawnPrefabInScene(assetRef, m_Scene.get(), trans, ObjectInitializer());
+								SceneUtils::SpawnPrefabInScene(assetRef, m_Scene.get(), trans, ObjectInitializer(), true);
 							}
 						}
 					}
@@ -160,7 +161,14 @@ class Viewport
 							if (m_Scene)
 							{
 								Ref<SceneAsset> prefabAsset = m_Scene->GetApplication()->GetAssetManager().LoadAsset<SceneAsset>(handle);
-								SceneUtils::LoadSceneFromAsset(prefabAsset, m_Scene);
+								Ref<Scene> loaded = SceneUtils::CreateAndLoadSceneFromAsset(m_Scene->GetApplication(), prefabAsset);
+								auto app = Cast<EditorApp>(m_Scene->GetApplication());
+								app->m_EditorScene = loaded;
+								m_Scene->GetApplication()->DestroyAppObject(m_Scene);	
+								m_Scene = loaded;
+								m_SelectedComponent = nullptr;
+								app->m_SceneObjectPannel.m_SelectedComponent = nullptr;
+								app->m_SceneObjectPannel.m_SelectedObject = nullptr;
 							}
 						}
 					}

@@ -82,6 +82,16 @@ struct DENGINE_API MapBuffer
 {
 	std::unordered_map<std::string, Buffer> m_DataPieces;
 
+	MapBuffer(const Buffer& input)
+	{
+		FromBuffer(input);
+	}
+
+	MapBuffer() 
+	{
+	
+	}
+
 	const std::unordered_map<std::string, Buffer>& GetDataPieces() const
 	{
 		return m_DataPieces;

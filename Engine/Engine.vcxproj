@@ -186,9 +186,11 @@
     <ClInclude Include="Source\Framework\Classes\Components\BoxColliderComponent.h" />
     <ClInclude Include="Source\Framework\Classes\Components\ColliderComponent.h" />
     <ClInclude Include="Source\Framework\Classes\Components\MeshColliderComponent.h" />
+    <ClInclude Include="Source\Framework\Classes\Components\StaticMeshComponent.h" />
     <ClInclude Include="Source\Framework\Classes\SceneObjects\DirectionalLightObject.h" />
     <ClInclude Include="Source\Framework\Classes\Components\TransformComponent.h" />
     <ClInclude Include="Source\Framework\Classes\SceneObjects\SkyLightObject.h" />
+    <ClInclude Include="Source\Framework\Classes\SceneObjects\StaticMeshObject.h" />
     <ClInclude Include="Source\Framework\Engine.h" />
     <ClInclude Include="Source\Framework\EnumBase.h" />
     <ClInclude Include="Source\Framework\FrameworkMacros.h" />
@@ -268,9 +270,11 @@
     <ClCompile Include="Source\Framework\Classes\Components\BoxColliderComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\ColliderComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\MeshColliderComponent.cpp" />
+    <ClCompile Include="Source\Framework\Classes\Components\StaticMeshComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\SceneObjects\DirectionalLightObject.cpp" />
     <ClCompile Include="Source\Framework\Classes\Components\TransformComponent.cpp" />
     <ClCompile Include="Source\Framework\Classes\SceneObjects\SkyLightObject.cpp" />
+    <ClCompile Include="Source\Framework\Classes\SceneObjects\StaticMeshObject.cpp" />
     <ClCompile Include="Source\Framework\Engine.cpp" />
     <ClCompile Include="Source\Framework\EnumBase.cpp" />
     <ClCompile Include="Source\Framework\InputManager.cpp" />

@@ -1,5 +1,4 @@
 #include "ChildSceneObject.h"
-#include "StaticMeshObject.h"
 
 void ChildSceneObject::OnUpdate(const Tick& tick)
 {

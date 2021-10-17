@@ -2,13 +2,13 @@
 #include "DEngine.h"
 #include "ImGui/ImGuiLayer.h"
 #include "PropertyWindow.h"
-#include "Viewport.h"
 #include "MenuBar.h"
 #include "SceneObjectPannel.h"
 #include "ContentBrowser.h"
 #include "AssetEditor.h"
 #include "ImGuizmo.h"
 
+class Viewport;
 class EditorApp : public Application
 {
 public:

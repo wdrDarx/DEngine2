@@ -104,6 +104,19 @@ void ModelLoader::LoadFBX(const std::string& fullpath, Mesh* mesh)
 		vector.z = Importedmesh->mNormals[i].z;
 		vertex.Norm = vector;
 
+		//tangent
+		vector.x = Importedmesh->mTangents[i].x;
+		vector.y = Importedmesh->mTangents[i].y;
+		vector.z = Importedmesh->mTangents[i].z;
+		vertex.Tangent = vector;
+
+		//bitangent
+		vector.x = Importedmesh->mBitangents[i].x;
+		vector.y = Importedmesh->mBitangents[i].y;
+		vector.z = Importedmesh->mBitangents[i].z;
+		vertex.Bitangent  = vector;
+
+
 		// Texture Coordinates
 		if (Importedmesh->mTextureCoords[0]) // Does the mesh contain texture coordinates?
 		{

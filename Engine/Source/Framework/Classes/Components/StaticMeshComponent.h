@@ -1,19 +1,19 @@
 #pragma once
-#include "CustomClasses.h"
-#include "CustomSceneObject.h"
-#include "DEngine.h"
+#include "MeshColliderComponent.h"
+#include "Assets/Classes/MaterialAsset.h"
+#include "Rendering/StaticMesh.h"
 
-class CUSTOMCLASSES StaticMeshComponent : public MeshColliderComponent
+class DENGINE_API StaticMeshComponent : public MeshColliderComponent
 {
 public:
 	OBJECT_CLASS_DEF(StaticMeshComponent, MeshColliderComponent)
-		OBJECT_PROPS_BEGIN()
+	OBJECT_PROPS_BEGIN()
 		PROPS_CATEGORY(Static Mesh);
-			PROPDEF(m_MeshAsset, EditAnywhere)
-			PROPDEF(m_MaterialAsset, EditAnywhere)
-			PROPDEF(CastShadow, EditAnywhere)
-			PROPDEF(Visible, EditAnywhere)
-		OBJECT_PROPS_END()
+		PROPDEF(m_MeshAsset, EditAnywhere)
+		PROPDEF(m_MaterialAsset, EditAnywhere)
+		PROPDEF(CastShadow, EditAnywhere)
+		PROPDEF(Visible, EditAnywhere)
+	OBJECT_PROPS_END()
 
 	void OnUpdate(const Tick& tick) override;
 	void OnConstruct() override;

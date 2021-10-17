@@ -1,4 +1,5 @@
 #include "StaticMeshObject.h"
+#include "DEngine.h"
 
 void StaticMeshObject::OnUpdate(const Tick& tick)
 {
@@ -10,6 +11,5 @@ void StaticMeshObject::OnConstruct()
 	Super::OnConstruct();
 
 	m_Mesh = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "Mesh");
-
 	SetRootComponent(m_Mesh);
 }

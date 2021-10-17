@@ -150,6 +150,7 @@ IF EXIST ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Classes\CustomScene.h" />
     <ClInclude Include="Source\Classes\FirstPersonPawn.h" />
     <ClInclude Include="Source\Classes\Bullet.h" />
     <ClInclude Include="Source\Classes\CameraComponent.h" />
@@ -161,8 +162,6 @@ IF EXIST ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClInclude Include="Source\Classes\PlayerController.h" />
     <ClInclude Include="Source\Classes\QuadComponent.h" />
     <ClInclude Include="Source\Classes\QuadRenderer.h" />
-    <ClInclude Include="Source\Classes\StaticMeshComponent.h" />
-    <ClInclude Include="Source\Classes\StaticMeshObject.h" />
     <ClInclude Include="Source\CustomClasses.h" />
   </ItemGroup>
   <ItemGroup>
@@ -176,8 +175,6 @@ IF EXIST ..\..\bin\Runtime-windows-x86_64\CustomClasses\CustomClasses.dll\ (xcop
     <ClCompile Include="Source\Classes\PlayerController.cpp" />
     <ClCompile Include="Source\Classes\QuadComponent.cpp" />
     <ClCompile Include="Source\Classes\QuadRenderer.cpp" />
-    <ClCompile Include="Source\Classes\StaticMeshComponent.cpp" />
-    <ClCompile Include="Source\Classes\StaticMeshObject.cpp" />
     <ClCompile Include="Source\CustomClasses.cpp" />
     <ClCompile Include="Source\Source.cpp" />
   </ItemGroup>

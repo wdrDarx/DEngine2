@@ -22,12 +22,17 @@ public:
 	/*
 		Wipes a scene fully before loading in all the data from the asset
 	*/
-	static void LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene);
+	static void LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Scene* scene);
 
 	/*
 		clones a scene object data to a new object
 		returns the new cloned object
 	*/
-	static Ref<SceneObject> CloneSceneObject(SceneObject* obj, Ref<Scene> TargetScene);
+	static Ref<SceneObject> CloneSceneObject(SceneObject* obj, Scene* TargetScene);
+
+	/*
+		Creates a scene from a custom class defined in the asset and loads the scene data
+	*/
+	static Ref<Scene>  CreateAndLoadSceneFromAsset(Application* app, const Ref<SceneAsset>& sceneAsset);
 
 };

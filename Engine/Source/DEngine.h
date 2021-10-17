@@ -48,9 +48,10 @@
 #include "Framework/Classes/Components/ColliderComponent.h"
 #include "Framework/Classes/Components/BoxColliderComponent.h"
 #include "Framework/Classes/Components/MeshColliderComponent.h"
+#include "Framework/Classes/Components/StaticMeshComponent.h"
 #include "Framework/Classes/SceneObjects/DirectionalLightObject.h"
 #include "Framework/Classes/SceneObjects/SkyLightObject.h"
-
+#include "Framework/Classes/SceneObjects/StaticMeshObject.h"
 
 //physics
 #include "Physics/PhysicsCore.h"

@@ -1,7 +1,6 @@
 #pragma once
 #include "DEngine.h"
 #include "Classes/CameraComponent.h"
-#include "Classes/StaticMeshComponent.h"
 #include "VRModule.h"
 
 class VRMODULE VRPawn : public SceneObject

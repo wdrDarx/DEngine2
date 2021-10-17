@@ -4,11 +4,8 @@ void Bullet::OnConstruct()
 {
 	Super::OnConstruct();
 
-	Root = CreateComponent<BoxColliderComponent>(ObjectInitializer::Module(this), "Root");
 	mesh = CreateComponent<StaticMeshComponent>(ObjectInitializer::Module(this), "Mesh");
-
-	mesh->AttachTo(Root);
-	SetRootComponent(Root);
+	SetRootComponent(mesh);
 }
 
 void Bullet::OnPostConstruct()
@@ -29,7 +26,7 @@ void Bullet::OnBeginPlay()
 {
 	Super::OnBeginPlay();
 
-	if(!Root->GetPhysicsActor()) return;
+	if(!mesh->GetPhysicsActor()) return;
 
 	m_PhysicsCallback.Assign([&](PhysicsActorEvent* event)
 	{
@@ -41,7 +38,7 @@ void Bullet::OnBeginPlay()
  		}
 	});
 
-	Root->GetPhysicsActor()->BindOnBeginOverlap(m_PhysicsCallback);
+	mesh->GetPhysicsActor()->BindOnBeginOverlap(m_PhysicsCallback);
 
-	Root->GetPhysicsActor()->AddForce(World::GetForwardVector(Root->GetWorldRotation()) * Speed, ForceMode::VelocityChange);
+	mesh->GetPhysicsActor()->AddForce(World::GetForwardVector(mesh->GetWorldRotation()) * Speed, ForceMode::VelocityChange);
 }

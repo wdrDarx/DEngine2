@@ -200,7 +200,8 @@ void Scene::AddSceneObject(SceneObject* obj, const ObjectInitializer& Initialize
 	m_SceneObjects.push_back(objref);
 
 	//Must call
-	obj->Initialize(Initializer);
+	if(!obj->IsInitialized())
+		obj->Initialize(Initializer);
 
 	//Dispatch POST_INITIALIZE event
 	event.m_EventType = SceneEventType::OBJECT_POST_INITIALIZE;
@@ -223,7 +224,8 @@ void Scene::AddSceneObject(Ref<SceneObject> obj, const ObjectInitializer& Initia
 	m_SceneObjects.push_back(obj);
 
 	//Must call
-	obj->Initialize(Initializer);
+	if (!obj->IsInitialized())
+		obj->Initialize(Initializer);
 
 	//Dispatch POST_INITIALIZE event
 	event.m_EventType = SceneEventType::OBJECT_POST_INITIALIZE;

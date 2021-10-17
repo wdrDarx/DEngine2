@@ -1,5 +1,6 @@
 #include "EditorApp.h"
 #include "Event/Event.h"
+#include "Viewport.h"
 
 //asset editors
 #include "Classes/AssetEditors/TextureAssetEditor.h"
@@ -535,7 +536,7 @@ void EditorApp::EndPlay()
 		m_SceneObjectPannel.m_SelectedComponent = nullptr;
 		m_PropertyWindow.m_SelectedComponent = nullptr;
 
-		SceneUtils::LoadSceneFromAsset(m_BeginPlaySceneAsset, m_EditorScene);
+		SceneUtils::LoadSceneFromAsset(m_BeginPlaySceneAsset, m_EditorScene.get());
 	}
 }
 
@@ -548,7 +549,7 @@ void EditorApp::UnloadAll()
 void EditorApp::LoadAll()
 {
 	GetModuleManager().LoadAllModules(Paths::GetModulesDirectory());
-	SceneUtils::LoadSceneFromAsset(m_HotReloadSceneAsset, m_EditorScene);
+	SceneUtils::LoadSceneFromAsset(m_HotReloadSceneAsset, m_EditorScene.get());
 }
 
 Ref<Viewport> EditorApp::CreateViewport(Ref<Scene> scene)
@@ -595,7 +596,7 @@ void EditorApp::OnKeyDown(KeyEvent* event)
 	{
 		if (m_SceneObjectPannel.m_SelectedObject)
 		{
-			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(m_SceneObjectPannel.m_SelectedObject, m_EditorScene).get();
+			m_SceneObjectPannel.m_SelectedObject = SceneUtils::CloneSceneObject(m_SceneObjectPannel.m_SelectedObject, m_EditorScene.get()).get();
 		}
 	}
 }

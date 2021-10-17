@@ -20,14 +20,27 @@ public:
 	uint Serialize(Buffer& buffer) const override
 	{
 		STARTWRITE(buffer, Asset::Serialize(buffer))
-		WRITEBUFFER(m_SceneBuffer);
+
+		MapBuffer map;
+		MAPBUFFERWRITE(map, "m_SceneClassName", { WRITESTRING(m_SceneClassName); });
+		MAPBUFFERWRITE(map, "m_PipelineClassName", { WRITESTRING(m_PipelineClassName); });
+		MAPBUFFERWRITE(map, "m_SceneBuffer", { WRITEBUFFER(m_SceneBuffer); });
+	
+		WRITEBUFFER(map.MakeBuffer());
 		STOPWRITE();
 	}
 
 	uint Deserialize(const Buffer& buffer) override
 	{
 		STARTREAD(buffer, Asset::Deserialize(buffer))
-		READBUFFER(m_SceneBuffer);
+		
+		Buffer buf;
+		READBUFFER(buf);
+		MapBuffer map(buf);
+		MAPBUFFERREAD(map, "m_SceneClassName", { READSTRING(m_SceneClassName); });
+		MAPBUFFERREAD(map, "m_PipelineClassName", { READSTRING(m_PipelineClassName); });
+		MAPBUFFERREAD(map, "m_SceneBuffer", { READBUFFER(m_SceneBuffer); });
+
 		STOPREAD();
 	}
 
@@ -50,4 +63,6 @@ public:
 	}
 
 	Buffer m_SceneBuffer;
+	std::string m_SceneClassName;
+	std::string m_PipelineClassName;
 };

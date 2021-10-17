@@ -119,7 +119,7 @@ void DefaultPipeline::RenderFrame(Ref<Camera> camera)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, BaseFrame->GetColorAttachement());
 		PostProcessShader->SetUniform1i("u_BaseFrame", 0);
-		PostProcessShader->SetUniform1i("u_UseFXAA", m_AntiAliasingQuality == 1 || m_DefferedRendering);
+		PostProcessShader->SetUniform1i("u_UseFXAA", m_AntiAliasingQuality == 1);
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, DrawFrameBuffer);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, ReadFrameBuffer);

@@ -1,6 +1,5 @@
 #pragma once
 #include "CustomClasses.h"
-#include "StaticMeshComponent.h"
 #include "DEngine.h"
 
 class CUSTOMCLASSES Bullet : public SceneObject
@@ -18,7 +17,6 @@ class CUSTOMCLASSES Bullet : public SceneObject
 		void OnBeginPlay() override;
 
 	public:
-		Ref<BoxColliderComponent> Root;
 		Ref<StaticMeshComponent> mesh;
 
 		Callback<PhysicsActorEvent> m_PhysicsCallback;

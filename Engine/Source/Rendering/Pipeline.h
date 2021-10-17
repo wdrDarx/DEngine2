@@ -23,6 +23,13 @@ public:
 
 	}
 
+	//same thing as the constructor but not a constructor
+	void Create(Scene* scene, Ref<RenderAPI> renderApi)
+	{
+		m_Scene = scene;
+		m_RenderApi = renderApi;
+	}
+
 	Scene* GetScene()
 	{
 		return m_Scene;

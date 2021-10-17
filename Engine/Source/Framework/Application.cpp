@@ -121,13 +121,23 @@ void Application::RegisterBaseClasses()
 	REGISTER_OBJECT(GetObjectRegistry(), Material, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), PBR_Material, Engine);
 
+	//rendering objects
+	REGISTER_OBJECT(GetObjectRegistry(), Pipeline, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), DefaultPipeline, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), MeshRenderer, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), QuadRenderer, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), DebugRenderer, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), CubemapRenderer, Engine);
+
 	//Classes
 	REGISTER_OBJECT(GetObjectRegistry(), TransformComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), ColliderComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), BoxColliderComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), MeshColliderComponent, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), StaticMeshComponent, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), DirectionalLightObject, Engine);
 	REGISTER_OBJECT(GetObjectRegistry(), SkyLightObject, Engine);
+	REGISTER_OBJECT(GetObjectRegistry(), StaticMeshObject, Engine);
 
 	//enums
 	REGISTER_ENUM(GetStructRegistry(), ProjectionType, Engine);

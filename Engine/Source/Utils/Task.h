@@ -57,10 +57,6 @@ struct JobDispatchArgs
 class DENGINE_API JobPool
 {
 public:
-	JobPool()
-	{
-		Initialize();
-	}
 
 	// Create the internal resources such as worker threads, etc. Call it once when initializing the application.
 	void Initialize();

@@ -1,4 +1,5 @@
 #include "MeshAssetEditor.h"
+#include "Classes/Viewport.h"
 
 MeshAssetEditor::MeshAssetEditor() : AssetEditor("Mesh Editor")
 {

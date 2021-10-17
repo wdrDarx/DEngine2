@@ -18,7 +18,7 @@ RuntimeApp::RuntimeApp() : Application()
 
 	Ref<SceneAsset> scene = GetAssetManager().LoadAsset<SceneAsset>(Paths::GetContentDirectory() + "\\Runtime.SceneAsset");
 	m_openScene->OnBeginPlay();
-	SceneUtils::LoadSceneFromAsset(scene, m_openScene);	
+	SceneUtils::LoadSceneFromAsset(scene, m_openScene.get());	
 
 	FrameBufferSpec spec;
 	spec.Samples = 1;
@@ -42,7 +42,7 @@ void RuntimeApp::OnUpdate(const Tick& tick)
 
 
 	m_openScene->GetPipeline()->PrepareFrame();
-	m_openScene->GetPipeline()->GetRenderer<MeshRenderer>()->GetSettingsMutable().OcclusionCulling = true;
+	m_openScene->GetPipeline()->GetRenderer<MeshRenderer>()->GetSettingsMutable().OcclusionCulling = false;
 	
 	GetWindow()->GetRenderAPI()->SetViewport({ GetWindow()->GetWidth(), GetWindow()->GetHeight() });
 

@@ -1,4 +1,5 @@
 #include "PrefabAssetEditor.h"
+#include "Classes/Viewport.h"
 
 PrefabAssetEditor::PrefabAssetEditor() : AssetEditor("PrefabAsset")
 {

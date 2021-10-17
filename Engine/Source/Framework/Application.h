@@ -126,7 +126,7 @@ public:
 	}
 
 	//Will call initialize to an already existing object 
-	void AddAppObject(AppObject* obj)
+	Ref<AppObject> AddAppObject(AppObject* obj)
 	{
 		ASSERT(obj);
 
@@ -137,6 +137,7 @@ public:
 
 		//Must call
 		obj->Initialize(ObjectInitializer(ConstructFlags::RANDOMID));	
+		return objref;
 	}
 
 	template<class T>

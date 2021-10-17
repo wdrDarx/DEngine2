@@ -3,6 +3,8 @@
 
 void MeshRenderer::OnConstruct()
 {
+	m_JobPool.Initialize(); //init job pool
+
 	m_MeshDataBuffer = MakeRef<ShaderStorageBuffer>(0); //binding = 0
 	m_LightDataBuffer = MakeRef<ShaderStorageBuffer>(1); //binding = 1
 
@@ -1090,14 +1092,5 @@ void MeshRenderer::SetRenderDeffered(Ref<DeferredFrame> frame)
 
 void DeferredFrame::Destroy(bool TexturesOnly)
 {
-// 	glDeleteTextures(1, &WorldPos);
-// 	glDeleteTextures(1, &WorldNormal);
-// 	glDeleteTextures(1, &Albedo);
-// 	glDeleteTextures(1, &AO_Roughness_Metallic);
-// 
-// 	if(!TexturesOnly)
-// 	{
-// 		//glDeleteFramebuffers(1, &gBufferFrame);
-// 	}
 	gBuffer = nullptr;
 }

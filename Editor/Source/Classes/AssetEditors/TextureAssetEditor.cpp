@@ -1,4 +1,5 @@
 #include "TextureAssetEditor.h"
+#include "Classes/Viewport.h"
 
 TextureAssetEditor::TextureAssetEditor() : AssetEditor("TextureAsset")
 {

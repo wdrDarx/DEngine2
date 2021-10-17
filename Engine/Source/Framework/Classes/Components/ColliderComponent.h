@@ -66,7 +66,7 @@ public:
 	bool GravityEnabled = true;
 	bool Dynamic = false;
 	bool Kinamtic = false;
-	bool CCD = true;
+	bool CCD = false;
 	bool Lerp = true;
 
 	float LinearDamping = 1.0f;
@@ -85,7 +85,7 @@ public:
 
 	//Phyiscs Layer
 	CollisionLayerEnum CollisionLayer;
-	LayerCollisions Overlaping;
+	LayerCollisions Overlaping = 0xFFFFFF;
 	LayerCollisions Blocking;
 
 private:

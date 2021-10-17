@@ -1,14 +1,15 @@
 #include "StaticMeshComponent.h"
+#include "DEngine.h"
 
 void StaticMeshComponent::OnUpdate(const Tick& tick)
 {
 	Super::OnUpdate(tick);
 	MeshFlags flags = (MeshFlags)0;
 
-	if(!CastShadow)
+	if (!CastShadow)
 		flags |= MeshFlags::NOSHADOW;
 
-	if(!Visible)
+	if (!Visible)
 		flags |= MeshFlags::INVISIBLE;
 
 	m_StaticMesh->SetMeshFlags(flags);
@@ -29,7 +30,7 @@ void StaticMeshComponent::OnConstruct()
 	{
 		if (event->GetEventType() == AssetEventType::ASSETSAVE)
 		{
-			if(event->GetAsset()->GetID() == m_MeshAsset.GetAssetHandle()->GetAssetID() || event->GetAsset()->GetID() == m_MaterialAsset.GetAssetHandle()->GetAssetID())
+			if (event->GetAsset()->GetID() == m_MeshAsset.GetAssetHandle()->GetAssetID() || event->GetAsset()->GetID() == m_MaterialAsset.GetAssetHandle()->GetAssetID())
 				m_StaticMesh->FlagChanged();
 		}
 	});

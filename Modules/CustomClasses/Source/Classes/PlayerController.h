@@ -1,7 +1,6 @@
 #pragma once
 #include "DEngine.h"
 #include "CameraComponent.h"
-#include "StaticMeshComponent.h"
 #include "CustomClasses.h"
 
 class CUSTOMCLASSES PlayerController : public SceneObject

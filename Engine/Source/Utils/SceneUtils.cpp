@@ -50,7 +50,7 @@ Ref<SceneObject> SceneUtils::SpawnPrefabInScene(AssetRef<PrefabAsset> prefabAsse
 	return sceneObject;
 }
 
-void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene)
+void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Scene* scene)
 {
 	if (!scene || !sceneAsset) return;
 	scene->DestroyAllSceneObjects();
@@ -67,7 +67,7 @@ void SceneUtils::LoadSceneFromAsset(Ref<SceneAsset> sceneAsset, Ref<Scene> scene
 	}
 }
 
-Ref<SceneObject> SceneUtils::CloneSceneObject(SceneObject* obj, Ref<Scene> TargetScene)
+Ref<SceneObject> SceneUtils::CloneSceneObject(SceneObject* obj, Scene* TargetScene)
 {
 	ObjectInitializer temp = obj->GetObjectInitializer();
 	Ref<PrefabAsset> tempasset = MakeRef<PrefabAsset>();
@@ -97,4 +97,27 @@ Ref<SceneObject> SceneUtils::CloneSceneObject(SceneObject* obj, Ref<Scene> Targe
 		root->SetWorldTransform(obj->GetRootComponent()->GetWorldTransform());
 
 	return sceneObject;
+}
+
+Ref<Scene> SceneUtils::CreateAndLoadSceneFromAsset(Application* app, const Ref<SceneAsset>& sceneAsset)
+{
+	Scene* out = Cast<Scene>(app->GetObjectRegistry().MakeObjectFromClassName(sceneAsset->m_SceneClassName));
+	if (!out)
+	{
+		LogError("Scene Class unregistered or invalid!");
+		return nullptr;
+	}
+	auto scene = app->AddAppObject(out);
+	
+	Pipeline* pipeline = Cast<Pipeline>(app->GetObjectRegistry().MakeObjectFromClassName(sceneAsset->m_PipelineClassName));
+	pipeline->Create(out, app->GetWindow()->GetRenderAPI());
+	if (!pipeline)
+	{
+		LogError("Pipeline Class unregistered or invalid!");
+		return nullptr;
+	}
+	out->SetPipeline(pipeline, app->GetWindow()->GetRenderAPI());
+
+	LoadSceneFromAsset(sceneAsset, out);
+	return Cast<Scene>(scene);
 }

@@ -45,7 +45,7 @@ public:
 		loads in all saved object data (including properties) from this assets buffer
 		Object must have initialized properties
 	*/
-	void LoadPrefab(SceneObject* prefab, bool LoadID = true, bool KeepRootTransform = true) const
+	void LoadPrefab(SceneObject* prefab, bool LoadID = true, bool KeepRootTransform = false) const
 	{
 		if (m_SceneObjectBuffer.size() < 1) return;
 

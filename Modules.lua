@@ -122,6 +122,8 @@ project "VRModule"
 			"NDEBUG" --for physx
 	  }
 
+
+
 project "Project"
 	location "Modules/Project"
 	kind "SharedLib"
